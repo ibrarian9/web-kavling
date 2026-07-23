@@ -1,0 +1,119 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import "tailwindcss";
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../../resources/views/**/*.blade.php';
+@source '../../app/Livewire/**/*.php';
+
+@theme {
+  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  
+  --color-brand-primary: #059669;
+  --color-brand-primary-hover: #047857;
+  --color-brand-accent: #4f46e5;
+  
+  --color-role-founder: #7c3aed;
+  --color-role-supervisor: #0891b2;
+  --color-role-finance: #059669;
+  --color-role-marketing: #2563eb;
+}
+
+/* Custom Role Badges */
+.badge-role-founder {
+  @apply bg-purple-50 text-purple-700 border border-purple-200/80 font-semibold px-2.5 py-1 rounded-lg text-xs inline-flex items-center gap-1 shadow-2xs;
+}
+
+.badge-role-pengawas {
+  @apply bg-amber-50 text-amber-700 border border-amber-200/80 font-semibold px-2.5 py-1 rounded-lg text-xs inline-flex items-center gap-1 shadow-2xs;
+}
+
+.badge-role-supervisor {
+  @apply bg-cyan-50 text-cyan-700 border border-cyan-200/80 font-semibold px-2.5 py-1 rounded-lg text-xs inline-flex items-center gap-1 shadow-2xs;
+}
+
+.badge-role-finance {
+  @apply bg-emerald-50 text-emerald-700 border border-emerald-200/80 font-semibold px-2.5 py-1 rounded-lg text-xs inline-flex items-center gap-1 shadow-2xs;
+}
+
+.badge-role-marketing {
+  @apply bg-blue-50 text-blue-700 border border-blue-200/80 font-semibold px-2.5 py-1 rounded-lg text-xs inline-flex items-center gap-1 shadow-2xs;
+}
+
+/* Status Badges Standard */
+.status-draft {
+  @apply bg-slate-100 text-slate-700 border border-slate-200 font-medium px-2.5 py-0.5 rounded-full text-xs inline-flex items-center gap-1.5;
+}
+
+.status-tersedia {
+  @apply bg-emerald-50 text-emerald-700 border border-emerald-200 font-medium px-2.5 py-0.5 rounded-full text-xs inline-flex items-center gap-1.5;
+}
+
+.status-booked {
+  @apply bg-amber-50 text-amber-700 border border-amber-200 font-medium px-2.5 py-0.5 rounded-full text-xs inline-flex items-center gap-1.5;
+}
+
+.status-menunggu {
+  @apply bg-amber-50 text-amber-700 border border-amber-300 font-medium px-2.5 py-0.5 rounded-full text-xs inline-flex items-center gap-1.5 animate-pulse;
+}
+
+.status-disetujui {
+  @apply bg-teal-50 text-teal-700 border border-teal-200 font-medium px-2.5 py-0.5 rounded-full text-xs inline-flex items-center gap-1.5;
+}
+
+.status-ditolak {
+  @apply bg-rose-50 text-rose-700 border border-rose-200 font-medium px-2.5 py-0.5 rounded-full text-xs inline-flex items-center gap-1.5;
+}
+
+.status-terjual {
+  @apply bg-indigo-50 text-indigo-700 border border-indigo-200 font-medium px-2.5 py-0.5 rounded-full text-xs inline-flex items-center gap-1.5;
+}
+
+.status-batal {
+  @apply bg-slate-100 text-slate-600 border border-slate-300 font-medium px-2.5 py-0.5 rounded-full text-xs inline-flex items-center gap-1.5;
+}
+
+.status-lunas {
+  @apply bg-emerald-100 text-emerald-800 border border-emerald-300 font-semibold px-2.5 py-0.5 rounded-full text-xs inline-flex items-center gap-1.5;
+}
+
+.status-menunggak {
+  @apply bg-rose-100 text-rose-800 border border-rose-300 font-semibold px-2.5 py-0.5 rounded-full text-xs inline-flex items-center gap-1.5 animate-pulse;
+}
+
+/* Custom Scrollbar for Sleek Sidebar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.6);
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(51, 65, 85, 0.8);
+  border-radius: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(71, 85, 105, 1);
+}
+
+/* Utility UI Components */
+.card-clean {
+  @apply bg-white rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-md transition-all duration-200;
+}
+
+.input-clean {
+  @apply bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-sm text-slate-800 focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all placeholder:text-slate-400;
+}
+
+.btn-primary {
+  @apply inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-medium text-sm px-4 py-2.5 rounded-xl shadow-xs hover:shadow-md transition-all active:scale-[0.98];
+}
+
+.btn-secondary {
+  @apply inline-flex items-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium text-sm px-4 py-2.5 rounded-xl transition-all active:scale-[0.98];
+}
+
+.btn-outline {
+  @apply inline-flex items-center gap-2 bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 font-medium text-sm px-4 py-2.5 rounded-xl transition-all shadow-2xs active:scale-[0.98];
+}
