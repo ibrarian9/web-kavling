@@ -4,7 +4,10 @@
     <div class="card-clean p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
             <div class="flex items-center gap-2 text-xs text-slate-500 mb-1">
-                <a href="{{ route('units.index') }}" class="hover:text-slate-800 font-medium">&larr; Daftar Unit Kavling</a>
+                <a href="javascript:history.back()" class="hover:text-emerald-700 font-medium inline-flex items-center gap-1">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                    <span>Kembali</span>
+                </a>
                 <span>/</span>
                 <span class="font-semibold text-slate-700">{{ $unit->project->name }}</span>
             </div>
@@ -40,6 +43,11 @@
         </div>
 
         <div class="flex flex-wrap items-center gap-2">
+            <button onclick="history.back()" class="btn-secondary text-xs px-3.5 py-2 flex items-center gap-1.5 hover:bg-slate-200 transition shadow-xs" title="Kembali ke Halaman Sebelumnya">
+                <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                <span>Kembali</span>
+            </button>
+
             @if(!auth()->user()->isPengawasProject() && $unit->category !== 'infrastruktur' && in_array($unit->status, ['tersedia', 'disetujui']))
                 <button wire:click="openBookingModal" class="bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-3 py-2 rounded-lg transition shadow-sm flex items-center gap-1.5">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
