@@ -4,6 +4,7 @@ namespace App\Livewire\Units;
 
 use App\Models\Booking;
 use App\Models\CashflowTransaction;
+use App\Models\InstallmentPayment;
 use App\Models\Unit;
 use App\Models\UnitInstallment;
 use App\Models\WeeklyMaterialPurchase;
@@ -76,6 +77,21 @@ class Show extends Component
     public $material_receipt_photo = null;
     public string $material_notes = '';
     public bool $material_is_deducted_from_loan = false;
+
+    // Modal Buyer Installment Payment (Setoran Cicilan Pembeli)
+    public bool $showInstallmentPaymentModal = false;
+    public $installment_payment_amount = 0;
+    public string $installment_payment_date = '';
+    public string $installment_payment_method = 'Transfer Bank';
+    public string $installment_payment_notes = '';
+
+    // Modal Setup Skema Cicilan Baru (Konfigurasi oleh Finance / Founder)
+    public bool $showSetupInstallmentModal = false;
+    public $setup_total_price = 0;
+    public $setup_down_payment = 0;
+    public $setup_installment_count = 12;
+    public $setup_installment_amount = 0;
+    public string $setup_start_date = '';
 
     // Viewer Modal (Jendela Melayang untuk Foto Struk, PDF Resi, & Barcode QR)
     public bool $showViewerModal = false;
@@ -296,6 +312,146 @@ class Show extends Component
         $this->selectedPayroll = null;
     }
 
+    // Modal Setoran Cicilan Pembeli (Khusus Finance & Founder)
+    public function openInstallmentPaymentModal(): void
+    {
+        $unit = Unit::with('installment')->findOrFail($this->unitId);
+        if (!$unit->installment) {
+            session()->flash('error', 'Unit ini belum memiliki skema cicilan aktif.');
+            return;
+        }
+
+        $this->resetValidation();
+        $this->installment_payment_amount = $unit->installment->installment_amount;
+        $this->installment_payment_date = now()->toDateString();
+        $this->installment_payment_method = 'Transfer Bank';
+        $this->installment_payment_notes = '';
+        $this->showInstallmentPaymentModal = true;
+    }
+
+    public function saveInstallmentPayment(): void
+    {
+        $user = auth()->user();
+        if (!$user->isFinance() && !$user->isFounder()) {
+            session()->flash('error', 'Hanya tim Finance dan Founder yang berhak mencatat setoran cicilan pembeli.');
+            return;
+        }
+
+        $this->validate([
+            'installment_payment_amount' => 'required|numeric|min:1000',
+            'installment_payment_date' => 'required|date',
+            'installment_payment_method' => 'required|string',
+            'installment_payment_notes' => 'nullable|string',
+        ]);
+
+        $unit = Unit::with('installment')->findOrFail($this->unitId);
+        $inst = $unit->installment;
+
+        if (!$inst) {
+            session()->flash('error', 'Skema cicilan tidak ditemukan.');
+            return;
+        }
+
+        DB::transaction(function () use ($unit, $inst) {
+            InstallmentPayment::create([
+                'unit_installment_id' => $inst->id,
+                'payment_date' => $this->installment_payment_date,
+                'amount_paid' => $this->installment_payment_amount,
+                'payment_method' => $this->installment_payment_method,
+                'notes' => $this->installment_payment_notes,
+                'created_by' => Auth::id(),
+            ]);
+
+            CashflowTransaction::create([
+                'project_id' => $unit->project_id,
+                'type' => 'masuk',
+                'category' => 'pembayaran_cicilan_pembeli',
+                'amount' => $this->installment_payment_amount,
+                'transaction_date' => $this->installment_payment_date,
+                'description' => 'Setoran Cicilan Pembeli Unit ' . $unit->code . ' (' . $this->installment_payment_method . ')',
+                'reference_type' => UnitInstallment::class,
+                'reference_id' => $inst->id,
+                'created_by' => Auth::id(),
+            ]);
+
+            // Auto-check status Lunas
+            $totalPaid = $inst->down_payment + $inst->payments()->sum('amount_paid');
+            if ($totalPaid >= $inst->total_price) {
+                $inst->update(['status' => 'lunas']);
+            }
+        });
+
+        session()->flash('success', 'Setoran cicilan pembeli Rp ' . number_format($this->installment_payment_amount, 0, ',', '.') . ' berhasil dicatat!');
+        $this->showInstallmentPaymentModal = false;
+    }
+
+    // Modal Setup Skema Cicilan Baru
+    public function openSetupInstallmentModal(): void
+    {
+        $unit = Unit::with(['officialDocument', 'activeProposal'])->findOrFail($this->unitId);
+        $this->resetValidation();
+        $this->setup_total_price = (float)($unit->final_selling_price ?: ($unit->activeProposal->proposed_price ?? 0));
+        $this->setup_down_payment = $this->setup_total_price * 0.20;
+        $this->setup_installment_count = 12;
+        $this->setup_start_date = now()->toDateString();
+        $this->calculateMonthlyInstallment();
+        $this->showSetupInstallmentModal = true;
+    }
+
+    public function calculateMonthlyInstallment(): void
+    {
+        $rem = max(0, (float)$this->setup_total_price - (float)$this->setup_down_payment);
+        $count = max(1, (int)$this->setup_installment_count);
+        $this->setup_installment_amount = $rem / $count;
+    }
+
+    public function saveSetupInstallment(): void
+    {
+        $user = auth()->user();
+        if (!$user->isFinance() && !$user->isFounder()) {
+            session()->flash('error', 'Hanya tim Finance dan Founder yang berhak mengonfigurasi skema cicilan.');
+            return;
+        }
+
+        $this->validate([
+            'setup_total_price' => 'required|numeric|min:1000',
+            'setup_installment_count' => 'required|integer|min:1',
+            'setup_start_date' => 'required|date',
+        ]);
+
+        $unit = Unit::with('officialDocument')->findOrFail($this->unitId);
+
+        DB::transaction(function () use ($unit) {
+            $installment = UnitInstallment::create([
+                'unit_id' => $unit->id,
+                'official_document_id' => $unit->officialDocument->id ?? null,
+                'total_price' => $this->setup_total_price,
+                'down_payment' => $this->setup_down_payment,
+                'installment_count' => $this->setup_installment_count,
+                'installment_amount' => $this->setup_installment_amount,
+                'start_date' => $this->setup_start_date,
+                'status' => 'berjalan',
+            ]);
+
+            if ($this->setup_down_payment > 0) {
+                CashflowTransaction::create([
+                    'project_id' => $unit->project_id,
+                    'type' => 'masuk',
+                    'category' => 'pembayaran_cicilan_pembeli',
+                    'amount' => $this->setup_down_payment,
+                    'transaction_date' => $this->setup_start_date,
+                    'description' => 'Pembayaran Uang Muka (DP) Unit ' . $unit->code,
+                    'reference_type' => UnitInstallment::class,
+                    'reference_id' => $installment->id,
+                    'created_by' => Auth::id(),
+                ]);
+            }
+        });
+
+        session()->flash('success', 'Skema cicilan unit ' . $unit->code . ' berhasil dibuat!');
+        $this->showSetupInstallmentModal = false;
+    }
+
     // 1. Worker Assignment Handler (Req #3)
     public function openWorkerModal(): void
     {
@@ -477,7 +633,9 @@ class Show extends Component
             'showBookingModal' => $this->showBookingModal,
             'showPayrollSetupModal' => $this->showPayrollSetupModal,
             'showPayrollPaymentModal' => $this->showPayrollPaymentModal,
-            'showMaterialModal' => $this->showMaterialModal,
+            'showInstallmentPaymentModal' => $this->showInstallmentPaymentModal,
+            'showSetupInstallmentModal' => $this->showSetupInstallmentModal,
+            'showMaterialModal' => $this->materialModal ?? $this->showMaterialModal,
             'showViewerModal' => $this->showViewerModal,
         ])->layout('components.layouts.app', ['title' => 'Detail Unit ' . $unit->code . ' - ' . $unit->project->name]);
     }

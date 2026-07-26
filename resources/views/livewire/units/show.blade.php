@@ -83,16 +83,18 @@
             <p class="text-[10px] text-emerald-600 mt-1">Status: {{ ucfirst($unit->status) }}</p>
         </div>
 
-        <!-- Total Cash In -->
-        <div class="card-clean p-4">
-            <p class="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Total Kas Masuk (DP + Cicilan)</p>
-            <p class="text-xl font-black text-blue-700 font-mono mt-1">
-                Rp {{ number_format($totalCashIn, 0, ',', '.') }}
-            </p>
-            <p class="text-[10px] text-slate-400 mt-1">
-                {{ $unit->installment ? 'Skema: ' . $unit->installment->installment_count . 'x Cicilan' : 'Belum Ada Cicilan' }}
-            </p>
-        </div>
+        <!-- Total Cash In (Financial Metric - Hidden from Pengawas) -->
+        @if(!auth()->user()->isPengawasProject())
+            <div class="card-clean p-4">
+                <p class="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Total Kas Masuk (DP + Cicilan)</p>
+                <p class="text-xl font-black text-blue-700 font-mono mt-1">
+                    Rp {{ number_format($totalCashIn, 0, ',', '.') }}
+                </p>
+                <p class="text-[10px] text-slate-400 mt-1">
+                    {{ $unit->installment ? 'Skema: ' . $unit->installment->installment_count . 'x Cicilan' : 'Belum Ada Cicilan' }}
+                </p>
+            </div>
+        @endif
 
         <!-- Total Biaya Unit -->
         @php
@@ -325,18 +327,27 @@
                 </div>
             </div>
 
-            <!-- Installment & Buyer Payments -->
-            @if($unit->installment)
+            <!-- Installment & Buyer Payments (Financial Data - Hidden from Pengawas Project) -->
+            @if(!auth()->user()->isPengawasProject() && $unit->installment)
                 <div class="card-clean p-5 space-y-4">
-                    <h3 class="font-bold text-slate-900 text-sm border-b border-slate-100 pb-2.5 flex items-center justify-between">
-                        <span class="flex items-center gap-2">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-2.5 gap-2">
+                        <h3 class="font-bold text-slate-900 text-sm flex items-center gap-2">
                             <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-                            Skema Cicilan & Pembayaran Pembeli
-                        </span>
-                        <span class="text-xs uppercase font-bold px-2 py-0.5 rounded {{ $unit->installment->status === 'lunas' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800' }}">
-                            {{ ucfirst($unit->installment->status) }}
-                        </span>
-                    </h3>
+                            <span>Skema Cicilan & Pembayaran Pembeli</span>
+                            <span class="text-[11px] uppercase font-bold px-2 py-0.5 rounded {{ $unit->installment->status === 'lunas' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800' }}">
+                                {{ ucfirst($unit->installment->status) }}
+                            </span>
+                        </h3>
+
+                        @if(auth()->user()->isFinance() || auth()->user()->isFounder())
+                            @if($unit->installment->status !== 'lunas')
+                                <button wire:click="openInstallmentPaymentModal" class="btn-primary text-xs px-3 py-1.5 flex items-center gap-1.5 bg-blue-600 hover:bg-blue-700 shadow-sm transition">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                                    <span>+ Input Setoran Cicilan</span>
+                                </button>
+                            @endif
+                        @endif
+                    </div>
 
                     <div class="grid grid-cols-3 gap-3 text-xs bg-slate-50 p-3 rounded-xl border border-slate-100">
                         <div>
@@ -369,6 +380,17 @@
                             <p class="text-slate-400 text-xs italic">Belum ada setoran cicilan pembeli.</p>
                         @endforelse
                     </div>
+                </div>
+            @elseif(!auth()->user()->isPengawasProject() && (auth()->user()->isFinance() || auth()->user()->isFounder()) && in_array($unit->status, ['booked', 'disetujui', 'terjual', 'converted']))
+                <div class="card-clean p-5 flex items-center justify-between bg-blue-50/50 border border-blue-100">
+                    <div>
+                        <h4 class="font-bold text-slate-900 text-xs">Skema Cicilan Pembeli Belum Dikonfigurasi</h4>
+                        <p class="text-[11px] text-slate-500">Unit ini sudah terpesan/terjual. Klik tombol untuk mengonfigurasi skema harga & tenor cicilan.</p>
+                    </div>
+                    <button wire:click="openSetupInstallmentModal" class="btn-primary text-xs px-3 py-2 bg-blue-600 hover:bg-blue-700 shadow-xs flex items-center gap-1">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                        <span>+ Buat Skema Cicilan Pembeli</span>
+                    </button>
                 </div>
             @endif
 
@@ -740,6 +762,117 @@
                     <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
                         <button type="button" wire:click="$set('showMaterialModal', false)" class="btn-secondary px-5 py-2.5 rounded-xl">Batal</button>
                         <button type="submit" class="btn-primary bg-amber-600 hover:bg-amber-700 px-6 py-2.5 rounded-xl shadow-md">Simpan Pembelian Material</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    @endif
+
+    <!-- Modal Input Setoran Cicilan Pembeli (Khusus Finance & Founder) -->
+    @if($showInstallmentPaymentModal && $unit->installment)
+        <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+            <div class="bg-white rounded-2xl max-w-lg w-full p-6 space-y-4 shadow-2xl border border-slate-100">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                    <h3 class="font-extrabold text-slate-900 text-base flex items-center gap-2">
+                        <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                        Input Setoran Cicilan Unit {{ $unit->code }}
+                    </h3>
+                    <button wire:click="$set('showInstallmentPaymentModal', false)" class="text-slate-400 hover:text-slate-600 text-sm">✕</button>
+                </div>
+
+                <form wire:submit.prevent="saveInstallmentPayment" class="space-y-4 text-xs">
+                    <div class="bg-blue-50 border border-blue-100 p-3 rounded-xl space-y-1">
+                        <div class="flex justify-between">
+                            <span class="text-slate-500">Target Cicilan per Bulan:</span>
+                            <span class="font-bold font-mono text-blue-800">Rp {{ number_format($unit->installment->installment_amount, 0, ',', '.') }}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-500">Sisa Tagihan Cicilan:</span>
+                            <span class="font-bold font-mono text-amber-700">Rp {{ number_format($unit->installment->remaining_balance, 0, ',', '.') }}</span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-slate-700 font-bold mb-1">Tanggal Setoran</label>
+                        <input type="date" wire:model="installment_payment_date" class="w-full input-clean text-xs">
+                        @error('installment_payment_date') <span class="text-rose-600 text-[10px]">{{ $message }}</span> @enderror
+                    </div>
+
+                    <div>
+                        <label class="block text-slate-700 font-bold mb-1">Nominal Setoran (Rp)</label>
+                        <input type="number" step="1000" wire:model="installment_payment_amount" class="w-full input-clean font-mono text-xs" placeholder="Contoh: 5000000">
+                        @error('installment_payment_amount') <span class="text-rose-600 text-[10px]">{{ $message }}</span> @enderror
+                    </div>
+
+                    <div>
+                        <label class="block text-slate-700 font-bold mb-1">Metode Pembayaran</label>
+                        <select wire:model="installment_payment_method" class="w-full input-clean text-xs">
+                            <option value="Transfer Bank">Transfer Bank (BRK Syariah / Mandiri / BRI / BCA)</option>
+                            <option value="Tunai">Tunai / Cash</option>
+                            <option value="Cek / Giro">Cek / Giro</option>
+                        </select>
+                        @error('installment_payment_method') <span class="text-rose-600 text-[10px]">{{ $message }}</span> @enderror
+                    </div>
+
+                    <div>
+                        <label class="block text-slate-700 font-bold mb-1">Catatan / Keterangan (Opsional)</label>
+                        <textarea wire:model="installment_payment_notes" rows="2" class="w-full input-clean text-xs" placeholder="Setoran cicilan bulan ke-X..."></textarea>
+                    </div>
+
+                    <div class="flex justify-end gap-2 pt-2 border-t border-slate-100">
+                        <button type="button" wire:click="$set('showInstallmentPaymentModal', false)" class="btn-secondary text-xs px-4 py-2">Batal</button>
+                        <button type="submit" class="btn-primary text-xs px-4 py-2 bg-blue-600 hover:bg-blue-700">Simpan Setoran</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    @endif
+
+    <!-- Modal Setup Skema Cicilan Baru (Khusus Finance & Founder) -->
+    @if($showSetupInstallmentModal)
+        <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+            <div class="bg-white rounded-2xl max-w-lg w-full p-6 space-y-4 shadow-2xl border border-slate-100">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                    <h3 class="font-extrabold text-slate-900 text-base flex items-center gap-2">
+                        <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        Konfigurasi Skema Cicilan Unit {{ $unit->code }}
+                    </h3>
+                    <button wire:click="$set('showSetupInstallmentModal', false)" class="text-slate-400 hover:text-slate-600 text-sm">✕</button>
+                </div>
+
+                <form wire:submit.prevent="saveSetupInstallment" class="space-y-4 text-xs">
+                    <div>
+                        <label class="block text-slate-700 font-bold mb-1">Total Harga Deal Unit (Rp)</label>
+                        <input type="number" step="1000" wire:model.live="setup_total_price" wire:change="calculateMonthlyInstallment" class="w-full input-clean font-mono text-xs" placeholder="Contoh: 150000000">
+                        @error('setup_total_price') <span class="text-rose-600 text-[10px]">{{ $message }}</span> @enderror
+                    </div>
+
+                    <div>
+                        <label class="block text-slate-700 font-bold mb-1">Uang Muka / DP (Rp)</label>
+                        <input type="number" step="1000" wire:model.live="setup_down_payment" wire:change="calculateMonthlyInstallment" class="w-full input-clean font-mono text-xs" placeholder="Contoh: 30000000">
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-slate-700 font-bold mb-1">Tenor (Berapa Kali Cicilan)</label>
+                            <input type="number" min="1" max="120" wire:model.live="setup_installment_count" wire:change="calculateMonthlyInstallment" class="w-full input-clean text-xs">
+                        </div>
+                        <div>
+                            <label class="block text-slate-700 font-bold mb-1">Tanggal Mulai Skema</label>
+                            <input type="date" wire:model="setup_start_date" class="w-full input-clean text-xs">
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-50 border border-slate-200 p-3 rounded-xl space-y-1">
+                        <div class="flex justify-between font-bold text-slate-800">
+                            <span>Estimasi Cicilan per Bulan:</span>
+                            <span class="font-mono text-blue-700">Rp {{ number_format($setup_installment_amount, 0, ',', '.') }}</span>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end gap-2 pt-2 border-t border-slate-100">
+                        <button type="button" wire:click="$set('showSetupInstallmentModal', false)" class="btn-secondary text-xs px-4 py-2">Batal</button>
+                        <button type="submit" class="btn-primary text-xs px-4 py-2 bg-blue-600 hover:bg-blue-700">Simpan Skema Cicilan</button>
                     </div>
                 </form>
             </div>
