@@ -21,8 +21,6 @@ class WeeklyMaterialPurchase extends Model
         'unit_measure',
         'unit_price',
         'total_price',
-        'is_deducted_from_loan',
-        'worker_loan_id',
         'notes',
         'receipt_photo_path',
     ];
@@ -32,7 +30,6 @@ class WeeklyMaterialPurchase extends Model
         'quantity' => 'decimal:2',
         'unit_price' => 'decimal:2',
         'total_price' => 'decimal:2',
-        'is_deducted_from_loan' => 'boolean',
     ];
 
     public function project(): BelongsTo
@@ -53,10 +50,5 @@ class WeeklyMaterialPurchase extends Model
     public function pengawas(): BelongsTo
     {
         return $this->belongsTo(User::class, 'pengawas_id');
-    }
-
-    public function workerLoan(): BelongsTo
-    {
-        return $this->belongsTo(WorkerLoan::class);
     }
 }

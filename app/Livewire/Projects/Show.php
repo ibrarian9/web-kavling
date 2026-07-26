@@ -7,7 +7,6 @@ use App\Models\CashflowTransaction;
 use App\Models\OfficialDocument;
 use App\Models\Project;
 use App\Models\Unit;
-use App\Models\UnitCost;
 use Livewire\Component;
 
 class Show extends Component
@@ -28,10 +27,8 @@ class Show extends Component
         $project = Project::with([
             'creator',
             'assignments.worker',
-            'units.costs',
             'units.proposals',
             'units.officialDocument',
-            'costs',
         ])->findOrFail($this->projectId);
 
         // Fetch units for this project
@@ -41,7 +38,6 @@ class Show extends Component
             },
             'officialDocument',
             'installment',
-            'costs',
         ])->where('project_id', $project->id);
 
         if ($this->unitSearch) {
@@ -70,7 +66,6 @@ class Show extends Component
             'proposals',
             'officialDocument',
             'installment',
-            'costs',
         ])->where('project_id', $project->id)->get();
 
         // Calculate Project Financial Metrics
@@ -90,7 +85,6 @@ class Show extends Component
         $unitPerformances = [];
 
         foreach ($allUnits as $unit) {
-            $unitCostsSum = $unit->costs->sum('amount');
             $hpp = (float)$unit->hpp;
 
             // Determine selling price (Harga Deal) & paid amount
@@ -134,7 +128,7 @@ class Show extends Component
             $profit = 0;
 
             if ($isSold && $sellingPrice > 0) {
-                $profit = $sellingPrice - ($hpp + $unitCostsSum);
+                $profit = $sellingPrice - $hpp;
                 $totalSalesRevenue += $sellingPrice;
                 $totalPaidRevenue += $paidAmount;
                 $totalOutstandingReceivable += $remainingAmount;
@@ -147,19 +141,19 @@ class Show extends Component
                 'paid_amount' => $paidAmount,
                 'remaining_amount' => $remainingAmount,
                 'hpp' => $hpp,
-                'unit_costs' => $unitCostsSum,
+                'unit_costs' => 0,
                 'profit' => $profit,
                 'buyer_name' => $buyerName,
                 'is_sold' => $isSold,
             ];
         }
 
-        // Project-wide costs (direct project costs + unit costs)
-        $projectLevelCosts = UnitCost::where('project_id', $project->id)->sum('amount');
-        $cashflowOutflow = CashflowTransaction::where('project_id', $project->id)->where('type', 'keluar')->sum('amount');
-
-        // Total Expenses = Project Direct Costs + Cashflow Outflows
-        $totalProjectExpenses = max($projectLevelCosts, $cashflowOutflow);
+        // Project-wide material & salary expenses
+        $materialExpenses = \App\Models\WeeklyMaterialPurchase::where('project_id', $project->id)->sum('total_price');
+        $salaryExpenses = \App\Models\WorkerSalaryPayment::whereHas('payroll', function ($q) use ($project) {
+            $q->where('project_id', $project->id);
+        })->sum('amount_paid');
+        $totalProjectExpenses = $materialExpenses + $salaryExpenses;
 
         // Overall Project Net Profit = Total Revenue - (Total HPP Sold + Project Expenses)
         $totalProjectProfit = $totalSalesRevenue - ($totalHppSold + $totalProjectExpenses);

@@ -95,12 +95,15 @@
         </div>
 
         <!-- Total Biaya Unit -->
+        @php
+            $unitTotalExpenses = $combinedExpenses->sum('amount');
+        @endphp
         <div class="card-clean p-4">
-            <p class="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Total Pengeluaran / Biaya</p>
+            <p class="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Total Pengeluaran / Belanja</p>
             <p class="text-xl font-black text-rose-700 font-mono mt-1">
-                Rp {{ number_format($totalCosts, 0, ',', '.') }}
+                Rp {{ number_format($unitTotalExpenses, 0, ',', '.') }}
             </p>
-            <p class="text-[10px] text-slate-400 mt-1">Terbayar: Rp {{ number_format($paidCosts, 0, ',', '.') }} | Belum: Rp {{ number_format($unpaidCosts, 0, ',', '.') }}</p>
+            <p class="text-[10px] text-slate-400 mt-1">Akumulasi Gaji Worker & Belanja Material</p>
         </div>
     </div>
 

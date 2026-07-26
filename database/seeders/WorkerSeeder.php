@@ -8,8 +8,6 @@ use App\Models\User;
 use App\Models\WeeklyMaterialPurchase;
 use App\Models\Worker;
 use App\Models\WorkerAssignment;
-use App\Models\WorkerLoan;
-use App\Models\WorkerLoanPayment;
 use Illuminate\Database\Seeder;
 
 class WorkerSeeder extends Seeder
@@ -163,51 +161,8 @@ class WorkerSeeder extends Seeder
             ]
         );
 
-        // 3. Create Worker Loans & Payments
-        $loan1 = WorkerLoan::updateOrCreate(
-            ['id' => 1],
-            [
-                'worker_id' => $mandorSugeng->id,
-                'project_id' => $project1->id,
-                'unit_id' => null,
-                'loan_date' => now()->subWeeks(4)->toDateString(),
-                'amount' => 1500000,
-                'paid_amount' => 500000,
-                'purpose' => 'Kas bon alat bor & perlengkapan kerja tim Panam',
-                'status' => 'partially_paid',
-                'approved_by' => $pengawas?->id,
-            ]
-        );
-
-        WorkerLoanPayment::updateOrCreate(
-            ['id' => 1],
-            [
-                'worker_loan_id' => $loan1->id,
-                'payment_date' => now()->subWeeks(2)->toDateString(),
-                'amount_paid' => 500000,
-                'payment_method' => 'potong_opname',
-                'notes' => 'Potongan opname minggu ke-2',
-                'created_by' => $pengawas?->id,
-            ]
-        );
-
-        $loan2 = WorkerLoan::updateOrCreate(
-            ['id' => 2],
-            [
-                'worker_id' => $tukangJoko->id,
-                'project_id' => $project1->id,
-                'unit_id' => $unitA1?->id,
-                'loan_date' => now()->subDays(10)->toDateString(),
-                'amount' => 350000,
-                'paid_amount' => 0,
-                'purpose' => 'Kas bon pribadi keperluan keluarga Pekanbaru',
-                'status' => 'approved',
-                'approved_by' => $pengawas?->id,
-            ]
-        );
-
-        // 4. Create Weekly Material Purchases (Pengawas Log)
-        $purchase1 = WeeklyMaterialPurchase::updateOrCreate(
+        // 3. Create Weekly Material Purchases (Pengawas Log)
+        WeeklyMaterialPurchase::updateOrCreate(
             ['id' => 1],
             [
                 'project_id' => $project1->id,
@@ -220,28 +175,11 @@ class WorkerSeeder extends Seeder
                 'unit_measure' => 'sak',
                 'unit_price' => 68000,
                 'total_price' => 680000,
-                'is_deducted_from_loan' => true,
                 'notes' => 'Pembelian semen Padang di Toko Bangunan Riau Jaya Panam',
             ]
         );
 
-        $loan3 = WorkerLoan::updateOrCreate(
-            ['id' => 3],
-            [
-                'worker_id' => $mandorSugeng->id,
-                'project_id' => $project1->id,
-                'unit_id' => $unitA1?->id,
-                'loan_date' => $purchase1->purchase_date,
-                'amount' => $purchase1->total_price,
-                'paid_amount' => 0,
-                'purpose' => 'Pengambilan barang mingguan: Semen Padang 50kg (10 sak)',
-                'status' => 'approved',
-                'approved_by' => $pengawas?->id,
-            ]
-        );
-        $purchase1->update(['worker_loan_id' => $loan3->id]);
-
-        $purchase2 = WeeklyMaterialPurchase::updateOrCreate(
+        WeeklyMaterialPurchase::updateOrCreate(
             ['id' => 2],
             [
                 'project_id' => $project5->id,
@@ -254,7 +192,6 @@ class WorkerSeeder extends Seeder
                 'unit_measure' => 'batang',
                 'unit_price' => 105000,
                 'total_price' => 2625000,
-                'is_deducted_from_loan' => false,
                 'notes' => 'Besi beton struktur lantai 2 Mutiara Tenayan City',
             ]
         );

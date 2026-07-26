@@ -73,11 +73,6 @@ class Unit extends Model
         return $this->hasOne(UnitInstallment::class);
     }
 
-    public function costs(): HasMany
-    {
-        return $this->hasMany(UnitCost::class);
-    }
-
     public function assignments(): HasMany
     {
         return $this->hasMany(WorkerAssignment::class);

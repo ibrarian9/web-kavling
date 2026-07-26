@@ -42,11 +42,6 @@ class Project extends Model
         return $this->hasMany(Unit::class);
     }
 
-    public function costs(): HasMany
-    {
-        return $this->hasMany(UnitCost::class);
-    }
-
     public function cashflows(): HasMany
     {
         return $this->hasMany(CashflowTransaction::class);

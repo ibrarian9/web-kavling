@@ -114,22 +114,17 @@
         <strong>Terbilang:</strong> {{ $terbilang }}
     </div>
 
-    <!-- Signatures & QR Code -->
-    <table class="footer-table">
+    <!-- QR Code Verification Section (No Signatures) -->
+    <table class="footer-table" style="margin-top: 25px;">
         <tr>
-            <td style="width: 33%;">
-                <div style="margin-bottom: 50px;">Disetujui / Dibayarkan Oleh,</div>
-                <div style="font-weight: bold; text-decoration: underline;">{{ $payment->creator ? $payment->creator->name : 'Pengawas/Mandor' }}</div>
-                <div style="font-size: 9px; color: #64748b;">Mandor / Pengawas Lapangan</div>
-            </td>
-            <td style="width: 34%;" class="qr-code">
+            <td class="text-center qr-code">
                 <img src="{{ $qrCodeUrl }}" alt="QR Code Verifikasi">
-                <div style="font-size: 8px; color: #0284c7; margin-top: 4px; font-weight: bold;">SCAN UNTUK VERIFIKASI RESMI</div>
-            </td>
-            <td style="width: 33%;">
-                <div style="margin-bottom: 50px;">Diterima Oleh Pekerja,</div>
-                <div style="font-weight: bold; text-decoration: underline;">{{ $worker->name }}</div>
-                <div style="font-size: 9px; color: #64748b;">Pekerja / Tukang</div>
+                <div style="font-size: 9px; color: #0284c7; margin-top: 6px; font-weight: bold; text-transform: uppercase;">
+                    Dokumen Resi Penggajian Sah Terverifikasi Sistem
+                </div>
+                <div style="font-size: 8px; color: #64748b; margin-top: 2px;">
+                    Scan QR Code untuk memverifikasi keabsahan dokumen pembayaran gaji worker secara resmi.
+                </div>
             </td>
         </tr>
     </table>

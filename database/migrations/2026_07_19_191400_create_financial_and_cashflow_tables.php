@@ -8,20 +8,6 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('unit_costs', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('unit_id')->nullable()->constrained('units')->onDelete('cascade');
-            $table->foreignId('project_id')->constrained('projects')->onDelete('cascade');
-            $table->enum('category', ['tukang', 'material', 'perizinan', 'lainnya']);
-            $table->string('description');
-            $table->decimal('amount', 15, 2);
-            $table->date('cost_date');
-            $table->string('vendor_name')->nullable();
-            $table->enum('status', ['belum_dibayar', 'dibayar'])->default('belum_dibayar');
-            $table->foreignId('created_by')->constrained('users')->onDelete('cascade');
-            $table->timestamps();
-        });
-
         Schema::create('unit_installments', function (Blueprint $table) {
             $table->id();
             $table->foreignId('unit_id')->constrained('units')->onDelete('cascade');
@@ -72,6 +58,5 @@ return new class extends Migration
         Schema::dropIfExists('cashflow_transactions');
         Schema::dropIfExists('installment_payments');
         Schema::dropIfExists('unit_installments');
-        Schema::dropIfExists('unit_costs');
     }
 };

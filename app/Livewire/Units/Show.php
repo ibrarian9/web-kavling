@@ -5,14 +5,11 @@ namespace App\Livewire\Units;
 use App\Models\Booking;
 use App\Models\CashflowTransaction;
 use App\Models\Unit;
-use App\Models\UnitCost;
 use App\Models\UnitInstallment;
 use App\Models\WeeklyMaterialPurchase;
 use App\Models\Worker;
 use App\Models\WorkerAssignment;
-use App\Models\WorkerLoan;
 use Illuminate\Support\Facades\Auth;
-use App\Models\WorkerLoanPayment;
 use App\Models\WorkerSalaryPayment;
 use App\Models\WorkerUnitPayroll;
 use Illuminate\Support\Facades\DB;
@@ -167,20 +164,8 @@ class Show extends Component
                 'unit_measure' => $this->material_unit_measure,
                 'unit_price' => $this->material_unit_price,
                 'total_price' => $totalPrice,
-                'is_deducted_from_loan' => $this->material_is_deducted_from_loan,
                 'receipt_photo_path' => $photoPath,
                 'notes' => $this->material_notes,
-            ]);
-
-            UnitCost::create([
-                'unit_id' => $unit->id,
-                'project_id' => $unit->project_id,
-                'category' => 'material',
-                'description' => "Belanja Barang: {$this->material_item_name} ({$this->material_quantity} {$this->material_unit_measure})",
-                'amount' => $totalPrice,
-                'cost_date' => $this->material_purchase_date,
-                'status' => 'dibayar',
-                'created_by' => Auth::id(),
             ]);
 
             CashflowTransaction::create([
@@ -304,17 +289,6 @@ class Show extends Component
                 'reference_id' => $payment->id,
                 'created_by' => Auth::id(),
             ]);
-
-            UnitCost::create([
-                'unit_id' => $this->selectedPayroll->unit_id,
-                'project_id' => $this->selectedPayroll->project_id,
-                'category' => 'tukang',
-                'description' => "Upah Borongan Gaji: {$this->selectedPayroll->worker->name}",
-                'amount' => $amountGross,
-                'cost_date' => $this->payroll_payment_date,
-                'status' => 'dibayar',
-                'created_by' => Auth::id(),
-            ]);
         });
 
         session()->flash('success', 'Pembayaran gaji unit ' . $this->selectedPayroll->unit->code . ' berhasil disimpan!');
@@ -357,73 +331,6 @@ class Show extends Component
 
         session()->flash('success', 'Pekerja berhasil ditugaskan langsung pada unit ' . $unit->code . '!');
         $this->showWorkerModal = false;
-    }
-
-    // 2. Unit Cost Handler (Req #4)
-    public function openCostModal(): void
-    {
-        $this->resetValidation();
-        $this->cost_category = 'tukang';
-        $this->cost_description = '';
-        $this->cost_amount = 0;
-        $this->cost_date = now()->toDateString();
-        $this->vendor_name = '';
-        $this->cost_status = 'dibayar';
-        $this->showCostModal = true;
-    }
-
-    public function saveUnitCost(): void
-    {
-        $user = auth()->user();
-        if (!$user->isFounder() && !$user->isFinance() && !$user->isPengawasProject()) {
-            session()->flash('error', 'Hanya Pengawas Project, Finance, dan Founder yang berhak mencatat biaya unit.');
-            return;
-        }
-
-        $this->validate([
-            'cost_category' => 'required|in:tukang,material,perizinan,lainnya',
-            'cost_description' => 'required|string|max:255',
-            'cost_amount' => 'required|numeric|min:1000',
-            'cost_date' => 'required|date',
-        ]);
-
-        $unit = Unit::findOrFail($this->unitId);
-
-        $cost = UnitCost::create([
-            'unit_id' => $unit->id,
-            'project_id' => $unit->project_id,
-            'category' => $this->cost_category,
-            'description' => $this->cost_description,
-            'amount' => $this->cost_amount,
-            'cost_date' => $this->cost_date,
-            'vendor_name' => $this->vendor_name,
-            'status' => $this->cost_status,
-            'created_by' => Auth::id(),
-        ]);
-
-        if ($this->cost_status === 'dibayar') {
-            $categoryMapping = [
-                'tukang' => 'pembayaran_tukang',
-                'material' => 'operasional',
-                'perizinan' => 'operasional',
-                'lainnya' => 'lainnya',
-            ];
-
-            CashflowTransaction::create([
-                'project_id' => $unit->project_id,
-                'type' => 'keluar',
-                'category' => $categoryMapping[$this->cost_category] ?? 'operasional',
-                'amount' => $this->cost_amount,
-                'transaction_date' => $this->cost_date,
-                'description' => 'Biaya Unit ' . $unit->code . ' (' . ucfirst($this->cost_category) . '): ' . $this->cost_description,
-                'reference_type' => UnitCost::class,
-                'reference_id' => $cost->id,
-                'created_by' => Auth::id(),
-            ]);
-        }
-
-        session()->flash('success', 'Biaya pengeluaran unit ' . $unit->code . ' berhasil dicatat!');
-        $this->showCostModal = false;
     }
 
     // 3. Direct Booking Handler (Req #2)
@@ -485,7 +392,6 @@ class Show extends Component
             'proposals.approvals.approver',
             'officialDocument.issuer',
             'installment.payments.creator',
-            'costs',
         ])->findOrFail($this->unitId);
 
         $unitAssignments = WorkerAssignment::with('worker')
@@ -497,21 +403,6 @@ class Show extends Component
                   });
             })
             ->get();
-
-        $materialPurchases = WeeklyMaterialPurchase::with(['worker', 'pengawas', 'workerLoan'])
-            ->where('unit_id', $unit->id)
-            ->latest('purchase_date')
-            ->get();
-
-        $workerLoans = WorkerLoan::with(['worker', 'approver', 'payments'])
-            ->where('unit_id', $unit->id)
-            ->latest('loan_date')
-            ->get();
-
-        $unitCosts = UnitCost::where('unit_id', $unit->id)->get();
-        $totalCosts = $unitCosts->sum('amount');
-        $paidCosts = $unitCosts->where('status', 'dibayar')->sum('amount');
-        $unpaidCosts = $unitCosts->where('status', 'belum_dibayar')->sum('amount');
 
         $totalCashIn = 0;
         if ($unit->installment) {
@@ -530,10 +421,6 @@ class Show extends Component
 
         $materialPurchases = WeeklyMaterialPurchase::with(['worker', 'pengawas'])
             ->where('unit_id', $unit->id)
-            ->get();
-
-        $otherCosts = UnitCost::where('unit_id', $unit->id)
-            ->whereNotIn('category', ['tukang', 'material'])
             ->get();
 
         $combinedExpenses = collect();
@@ -572,23 +459,6 @@ class Show extends Component
             ]);
         }
 
-        foreach ($otherCosts as $uc) {
-            $combinedExpenses->push((object)[
-                'id' => 'uc_' . $uc->id,
-                'date' => $uc->cost_date,
-                'category_badge' => ucfirst($uc->category),
-                'badge_class' => 'bg-slate-100 text-slate-800 border-slate-200',
-                'description' => $uc->description . ($uc->vendor_name ? ' (' . $uc->vendor_name . ')' : ''),
-                'amount' => $uc->amount,
-                'gross_amount' => $uc->amount,
-                'loan_deduction' => 0,
-                'receipt_photo_path' => null,
-                'pdf_url' => null,
-                'qr_url' => null,
-                'created_at' => $uc->created_at,
-            ]);
-        }
-
         $combinedExpenses = $combinedExpenses->sortByDesc(function ($item) {
             return ($item->date ? $item->date->format('Y-m-d') : '0000-00-00') . '_' . $item->id;
         })->values();
@@ -599,17 +469,11 @@ class Show extends Component
             'unit' => $unit,
             'unitAssignments' => $unitAssignments,
             'materialPurchases' => $materialPurchases,
-            'workerLoans' => $workerLoans,
-            'unitCosts' => $unitCosts,
-            'totalCosts' => $totalCosts,
-            'paidCosts' => $paidCosts,
-            'unpaidCosts' => $unpaidCosts,
             'totalCashIn' => $totalCashIn,
             'allWorkers' => $allWorkers,
             'unitPayrolls' => $unitPayrolls,
             'combinedExpenses' => $combinedExpenses,
             'showWorkerModal' => $this->showWorkerModal,
-            'showCostModal' => $this->showCostModal,
             'showBookingModal' => $this->showBookingModal,
             'showPayrollSetupModal' => $this->showPayrollSetupModal,
             'showPayrollPaymentModal' => $this->showPayrollPaymentModal,

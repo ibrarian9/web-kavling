@@ -132,9 +132,7 @@ class Index extends Component
     {
         $query = Worker::query()
             ->with(['activeAssignments.project', 'activeAssignments.unit'])
-            ->withCount(['assignments', 'loans'])
-            ->withSum('loans', 'amount')
-            ->withSum('loans', 'paid_amount');
+            ->withCount(['assignments']);
 
         if (!empty($this->search)) {
             $query->where(function ($q) {
