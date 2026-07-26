@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Sistem Manajemen Proyek Properti</title>
+    <title>Login - Sistem Informasi Manajemen Proyek Properti</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bg-slate-900 font-sans text-slate-100 min-h-screen flex items-center justify-center p-4">
@@ -16,8 +16,8 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5m0 0h5m-5 0v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                 </svg>
             </div>
-            <h1 class="text-2xl font-bold tracking-tight text-white">Sistem Manajemen PT. Atlantik Perkasa Abadi</h1>
-            <p class="text-slate-400 text-sm">Masuk ke sistem manajemen proyek kavling & rumah</p>
+            <h1 class="text-xl font-bold tracking-tight text-white">Sistem Informasi Manajemen Proyek Properti</h1>
+            <h1 class="text-xl font-bold tracking-tight text-white">PT. Atlantik Perkasa Abadi</h1>
         </div>
 
         <!-- Form Card -->
@@ -46,23 +46,6 @@
                 </button>
             </form>
 
-            <div class="border-t border-slate-700/80 pt-4">
-                <p class="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-3 text-center">Demo Fast Login (Akses Per Role)</p>
-                <div class="grid grid-cols-2 gap-2">
-                    <a href="{{ route('switch-role', 'founder') }}" class="flex items-center justify-center p-2 bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/30 text-purple-300 rounded-xl text-xs font-medium transition">
-                        Founder
-                    </a>
-                    <a href="{{ route('switch-role', 'supervisor') }}" class="flex items-center justify-center p-2 bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/30 text-cyan-300 rounded-xl text-xs font-medium transition">
-                        Supervisor
-                    </a>
-                    <a href="{{ route('switch-role', 'finance') }}" class="flex items-center justify-center p-2 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 rounded-xl text-xs font-medium transition">
-                        Finance
-                    </a>
-                    <a href="{{ route('switch-role', 'marketing') }}" class="flex items-center justify-center p-2 bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/30 text-blue-300 rounded-xl text-xs font-medium transition">
-                        Marketing
-                    </a>
-                </div>
-            </div>
         </div>
 
         <p class="text-center text-xs text-slate-500">

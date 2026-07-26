@@ -83,6 +83,13 @@ class Index extends Component
         $this->reset(['editingId', 'name', 'phone', 'address', 'type', 'specialty', 'status', 'notes']);
     }
 
+    // Quick Assignment Modal State
+    public bool $showAssignModal = false;
+    public ?int $assignWorkerId = null;
+    public ?int $assignProjectId = null;
+    public ?int $assignUnitId = null;
+    public string $assignedRole = 'Mandor Utama Proyek';
+
     public function toggleStatus(Worker $worker): void
     {
         $newStatus = $worker->status === 'active' ? 'inactive' : 'active';
@@ -90,9 +97,41 @@ class Index extends Component
         session()->flash('success', "Status {$worker->name} diubah menjadi {$newStatus}.");
     }
 
+    public function openAssignModal(Worker $worker): void
+    {
+        $this->assignWorkerId = $worker->id;
+        $this->assignProjectId = \App\Models\Project::first()?->id;
+        $this->assignUnitId = null;
+        $this->assignedRole = $worker->type === 'mandor' ? 'Mandor Utama Proyek' : 'Tukang Konstruksi Unit';
+        $this->showAssignModal = true;
+    }
+
+    public function saveAssignment(): void
+    {
+        $this->validate([
+            'assignWorkerId' => 'required|exists:workers,id',
+            'assignProjectId' => 'required|exists:projects,id',
+            'assignUnitId' => 'nullable|exists:units,id',
+            'assignedRole' => 'nullable|string|max:255',
+        ]);
+
+        \App\Models\WorkerAssignment::create([
+            'worker_id' => $this->assignWorkerId,
+            'project_id' => $this->assignProjectId,
+            'unit_id' => $this->assignUnitId,
+            'assigned_role' => $this->assignedRole,
+            'start_date' => now()->toDateString(),
+            'status' => 'active',
+        ]);
+
+        session()->flash('success', 'Penugasan pekerja berhasil disimpan.');
+        $this->showAssignModal = false;
+    }
+
     public function render()
     {
         $query = Worker::query()
+            ->with(['activeAssignments.project', 'activeAssignments.unit'])
             ->withCount(['assignments', 'loans'])
             ->withSum('loans', 'amount')
             ->withSum('loans', 'paid_amount');
@@ -114,9 +153,15 @@ class Index extends Component
         }
 
         $workers = $query->orderBy('name')->paginate(10);
+        $projects = \App\Models\Project::orderBy('name')->get();
+        $availableUnits = $this->assignProjectId ? \App\Models\Unit::where('project_id', $this->assignProjectId)->orderBy('code')->get() : collect();
 
         return view('livewire.workers.index', [
             'workers' => $workers,
+            'projects' => $projects,
+            'availableUnits' => $availableUnits,
+            'showModal' => $this->showModal,
+            'showAssignModal' => $this->showAssignModal,
         ])->layout('components.layouts.app', ['title' => 'Manajemen Pekerja Lapangan (Mandor & Tukang)']);
     }
 }

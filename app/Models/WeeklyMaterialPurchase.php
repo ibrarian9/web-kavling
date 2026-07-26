@@ -24,6 +24,7 @@ class WeeklyMaterialPurchase extends Model
         'is_deducted_from_loan',
         'worker_loan_id',
         'notes',
+        'receipt_photo_path',
     ];
 
     protected $casts = [

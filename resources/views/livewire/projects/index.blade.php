@@ -50,14 +50,22 @@
                                 </p>
                             </td>
                             <td class="p-3.5">
-                                <div class="flex flex-wrap items-center gap-1">
-                                    @forelse($p->assignments->where('status', 'active') as $assign)
-                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-semibold bg-blue-50 text-blue-800 border border-blue-200/80">
-                                            {{ $assign->worker->name }} ({{ ucfirst($assign->worker->type) }})
+                                @php
+                                    $allProjAssignments = $p->assignments->where('status', 'active');
+                                    $firstProjWorker = $allProjAssignments->first();
+                                    $projWorkerCount = $allProjAssignments->count();
+                                @endphp
+                                <div class="flex items-center gap-1">
+                                    @if($firstProjWorker && $firstProjWorker->worker)
+                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-semibold bg-blue-50 text-blue-800 border border-blue-200/80 max-w-[180px] truncate" title="{{ $firstProjWorker->worker->name }} ({{ ucfirst($firstProjWorker->worker->type) }})">
+                                            <span class="truncate">{{ $firstProjWorker->worker->name }} ({{ ucfirst($firstProjWorker->worker->type) }})</span>
+                                            @if($projWorkerCount > 1)
+                                                <span class="text-blue-600 font-bold shrink-0">...</span>
+                                            @endif
                                         </span>
-                                    @empty
+                                    @else
                                         <span class="text-[10px] text-slate-400 italic">Belum ada pekerja</span>
-                                    @endforelse
+                                    @endif
                                 </div>
                             </td>
                             <td class="p-3.5 font-mono font-medium text-slate-700">{{ number_format($p->standard_land_area, 0, ',', '.') }} m²</td>
@@ -70,8 +78,8 @@
                             </td>
                             <td class="p-3.5 text-right space-x-1 whitespace-nowrap">
                                 <a href="{{ route('projects.show', $p->id) }}" class="px-3 py-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-semibold inline-flex items-center gap-1 shadow-sm transition">
-                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
-                                    <span>Detail Dashboard & Arus Kas</span>
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5m0 0h5m-5 0v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                                    <span>{{ auth()->user()->isPengawasProject() ? 'Detail Proyek' : 'Detail Dashboard & Arus Kas' }}</span>
                                 </a>
 
                                 @if(auth()->user()->isSupervisor() || auth()->user()->isPengawasProject() || auth()->user()->isFounder())

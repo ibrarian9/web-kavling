@@ -144,6 +144,8 @@ class Index extends Component
         return view('livewire.projects.index', [
             'projects' => $projects,
             'allWorkers' => $allWorkers,
+            'showModal' => $this->showModal,
+            'showWorkerModal' => $this->showWorkerModal,
         ])->layout('components.layouts.app', ['title' => 'Manajemen Proyek Properti']);
     }
 }

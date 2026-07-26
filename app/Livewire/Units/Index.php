@@ -20,6 +20,7 @@ class Index extends Component
     public $code = '';
     public $type = 'kavling';
     public $category = 'kavling';
+    public $infra_type = 'parit';
     public $building_area = 0;
     public $floors_count = 1;
     public $specifications = '';
@@ -28,6 +29,9 @@ class Index extends Component
     public $land_area = 100.00;
     public $hpp = null;
     public $editingUnitId = null;
+
+    public $category_filter = '';
+    public string $search = '';
 
     // Booking Modal State
     public $showBookingModal = false;
@@ -44,7 +48,7 @@ class Index extends Component
     public $previewExcessCost = 0;
     public $previewRecommendedHpp = 0;
 
-    protected $queryString = ['project_id'];
+    protected $queryString = ['project_id', 'category_filter', 'search'];
 
     public function mount()
     {
@@ -58,7 +62,7 @@ class Index extends Component
         if (in_array($propertyName, ['selected_project_id', 'land_width', 'land_length', 'land_area'])) {
             $this->calculateLandPreview();
         }
-        if ($propertyName === 'category') {
+        if ($propertyName === 'category' && $this->category !== 'infrastruktur') {
             $this->type = $this->category;
         }
     }
@@ -69,7 +73,7 @@ class Index extends Component
             $this->land_area = $this->land_width * $this->land_length;
         }
 
-        if ($this->selected_project_id) {
+        if ($this->selected_project_id && $this->category !== 'infrastruktur') {
             $project = Project::find($this->selected_project_id);
             if ($project) {
                 $this->previewExcessArea = max(0, $this->land_area - $project->standard_land_area);
@@ -104,6 +108,7 @@ class Index extends Component
         $this->code = '';
         $this->type = 'kavling';
         $this->category = 'kavling';
+        $this->infra_type = 'parit';
         $this->building_area = 0;
         $this->floors_count = 1;
         $this->specifications = '';
@@ -121,48 +126,63 @@ class Index extends Component
     {
         $user = auth()->user();
         if (!$user->isFounder() && !$user->isSupervisor()) {
-            session()->flash('error', 'Hanya Founder dan Supervisor yang berhak mengedit stok dan HPP unit.');
+            session()->flash('error', 'Hanya Founder dan Supervisor yang berhak mengedit stok dan unit.');
             return;
         }
 
         $this->validate([
             'selected_project_id' => 'required|exists:projects,id',
             'code' => 'required|string|max:50',
-            'category' => 'required|in:kavling,rumah',
+            'category' => 'required|in:kavling,rumah,infrastruktur',
+            'infra_type' => 'nullable|string',
             'building_area' => 'nullable|numeric|min:0',
             'floors_count' => 'nullable|integer|min:1',
-            'land_area' => 'required|numeric|min:1',
+            'land_area' => 'required|numeric|min:0',
             'hpp' => 'nullable|numeric|min:0',
         ]);
 
         $project = Project::findOrFail($this->selected_project_id);
 
-        $excessLandArea = max(0, $this->land_area - $project->standard_land_area);
-        $excessCost = $excessLandArea * $project->excess_price_per_sqm;
-        $finalHpp = $this->hpp ?? ($project->base_price + $excessCost);
+        $excessLandArea = 0;
+        $excessCost = 0;
+        $finalHpp = 0;
+        $unitType = $this->category;
+        $unitStatus = 'tersedia';
+
+        if ($this->category === 'infrastruktur') {
+            $unitType = $this->infra_type ?: 'parit';
+            $finalHpp = $this->hpp ?? 0;
+            $unitStatus = $this->editingUnitId ? Unit::find($this->editingUnitId)->status : 'infrastruktur';
+        } else {
+            $excessLandArea = max(0, $this->land_area - $project->standard_land_area);
+            $excessCost = $excessLandArea * $project->excess_price_per_sqm;
+            $finalHpp = $this->hpp ?? ($project->base_price + $excessCost);
+            $unitStatus = $this->editingUnitId ? Unit::find($this->editingUnitId)->status : 'tersedia';
+        }
 
         $unit = Unit::updateOrCreate(
             ['id' => $this->editingUnitId],
             [
                 'project_id' => $project->id,
                 'code' => strtoupper($this->code),
-                'type' => $this->category,
+                'type' => $unitType,
                 'category' => $this->category,
                 'building_area' => $this->category === 'rumah' ? $this->building_area : null,
                 'floors_count' => $this->category === 'rumah' ? $this->floors_count : 1,
-                'specifications' => $this->category === 'rumah' ? $this->specifications : null,
+                'specifications' => $this->specifications,
                 'land_width' => $this->land_width,
                 'land_length' => $this->land_length,
                 'land_area' => $this->land_area,
                 'excess_land_area' => $excessLandArea,
                 'excess_cost' => $excessCost,
                 'hpp' => $finalHpp,
-                'status' => $this->editingUnitId ? Unit::find($this->editingUnitId)->status : 'tersedia',
+                'status' => $unitStatus,
                 'created_by' => auth()->id(),
             ]
         );
 
-        session()->flash('success', 'Data unit ' . $unit->code . ' (' . ucfirst($unit->category) . ') berhasil disimpan! HPP Rp ' . number_format($finalHpp, 0, ',', '.'));
+        $label = $this->category === 'infrastruktur' ? 'Infrastruktur Kawasan (' . strtoupper($unitType) . ')' : ucfirst($unit->category);
+        session()->flash('success', 'Data unit ' . $unit->code . ' (' . $label . ') berhasil disimpan!');
         $this->closeModal();
     }
 
@@ -172,8 +192,9 @@ class Index extends Component
         $this->editingUnitId = $unit->id;
         $this->selected_project_id = $unit->project_id;
         $this->code = $unit->code;
+        $this->category = $unit->category ?? ($unit->status === 'infrastruktur' ? 'infrastruktur' : 'kavling');
         $this->type = $unit->type;
-        $this->category = $unit->category ?? $unit->type;
+        $this->infra_type = $unit->category === 'infrastruktur' ? $unit->type : 'parit';
         $this->building_area = $unit->building_area ?? 0;
         $this->floors_count = $unit->floors_count ?? 1;
         $this->specifications = is_array($unit->specifications) ? json_encode($unit->specifications) : ($unit->specifications ?? '');
@@ -190,6 +211,11 @@ class Index extends Component
     public function openBookingModal($unitId)
     {
         $unit = Unit::findOrFail($unitId);
+        if ($unit->category === 'infrastruktur' || $unit->status === 'infrastruktur') {
+            session()->flash('error', 'Unit Fasilitas Umum / Infrastruktur tidak dapat dibooking untuk penjualan.');
+            return;
+        }
+
         $this->bookingUnitId = $unit->id;
         $this->bookingUnitCode = $unit->code;
         $this->buyer_name = '';
@@ -240,18 +266,85 @@ class Index extends Component
 
     public function render()
     {
-        $query = Unit::with(['project', 'creator', 'activeAssignments.worker']);
+        $query = Unit::with([
+            'project',
+            'creator',
+            'activeAssignments.worker',
+            'installment.payments',
+            'officialDocument.proposal',
+            'proposals',
+        ]);
+
+        if ($this->search) {
+            $search = '%' . trim($this->search) . '%';
+            $query->where(function ($q) use ($search) {
+                $q->where('code', 'like', $search)
+                  ->orWhere('type', 'like', $search)
+                  ->orWhere('category', 'like', $search)
+                  ->orWhere('specifications', 'like', $search)
+                  ->orWhereHas('project', function ($pQ) use ($search) {
+                      $pQ->where('name', 'like', $search);
+                  })
+                  ->orWhereHas('activeAssignments.worker', function ($wQ) use ($search) {
+                      $wQ->where('name', 'like', $search);
+                  });
+            });
+        }
 
         if ($this->project_id) {
             $query->where('project_id', $this->project_id);
         }
 
+        if ($this->category_filter) {
+            $query->where('category', $this->category_filter);
+        }
+
         $units = $query->latest()->paginate(12);
         $projects = Project::where('status', 'aktif')->get();
+
+        $unitPaymentsData = [];
+        foreach ($units as $unit) {
+            $dealPrice = 0;
+            $paidAmount = 0;
+            $isSold = in_array($unit->status, ['disetujui', 'booked', 'terjual', 'converted']);
+
+            if ($unit->installment) {
+                $dealPrice = (float)$unit->installment->total_price;
+                $paidAmount = (float)$unit->installment->down_payment + (float)$unit->installment->payments->sum('amount_paid');
+            } elseif ($unit->final_selling_price > 0) {
+                $dealPrice = (float)$unit->final_selling_price;
+            } elseif ($unit->officialDocument) {
+                $dealPrice = (float)($unit->officialDocument->proposal->proposed_price ?? 0);
+            } elseif ($prop = $unit->proposals->where('status', 'disetujui')->first()) {
+                $dealPrice = (float)$prop->proposed_price;
+            }
+
+            $booking = Booking::where('unit_id', $unit->id)->latest()->first();
+            if ($booking) {
+                if (!$unit->installment) {
+                    if ($dealPrice <= 0) {
+                        $dealPrice = (float)($booking->total_price ?? $booking->booking_amount);
+                    }
+                    $paidAmount = (float)$booking->booking_amount + (float)$booking->dp_amount;
+                }
+            }
+
+            $remainingAmount = max(0, $dealPrice - $paidAmount);
+
+            $unitPaymentsData[$unit->id] = [
+                'deal_price' => $dealPrice,
+                'paid_amount' => $paidAmount,
+                'remaining_amount' => $remainingAmount,
+                'is_sold' => $isSold,
+            ];
+        }
 
         return view('livewire.units.index', [
             'units' => $units,
             'projects' => $projects,
-        ])->layout('components.layouts.app', ['title' => 'Manajemen Unit Kavling & Rumah']);
+            'unitPaymentsData' => $unitPaymentsData,
+            'showModal' => $this->showModal,
+            'showBookingModal' => $this->showBookingModal,
+        ])->layout('components.layouts.app', ['title' => 'Manajemen Unit Kavling, Rumah & Infrastruktur']);
     }
 }

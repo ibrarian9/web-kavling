@@ -263,7 +263,7 @@ class Index extends Component
             ->latest()
             ->paginate(10);
 
-        $availableUnits = Unit::where('status', 'tersedia')->get();
+        $availableUnits = Unit::where('status', 'tersedia')->where('category', '!=', 'infrastruktur')->get();
 
         return view('livewire.proposals.index', [
             'proposals' => $proposals,

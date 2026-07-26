@@ -24,10 +24,12 @@
                 <span>Kelola Stok Unit</span>
             </a>
 
-            <a href="{{ route('cashflow.index') }}" class="btn-primary text-xs flex items-center gap-1.5">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
-                <span>Arus Kas Global</span>
-            </a>
+            @if(!auth()->user()->isPengawasProject())
+                <a href="{{ route('cashflow.index') }}" class="btn-primary text-xs flex items-center gap-1.5">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                    <span>Arus Kas Global</span>
+                </a>
+            @endif
         </div>
     </div>
 
@@ -54,84 +56,96 @@
 
         <div class="text-xs border-t md:border-t-0 md:border-l border-slate-800 pt-2 md:pt-0 md:pl-4">
             <span class="text-slate-400 block text-[10px] uppercase font-bold tracking-wider mb-1">Mandor / Pekerja Bertugas</span>
-            <div class="flex flex-wrap items-center gap-1">
-                @forelse($project->assignments->where('status', 'active') as $assign)
-                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500 text-white border border-emerald-500/30">
-                        {{ $assign->worker->name }} ({{ ucfirst($assign->worker->type) }})
+            @php
+                $projActiveAssignments = $project->assignments->where('status', 'active');
+                $firstProjWorker = $projActiveAssignments->first();
+                $projWorkerCount = $projActiveAssignments->count();
+            @endphp
+            <div class="flex items-center gap-1">
+                @if($firstProjWorker && $firstProjWorker->worker)
+                    <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded text-[10px] font-bold bg-emerald-500 text-white border border-emerald-500/30 max-w-[200px] truncate" title="{{ $firstProjWorker->worker->name }} ({{ ucfirst($firstProjWorker->worker->type) }})">
+                        <span class="truncate">{{ $firstProjWorker->worker->name }} ({{ ucfirst($firstProjWorker->worker->type) }})</span>
+                        @if($projWorkerCount > 1)
+                            <span class="font-bold shrink-0 text-emerald-200">...</span>
+                        @endif
                     </span>
-                @empty
+                @else
                     <span class="text-slate-500 text-[11px] italic">Belum ada pekerja ditugaskan</span>
-                @endforelse
+                @endif
             </div>
         </div>
     </div>
 
-    <!-- Financial KPI Dashboard Cards -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-        <!-- Total Penjualan -->
-        <div class="card-clean p-5 relative overflow-hidden bg-emerald-950/10 border-emerald-200/80">
-            <div class="flex items-center justify-between">
-                <span class="text-[11px] font-bold uppercase tracking-wider text-emerald-800">Total Penjualan Proyek</span>
-                <div class="p-2.5 rounded-xl bg-emerald-500/20 text-emerald-700">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+    <!-- Financial KPI Dashboard Cards (Hidden from Pengawas Project) -->
+    @if(!auth()->user()->isPengawasProject())
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            <!-- Total Nilai Deal Penjualan -->
+            <div class="card-clean p-5 relative overflow-hidden bg-emerald-950/10 border-emerald-200/80">
+                <div class="flex items-center justify-between">
+                    <span class="text-[11px] font-bold uppercase tracking-wider text-emerald-800">Total Nilai Deal Proyek</span>
+                    <div class="p-2.5 rounded-xl bg-emerald-500/20 text-emerald-700">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    </div>
                 </div>
+                <p class="text-2xl font-extrabold text-emerald-700 font-mono mt-2">Rp {{ number_format($totalSalesRevenue, 0, ',', '.') }}</p>
+                <p class="text-[11px] text-emerald-700 mt-1 font-medium">{{ $soldUnits }} Unit Deal / Terjual / Booked</p>
             </div>
-            <p class="text-2xl font-extrabold text-emerald-700 font-mono mt-2">Rp {{ number_format($totalSalesRevenue, 0, ',', '.') }}</p>
-            <p class="text-[11px] text-emerald-700 mt-1 font-medium">{{ $soldUnits }} Unit Terjual / Booked</p>
-        </div>
 
-        <!-- Total Pengeluaran -->
-        <div class="card-clean p-5 relative overflow-hidden bg-rose-950/10 border-rose-200/80">
-            <div class="flex items-center justify-between">
-                <span class="text-[11px] font-bold uppercase tracking-wider text-rose-800">Total Biaya Pengeluaran</span>
-                <div class="p-2.5 rounded-xl bg-rose-500/20 text-rose-700">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+            <!-- Total Terbayar Masuk -->
+            <div class="card-clean p-5 relative overflow-hidden bg-sky-950/10 border-sky-200/80">
+                <div class="flex items-center justify-between">
+                    <span class="text-[11px] font-bold uppercase tracking-wider text-sky-800">Total Kas Masuk Terbayar</span>
+                    <div class="p-2.5 rounded-xl bg-sky-500/20 text-sky-700">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    </div>
                 </div>
+                <p class="text-2xl font-extrabold text-sky-700 font-mono mt-2">Rp {{ number_format($totalPaidRevenue, 0, ',', '.') }}</p>
+                <p class="text-[11px] text-sky-700 mt-1 font-medium">Setoran Booking, DP, & Cicilan Masuk</p>
             </div>
-            <p class="text-2xl font-extrabold text-rose-700 font-mono mt-2">Rp {{ number_format($totalProjectExpenses, 0, ',', '.') }}</p>
-            <p class="text-[11px] text-rose-700 mt-1 font-medium">Tukang, Material, Perizinan & Kas Keluar</p>
-        </div>
 
-        <!-- Profit Bersih Proyek -->
-        <div class="card-clean p-5 relative overflow-hidden bg-blue-950/10 border-blue-200/80">
-            <div class="flex items-center justify-between">
-                <span class="text-[11px] font-bold uppercase tracking-wider text-blue-800">Estimasi Profit Proyek</span>
-                <div class="p-2.5 rounded-xl bg-blue-500/20 text-blue-700">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+            <!-- Sisa Piutang Penjualan -->
+            <div class="card-clean p-5 relative overflow-hidden bg-amber-950/10 border-amber-200/80">
+                <div class="flex items-center justify-between">
+                    <span class="text-[11px] font-bold uppercase tracking-wider text-amber-800">Sisa Tagihan / Piutang</span>
+                    <div class="p-2.5 rounded-xl bg-amber-500/20 text-amber-700">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    </div>
                 </div>
+                <p class="text-2xl font-extrabold text-amber-700 font-mono mt-2">Rp {{ number_format($totalOutstandingReceivable, 0, ',', '.') }}</p>
+                <p class="text-[11px] text-amber-700 mt-1 font-medium">Piutang Pembeli Belum Lunas</p>
             </div>
-            <p class="text-2xl font-extrabold font-mono mt-2 {{ $totalProjectProfit >= 0 ? 'text-blue-700' : 'text-rose-700' }}">
-                Rp {{ number_format($totalProjectProfit, 0, ',', '.') }}
-            </p>
-            <p class="text-[11px] text-blue-700 mt-1 font-medium">Selisih Penjualan - (HPP + Biaya)</p>
-        </div>
 
-        <!-- Progress Penjualan Unit -->
-        <div class="card-clean p-5 relative overflow-hidden bg-purple-950/10 border-purple-200/80">
-            <div class="flex items-center justify-between">
-                <span class="text-[11px] font-bold uppercase tracking-wider text-purple-800">Okupansi Penjualan</span>
-                <div class="p-2.5 rounded-xl bg-purple-500/20 text-purple-700">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+            <!-- Total Biaya & Profit -->
+            <div class="card-clean p-5 relative overflow-hidden bg-purple-950/10 border-purple-200/80">
+                <div class="flex items-center justify-between">
+                    <span class="text-[11px] font-bold uppercase tracking-wider text-purple-800">Profit Proyek Bersih</span>
+                    <div class="p-2.5 rounded-xl bg-purple-500/20 text-purple-700">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+                    </div>
                 </div>
+                <p class="text-2xl font-extrabold font-mono mt-2 {{ $totalProjectProfit >= 0 ? 'text-purple-700' : 'text-rose-700' }}">
+                    Rp {{ number_format($totalProjectProfit, 0, ',', '.') }}
+                </p>
+                <p class="text-[11px] text-purple-700 mt-1 font-medium">Pengeluaran: Rp {{ number_format($totalProjectExpenses, 0, ',', '.') }}</p>
             </div>
-            <p class="text-2xl font-extrabold text-purple-700 font-mono mt-2">{{ $occupancyRate }}%</p>
-            <p class="text-[11px] text-purple-700 mt-1 font-medium">{{ $soldUnits }} Terjual | {{ $availableUnits }} Tersedia | {{ $pendingUnits }} Pending</p>
         </div>
-    </div>
+    @endif
 
     <!-- Navigation Tabs for Integrated View -->
     <div class="border-b border-slate-200 flex items-center gap-6 text-sm font-bold">
         <button wire:click="$set('activeTab', 'units')" class="pb-3 border-b-2 transition flex items-center gap-2 {{ $activeTab === 'units' ? 'border-emerald-600 text-emerald-600' : 'border-transparent text-slate-400 hover:text-slate-600' }}">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6z"/></svg>
-            <span>Penjualan & Profit Per Unit</span>
+            <span>{{ auth()->user()->isPengawasProject() ? 'Daftar Unit Kavling & Pekerja' : 'Penjualan & Profit Per Unit' }}</span>
             <span class="bg-slate-100 text-slate-700 text-xs px-2 py-0.5 rounded-full font-mono">{{ count($unitsList) }}</span>
         </button>
 
-        <button wire:click="$set('activeTab', 'cashflow')" class="pb-3 border-b-2 transition flex items-center gap-2 {{ $activeTab === 'cashflow' ? 'border-emerald-600 text-emerald-600' : 'border-transparent text-slate-400 hover:text-slate-600' }}">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
-            <span>Laporan Arus Kas Proyek (Inflow & Outflow)</span>
-            <span class="bg-emerald-100 text-emerald-800 text-xs px-2 py-0.5 rounded-full font-mono">{{ count($cashflowTransactions) }}</span>
-        </button>
+        @if(!auth()->user()->isPengawasProject())
+            <button wire:click="$set('activeTab', 'cashflow')" class="pb-3 border-b-2 transition flex items-center gap-2 {{ $activeTab === 'cashflow' ? 'border-emerald-600 text-emerald-600' : 'border-transparent text-slate-400 hover:text-slate-600' }}">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                <span>Laporan Arus Kas Proyek (Inflow & Outflow)</span>
+                <span class="bg-emerald-100 text-emerald-800 text-xs px-2 py-0.5 rounded-full font-mono">{{ count($cashflowTransactions) }}</span>
+            </button>
+        @endif
     </div>
 
     <!-- TAB 1: Penjualan & Profit Per Unit -->
@@ -139,13 +153,18 @@
         <div class="space-y-4">
             <div class="card-clean p-4 flex flex-col sm:flex-row items-center justify-between gap-3">
                 <div class="flex items-center gap-2 w-full sm:w-auto">
-                    <h3 class="font-bold text-slate-900 text-sm whitespace-nowrap">Dashboard Penjualan & Profit Per Unit</h3>
+                    <h3 class="font-bold text-slate-900 text-sm whitespace-nowrap">{{ auth()->user()->isPengawasProject() ? 'Daftar Unit Kavling Proyek' : 'Dashboard Penjualan & Profit Per Unit' }}</h3>
                     <span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full border border-emerald-200">
                         {{ count($unitsList) }} Unit
                     </span>
                 </div>
 
                 <div class="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+                    <div class="relative w-full sm:w-56">
+                        <input type="text" wire:model.live.debounce.300ms="unitSearch" placeholder="Cari kode unit..." class="input-clean w-full text-xs pl-8 pr-3 py-1.5 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500">
+                        <svg class="w-4 h-4 text-slate-400 absolute left-2.5 top-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                    </div>
+
                     <div class="w-full sm:w-40">
                         <select wire:model.live="statusFilter" class="input-clean w-full text-xs">
                             <option value="">Semua Status Unit</option>
@@ -171,15 +190,19 @@
                     <table class="w-full text-left text-xs text-slate-600">
                         <thead class="bg-slate-100/90 text-slate-700 uppercase text-[10px] font-bold tracking-wider border-b border-slate-200">
                             <tr>
-                                <th class="px-4 py-3.5">Kode Unit & Tipe</th>
-                                <th class="px-4 py-3.5">Luas Tanah</th>
-                                <th class="px-4 py-3.5 text-center">Status Unit</th>
-                                <th class="px-4 py-3.5">Nama Pembeli</th>
-                                <th class="px-4 py-3.5 text-right">HPP Unit (Rp)</th>
-                                <th class="px-4 py-3.5 text-right">Biaya Tambahan (Rp)</th>
-                                <th class="px-4 py-3.5 text-right">Harga Jual / Penjualan</th>
-                                <th class="px-4 py-3.5 text-right">Profit / Margin (Rp)</th>
-                                <th class="px-4 py-3.5 text-right">Aksi</th>
+                                <th class="px-3 py-3.5">Kode Unit & Status</th>
+                                <th class="px-3 py-3.5">Kategori & Luas Tanah</th>
+                                @if(!auth()->user()->isPengawasProject())
+                                    <th class="px-3 py-3.5">Nama Pembeli</th>
+                                    <th class="px-3 py-3.5 text-right">Harga Deal (Rp)</th>
+                                    <th class="px-3 py-3.5 text-right">Sudah Dibayar (Rp)</th>
+                                    <th class="px-3 py-3.5 text-right">Sisa Tagihan (Rp)</th>
+                                    <th class="px-3 py-3.5 text-right">HPP & Biaya (Rp)</th>
+                                    <th class="px-3 py-3.5 text-right">Profit / Margin (Rp)</th>
+                                @else
+                                    <th class="px-3 py-3.5">Mandor / Worker Bertugas</th>
+                                @endif
+                                <th class="px-3 py-3.5 text-center">Aksi</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100">
@@ -187,6 +210,8 @@
                                 @php 
                                     $perf = $unitPerformances[$u->id] ?? [
                                         'selling_price' => 0,
+                                        'paid_amount' => 0,
+                                        'remaining_amount' => 0,
                                         'hpp' => (float)$u->hpp,
                                         'unit_costs' => 0,
                                         'profit' => 0,
@@ -195,57 +220,85 @@
                                     ];
                                 @endphp
                                 <tr class="hover:bg-slate-50/80 transition-colors">
-                                    <td class="px-4 py-4">
-                                        <span class="font-extrabold text-slate-900 text-sm font-mono text-emerald-700 block">{{ $u->code }}</span>
-                                        <span class="text-[11px] text-slate-400 capitalize">{{ $u->category ?? $u->type }}</span>
+                                    <td class="px-3 py-3.5">
+                                        <div class="flex items-center gap-2">
+                                            <span class="font-extrabold text-slate-900 text-sm font-mono text-emerald-700">{{ $u->code }}</span>
+                                            @if ($u->status === 'tersedia')
+                                                <span class="status-tersedia">Tersedia</span>
+                                            @elseif ($u->status === 'disetujui' || $u->status === 'converted' || $u->status === 'terjual')
+                                                <span class="status-disetujui">Terjual</span>
+                                            @elseif ($u->status === 'booked')
+                                                <span class="status-booked">Booked</span>
+                                            @else
+                                                <span class="status-menunggu">{{ ucfirst($u->status) }}</span>
+                                            @endif
+                                        </div>
                                     </td>
-                                    <td class="px-4 py-4 font-mono text-slate-700">
-                                        {{ number_format($u->land_area, 0, ',', '.') }} m²
-                                        @if($u->excess_land_area > 0)
-                                            <span class="block text-[10px] text-amber-600 font-semibold">(+{{ number_format($u->excess_land_area, 0) }} m² lebih)</span>
-                                        @endif
+                                    <td class="px-3 py-3.5">
+                                        <span class="font-semibold text-slate-800 capitalize">{{ $u->category ?? $u->type }}</span>
+                                        <span class="text-[11px] text-slate-500 font-mono block">{{ number_format($u->land_area, 0, ',', '.') }} m²</span>
                                     </td>
-                                    <td class="px-4 py-4 text-center">
-                                        @if ($u->status === 'tersedia')
-                                            <span class="status-tersedia">Tersedia</span>
-                                        @elseif ($u->status === 'menunggu_persetujuan')
-                                            <span class="status-menunggu">Menunggu ACC</span>
-                                        @elseif ($u->status === 'disetujui' || $u->status === 'converted' || $u->status === 'terjual')
-                                            <span class="status-disetujui">Disetujui / Terjual</span>
-                                        @elseif ($u->status === 'booked')
-                                            <span class="status-booked">Booked</span>
-                                        @else
-                                            <span class="status-ditolak">Ditolak</span>
-                                        @endif
-                                    </td>
-                                    <td class="px-4 py-4">
-                                        <span class="font-bold text-slate-900">{{ $perf['buyer_name'] }}</span>
-                                    </td>
-                                    <td class="px-4 py-4 text-right font-mono font-semibold text-slate-700">
-                                        Rp {{ number_format($perf['hpp'], 0, ',', '.') }}
-                                    </td>
-                                    <td class="px-4 py-4 text-right font-mono font-semibold text-rose-600">
-                                        Rp {{ number_format($perf['unit_costs'], 0, ',', '.') }}
-                                    </td>
-                                    <td class="px-4 py-4 text-right font-mono font-extrabold text-emerald-700">
-                                        @if($perf['selling_price'] > 0)
-                                            Rp {{ number_format($perf['selling_price'], 0, ',', '.') }}
-                                        @else
-                                            <span class="text-slate-400 font-normal italic">-</span>
-                                        @endif
-                                    </td>
-                                    <td class="px-4 py-4 text-right font-mono font-extrabold">
-                                        @if($perf['is_sold'])
-                                            <span class="{{ $perf['profit'] >= 0 ? 'text-emerald-600' : 'text-rose-600' }}">
-                                                {{ $perf['profit'] >= 0 ? '+' : '' }} Rp {{ number_format($perf['profit'], 0, ',', '.') }}
-                                            </span>
-                                        @else
-                                            <span class="text-slate-400 font-normal italic">Belum Terjual</span>
-                                        @endif
-                                    </td>
-                                    <td class="px-4 py-4 text-right whitespace-nowrap">
+
+                                    @if(!auth()->user()->isPengawasProject())
+                                        <td class="px-3 py-3.5 font-bold text-slate-800">
+                                            {{ $perf['buyer_name'] }}
+                                        </td>
+                                        <td class="px-3 py-3.5 text-right font-mono font-extrabold text-emerald-700">
+                                            @if($perf['selling_price'] > 0)
+                                                Rp {{ number_format($perf['selling_price'], 0, ',', '.') }}
+                                            @else
+                                                <span class="text-slate-400 font-normal italic">-</span>
+                                            @endif
+                                        </td>
+                                        <td class="px-3 py-3.5 text-right font-mono font-extrabold text-sky-700">
+                                            @if($perf['paid_amount'] > 0)
+                                                Rp {{ number_format($perf['paid_amount'], 0, ',', '.') }}
+                                            @else
+                                                <span class="text-slate-400 font-normal italic">Rp 0</span>
+                                            @endif
+                                        </td>
+                                        <td class="px-3 py-3.5 text-right font-mono font-extrabold text-amber-700">
+                                            @if($perf['is_sold'] && $perf['remaining_amount'] > 0)
+                                                Rp {{ number_format($perf['remaining_amount'], 0, ',', '.') }}
+                                            @elseif($perf['is_sold'] && $perf['remaining_amount'] == 0)
+                                                <span class="text-emerald-600 font-bold">LUNAS</span>
+                                            @else
+                                                <span class="text-slate-400 font-normal italic">-</span>
+                                            @endif
+                                        </td>
+                                        <td class="px-3 py-3.5 text-right font-mono text-slate-600">
+                                            <div>HPP: Rp {{ number_format($perf['hpp'], 0, ',', '.') }}</div>
+                                            @if($perf['unit_costs'] > 0)
+                                                <div class="text-[10px] text-rose-600 font-semibold">+ Biaya: Rp {{ number_format($perf['unit_costs'], 0, ',', '.') }}</div>
+                                            @endif
+                                        </td>
+                                        <td class="px-3 py-3.5 text-right font-mono font-extrabold">
+                                            @if($perf['is_sold'])
+                                                <span class="{{ $perf['profit'] >= 0 ? 'text-emerald-600' : 'text-rose-600' }}">
+                                                    {{ $perf['profit'] >= 0 ? '+' : '' }} Rp {{ number_format($perf['profit'], 0, ',', '.') }}
+                                                </span>
+                                            @else
+                                                <span class="text-slate-400 font-normal italic">Belum Terjual</span>
+                                            @endif
+                                        </td>
+                                    @else
+                                        <td class="px-3 py-3.5">
+                                            @php
+                                                $uAssignment = $u->assignments->where('status', 'active')->first();
+                                            @endphp
+                                            @if($uAssignment && $uAssignment->worker)
+                                                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-blue-50 text-blue-800 border border-blue-200 text-xs font-semibold">
+                                                    {{ $uAssignment->worker->name }} ({{ ucfirst($uAssignment->worker->type) }})
+                                                </span>
+                                            @else
+                                                <span class="text-slate-400 text-xs italic">Penugasan mengikuti proyek</span>
+                                            @endif
+                                        </td>
+                                    @endif
+
+                                    <td class="px-3 py-3.5 text-center whitespace-nowrap">
                                         <a href="{{ route('units.show', $u->id) }}" class="btn-primary text-[11px] px-2.5 py-1">
-                                            Lihat Detail Unit
+                                            Detail Unit
                                         </a>
                                     </td>
                                 </tr>

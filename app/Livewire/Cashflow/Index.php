@@ -141,6 +141,8 @@ class Index extends Component
             'globalKeluar' => $globalKeluar,
             'globalNet' => $globalNet,
             'projectBreakdown' => $projectBreakdown,
+            'view_mode' => $this->view_mode,
+            'showManualModal' => $this->showManualModal,
         ])->layout('components.layouts.app', ['title' => 'Arus Kas Per-Proyek & Konsolidasi Global']);
     }
 }

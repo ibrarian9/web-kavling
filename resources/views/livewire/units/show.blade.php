@@ -10,39 +10,44 @@
             </div>
             <div class="flex items-center gap-3">
                 <h1 class="text-2xl font-extrabold text-slate-900 font-mono tracking-tight">{{ $unit->code }}</h1>
-                <span class="text-xs uppercase font-bold px-2.5 py-1 rounded-md {{ $unit->category === 'rumah' ? 'bg-purple-100 text-purple-800 border border-purple-200' : 'bg-amber-100 text-amber-800 border border-amber-200' }}">
-                    {{ ucfirst($unit->category ?? $unit->type) }}
-                </span>
-                
-                @if($unit->status === 'tersedia')
-                    <span class="status-tersedia">Tersedia</span>
-                @elseif($unit->status === 'booked')
-                    <span class="status-booked">Booked</span>
-                @elseif($unit->status === 'menunggu_persetujuan')
-                    <span class="status-menunggu">Pending Approval</span>
-                @elseif($unit->status === 'disetujui')
-                    <span class="status-disetujui">Harga ACC</span>
-                @elseif($unit->status === 'terjual')
-                    <span class="status-terjual">Terjual</span>
+                @if($unit->category === 'infrastruktur' || $unit->status === 'infrastruktur')
+                    <span class="text-xs uppercase font-extrabold px-2.5 py-1 rounded-md bg-sky-100 text-sky-800 border border-sky-300">
+                        FASUM: {{ strtoupper($unit->type) }}
+                    </span>
+                    <span class="px-2.5 py-1 rounded-md text-xs font-bold bg-sky-950 text-sky-300 border border-sky-500/40">
+                        Infrastruktur Proyek
+                    </span>
                 @else
-                    <span class="status-draft">{{ ucfirst($unit->status) }}</span>
+                    <span class="text-xs uppercase font-bold px-2.5 py-1 rounded-md {{ $unit->category === 'rumah' ? 'bg-purple-100 text-purple-800 border border-purple-200' : 'bg-amber-100 text-amber-800 border border-amber-200' }}">
+                        {{ ucfirst($unit->category ?? $unit->type) }}
+                    </span>
+                    
+                    @if($unit->status === 'tersedia')
+                        <span class="status-tersedia">Tersedia</span>
+                    @elseif($unit->status === 'booked')
+                        <span class="status-booked">Booked</span>
+                    @elseif($unit->status === 'menunggu_persetujuan')
+                        <span class="status-menunggu">Pending Approval</span>
+                    @elseif($unit->status === 'disetujui')
+                        <span class="status-disetujui">Harga ACC</span>
+                    @elseif($unit->status === 'terjual')
+                        <span class="status-terjual">Terjual</span>
+                    @else
+                        <span class="status-draft">{{ ucfirst($unit->status) }}</span>
+                    @endif
                 @endif
             </div>
         </div>
 
         <div class="flex flex-wrap items-center gap-2">
-            <a href="{{ route('units.index') }}" class="btn-secondary text-xs px-3 py-2">
-                &larr; Kembali
-            </a>
-
-            @if(in_array($unit->status, ['tersedia', 'disetujui']))
+            @if(!auth()->user()->isPengawasProject() && $unit->category !== 'infrastruktur' && in_array($unit->status, ['tersedia', 'disetujui']))
                 <button wire:click="openBookingModal" class="bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-3 py-2 rounded-lg transition shadow-sm flex items-center gap-1.5">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                     <span>Booking Unit Ini</span>
                 </button>
             @endif
 
-            @if(auth()->user()->isMarketing() && $unit->status === 'tersedia')
+            @if(auth()->user()->isMarketing() && $unit->category !== 'infrastruktur' && $unit->status === 'tersedia')
                 <a href="{{ route('proposals.index', ['create_unit_id' => $unit->id]) }}" class="btn-primary text-xs px-3 py-2">
                     <span>Ajukan Penawaran Harga</span> &rarr;
                 </a>
@@ -182,6 +187,66 @@
                     @endforelse
                 </div>
             </div>
+
+            <!-- Gaji Borongan Worker Unit -->
+            <div class="card-clean p-5 space-y-4">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
+                    <h3 class="font-bold text-slate-900 text-sm flex items-center gap-2">
+                        <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        Penggajian Borongan Unit
+                    </h3>
+
+                    @if(auth()->user()->isSupervisor() || auth()->user()->isPengawasProject() || auth()->user()->isFounder())
+                        <button wire:click="openPayrollSetupModal" class="btn-primary text-[11px] px-2.5 py-1 flex items-center gap-1">
+                            <span>+ Set Gaji Unit</span>
+                        </button>
+                    @endif
+                </div>
+
+                <div class="space-y-3 text-xs">
+                    @forelse($unitPayrolls as $up)
+                        <div class="p-3 bg-slate-50 rounded-xl border border-slate-200/80 space-y-2">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="font-bold text-slate-900">{{ $up->worker->name }}</p>
+                                    <p class="text-[10px] text-slate-400 capitalize">{{ $up->worker->type }} {{ $up->worker->specialty ? '('.$up->worker->specialty.')' : '' }}</p>
+                                </div>
+                                <span class="px-2 py-0.5 rounded text-[10px] font-bold {{ $up->status === 'lunas' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800' }}">
+                                    {{ strtoupper($up->status) }}
+                                </span>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-1 text-[11px]">
+                                <div>
+                                    <span class="text-slate-400 block text-[10px]">Kontrak Unit:</span>
+                                    <span class="font-bold text-slate-800 font-mono">Rp {{ number_format($up->agreed_salary, 0, ',', '.') }}</span>
+                                </div>
+                                <div>
+                                    <span class="text-slate-400 block text-[10px]">Sudah Dibayar:</span>
+                                    <span class="font-bold text-emerald-600 font-mono">Rp {{ number_format($up->paid_amount, 0, ',', '.') }}</span>
+                                </div>
+                            </div>
+
+                            <div class="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden">
+                                <div class="bg-emerald-500 h-1.5 rounded-full" style="width: {{ $up->progress_percentage }}%"></div>
+                            </div>
+
+                            <div class="flex items-center justify-between pt-1 border-t border-slate-200/60 text-[10px]">
+                                <span class="text-slate-400">Sisa: <strong class="font-mono text-amber-700">Rp {{ number_format($up->remaining_salary, 0, ',', '.') }}</strong></span>
+                                @if($up->status !== 'lunas')
+                                    <button wire:click="openPayrollPaymentModal({{ $up->id }})" class="btn-primary text-[10px] px-2 py-0.5 bg-emerald-600 hover:bg-emerald-700">
+                                        + Bayar Gaji
+                                    </button>
+                                @endif
+                            </div>
+                        </div>
+                    @empty
+                        <div class="text-center py-4 text-slate-400 text-xs">
+                            Belum ada penetapan gaji borongan worker untuk unit {{ $unit->code }}.
+                        </div>
+                    @endforelse
+                </div>
+            </div>
         </div>
 
         <!-- Middle & Right Columns: Proposals, SPP, Financials & Costs -->
@@ -297,18 +362,22 @@
             @endif
 
             <!-- Unit Costs & Direct Cost Recording Button (Req #4) -->
+            <!-- Combined Expenses Table: Material Purchases + Salary Payments + Unit Costs -->
             <div class="card-clean p-5 space-y-4">
-                <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
-                    <h3 class="font-bold text-slate-900 text-sm flex items-center gap-2">
-                        <svg class="w-4 h-4 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                        Rincian Biaya Pengeluaran & Belanja Unit
-                    </h3>
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-3 gap-2">
+                    <div>
+                        <h3 class="font-bold text-slate-900 text-sm flex items-center gap-2">
+                            <svg class="w-4 h-4 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            Rincian Biaya Pengeluaran & Belanja Unit
+                        </h3>
+                        <p class="text-[11px] text-slate-500">Rekapitulasi gabungan belanja material, gaji worker terbayar, & biaya unit</p>
+                    </div>
 
                     <div class="flex items-center gap-2">
-                        <span class="text-xs font-mono font-bold text-rose-700 mr-2">Rp {{ number_format($totalCosts, 0, ',', '.') }}</span>
-                        @if(auth()->user()->isFinance() || auth()->user()->isFounder() || auth()->user()->isPengawasProject())
-                            <button wire:click="openCostModal" class="btn-primary text-[11px] px-2.5 py-1 flex items-center gap-1">
-                                <span>+ Catat Biaya</span>
+                        @if(auth()->user()->isFinance() || auth()->user()->isFounder() || auth()->user()->isPengawasProject() || auth()->user()->isSupervisor())
+                            <button wire:click="openMaterialModal" class="btn-primary text-xs px-3 py-1.5 flex items-center gap-1.5 bg-amber-600 hover:bg-amber-700 shadow-sm transition">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                                <span>+ Catat Belanja Material</span>
                             </button>
                         @endif
                     </div>
@@ -318,54 +387,67 @@
                     <table class="w-full text-left text-xs text-slate-600">
                         <thead class="bg-slate-50 text-slate-500 uppercase text-[10px] font-bold tracking-wider">
                             <tr>
-                                <th class="px-3 py-2">Kategori & Deskripsi</th>
-                                <th class="px-3 py-2">Vendor / Tukang</th>
-                                <th class="px-3 py-2">Nominal</th>
-                                <th class="px-3 py-2">Status</th>
+                                <th class="px-3 py-2.5">Tanggal</th>
+                                <th class="px-3 py-2.5">Jenis</th>
+                                <th class="px-3 py-2.5">Uraian Pengeluaran</th>
+                                <th class="px-3 py-2.5 text-right">Nominal</th>
+                                <th class="px-3 py-2.5 text-center">Resi / Bukti</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100">
-                            @forelse($unitCosts as $cost)
-                                <tr>
-                                    <td class="px-3 py-2.5">
-                                        <span class="font-bold text-slate-800 capitalize">{{ $cost->category }}</span>
-                                        <p class="text-[10px] text-slate-500">{{ $cost->description }}</p>
+                            @forelse($combinedExpenses as $exp)
+                                <tr class="hover:bg-slate-50/70 transition-colors">
+                                    <td class="px-3 py-3 font-mono font-medium text-slate-600 whitespace-nowrap">
+                                        {{ $exp->date ? $exp->date->format('d/m/Y') : '-' }}
                                     </td>
-                                    <td class="px-3 py-2.5 font-medium text-slate-700">{{ $cost->vendor_name ?? '-' }}</td>
-                                    <td class="px-3 py-2.5 font-mono font-bold text-slate-900">Rp {{ number_format($cost->amount, 0, ',', '.') }}</td>
-                                    <td class="px-3 py-2.5">
-                                        <span class="text-[10px] font-bold px-2 py-0.5 rounded {{ $cost->status === 'dibayar' ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800' }}">
-                                            {{ ucfirst($cost->status) }}
+                                    <td class="px-3 py-3 whitespace-nowrap">
+                                        <span class="px-2 py-0.5 rounded text-[10px] font-bold border {{ $exp->badge_class }}">
+                                            {{ $exp->category_badge }}
                                         </span>
+                                    </td>
+                                    <td class="px-3 py-3 font-medium text-slate-800">
+                                        {{ $exp->description }}
+                                    </td>
+                                    <td class="px-3 py-3 font-mono font-bold text-slate-900 text-right whitespace-nowrap">
+                                        Rp {{ number_format($exp->amount, 0, ',', '.') }}
+                                    </td>
+                                    <td class="px-3 py-3 text-center whitespace-nowrap">
+                                        <div class="flex items-center justify-center gap-1.5">
+                                            @if($exp->receipt_photo_path)
+                                                <button wire:click="openViewerModal('image', '{{ asset('storage/' . $exp->receipt_photo_path) }}', 'Pratinjau Foto Struk Nota Belanja')" title="Pratinjau Foto Struk" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-amber-50 text-amber-800 hover:bg-amber-100 border border-amber-200 text-[11px] font-bold transition">
+                                                    <svg class="w-3.5 h-3.5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                                    Struk
+                                                </button>
+                                            @endif
+
+                                            @if($exp->pdf_url)
+                                                <button wire:click="openViewerModal('pdf', '{{ $exp->pdf_url }}', 'Pratinjau Resi Gaji PDF')" title="Pratinjau PDF Resi" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-sky-50 text-sky-800 hover:bg-sky-100 border border-sky-200 text-[11px] font-bold transition">
+                                                    <svg class="w-3.5 h-3.5 text-sky-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                                                    PDF
+                                                </button>
+                                            @endif
+
+                                            @if($exp->qr_url)
+                                                <button wire:click="openViewerModal('qr', '{{ $exp->qr_url }}', 'Verifikasi Resi Gaji Publik (QR Code)')" title="Pratinjau QR Code Verifikasi" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-800 hover:bg-emerald-100 border border-emerald-200 text-[11px] font-bold transition">
+                                                    <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/></svg>
+                                                    QR
+                                                </button>
+                                            @endif
+
+                                            @if(!$exp->receipt_photo_path && !$exp->pdf_url && !$exp->qr_url)
+                                                <span class="text-slate-400 text-[10px] italic">-</span>
+                                            @endif
+                                        </div>
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="4" class="px-3 py-4 text-center text-slate-400 italic">Belum ada pengeluaran biaya tercatat pada unit ini.</td>
+                                    <td colspan="5" class="px-3 py-6 text-center text-slate-400 italic">Belum ada rincian belanja material atau pengeluaran tercatat untuk unit ini.</td>
                                 </tr>
                             @endforelse
                         </tbody>
                     </table>
                 </div>
-
-                <!-- Material Purchases Log -->
-                @if($materialPurchases->isNotEmpty())
-                    <div class="pt-3 border-t border-slate-100 space-y-2">
-                        <p class="font-bold text-slate-700 text-xs">Log Pembelian Material Lapangan oleh Tukang/Mandor:</p>
-                        <div class="space-y-2 text-xs">
-                            @foreach($materialPurchases as $mp)
-                                <div class="p-2.5 bg-slate-50 rounded-lg border border-slate-100 flex items-center justify-between">
-                                    <div>
-                                        <span class="font-bold text-slate-900">{{ $mp->item_name }}</span>
-                                        <span class="text-slate-500 font-mono text-[11px]">({{ number_format($mp->quantity, 0, ',', '.') }} {{ $mp->unit_measure }})</span>
-                                        <p class="text-[10px] text-slate-500">Oleh: {{ $mp->worker->name }} &bull; Pengawas: {{ $mp->pengawas->name ?? '-' }}</p>
-                                    </div>
-                                    <span class="font-mono font-bold text-slate-800">Rp {{ number_format($mp->total_price, 0, ',', '.') }}</span>
-                                </div>
-                            @endforeach
-                        </div>
-                    </div>
-                @endif
             </div>
 
         </div>
@@ -399,65 +481,6 @@
                     <div class="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
                         <button type="button" wire:click="$set('showWorkerModal', false)" class="btn-secondary">Batal</button>
                         <button type="submit" class="btn-primary">Simpan Penugasan</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    @endif
-
-    <!-- Modal Form Direct Unit Cost Recording (Req #4) -->
-    @if($showCostModal)
-        <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm">
-            <div class="bg-white border border-slate-200/80 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
-                <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-                    <h3 class="font-bold text-slate-900 text-base">Catat Biaya Pengeluaran Unit {{ $unit->code }}</h3>
-                    <button wire:click="$set('showCostModal', false)" class="text-slate-400 hover:text-slate-600">✕</button>
-                </div>
-
-                <form wire:submit.prevent="saveUnitCost" class="space-y-4 text-xs">
-                    <div class="grid grid-cols-2 gap-3">
-                        <div>
-                            <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider">Kategori Biaya</label>
-                            <select wire:model="cost_category" class="input-clean w-full font-semibold">
-                                <option value="tukang">Upah Tukang</option>
-                                <option value="material">Material / Bahan</option>
-                                <option value="perizinan">Perizinan / IMB</option>
-                                <option value="lainnya">Lain-lain</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider">Status Bayar</label>
-                            <select wire:model="cost_status" class="input-clean w-full font-semibold">
-                                <option value="dibayar">Sudah Dibayar</option>
-                                <option value="belum_dibayar">Belum Dibayar</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div>
-                        <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider">Deskripsi Biaya</label>
-                        <input type="text" wire:model="cost_description" required placeholder="Batu kali pondasi / Upah borongan..." class="input-clean w-full">
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-3">
-                        <div>
-                            <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider">Nominal Biaya (Rp)</label>
-                            <x-currency-input model="cost_amount" class="input-clean w-full font-bold font-mono text-rose-700" />
-                        </div>
-                        <div>
-                            <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider">Tanggal Biaya</label>
-                            <input type="date" wire:model="cost_date" required class="input-clean w-full font-mono">
-                        </div>
-                    </div>
-
-                    <div>
-                        <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider">Vendor / Mandor Terkait</label>
-                        <input type="text" wire:model="vendor_name" placeholder="Mandor Supri / Toko Bangunan Berkah..." class="input-clean w-full">
-                    </div>
-
-                    <div class="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
-                        <button type="button" wire:click="$set('showCostModal', false)" class="btn-secondary">Batal</button>
-                        <button type="submit" class="btn-primary">Simpan Biaya Unit</button>
                     </div>
                 </form>
             </div>
@@ -509,4 +532,256 @@
         </div>
     @endif
 
+    <!-- Modal Form Payroll Setup for this Unit -->
+    @if($showPayrollSetupModal)
+        <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm">
+            <div class="bg-white border border-slate-200/80 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                    <div>
+                        <h3 class="font-bold text-slate-900 text-base">Set Gaji Borongan Unit {{ $unit->code }}</h3>
+                        <p class="text-slate-500 text-[11px]">Proyek: {{ $unit->project->name }}</p>
+                    </div>
+                    <button wire:click="$set('showPayrollSetupModal', false)" class="text-slate-400 hover:text-slate-600">✕</button>
+                </div>
+
+                <form wire:submit.prevent="savePayrollSetup" class="space-y-4 text-xs">
+                    <div>
+                        <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider">Pilih Pekerja (Mandor / Tukang)</label>
+                        <select wire:model="payroll_worker_id" class="input-clean w-full font-bold">
+                            @foreach($allWorkers as $w)
+                                <option value="{{ $w->id }}">{{ $w->name }} ({{ ucfirst($w->type) }} - {{ $w->specialty }})</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider">Total Nominal Gaji (Rp)</label>
+                        <input type="number" wire:model="payroll_agreed_salary" placeholder="15000000" class="input-clean w-full font-mono font-bold text-slate-900 text-sm">
+                        @error('payroll_agreed_salary') <span class="text-rose-500 text-[10px] mt-1 block">{{ $message }}</span> @enderror
+                    </div>
+
+                    <div>
+                        <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider">Skema Pembayaran</label>
+                        <select wire:model="payroll_payment_frequency" class="input-clean w-full font-semibold">
+                            <option value="fleksibel">Fleksibel (Sesuai Permintaan Mandor)</option>
+                            <option value="harian">Harian</option>
+                            <option value="mingguan">Mingguan (Per-Minggu)</option>
+                            <option value="bulanan">Bulanan</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider">Catatan Tambahan</label>
+                        <textarea wire:model="payroll_notes" rows="2" placeholder="Lingkup kerja borongan unit..." class="input-clean w-full"></textarea>
+                    </div>
+
+                    <div class="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
+                        <button type="button" wire:click="$set('showPayrollSetupModal', false)" class="btn-secondary">Batal</button>
+                        <button type="submit" class="btn-primary">Simpan Kesepakatan Gaji</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    @endif
+
+    <!-- Modal Form Payroll Payment for this Unit (Form Lebih Besar & Responsif) -->
+    @if($showPayrollPaymentModal && $selectedPayroll)
+        <div class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-slate-900/50 backdrop-blur-sm overflow-y-auto">
+            <div class="bg-white border border-slate-200/80 rounded-3xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl space-y-6">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+                    <div>
+                        <h3 class="font-extrabold text-slate-900 text-lg sm:text-xl tracking-tight">Pembayaran Gaji Unit {{ $unit->code }}</h3>
+                        <p class="text-slate-500 text-xs mt-0.5">Pekerja: {{ $selectedPayroll->worker->name }}</p>
+                    </div>
+                    <button wire:click="$set('showPayrollPaymentModal', false)" class="p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition">✕</button>
+                </div>
+
+                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 text-xs sm:text-sm grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <span class="text-slate-500 block text-xs">Total Gaji Borongan:</span>
+                        <span class="font-bold text-slate-900 font-mono text-base">Rp {{ number_format($selectedPayroll->agreed_salary, 0, ',', '.') }}</span>
+                    </div>
+                    <div>
+                        <span class="text-slate-500 block text-xs">Sisa Kontrak Belum Dibayar:</span>
+                        <span class="font-bold text-amber-600 font-mono text-base">Rp {{ number_format($selectedPayroll->remaining_salary, 0, ',', '.') }}</span>
+                    </div>
+                </div>
+
+                <form wire:submit.prevent="savePayrollPayment" class="space-y-4 text-xs sm:text-sm">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block font-bold text-slate-700 uppercase mb-1.5 text-xs">Tanggal Pembayaran</label>
+                            <input type="date" wire:model="payroll_payment_date" required class="input-clean w-full text-sm font-mono py-2.5 px-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-emerald-500">
+                        </div>
+
+                        <div>
+                            <label class="block font-bold text-slate-700 uppercase mb-1.5 text-xs">Metode Pembayaran</label>
+                            <select wire:model.live="payroll_payment_method" class="input-clean w-full text-sm font-semibold py-2.5 px-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-emerald-500">
+                                <option value="transfer_bank">Transfer Bank</option>
+                                <option value="tunai">Tunai (Cash)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block font-bold text-slate-700 uppercase mb-1.5 text-xs">Nominal Gaji Dibayarkan (Rp)</label>
+                        <input type="number" wire:model.live="payroll_amount_gross" placeholder="Misal: 2500000" required class="input-clean w-full font-mono font-bold text-slate-900 text-base py-3 px-4 rounded-xl border border-slate-200 focus:ring-2 focus:ring-emerald-500">
+                        @error('payroll_amount_gross') <span class="text-xs text-rose-500 mt-1 block">{{ $message }}</span> @enderror
+                    </div>
+
+                    <div>
+                        <label class="block font-bold text-slate-700 uppercase mb-1.5 text-xs">
+                            Upload Foto Struk Transfer {{ $payroll_payment_method === 'tunai' ? '(Opsional)' : '(Rekomendasi)' }}
+                        </label>
+                        <input type="file" wire:model="payroll_receipt_photo" accept="image/*" class="input-clean w-full text-xs py-2 px-3 rounded-xl border border-slate-200">
+                        @if($payroll_receipt_photo)
+                            <div class="mt-3 text-center bg-slate-50 p-3 rounded-2xl border border-slate-200">
+                                <p class="text-xs text-slate-500 mb-2 font-semibold">Preview Struk Transfer Upload:</p>
+                                <img src="{{ $payroll_receipt_photo->temporaryUrl() }}" class="max-h-48 mx-auto rounded-xl border border-slate-200 shadow-md">
+                            </div>
+                        @endif
+                    </div>
+
+                    <div>
+                        <label class="block font-bold text-slate-700 uppercase mb-1.5 text-xs">Catatan Pembayaran</label>
+                        <input type="text" wire:model="payroll_payment_notes" placeholder="Catatan transaksi..." class="input-clean w-full text-sm py-2.5 px-3 rounded-xl border border-slate-200">
+                    </div>
+
+                    <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
+                        <button type="button" wire:click="$set('showPayrollPaymentModal', false)" class="btn-secondary px-5 py-2.5 rounded-xl">Batal</button>
+                        <button type="submit" class="btn-primary bg-emerald-600 hover:bg-emerald-700 px-6 py-2.5 rounded-xl shadow-md">Simpan Pembayaran & Cetak Resi</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    @endif
+
+    <!-- Modal Form Material Purchase (Catat Belanja Barang Unit - Form Lebih Besar & Responsif) -->
+    @if($showMaterialModal)
+        <div class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-slate-900/50 backdrop-blur-sm overflow-y-auto">
+            <div class="bg-white border border-slate-200/80 rounded-3xl max-w-2xl md:max-w-3xl w-full p-6 sm:p-8 shadow-2xl space-y-6">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+                    <div>
+                        <h3 class="font-extrabold text-slate-900 text-lg sm:text-xl tracking-tight">Catat Belanja Barang / Material Unit {{ $unit->code }}</h3>
+                        <p class="text-slate-500 text-xs mt-0.5">Proyek: {{ $unit->project->name }}</p>
+                    </div>
+                    <button wire:click="$set('showMaterialModal', false)" class="p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition">✕</button>
+                </div>
+
+                <form wire:submit.prevent="saveMaterialPurchase" class="space-y-4 text-xs sm:text-sm">
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1.5 uppercase tracking-wider text-xs">Pekerja / Mandor Pembeli (Opsional)</label>
+                        <select wire:model="material_worker_id" class="input-clean w-full text-sm font-bold py-2.5 px-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-amber-500">
+                            @foreach($allWorkers as $w)
+                                <option value="{{ $w->id }}">{{ $w->name }} ({{ ucfirst($w->type) }} - {{ $w->specialty }})</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block font-bold text-slate-700 mb-1.5 uppercase tracking-wider text-xs">Tanggal Pembelian</label>
+                            <input type="date" wire:model="material_purchase_date" required class="input-clean w-full text-sm font-mono py-2.5 px-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-amber-500">
+                        </div>
+                        <div>
+                            <label class="block font-bold text-slate-700 mb-1.5 uppercase tracking-wider text-xs">Nama Barang / Material</label>
+                            <input type="text" wire:model="material_item_name" required placeholder="Contoh: Semen Gresik / Pasir / Cat" class="input-clean w-full text-sm font-bold py-2.5 px-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-amber-500">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4">
+                        <div>
+                            <label class="block font-bold text-slate-700 mb-1.5 uppercase tracking-wider text-xs">Jumlah (Qty)</label>
+                            <input type="number" step="0.01" wire:model.live="material_quantity" required class="input-clean w-full text-sm font-mono font-bold py-2.5 px-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-amber-500">
+                        </div>
+                        <div>
+                            <label class="block font-bold text-slate-700 mb-1.5 uppercase tracking-wider text-xs">Satuan</label>
+                            <input type="text" wire:model="material_unit_measure" required placeholder="sak / m3 / btg" class="input-clean w-full text-sm font-semibold py-2.5 px-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-amber-500">
+                        </div>
+                        <div>
+                            <label class="block font-bold text-slate-700 mb-1.5 uppercase tracking-wider text-xs">Harga Satuan (Rp)</label>
+                            <input type="number" wire:model.live="material_unit_price" required placeholder="65000" class="input-clean w-full text-sm font-mono font-bold py-2.5 px-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-amber-500">
+                        </div>
+                    </div>
+
+                    <div class="p-4 bg-amber-50 rounded-2xl border border-amber-200/80 flex justify-between items-center text-amber-900 font-bold">
+                        <span class="text-sm">Total Belanja Material:</span>
+                        <span class="text-lg sm:text-xl font-mono text-amber-700">Rp {{ number_format(((float)($material_quantity ?? 0)) * ((float)($material_unit_price ?? 0)), 0, ',', '.') }}</span>
+                    </div>
+
+                    <div>
+                        <label class="block font-bold text-slate-700 uppercase mb-1.5 text-xs">Upload Foto Struk / Nota Pembelian</label>
+                        <input type="file" wire:model="material_receipt_photo" accept="image/*" class="input-clean w-full text-xs py-2 px-3 rounded-xl border border-slate-200">
+                        <span class="text-[11px] text-slate-400 mt-1 block">Foto nota akan dikompresi otomatis & disimpan di sistem.</span>
+                        @if($material_receipt_photo)
+                            <div class="mt-3 text-center bg-slate-50 p-3 rounded-2xl border border-slate-200">
+                                <p class="text-xs text-slate-500 mb-2 font-semibold">Preview Struk Nota Upload:</p>
+                                <img src="{{ $material_receipt_photo->temporaryUrl() }}" class="max-h-48 mx-auto rounded-xl border border-slate-200 shadow-md">
+                            </div>
+                        @endif
+                    </div>
+
+                    <div>
+                        <label class="block font-bold text-slate-700 uppercase mb-1.5 text-xs">Catatan Belanja</label>
+                        <input type="text" wire:model="material_notes" placeholder="Catatan supplier / lokasi toko..." class="input-clean w-full text-sm py-2.5 px-3 rounded-xl border border-slate-200">
+                    </div>
+
+                    <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
+                        <button type="button" wire:click="$set('showMaterialModal', false)" class="btn-secondary px-5 py-2.5 rounded-xl">Batal</button>
+                        <button type="submit" class="btn-primary bg-amber-600 hover:bg-amber-700 px-6 py-2.5 rounded-xl shadow-md">Simpan Pembelian Material</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    @endif
+
+    <!-- Modal Jendela Melayang (Viewer Modal: Foto Struk / PDF Resi / QR Verifikasi) -->
+    @if($showViewerModal)
+        <div class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-slate-900/60 backdrop-blur-md">
+            <div class="bg-white rounded-3xl max-w-4xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden border border-slate-200">
+                <!-- Modal Header -->
+                <div class="px-6 py-4 bg-slate-900 text-white flex items-center justify-between shrink-0">
+                    <div class="flex items-center gap-3">
+                        @if($viewerType === 'image')
+                            <span class="p-2 rounded-xl bg-amber-500/20 text-amber-400">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                            </span>
+                        @elseif($viewerType === 'pdf')
+                            <span class="p-2 rounded-xl bg-sky-500/20 text-sky-400">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                            </span>
+                        @else
+                            <span class="p-2 rounded-xl bg-emerald-500/20 text-emerald-400">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/></svg>
+                            </span>
+                        @endif
+                        <div>
+                            <h3 class="font-bold text-base tracking-tight text-white">{{ $viewerTitle }}</h3>
+                            <p class="text-[11px] text-slate-400">Pratinjau langsung di dalam aplikasi</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                        <a href="{{ $viewerUrl }}" target="_blank" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold flex items-center gap-1 transition">
+                            <span>Buka Tab Baru ↗</span>
+                        </a>
+                        <button wire:click="closeViewerModal" class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white transition">
+                            ✕
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Modal Body -->
+                <div class="flex-1 bg-slate-950 p-4 overflow-auto flex items-center justify-center min-h-[60vh]">
+                    @if($viewerType === 'image')
+                        <img src="{{ $viewerUrl }}" class="max-h-[75vh] w-auto max-w-full object-contain rounded-2xl shadow-2xl border border-slate-800" alt="Foto Struk / Resi">
+                    @elseif($viewerType === 'pdf')
+                        <iframe src="{{ $viewerUrl }}" class="w-full h-[75vh] rounded-2xl bg-white border-0 shadow-lg"></iframe>
+                    @elseif($viewerType === 'qr')
+                        <iframe src="{{ $viewerUrl }}" class="w-full h-[75vh] rounded-2xl bg-white border-0 shadow-lg"></iframe>
+                    @endif
+                </div>
+            </div>
+        </div>
+    @endif
 </div>

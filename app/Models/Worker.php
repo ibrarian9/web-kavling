@@ -25,6 +25,11 @@ class Worker extends Model
         return $this->hasMany(WorkerAssignment::class);
     }
 
+    public function activeAssignments(): HasMany
+    {
+        return $this->hasMany(WorkerAssignment::class)->where('status', 'active');
+    }
+
     public function loans(): HasMany
     {
         return $this->hasMany(WorkerLoan::class);
@@ -33,6 +38,11 @@ class Worker extends Model
     public function weeklyPurchases(): HasMany
     {
         return $this->hasMany(WeeklyMaterialPurchase::class);
+    }
+
+    public function unitPayrolls(): HasMany
+    {
+        return $this->hasMany(WorkerUnitPayroll::class);
     }
 
     public function getTotalLoanAttribute(): float
