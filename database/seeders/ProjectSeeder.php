@@ -10,8 +10,8 @@ class ProjectSeeder extends Seeder
 {
     public function run(): void
     {
-        $founder = User::where('email', 'founder@kavling.com')->first();
-        $createdById = $founder ? $founder->id : 1;
+        $founder = User::where('role', 'founder')->first() ?? User::first();
+        $createdById = $founder?->id;
 
         $projects = [
             [
@@ -68,6 +68,21 @@ class ProjectSeeder extends Seeder
 
         foreach ($projects as $proj) {
             Project::updateOrCreate(['id' => $proj['id']], $proj);
+        }
+
+        // Assign seeded Pengawas Project users to initial projects
+        $pengawasUsers = User::where('role', 'pengawas_project')->get();
+        foreach ($pengawasUsers as $pengawas) {
+            foreach ([1, 2] as $pId) {
+                \App\Models\WorkerAssignment::updateOrCreate(
+                    ['user_id' => $pengawas->id, 'project_id' => $pId],
+                    [
+                        'assigned_role' => 'Pengawas Lapangan Proyek',
+                        'status' => 'active',
+                        'start_date' => now()->toDateString(),
+                    ]
+                );
+            }
         }
     }
 }

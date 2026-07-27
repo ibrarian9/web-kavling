@@ -25,6 +25,7 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
+            \App\Services\ActivityLogger::log('AUTH_LOGIN', 'Pengguna berhasil login ke dalam sistem.');
             return redirect()->intended('/dashboard');
         }
 
@@ -39,6 +40,7 @@ class AuthController extends Controller
         if ($user) {
             Auth::login($user);
             $request->session()->regenerate();
+            \App\Services\ActivityLogger::log('AUTH_SWITCH_ROLE', 'Beralih peran menjadi: ' . strtoupper($role));
             return redirect()->route('dashboard')->with('success', 'Berhasil beralih peran sebagai: ' . strtoupper($role));
         }
 

@@ -183,16 +183,28 @@
 
                 <div class="space-y-3 text-xs">
                     @forelse($unitAssignments as $assign)
-                        <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 flex items-center justify-between">
-                            <div>
-                                <p class="font-bold text-slate-800">{{ $assign->worker->name }}</p>
-                                <p class="text-[10px] text-slate-500 font-medium">{{ $assign->assigned_role }} &bull; {{ ucfirst($assign->worker->type) }}</p>
-                                <p class="text-[10px] text-slate-400 mt-0.5">Spesialis: {{ $assign->worker->specialty }}</p>
+                        @if($assign->worker)
+                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 flex items-center justify-between">
+                                <div>
+                                    <p class="font-bold text-slate-800">{{ $assign->worker->name }}</p>
+                                    <p class="text-[10px] text-slate-500 font-medium">{{ $assign->assigned_role }} &bull; {{ ucfirst($assign->worker->type) }}</p>
+                                    <p class="text-[10px] text-slate-400 mt-0.5">Spesialis: {{ $assign->worker->specialty }}</p>
+                                </div>
+                                <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800">
+                                    Active
+                                </span>
                             </div>
-                            <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800">
-                                Active
-                            </span>
-                        </div>
+                        @elseif($assign->user)
+                            <div class="p-3 bg-purple-50/70 rounded-xl border border-purple-100 flex items-center justify-between">
+                                <div>
+                                    <p class="font-bold text-purple-900">{{ $assign->user->name }}</p>
+                                    <p class="text-[10px] text-purple-700 font-medium">{{ $assign->assigned_role }} &bull; Pengawas System</p>
+                                </div>
+                                <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-purple-100 text-purple-800">
+                                    Pengawas
+                                </span>
+                            </div>
+                        @endif
                     @empty
                         <div class="text-center py-4 text-slate-400 text-xs">
                             Belum ada penugasan mandor/tukang spesifik pada unit ini.
@@ -264,68 +276,87 @@
 
         <!-- Middle & Right Columns: Proposals, SPP, Financials & Costs -->
         <div class="space-y-6 lg:col-span-2">
-
-            <!-- Proposal & Official Document (SPP) Status -->
-            <div class="card-clean p-5 space-y-4">
-                <h3 class="font-bold text-slate-900 text-sm border-b border-slate-100 pb-2.5 flex items-center gap-2">
-                    <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                    Surat Pesanan Penjualan (SPP) & Proposal Harga
-                </h3>
-
-                @if($unit->officialDocument)
-                    <div class="bg-emerald-50/80 border border-emerald-200 rounded-xl p-4 space-y-2 text-xs">
-                        <div class="flex items-center justify-between text-emerald-900">
-                            <span class="font-mono font-bold text-sm">{{ $unit->officialDocument->document_number }}</span>
-                            <span class="bg-emerald-700 text-white font-bold text-[10px] px-2 py-0.5 rounded">Resmi Terbit</span>
-                        </div>
-                        <div class="grid grid-cols-2 gap-2 text-slate-700 pt-2 border-t border-emerald-200/60">
-                            <div>
-                                <span class="text-slate-500 block text-[10px]">Nama Pembeli:</span>
-                                <span class="font-bold text-slate-900">{{ $unit->officialDocument->buyer_name }}</span>
-                            </div>
-                            <div>
-                                <span class="text-slate-500 block text-[10px]">Kontak:</span>
-                                <span class="font-mono font-semibold">{{ $unit->officialDocument->buyer_contact }}</span>
-                            </div>
-                            <div class="col-span-2">
-                                <span class="text-slate-500 block text-[10px]">Alamat Pembeli:</span>
-                                <span>{{ $unit->officialDocument->buyer_address }}</span>
-                            </div>
-                        </div>
+            <!-- Proposal & Official Document (SPP) Status (Hidden from Pengawas Project) -->
+            @if(!auth()->user()->isPengawasProject())
+                <div class="card-clean p-5 space-y-4">
+                    <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
+                        <h3 class="font-bold text-slate-900 text-sm flex items-center gap-2">
+                            <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 01-2 2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                            <span>Surat Pesanan Penjualan (SPP) & Proposal Harga</span>
+                        </h3>
                     </div>
-                @else
-                    <div class="text-xs text-slate-500 bg-slate-50 p-3.5 rounded-xl border border-slate-100">
-                        Belum ada dokumen SPP resmi terbit untuk unit ini.
-                    </div>
-                @endif
 
-                <!-- Proposals History (Req #5: Without profit margin display) -->
-                <div class="pt-2">
-                    <p class="text-xs font-bold text-slate-700 mb-2">Riwayat Proposal Harga Jual:</p>
-                    <div class="space-y-2">
-                        @forelse($unit->proposals as $prop)
-                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200/60 text-xs flex flex-col md:flex-row md:items-center justify-between gap-2">
-                                <div>
-                                    <span class="font-bold text-slate-900">Pengajuan Rp {{ number_format($prop->proposed_price, 0, ',', '.') }}</span>
-                                    <span class="text-slate-500 text-[10px] ml-2">by {{ $prop->proposer->name }}</span>
-                                    <p class="text-[10px] text-slate-500 mt-0.5">Catatan: "{{ $prop->notes }}"</p>
-                                </div>
+                    @if($unit->officialDocument)
+                        <div class="bg-emerald-50/80 border border-emerald-200 rounded-xl p-4 space-y-2 text-xs">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-emerald-900">
                                 <div class="flex items-center gap-2">
-                                    @if($prop->status === 'disetujui')
-                                        <span class="status-disetujui">ACC</span>
-                                    @elseif($prop->status === 'ditolak')
-                                        <span class="status-ditolak">Ditolak</span>
-                                    @else
-                                        <span class="status-menunggu">Menunggu</span>
-                                    @endif
+                                    <span class="font-mono font-bold text-sm">{{ $unit->officialDocument->document_number }}</span>
+                                    <span class="bg-emerald-700 text-white font-bold text-[10px] px-2 py-0.5 rounded">Resmi Terbit</span>
+                                </div>
+                                <button wire:click="openViewerModal('pdf', '{{ route('documents.stream', ['id' => $unit->officialDocument->id]) }}', 'PDF Surat Pesanan Penjualan - {{ $unit->officialDocument->document_number }}')" class="btn-primary text-xs px-2.5 py-1 bg-sky-600 hover:bg-sky-700 shadow-xs flex items-center gap-1 shrink-0">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                                    <span>Lihat / Cetak SPP PDF</span>
+                                </button>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-slate-700 pt-2 border-t border-emerald-200/60">
+                                <div>
+                                    <span class="text-slate-500 block text-[10px]">Nama Pembeli:</span>
+                                    <span class="font-bold text-slate-900">{{ $unit->officialDocument->buyer_name }}</span>
+                                </div>
+                                <div>
+                                    <span class="text-slate-500 block text-[10px]">Kontak:</span>
+                                    <span class="font-mono font-semibold">{{ $unit->officialDocument->buyer_contact }}</span>
+                                </div>
+                                <div class="sm:col-span-2">
+                                    <span class="text-slate-500 block text-[10px]">Alamat Pembeli:</span>
+                                    <span>{{ $unit->officialDocument->buyer_address }}</span>
                                 </div>
                             </div>
-                        @empty
-                            <p class="text-slate-400 text-xs italic">Belum ada riwayat pengajuan harga.</p>
-                        @endforelse
+                        </div>
+                    @else
+                        <div class="text-xs text-slate-500 bg-slate-50 p-3.5 rounded-xl border border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                            <span>Belum ada dokumen SPP resmi terbit untuk unit ini.</span>
+                            @if(auth()->user()->isMarketing() || auth()->user()->isFinance() || auth()->user()->isFounder())
+                                <a href="{{ route('documents.index') }}" class="text-xs font-semibold text-blue-600 hover:underline">Kelola Dokumen SPP &rarr;</a>
+                            @endif
+                        </div>
+                    @endif
+
+                    <!-- Proposals History -->
+                    <div class="pt-2">
+                        <div class="flex items-center justify-between mb-2">
+                            <p class="text-xs font-bold text-slate-700">Riwayat Proposal Harga Jual:</p>
+                            @if(auth()->user()->isMarketing() && $unit->category !== 'infrastruktur' && $unit->status === 'tersedia')
+                                <a href="{{ route('proposals.index', ['create_unit_id' => $unit->id]) }}" class="text-[11px] font-semibold text-blue-600 hover:underline">
+                                    + Ajukan Proposal Baru
+                                </a>
+                            @endif
+                        </div>
+                        <div class="space-y-2">
+                            @forelse($unit->proposals as $prop)
+                                <div class="p-3 bg-slate-50 rounded-xl border border-slate-200/60 text-xs flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                                    <div>
+                                        <span class="font-bold text-slate-900">Pengajuan Rp {{ number_format($prop->proposed_price, 0, ',', '.') }}</span>
+                                        <span class="text-slate-500 text-[10px] ml-2">by {{ $prop->proposer->name }}</span>
+                                        <p class="text-[10px] text-slate-500 mt-0.5">Catatan: "{{ $prop->notes }}"</p>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        @if($prop->status === 'disetujui')
+                                            <span class="status-disetujui">ACC</span>
+                                        @elseif($prop->status === 'ditolak')
+                                            <span class="status-ditolak">Ditolak</span>
+                                        @else
+                                            <span class="status-menunggu">Menunggu Approval</span>
+                                        @endif
+                                    </div>
+                                </div>
+                            @empty
+                                <p class="text-slate-400 text-xs italic">Belum ada riwayat pengajuan harga.</p>
+                            @endforelse
+                        </div>
                     </div>
                 </div>
-            </div>
+            @endif
 
             <!-- Installment & Buyer Payments (Financial Data - Hidden from Pengawas Project) -->
             @if(!auth()->user()->isPengawasProject() && $unit->installment)
@@ -589,7 +620,7 @@
 
                     <div>
                         <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider">Total Nominal Gaji (Rp)</label>
-                        <input type="number" wire:model="payroll_agreed_salary" placeholder="15000000" class="input-clean w-full font-mono font-bold text-slate-900 text-sm">
+                        <x-currency-input model="payroll_agreed_salary" class="input-clean w-full font-mono font-bold text-slate-900 text-sm" placeholder="Contoh: 15.000.000" />
                         @error('payroll_agreed_salary') <span class="text-rose-500 text-[10px] mt-1 block">{{ $message }}</span> @enderror
                     </div>
 
@@ -658,7 +689,7 @@
 
                     <div>
                         <label class="block font-bold text-slate-700 uppercase mb-1.5 text-xs">Nominal Gaji Dibayarkan (Rp)</label>
-                        <input type="number" wire:model.live="payroll_amount_gross" placeholder="Misal: 2500000" required class="input-clean w-full font-mono font-bold text-slate-900 text-base py-3 px-4 rounded-xl border border-slate-200 focus:ring-2 focus:ring-emerald-500">
+                        <x-currency-input model="payroll_amount_gross" class="input-clean w-full font-mono font-bold text-slate-900 text-base py-3 px-4 rounded-xl border border-slate-200 focus:ring-2 focus:ring-emerald-500" placeholder="Misal: 2.500.000" />
                         @error('payroll_amount_gross') <span class="text-xs text-rose-500 mt-1 block">{{ $message }}</span> @enderror
                     </div>
 
@@ -733,7 +764,7 @@
                         </div>
                         <div>
                             <label class="block font-bold text-slate-700 mb-1.5 uppercase tracking-wider text-xs">Harga Satuan (Rp)</label>
-                            <input type="number" wire:model.live="material_unit_price" required placeholder="65000" class="input-clean w-full text-sm font-mono font-bold py-2.5 px-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-amber-500">
+                            <x-currency-input model="material_unit_price" class="input-clean w-full text-sm font-mono font-bold py-2.5 px-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-amber-500" placeholder="65.000" />
                         </div>
                     </div>
 
@@ -800,7 +831,7 @@
 
                     <div>
                         <label class="block text-slate-700 font-bold mb-1">Nominal Setoran (Rp)</label>
-                        <input type="number" step="1000" wire:model="installment_payment_amount" class="w-full input-clean font-mono text-xs" placeholder="Contoh: 5000000">
+                        <x-currency-input model="installment_payment_amount" class="w-full input-clean font-mono text-xs font-bold" placeholder="Contoh: 5.000.000" />
                         @error('installment_payment_amount') <span class="text-rose-600 text-[10px]">{{ $message }}</span> @enderror
                     </div>
 
@@ -843,13 +874,13 @@
                 <form wire:submit.prevent="saveSetupInstallment" class="space-y-4 text-xs">
                     <div>
                         <label class="block text-slate-700 font-bold mb-1">Total Harga Deal Unit (Rp)</label>
-                        <input type="number" step="1000" wire:model.live="setup_total_price" wire:change="calculateMonthlyInstallment" class="w-full input-clean font-mono text-xs" placeholder="Contoh: 150000000">
+                        <x-currency-input model="setup_total_price" class="w-full input-clean font-mono text-xs font-bold" placeholder="Contoh: 150.000.000" />
                         @error('setup_total_price') <span class="text-rose-600 text-[10px]">{{ $message }}</span> @enderror
                     </div>
 
                     <div>
                         <label class="block text-slate-700 font-bold mb-1">Uang Muka / DP (Rp)</label>
-                        <input type="number" step="1000" wire:model.live="setup_down_payment" wire:change="calculateMonthlyInstallment" class="w-full input-clean font-mono text-xs" placeholder="Contoh: 30000000">
+                        <x-currency-input model="setup_down_payment" class="w-full input-clean font-mono text-xs font-bold" placeholder="Contoh: 30.000.000" />
                     </div>
 
                     <div class="grid grid-cols-2 gap-3">

@@ -12,6 +12,7 @@ class WorkerAssignment extends Model
 
     protected $fillable = [
         'worker_id',
+        'user_id',
         'project_id',
         'unit_id',
         'assigned_role',
@@ -28,6 +29,11 @@ class WorkerAssignment extends Model
     public function worker(): BelongsTo
     {
         return $this->belongsTo(Worker::class);
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 
     public function project(): BelongsTo

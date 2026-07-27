@@ -11,8 +11,8 @@ class UnitSeeder extends Seeder
 {
     public function run(): void
     {
-        $founder = User::where('email', 'founder@kavling.com')->first();
-        $createdById = $founder ? $founder->id : 1;
+        $founder = User::where('role', 'founder')->first() ?? User::first();
+        $createdById = $founder?->id;
 
         $unitsData = [
             // =========================================================================

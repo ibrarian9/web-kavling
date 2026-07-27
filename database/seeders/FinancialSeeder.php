@@ -12,7 +12,7 @@ class FinancialSeeder extends Seeder
 {
     public function run(): void
     {
-        $finance = User::where('email', 'finance@kavling.com')->first();
+        $finance = User::where('role', 'finance')->first() ?? User::first();
         $finId = $finance ? $finance->id : 3;
 
         // -------------------------------------------------------------

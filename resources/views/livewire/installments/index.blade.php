@@ -111,11 +111,11 @@
                     <div class="grid grid-cols-2 gap-3">
                         <div>
                             <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider">Total Harga Jual (Rp)</label>
-                            <input type="number" step="1000" wire:model.live="total_price" class="input-clean w-full font-bold font-mono">
+                            <x-currency-input model="total_price" class="input-clean w-full font-bold font-mono" placeholder="Rp 0" />
                         </div>
                         <div>
                             <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider">Uang Muka / DP (Rp)</label>
-                            <input type="number" step="1000" wire:model.live="down_payment" class="input-clean w-full font-bold font-mono text-emerald-700">
+                            <x-currency-input model="down_payment" class="input-clean w-full font-bold font-mono text-emerald-700" placeholder="Rp 0" />
                         </div>
                     </div>
 
@@ -177,7 +177,7 @@
 
                     <div>
                         <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider">Nominal Pembayaran Diterima (Rp)</label>
-                        <input type="number" step="1000" wire:model="payment_amount" required class="input-clean w-full font-bold text-sm font-mono">
+                        <x-currency-input model="payment_amount" class="input-clean w-full font-bold text-sm font-mono" placeholder="Rp 0" />
                     </div>
 
                     <div class="grid grid-cols-2 gap-3">

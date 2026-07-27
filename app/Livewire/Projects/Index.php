@@ -18,13 +18,14 @@ class Index extends Component
     public $standard_land_area = 100.00;
     public $excess_price_per_sqm = 1500000.00;
     public $base_price = 150000000.00;
+    public $total_project_price = 0;
     public $editingProjectId = null;
 
-    // Worker Assignment Modal
-    public bool $showWorkerModal = false;
+    // Pengawas Assignment Modal (Founder Only)
+    public bool $showWorkerModal = false; // keep variable name for blade compatibility
     public ?int $assignProjectId = null;
-    public ?int $worker_id = null;
-    public string $assigned_role = 'Mandor Proyek';
+    public ?int $assign_user_id = null;
+    public string $assigned_role = 'Pengawas Lapangan Proyek';
 
     protected $rules = [
         'name' => 'required|string|max:255',
@@ -32,6 +33,7 @@ class Index extends Component
         'standard_land_area' => 'required|numeric|min:1',
         'excess_price_per_sqm' => 'required|numeric|min:0',
         'base_price' => 'required|numeric|min:0',
+        'total_project_price' => 'nullable|numeric|min:0',
     ];
 
     public function openModal()
@@ -52,6 +54,7 @@ class Index extends Component
         $this->standard_land_area = 100.00;
         $this->excess_price_per_sqm = 1500000.00;
         $this->base_price = 150000000.00;
+        $this->total_project_price = 0;
         $this->editingProjectId = null;
     }
 
@@ -73,6 +76,7 @@ class Index extends Component
                 'standard_land_area' => $this->standard_land_area,
                 'excess_price_per_sqm' => $this->excess_price_per_sqm,
                 'base_price' => $this->base_price,
+                'total_project_price' => $this->total_project_price ?: 0,
                 'created_by' => auth()->id(),
                 'status' => 'aktif',
             ]
@@ -91,59 +95,107 @@ class Index extends Component
         $this->standard_land_area = $project->standard_land_area;
         $this->excess_price_per_sqm = $project->excess_price_per_sqm;
         $this->base_price = $project->base_price;
+        $this->total_project_price = $project->total_project_price;
 
         $this->showModal = true;
     }
 
-    // Direct Worker Assignment for Project
+    // Direct Pengawas Project Assignment (Founder Only)
     public function openWorkerModal($projectId)
     {
+        if (!auth()->user()->isFounder()) {
+            session()->flash('error', 'Hanya Founder yang berhak menugaskan Pengawas ke proyek.');
+            return;
+        }
+
         $this->assignProjectId = $projectId;
-        $this->worker_id = Worker::where('status', 'active')->first()?->id;
-        $this->assigned_role = 'Mandor Utama Proyek';
+
+        // Filter out Pengawas users who are already assigned to this project
+        $alreadyAssignedUserIds = WorkerAssignment::where('project_id', $projectId)
+            ->where('status', 'active')
+            ->whereNotNull('user_id')
+            ->pluck('user_id');
+
+        $this->assign_user_id = \App\Models\User::where('role', 'pengawas_project')
+            ->where('is_active', true)
+            ->whereNotIn('id', $alreadyAssignedUserIds)
+            ->first()?->id;
+
+        $this->assigned_role = 'Pengawas Lapangan Proyek';
         $this->showWorkerModal = true;
     }
 
     public function saveWorkerAssignment()
     {
         $user = auth()->user();
-        if (!$user->isFounder() && !$user->isSupervisor() && !$user->isPengawasProject()) {
-            session()->flash('error', 'Hanya Tim Operasional Lapangan (Founder, Supervisor, Pengawas) yang berhak menugaskan pekerja.');
+        if (!$user->isFounder()) {
+            session()->flash('error', 'Hanya Founder yang berhak menugaskan Pengawas ke proyek.');
             return;
         }
 
         $this->validate([
-            'worker_id' => 'required|exists:workers,id',
+            'assign_user_id' => 'required|exists:users,id',
             'assigned_role' => 'required|string|max:255',
         ]);
 
         $project = Project::findOrFail($this->assignProjectId);
+        $pengawasUser = \App\Models\User::findOrFail($this->assign_user_id);
 
-        WorkerAssignment::create([
-            'worker_id' => $this->worker_id,
-            'project_id' => $project->id,
-            'unit_id' => null,
-            'assigned_role' => $this->assigned_role,
-            'start_date' => now()->toDateString(),
-            'status' => 'active',
-        ]);
+        WorkerAssignment::updateOrCreate(
+            [
+                'user_id' => $pengawasUser->id,
+                'project_id' => $project->id,
+            ],
+            [
+                'worker_id' => null,
+                'unit_id' => null,
+                'assigned_role' => $this->assigned_role,
+                'start_date' => now()->toDateString(),
+                'status' => 'active',
+            ]
+        );
 
-        session()->flash('success', 'Pekerja berhasil ditugaskan pada proyek ' . $project->name . '!');
+        \App\Services\ActivityLogger::log('PROJECT_ASSIGN_PENGAWAS', "Founder menugaskan Pengawas Project {$pengawasUser->name} pada proyek {$project->name}.");
+        session()->flash('success', "Pengawas Project {$pengawasUser->name} berhasil ditugaskan pada proyek {$project->name}!");
+
         $this->showWorkerModal = false;
     }
 
     public function render()
     {
-        $projects = Project::with(['units', 'assignments.worker'])
+        $projectsQuery = Project::with(['units', 'assignments.user'])
             ->withCount('units')
-            ->latest()
-            ->paginate(10);
+            ->latest();
 
-        $allWorkers = Worker::where('status', 'active')->orderBy('name')->get();
+        // Scope projects for Pengawas Project user to only their assigned projects
+        if (auth()->user() && auth()->user()->isPengawasProject()) {
+            $assignedProjectIds = WorkerAssignment::where('user_id', auth()->id())
+                ->where('status', 'active')
+                ->pluck('project_id');
+            $projectsQuery->whereIn('id', $assignedProjectIds);
+        }
+
+        $projects = $projectsQuery->paginate(10);
+
+        // Exclude Pengawas users who are already assigned to the selected modal project
+        $alreadyAssignedUserIds = [];
+        if ($this->assignProjectId) {
+            $alreadyAssignedUserIds = WorkerAssignment::where('project_id', $this->assignProjectId)
+                ->where('status', 'active')
+                ->whereNotNull('user_id')
+                ->pluck('user_id')
+                ->toArray();
+        }
+
+        $pengawasUsers = \App\Models\User::where('role', 'pengawas_project')
+            ->where('is_active', true)
+            ->whereNotIn('id', $alreadyAssignedUserIds)
+            ->orderBy('name')
+            ->get();
 
         return view('livewire.projects.index', [
             'projects' => $projects,
-            'allWorkers' => $allWorkers,
+            'pengawasUsers' => $pengawasUsers,
             'showModal' => $this->showModal,
             'showWorkerModal' => $this->showWorkerModal,
         ])->layout('components.layouts.app', ['title' => 'Manajemen Proyek Properti']);

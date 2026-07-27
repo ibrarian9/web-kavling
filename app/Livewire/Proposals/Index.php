@@ -37,6 +37,28 @@ class Index extends Component
     public $buyer_contact = '';
     public $buyer_address = '';
 
+    // Viewer Modal (PDF Viewer)
+    public bool $showViewerModal = false;
+    public string $viewerType = 'pdf';
+    public string $viewerUrl = '';
+    public string $viewerTitle = '';
+
+    public function openViewerModal(string $type, string $url, string $title = ''): void
+    {
+        $this->viewerType = $type;
+        $this->viewerUrl = $url;
+        $this->viewerTitle = $title ?: 'Pratinjau Dokumen SPP PDF';
+        $this->showViewerModal = true;
+    }
+
+    public function closeViewerModal(): void
+    {
+        $this->showViewerModal = false;
+        $this->viewerType = '';
+        $this->viewerUrl = '';
+        $this->viewerTitle = '';
+    }
+
     protected $queryString = ['create_unit_id'];
 
     public function mount()

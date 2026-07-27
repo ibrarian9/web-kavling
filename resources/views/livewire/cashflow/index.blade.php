@@ -223,7 +223,7 @@
 
                     <div>
                         <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider">Nominal (Rp)</label>
-                        <input type="number" step="1000" wire:model="amount" required class="input-clean w-full font-bold text-sm font-mono">
+                        <x-currency-input model="amount" class="input-clean w-full font-bold text-sm font-mono" placeholder="Rp 0" />
                     </div>
 
                     <div>

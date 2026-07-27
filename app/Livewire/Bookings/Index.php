@@ -18,6 +18,28 @@ class Index extends Component
     public string $typeFilter = '';
     public string $statusFilter = '';
 
+    // Viewer Modal (PDF Viewer)
+    public bool $showViewerModal = false;
+    public string $viewerType = 'pdf';
+    public string $viewerUrl = '';
+    public string $viewerTitle = '';
+
+    public function openViewerModal(string $type, string $url, string $title = ''): void
+    {
+        $this->viewerType = $type;
+        $this->viewerUrl = $url;
+        $this->viewerTitle = $title ?: 'Pratinjau Resi PDF';
+        $this->showViewerModal = true;
+    }
+
+    public function closeViewerModal(): void
+    {
+        $this->showViewerModal = false;
+        $this->viewerType = '';
+        $this->viewerUrl = '';
+        $this->viewerTitle = '';
+    }
+
     // Modal state
     public bool $showModal = false;
     public ?int $project_id = null;

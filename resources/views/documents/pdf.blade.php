@@ -115,7 +115,7 @@
         <div class="doc-num">Nomor: {{ $doc->document_number }}</div>
     </div>
 
-    <p>Yang bertanda tangan di bawah ini menerangkan bahwa telah disetujui pemesanan unit properti dengan rincian sebagai berikut:</p>
+    <p>Dokumen resmi ini menerangkan bahwa telah disetujui pemesanan unit properti dengan rincian sebagai berikut:</p>
 
     <!-- Data Pembeli -->
     <table class="info-table">

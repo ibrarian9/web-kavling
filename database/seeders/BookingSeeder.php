@@ -12,8 +12,8 @@ class BookingSeeder extends Seeder
 {
     public function run(): void
     {
-        $marketing1 = User::where('email', 'marketing@kavling.com')->first();
-        $marketing2 = User::where('email', 'marketing2@kavling.com')->first();
+        $marketing1 = User::where('role', 'marketing')->first() ?? User::first();
+        $marketing2 = $marketing1;
 
         $mkt1Id = $marketing1 ? $marketing1->id : 4;
         $mkt2Id = $marketing2 ? $marketing2->id : 5;

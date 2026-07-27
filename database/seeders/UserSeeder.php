@@ -23,44 +23,40 @@ class UserSeeder extends Seeder
         // 2. Create Production Users (Pekanbaru, Riau Team)
         $usersData = [
             [
-                'name' => 'H. Tengku Zulkarnain, S.E. (Founder)',
-                'email' => 'founder@kavling.com',
+                'name' => 'Marwansyah',
+                'email' => 'marwansyah@simatlantik.my.id',
                 'role' => 'founder',
+                'password' => 'password123'
             ],
             [
-                'name' => 'Zulham Efendi, S.T. (Pengawas Lapangan 1)',
-                'email' => 'pengawas@kavling.com',
+                'name' => 'Yannoki',
+                'email' => 'Yannoki12@gmail.com',
                 'role' => 'pengawas_project',
+                'password' => '150594'
             ],
             [
                 'name' => 'Ir. H. Ahmad Syafrizal (Field Supervisor)',
                 'email' => 'supervisor@kavling.com',
                 'role' => 'supervisor',
+                'password' => 'password123'
             ],
             [
                 'name' => 'Ibu Wan Rahmah, S.E., M.Si. (Chief Finance)',
                 'email' => 'finance@kavling.com',
                 'role' => 'finance',
+                'password' => 'password123'
             ],
             [
                 'name' => 'Rian Gunawan, S.Kom. (Marketing Executive)',
                 'email' => 'marketing@kavling.com',
                 'role' => 'marketing',
-            ],
-            [
-                'name' => 'Devi Permata Melayu (Marketing)',
-                'email' => 'marketing2@kavling.com',
-                'role' => 'marketing',
-            ],
-            [
-                'name' => 'Rizky Kurniawan, S.M. (Marketing Senior)',
-                'email' => 'marketing3@kavling.com',
-                'role' => 'marketing',
+                'password' => 'password123'
             ],
             [
                 'name' => 'Bambang Syafruddin, A.Md. (Pengawas Lapangan 2)',
                 'email' => 'pengawas2@kavling.com',
                 'role' => 'pengawas_project',
+                'password' => 'password123'
             ],
         ];
 
@@ -69,7 +65,7 @@ class UserSeeder extends Seeder
                 ['email' => $data['email']],
                 [
                     'name' => $data['name'],
-                    'password' => Hash::make('password123'),
+                    'password' => Hash::make($data['password']),
                     'role' => $data['role'],
                     'is_active' => true,
                 ]

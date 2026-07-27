@@ -15,6 +15,7 @@ use App\Livewire\Proposals\Index as ProposalsIndex;
 use App\Livewire\Units\Index as UnitsIndex;
 use App\Livewire\Units\Show as UnitShow;
 use App\Livewire\Bookings\Index as BookingsIndex;
+use App\Http\Controllers\LandPaymentReceiptController;
 use App\Http\Controllers\PayrollReceiptController;
 use App\Http\Controllers\PayrollVerificationController;
 use App\Livewire\FieldExpenses\Index as FieldExpensesIndex;
@@ -35,6 +36,7 @@ Route::get('/', function () {
 Route::get('/verify-receipt/{id}', [ReceiptVerificationController::class, 'verify'])->name('verify.receipt');
 Route::get('/verify-document/{id}', [DocumentVerificationController::class, 'verify'])->name('verify.document');
 Route::get('/verify-payroll/{uuid}', [PayrollVerificationController::class, 'verify'])->name('verify.payroll');
+Route::get('/verify-land-payment/{uuid}', [LandPaymentReceiptController::class, 'verify'])->name('verify.land-payment');
 
 // Authenticated Routes
 Route::middleware(['auth'])->group(function () {
@@ -45,6 +47,7 @@ Route::middleware(['auth'])->group(function () {
     // Master Data Proyek & Unit
     Route::get('/projects', ProjectsIndex::class)->name('projects.index');
     Route::get('/projects/{id}', ProjectsShow::class)->name('projects.show');
+    Route::get('/land-payment/{uuid}/receipt', [LandPaymentReceiptController::class, 'streamReceipt'])->name('land-payment.receipt');
     Route::get('/units', UnitsIndex::class)->name('units.index');
     Route::get('/units/{id}', UnitShow::class)->name('units.show');
 
@@ -64,6 +67,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/installments', InstallmentsIndex::class)->name('installments.index');
     Route::get('/cashflow', CashflowIndex::class)->name('cashflow.index');
 
-    // Manajemen User (Founder Only)
+    // Manajemen User & System Log (Founder Only)
     Route::get('/users', \App\Livewire\Users\Index::class)->name('users.index');
+    Route::get('/activity-logs', \App\Livewire\ActivityLogs\Index::class)->name('activity-logs.index');
 });

@@ -58,4 +58,9 @@ class User extends Authenticatable
     {
         return $this->role === 'marketing';
     }
+
+    public function assignedProjects()
+    {
+        return $this->belongsToMany(Project::class, 'worker_assignments', 'user_id', 'project_id')->where('worker_assignments.status', 'active');
+    }
 }

@@ -11,11 +11,11 @@ class PriceProposalSeeder extends Seeder
 {
     public function run(): void
     {
-        $marketing = User::where('email', 'marketing@kavling.com')->first();
-        $marketing2 = User::where('email', 'marketing2@kavling.com')->first();
-        $marketing3 = User::where('email', 'marketing3@kavling.com')->first();
-        $founder = User::where('email', 'founder@kavling.com')->first();
-        $supervisor = User::where('email', 'supervisor@kavling.com')->first();
+        $marketing = User::where('role', 'marketing')->first() ?? User::first();
+        $marketing2 = $marketing;
+        $marketing3 = $marketing;
+        $founder = User::where('role', 'founder')->first() ?? User::first();
+        $supervisor = User::where('role', 'supervisor')->first() ?? User::first();
 
         $mktId = $marketing ? $marketing->id : 4;
         $mkt2Id = $marketing2 ? $marketing2->id : 5;

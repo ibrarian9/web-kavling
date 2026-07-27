@@ -35,7 +35,17 @@
 
     <!-- Project Specifications & Workers Strip -->
     <div class="card-clean p-4 bg-slate-900 text-white flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs">
+        <div class="grid grid-cols-2 sm:grid-cols-5 gap-4 text-xs">
+            <div>
+                <span class="text-slate-400 block text-[10px] uppercase font-bold tracking-wider">Harga Beli Lahan</span>
+                <span class="font-mono font-bold text-sm text-purple-400">
+                    @if($project->total_project_price > 0)
+                        Rp {{ number_format($project->total_project_price, 0, ',', '.') }}
+                    @else
+                        <span class="text-slate-400 font-normal italic">-</span>
+                    @endif
+                </span>
+            </div>
             <div>
                 <span class="text-slate-400 block text-[10px] uppercase font-bold tracking-wider">Luas Standar</span>
                 <span class="font-mono font-bold text-sm text-emerald-400">{{ number_format($project->standard_land_area, 0, ',', '.') }} m²</span>
@@ -76,57 +86,174 @@
         </div>
     </div>
 
-    <!-- Financial KPI Dashboard Cards (Hidden from Pengawas Project) -->
+    <!-- Skema Pembayaran Lahan Proyek (ke Penjual Tanah) Card Header Summary -->
     @if(!auth()->user()->isPengawasProject())
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            <!-- Total Nilai Deal Penjualan -->
-            <div class="card-clean p-5 relative overflow-hidden bg-emerald-950/10 border-emerald-200/80">
-                <div class="flex items-center justify-between">
-                    <span class="text-[11px] font-bold uppercase tracking-wider text-emerald-800">Total Nilai Deal Proyek</span>
-                    <div class="p-2.5 rounded-xl bg-emerald-500/20 text-emerald-700">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <div class="card-clean p-5 bg-gradient-to-r from-purple-900 via-slate-900 to-indigo-900 text-white shadow-md">
+            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-5">
+                <div class="space-y-1">
+                    <div class="flex items-center gap-2">
+                        <span class="px-2.5 py-0.5 rounded-md bg-purple-500/20 text-purple-300 font-mono text-[10px] uppercase font-bold border border-purple-400/30">Skema Beli Lahan dari Penjual</span>
+                        @if($project->total_project_price > 0 && $project->remaining_balance <= 0)
+                            <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/30 text-emerald-300 border border-emerald-400/40">LAHAN LUNAS</span>
+                        @endif
+                    </div>
+                    <h3 class="text-lg font-extrabold text-white tracking-tight">Pembelian & Pelunasan Lahan Proyek ke Penjual Tanah</h3>
+                    <p class="text-xs text-purple-200/80">Pencatatan termin & riwayat pembayaran tanah/lahan proyek {{ $project->name }} ke Penjual Lahan</p>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 font-mono text-xs">
+                    <div class="bg-white/10 backdrop-blur-sm p-3 rounded-xl border border-white/10">
+                        <span class="text-purple-300 block text-[10px] uppercase font-bold tracking-wider">Harga Beli Lahan</span>
+                        <span class="font-bold text-base text-white">
+                            @if($project->total_project_price > 0)
+                                Rp {{ number_format($project->total_project_price, 0, ',', '.') }}
+                            @else
+                                <span class="text-slate-400 font-normal italic">Belum diset</span>
+                            @endif
+                        </span>
+                    </div>
+
+                    <div class="bg-white/10 backdrop-blur-sm p-3 rounded-xl border border-white/10">
+                        <span class="text-emerald-300 block text-[10px] uppercase font-bold tracking-wider">Sudah Dibayar ke Penjual</span>
+                        <span class="font-bold text-base text-emerald-400">Rp {{ number_format($project->total_paid, 0, ',', '.') }}</span>
+                    </div>
+
+                    <div class="bg-white/10 backdrop-blur-sm p-3 rounded-xl border border-white/10">
+                        <span class="text-amber-300 block text-[10px] uppercase font-bold tracking-wider">Sisa Hutang / Tagihan Lahan</span>
+                        <span class="font-bold text-base text-amber-300">Rp {{ number_format($project->remaining_balance, 0, ',', '.') }}</span>
                     </div>
                 </div>
-                <p class="text-2xl font-extrabold text-emerald-700 font-mono mt-2">Rp {{ number_format($totalSalesRevenue, 0, ',', '.') }}</p>
-                <p class="text-[11px] text-emerald-700 mt-1 font-medium">{{ $soldUnits }} Unit Deal / Terjual / Booked</p>
+
+                @if(auth()->user()->isFounder() || auth()->user()->isFinance() || auth()->user()->isSupervisor())
+                    <div class="shrink-0">
+                        <button wire:click="openPaymentModal" class="w-full sm:w-auto bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-xs px-4 py-3 rounded-xl shadow-lg transition inline-flex items-center justify-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                            <span>Catat Bayar Lahan ke Penjual</span>
+                        </button>
+                    </div>
+                @endif
             </div>
 
-            <!-- Total Terbayar Masuk -->
-            <div class="card-clean p-5 relative overflow-hidden bg-sky-950/10 border-sky-200/80">
-                <div class="flex items-center justify-between">
-                    <span class="text-[11px] font-bold uppercase tracking-wider text-sky-800">Total Kas Masuk Terbayar</span>
-                    <div class="p-2.5 rounded-xl bg-sky-500/20 text-sky-700">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <!-- Progress Bar -->
+            @if($project->total_project_price > 0)
+                <div class="mt-4 pt-3 border-t border-purple-800/60">
+                    <div class="flex items-center justify-between text-[11px] font-bold text-purple-200 mb-1">
+                        <span>Progress Pelunasan Lahan ke Penjual: {{ number_format($project->payment_progress_percentage, 1) }}%</span>
+                        <span>{{ number_format($project->total_paid, 0, ',', '.') }} / {{ number_format($project->total_project_price, 0, ',', '.') }}</span>
+                    </div>
+                    <div class="w-full h-2.5 bg-slate-800 rounded-full overflow-hidden border border-purple-700/50">
+                        <div class="h-full bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full transition-all duration-500" style="width: {{ $project->payment_progress_percentage }}%"></div>
                     </div>
                 </div>
-                <p class="text-2xl font-extrabold text-sky-700 font-mono mt-2">Rp {{ number_format($totalPaidRevenue, 0, ',', '.') }}</p>
-                <p class="text-[11px] text-sky-700 mt-1 font-medium">Setoran Booking, DP, & Cicilan Masuk</p>
+            @endif
+        </div>
+    @endif
+
+    <!-- Unit Status & Financial KPI Dashboard Cards (Hidden from Pengawas Project) -->
+    @if(!auth()->user()->isPengawasProject())
+        <div class="space-y-4">
+            <!-- Unit Status Summary Grid -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                <!-- Unit Terjual -->
+                <div class="card-clean p-4 bg-emerald-50/70 border border-emerald-200/80 space-y-1">
+                    <div class="flex items-center justify-between text-emerald-800">
+                        <span class="text-[10px] font-bold uppercase tracking-wider">Unit Terjual / Deal</span>
+                        <span class="p-1.5 rounded-lg bg-emerald-200/60 text-emerald-800 font-extrabold">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        </span>
+                    </div>
+                    <p class="text-2xl font-extrabold font-mono text-emerald-900">{{ $soldUnits }} <span class="text-xs font-normal font-sans text-emerald-700">Unit</span></p>
+                    <p class="text-[10px] text-emerald-700 font-medium">Disetujui / Booked / Terjual</p>
+                </div>
+
+                <!-- Unit Belum Terjual / Tersedia -->
+                <div class="card-clean p-4 bg-sky-50/70 border border-sky-200/80 space-y-1">
+                    <div class="flex items-center justify-between text-sky-800">
+                        <span class="text-[10px] font-bold uppercase tracking-wider">Unit Belum Terjual</span>
+                        <span class="p-1.5 rounded-lg bg-sky-200/60 text-sky-800 font-extrabold">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+                        </span>
+                    </div>
+                    <p class="text-2xl font-extrabold font-mono text-sky-900">{{ $availableUnits }} <span class="text-xs font-normal font-sans text-sky-700">Unit</span></p>
+                    <p class="text-[10px] text-sky-700 font-medium">Masih Tersedia Ditawarkan</p>
+                </div>
+
+                <!-- Unit Lunas -->
+                <div class="card-clean p-4 bg-indigo-50/70 border border-indigo-200/80 space-y-1">
+                    <div class="flex items-center justify-between text-indigo-800">
+                        <span class="text-[10px] font-bold uppercase tracking-wider">Unit Sudah Lunas</span>
+                        <span class="p-1.5 rounded-lg bg-indigo-200/60 text-indigo-800 font-extrabold">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg>
+                        </span>
+                    </div>
+                    <p class="text-2xl font-extrabold font-mono text-indigo-900">{{ $fullyPaidUnitsCount ?? 0 }} <span class="text-xs font-normal font-sans text-indigo-700">Unit</span></p>
+                    <p class="text-[10px] text-indigo-700 font-medium">Pembayaran Selesai 100%</p>
+                </div>
+
+                <!-- Unit Cicilan / Belum Lunas -->
+                <div class="card-clean p-4 bg-amber-50/70 border border-amber-200/80 space-y-1">
+                    <div class="flex items-center justify-between text-amber-800">
+                        <span class="text-[10px] font-bold uppercase tracking-wider">Unit Masih Cicilan</span>
+                        <span class="p-1.5 rounded-lg bg-amber-200/60 text-amber-800 font-extrabold">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        </span>
+                    </div>
+                    <p class="text-2xl font-extrabold font-mono text-amber-900">{{ $installmentUnitsCount ?? 0 }} <span class="text-xs font-normal font-sans text-amber-700">Unit</span></p>
+                    <p class="text-[10px] text-amber-700 font-medium">Dalam Masa Cicilan / Belum Lunas</p>
+                </div>
             </div>
 
-            <!-- Sisa Piutang Penjualan -->
-            <div class="card-clean p-5 relative overflow-hidden bg-amber-950/10 border-amber-200/80">
-                <div class="flex items-center justify-between">
-                    <span class="text-[11px] font-bold uppercase tracking-wider text-amber-800">Sisa Tagihan / Piutang</span>
-                    <div class="p-2.5 rounded-xl bg-amber-500/20 text-amber-700">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <!-- Financial KPI Dashboard Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                <!-- Total Nilai Deal Penjualan -->
+                <div class="card-clean p-5 relative overflow-hidden bg-emerald-950/10 border-emerald-200/80">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[11px] font-bold uppercase tracking-wider text-emerald-800">Total Nilai Deal Proyek</span>
+                        <div class="p-2.5 rounded-xl bg-emerald-500/20 text-emerald-700">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        </div>
                     </div>
+                    <p class="text-2xl font-extrabold text-emerald-700 font-mono mt-2">Rp {{ number_format($totalSalesRevenue, 0, ',', '.') }}</p>
+                    <p class="text-[11px] text-emerald-700 mt-1 font-medium">{{ $soldUnits }} Unit Deal / Terjual / Booked</p>
                 </div>
-                <p class="text-2xl font-extrabold text-amber-700 font-mono mt-2">Rp {{ number_format($totalOutstandingReceivable, 0, ',', '.') }}</p>
-                <p class="text-[11px] text-amber-700 mt-1 font-medium">Piutang Pembeli Belum Lunas</p>
-            </div>
 
-            <!-- Total Biaya & Profit -->
-            <div class="card-clean p-5 relative overflow-hidden bg-purple-950/10 border-purple-200/80">
-                <div class="flex items-center justify-between">
-                    <span class="text-[11px] font-bold uppercase tracking-wider text-purple-800">Profit Proyek Bersih</span>
-                    <div class="p-2.5 rounded-xl bg-purple-500/20 text-purple-700">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+                <!-- Total Terbayar Masuk -->
+                <div class="card-clean p-5 relative overflow-hidden bg-sky-950/10 border-sky-200/80">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[11px] font-bold uppercase tracking-wider text-sky-800">Total Kas Masuk Terbayar</span>
+                        <div class="p-2.5 rounded-xl bg-sky-500/20 text-sky-700">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        </div>
                     </div>
+                    <p class="text-2xl font-extrabold text-sky-700 font-mono mt-2">Rp {{ number_format($totalPaidRevenue, 0, ',', '.') }}</p>
+                    <p class="text-[11px] text-sky-700 mt-1 font-medium">Setoran Booking, DP, & Cicilan Masuk</p>
                 </div>
-                <p class="text-2xl font-extrabold font-mono mt-2 {{ $totalProjectProfit >= 0 ? 'text-purple-700' : 'text-rose-700' }}">
-                    Rp {{ number_format($totalProjectProfit, 0, ',', '.') }}
-                </p>
-                <p class="text-[11px] text-purple-700 mt-1 font-medium">Pengeluaran: Rp {{ number_format($totalProjectExpenses, 0, ',', '.') }}</p>
+
+                <!-- Sisa Piutang Penjualan -->
+                <div class="card-clean p-5 relative overflow-hidden bg-amber-950/10 border-amber-200/80">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[11px] font-bold uppercase tracking-wider text-amber-800">Sisa Tagihan / Piutang</span>
+                        <div class="p-2.5 rounded-xl bg-amber-500/20 text-amber-700">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        </div>
+                    </div>
+                    <p class="text-2xl font-extrabold text-amber-700 font-mono mt-2">Rp {{ number_format($totalOutstandingReceivable, 0, ',', '.') }}</p>
+                    <p class="text-[11px] text-amber-700 mt-1 font-medium">Piutang Pembeli Belum Lunas</p>
+                </div>
+
+                <!-- Total Biaya & Profit -->
+                <div class="card-clean p-5 relative overflow-hidden bg-purple-950/10 border-purple-200/80">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[11px] font-bold uppercase tracking-wider text-purple-800">Profit Proyek Bersih</span>
+                        <div class="p-2.5 rounded-xl bg-purple-500/20 text-purple-700">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+                        </div>
+                    </div>
+                    <p class="text-2xl font-extrabold font-mono mt-2 {{ $totalProjectProfit >= 0 ? 'text-purple-700' : 'text-rose-700' }}">
+                        Rp {{ number_format($totalProjectProfit, 0, ',', '.') }}
+                    </p>
+                    <p class="text-[11px] text-purple-700 mt-1 font-medium">Pengeluaran: Rp {{ number_format($totalProjectExpenses, 0, ',', '.') }}</p>
+                </div>
             </div>
         </div>
     @endif
@@ -140,6 +267,12 @@
         </button>
 
         @if(!auth()->user()->isPengawasProject())
+            <button wire:click="$set('activeTab', 'payments')" class="pb-3 border-b-2 transition flex items-center gap-2 {{ $activeTab === 'payments' ? 'border-emerald-600 text-emerald-600' : 'border-transparent text-slate-400 hover:text-slate-600' }}">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                <span>Skema & Pembayaran Lahan Proyek</span>
+                <span class="bg-purple-100 text-purple-800 text-xs px-2 py-0.5 rounded-full font-mono">{{ count($projectPaymentsList) }}</span>
+            </button>
+
             <button wire:click="$set('activeTab', 'cashflow')" class="pb-3 border-b-2 transition flex items-center gap-2 {{ $activeTab === 'cashflow' ? 'border-emerald-600 text-emerald-600' : 'border-transparent text-slate-400 hover:text-slate-600' }}">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
                 <span>Laporan Arus Kas Proyek (Inflow & Outflow)</span>
@@ -318,6 +451,113 @@
         </div>
     @endif
 
+    <!-- TAB 3: Skema & Riwayat Pembayaran Lahan Proyek (Hidden from Pengawas Project) -->
+    @if($activeTab === 'payments' && !auth()->user()->isPengawasProject())
+        <div class="space-y-4">
+            <div class="card-clean p-4 flex flex-col sm:flex-row items-center justify-between gap-3 bg-purple-950/5 border-purple-200/80">
+                <div>
+                    <h3 class="font-bold text-purple-950 text-sm">Riwayat Pembayaran Lahan Proyek ke Penjual</h3>
+                    <p class="text-xs text-purple-700">Daftar setoran termin / pembayaran yang telah diserahkan ke pemilik/penjual tanah proyek {{ $project->name }}</p>
+                </div>
+                @if(auth()->user()->isFounder() || auth()->user()->isFinance() || auth()->user()->isSupervisor())
+                    <button wire:click="openPaymentModal" class="btn-primary text-xs px-4 py-2 flex items-center gap-1.5 shadow-sm">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                        <span>+ Catat Bayar Lahan ke Penjual</span>
+                    </button>
+                @endif
+            </div>
+
+            <!-- Table of Project Payments -->
+            <div class="card-clean overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs">
+                        <thead class="bg-purple-50 text-purple-900 uppercase text-[10px] font-bold tracking-wider border-b border-purple-100">
+                            <tr>
+                                <th class="px-4 py-3.5">#</th>
+                                <th class="px-4 py-3.5">Tanggal Pembayaran</th>
+                                <th class="px-4 py-3.5">Metode Pembayaran</th>
+                                <th class="px-4 py-3.5">Bukti Resi Transfer</th>
+                                <th class="px-4 py-3.5">Kuitansi PDF & QR</th>
+                                <th class="px-4 py-3.5">Catatan / Keterangan</th>
+                                <th class="px-4 py-3.5">Dicatat Oleh</th>
+                                <th class="px-4 py-3.5 text-right">Jumlah Dibayar (Rp)</th>
+                                @if(auth()->user()->isFounder() || auth()->user()->isFinance())
+                                    <th class="px-4 py-3.5 text-center">Aksi</th>
+                                @endif
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100">
+                            @forelse($projectPaymentsList as $index => $pay)
+                                <tr class="hover:bg-slate-50/80">
+                                    <td class="px-4 py-3.5 font-mono text-slate-500 font-semibold">{{ $index + 1 }}</td>
+                                    <td class="px-4 py-3.5 font-mono font-bold text-slate-800">
+                                        {{ $pay->payment_date ? $pay->payment_date->format('d M Y') : '-' }}
+                                    </td>
+                                    <td class="px-4 py-3.5 font-semibold text-slate-700">
+                                        <span class="px-2 py-0.5 rounded bg-slate-100 border border-slate-200 text-[10px]">
+                                            {{ $pay->payment_method }}
+                                        </span>
+                                    </td>
+                                    <td class="px-4 py-3.5">
+                                        @if($pay->receipt_photo_url)
+                                            <a href="{{ $pay->receipt_photo_url }}" target="_blank" class="inline-flex items-center gap-1 text-[10px] font-bold text-purple-700 hover:text-purple-900 bg-purple-50 hover:bg-purple-100 px-2 py-1 rounded-lg border border-purple-200 transition">
+                                                <svg class="w-3.5 h-3.5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                                <span>Foto Resi</span>
+                                            </a>
+                                        @else
+                                            <span class="text-slate-400 italic text-[11px]">-</span>
+                                        @endif
+                                    </td>
+                                    <td class="px-4 py-3.5">
+                                        @if($pay->uuid)
+                                            <div class="flex items-center gap-1.5">
+                                                <a href="{{ route('land-payment.receipt', $pay->uuid) }}" target="_blank" class="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-700 hover:text-emerald-900 bg-emerald-50 hover:bg-emerald-100 px-2 py-1 rounded-lg border border-emerald-200 transition shadow-xs">
+                                                    <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                                                    <span>Kuitansi PDF</span>
+                                                </a>
+
+                                                <a href="{{ route('verify.land-payment', $pay->uuid) }}" target="_blank" class="inline-flex items-center gap-1 text-[10px] font-bold text-purple-700 hover:text-purple-900 bg-purple-50 hover:bg-purple-100 px-2 py-1 rounded-lg border border-purple-200 transition shadow-xs" title="Verifikasi QR Keabsahan">
+                                                    <svg class="w-3.5 h-3.5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/></svg>
+                                                    <span>Scan QR</span>
+                                                </a>
+                                            </div>
+                                        @else
+                                            <span class="text-slate-400 italic text-[11px]">-</span>
+                                        @endif
+                                    </td>
+                                    <td class="px-4 py-3.5 text-slate-600 max-w-xs truncate">
+                                        {{ $pay->notes ?: '-' }}
+                                    </td>
+                                    <td class="px-4 py-3.5 text-slate-600 font-medium">
+                                        {{ $pay->creator->name ?? 'System' }}
+                                    </td>
+                                    <td class="px-4 py-3.5 text-right font-mono font-extrabold text-rose-700 text-sm">
+                                        - Rp {{ number_format($pay->amount_paid, 0, ',', '.') }}
+                                    </td>
+                                    @if(auth()->user()->isFounder() || auth()->user()->isFinance())
+                                        <td class="px-4 py-3.5 text-center">
+                                            <button onclick="confirm('Hapus pencatatan pembayaran lahan ini?') || event.stopImmediatePropagation()" wire:click="deleteProjectPayment({{ $pay->id }})" class="p-1 text-rose-500 hover:text-rose-700 hover:bg-rose-50 rounded transition" title="Hapus Pembayaran">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                            </button>
+                                        </td>
+                                    @endif
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="9" class="px-6 py-12 text-center text-slate-400">
+                                        <svg class="w-12 h-12 mx-auto text-slate-300 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                                        <p class="font-semibold text-slate-600">Belum ada riwayat pembayaran lahan proyek ke penjual</p>
+                                        <p class="text-xs text-slate-400 mt-1">Klik tombol "+ Catat Bayar Lahan ke Penjual" untuk memasukkan setoran pelunasan tanah.</p>
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    @endif
+
     <!-- TAB 2: Laporan Arus Kas Proyek (Inflow & Outflow) -->
     @if($activeTab === 'cashflow')
         <div class="space-y-4">
@@ -331,7 +571,7 @@
                 <div class="card-clean p-4 bg-rose-50 border border-rose-200/80 space-y-1">
                     <span class="text-slate-500 font-semibold uppercase tracking-wider text-[10px]">Total Kas Keluar Proyek</span>
                     <p class="text-xl font-mono font-extrabold text-rose-700">Rp {{ number_format($cashflowKeluar, 0, ',', '.') }}</p>
-                    <span class="text-[10px] text-rose-600 block">Upah Tukang, Material, & Operasional</span>
+                    <span class="text-[10px] text-rose-600 block">Upah Tukang, Material, Pembelian Lahan, & Operasional</span>
                 </div>
 
                 <div class="card-clean p-4 bg-blue-50 border border-blue-200/80 space-y-1">
@@ -390,6 +630,80 @@
                         </tbody>
                     </table>
                 </div>
+            </div>
+        </div>
+    @endif
+
+    <!-- MODAL CATAT PEMBAYARAN LAHAN KE PENJUAL -->
+    @if($showPaymentModal)
+        <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+            <div class="bg-white border border-slate-200 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                    <div class="flex items-center gap-2">
+                        <div class="p-2 rounded-lg bg-emerald-50 text-emerald-600">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-slate-900 text-base">Catat Pembayaran Lahan ke Penjual</h3>
+                            <p class="text-[11px] text-slate-500 font-medium">Proyek: {{ $project->name }}</p>
+                        </div>
+                    </div>
+                    <button wire:click="closePaymentModal" class="text-slate-400 hover:text-slate-600">✕</button>
+                </div>
+
+                <form wire:submit.prevent="submitProjectPayment" class="space-y-4 text-xs">
+                    <div>
+                        <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider">Jumlah Pembayaran Lahan (Rp)</label>
+                        <x-currency-input model="payment_amount" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-slate-900 font-bold font-mono text-sm focus:ring-2 focus:ring-emerald-500 outline-none" />
+                        @error('payment_amount') <span class="text-rose-500 text-[10px]">{{ $message }}</span> @enderror
+                    </div>
+
+                    <div>
+                        <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider">Tanggal Pembayaran</label>
+                        <input type="date" wire:model="payment_date" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 font-medium focus:ring-2 focus:ring-emerald-500 outline-none">
+                        @error('payment_date') <span class="text-rose-500 text-[10px]">{{ $message }}</span> @enderror
+                    </div>
+
+                    <div>
+                        <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider">Metode Pembayaran</label>
+                        <select wire:model="payment_method" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 font-medium focus:ring-2 focus:ring-emerald-500 outline-none">
+                            <option value="Transfer Bank">Transfer Bank</option>
+                            <option value="Tunai / Cash">Tunai / Cash</option>
+                            <option value="Cek / Giro">Cek / Giro</option>
+                            <option value="Lainnya">Lainnya</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider">Foto Resi / Bukti Transfer (Opsional)</label>
+                        <input type="file" wire:model="payment_receipt_photo" accept="image/*" class="w-full text-xs text-slate-600 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100">
+                        @error('payment_receipt_photo') <span class="text-rose-500 text-[10px]">{{ $message }}</span> @enderror
+                        @if ($payment_receipt_photo)
+                            <div class="mt-2.5 p-2 bg-slate-50 border border-slate-200 rounded-xl space-y-2">
+                                <div class="flex items-center justify-between text-[11px] font-semibold text-slate-700">
+                                    <span class="flex items-center gap-1 text-emerald-600">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                        <span>Pratinjau Resi ({{ $payment_receipt_photo->getClientOriginalName() }}):</span>
+                                    </span>
+                                    <button type="button" wire:click="$set('payment_receipt_photo', null)" class="text-rose-500 hover:text-rose-700 text-[10px] underline font-bold">Hapus Foto</button>
+                                </div>
+                                <div class="relative max-h-44 overflow-hidden rounded-lg border border-slate-200 bg-slate-900 flex items-center justify-center p-1">
+                                    <img src="{{ $payment_receipt_photo->temporaryUrl() }}" alt="Preview Resi" class="max-h-40 w-full object-contain rounded-md">
+                                </div>
+                            </div>
+                        @endif
+                    </div>
+
+                    <div>
+                        <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider">Catatan / Keterangan</label>
+                        <textarea wire:model="payment_notes" rows="2" placeholder="Pembayaran termin 1 lahan ke Pak Pemilik Tanah..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 focus:ring-2 focus:ring-emerald-500 outline-none"></textarea>
+                    </div>
+                    
+                    <div class="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
+                        <button type="button" wire:click="closePaymentModal" class="px-4 py-2 bg-slate-100 text-slate-700 rounded-xl font-semibold hover:bg-slate-200 transition">Batal</button>
+                        <button type="submit" class="px-4 py-2 bg-emerald-600 text-white rounded-xl font-semibold hover:bg-emerald-500 shadow-md transition">Simpan & Catat Kas Keluar</button>
+                    </div>
+                </form>
             </div>
         </div>
     @endif

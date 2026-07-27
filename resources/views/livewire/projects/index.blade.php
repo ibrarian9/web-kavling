@@ -31,6 +31,7 @@
                         <th class="p-3.5">Nama Proyek & Lokasi</th>
                         <th class="p-3.5">Pekerja Lapangan</th>
                         <th class="p-3.5">Luas Standar (m²)</th>
+                        <th class="p-3.5">Harga Beli Lahan (Penjual)</th>
                         <th class="p-3.5">Harga Dasar Standar</th>
                         <th class="p-3.5">Tarif Kelebihan / m²</th>
                         <th class="p-3.5">Jumlah Unit</th>
@@ -51,24 +52,27 @@
                             </td>
                             <td class="p-3.5">
                                 @php
-                                    $allProjAssignments = $p->assignments->where('status', 'active');
-                                    $firstProjWorker = $allProjAssignments->first();
-                                    $projWorkerCount = $allProjAssignments->count();
+                                    $pengawasAssign = $p->assignments->where('status', 'active')->filter(fn($a) => $a->user_id !== null);
                                 @endphp
-                                <div class="flex items-center gap-1">
-                                    @if($firstProjWorker && $firstProjWorker->worker)
-                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-semibold bg-blue-50 text-blue-800 border border-blue-200/80 max-w-[180px] truncate" title="{{ $firstProjWorker->worker->name }} ({{ ucfirst($firstProjWorker->worker->type) }})">
-                                            <span class="truncate">{{ $firstProjWorker->worker->name }} ({{ ucfirst($firstProjWorker->worker->type) }})</span>
-                                            @if($projWorkerCount > 1)
-                                                <span class="text-blue-600 font-bold shrink-0">...</span>
-                                            @endif
+                                <div class="space-y-1">
+                                    @forelse($pengawasAssign as $pa)
+                                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-extrabold bg-purple-100 text-purple-800 border border-purple-200/80 shadow-2xs" title="Pengawas Project System">
+                                            <svg class="w-3.5 h-3.5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                                            <span>{{ $pa->user->name ?? 'Pengawas' }}</span>
                                         </span>
-                                    @else
-                                        <span class="text-[10px] text-slate-400 italic">Belum ada pekerja</span>
-                                    @endif
+                                    @empty
+                                        <span class="text-[10px] text-slate-400 italic">Belum ada pengawas</span>
+                                    @endforelse
                                 </div>
                             </td>
                             <td class="p-3.5 font-mono font-medium text-slate-700">{{ number_format($p->standard_land_area, 0, ',', '.') }} m²</td>
+                            <td class="p-3.5 font-mono text-purple-700 font-bold">
+                                @if($p->total_project_price > 0)
+                                    Rp {{ number_format($p->total_project_price, 0, ',', '.') }}
+                                @else
+                                    <span class="text-slate-400 font-normal italic">-</span>
+                                @endif
+                            </td>
                             <td class="p-3.5 font-mono text-emerald-700 font-bold">Rp {{ number_format($p->base_price, 0, ',', '.') }}</td>
                             <td class="p-3.5 font-mono text-slate-700">Rp {{ number_format($p->excess_price_per_sqm, 0, ',', '.') }} / m²</td>
                             <td class="p-3.5 font-bold text-slate-800">
@@ -82,9 +86,9 @@
                                     <span>{{ auth()->user()->isPengawasProject() ? 'Detail Proyek' : 'Detail Dashboard & Arus Kas' }}</span>
                                 </a>
 
-                                @if(auth()->user()->isSupervisor() || auth()->user()->isPengawasProject() || auth()->user()->isFounder())
-                                    <button wire:click="openWorkerModal({{ $p->id }})" class="px-2.5 py-1 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-lg text-xs font-semibold border border-blue-200 inline-flex items-center gap-1">
-                                        + Pekerja
+                                @if(auth()->user()->isFounder())
+                                    <button wire:click="openWorkerModal({{ $p->id }})" class="px-2.5 py-1 bg-purple-50 hover:bg-purple-100 text-purple-700 rounded-lg text-xs font-semibold border border-purple-200 inline-flex items-center gap-1 transition shadow-xs" title="Hanya Founder yang berhak menugaskan Pengawas Project">
+                                        + Pengawas
                                     </button>
                                 @endif
 
@@ -101,7 +105,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="p-8 text-center text-slate-400">Belum ada proyek yang terdaftar.</td>
+                            <td colspan="8" class="p-8 text-center text-slate-400">Belum ada proyek yang terdaftar.</td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -136,6 +140,13 @@
                         @error('location') <span class="text-rose-500 text-[10px]">{{ $message }}</span> @enderror
                     </div>
 
+                    <div>
+                        <label class="block font-semibold text-purple-900 mb-1 uppercase tracking-wider">Harga Beli Lahan Proyek (Rp)</label>
+                        <x-currency-input model="total_project_price" class="w-full bg-purple-50/50 border border-purple-200 rounded-xl px-3 py-2 text-purple-900 font-bold font-mono focus:ring-2 focus:ring-purple-500 outline-none" placeholder="0" />
+                        <p class="text-[10px] text-slate-500 mt-0.5">Harga kesepakatan akuisisi / pembelian lahan tanah dari penjual</p>
+                        @error('total_project_price') <span class="text-rose-500 text-[10px]">{{ $message }}</span> @enderror
+                    </div>
+
                     <div class="grid grid-cols-2 gap-3">
                         <div>
                             <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider">Luas Standar (m²)</label>
@@ -165,33 +176,36 @@
         </div>
     @endif
 
-    <!-- Modal Form Penugasan Worker ke Proyek -->
+    <!-- Modal Form Penugasan Pengawas Project ke Proyek (Founder Only) -->
     @if($showWorkerModal)
         <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
             <div class="bg-white border border-slate-200 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
                 <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-                    <h3 class="font-bold text-slate-900 text-base">Tugaskan Mandor / Tukang ke Proyek</h3>
+                    <h3 class="font-bold text-slate-900 text-base">Tugaskan Pengawas Project ke Proyek</h3>
                     <button wire:click="$set('showWorkerModal', false)" class="text-slate-400 hover:text-slate-600">✕</button>
                 </div>
 
                 <form wire:submit.prevent="saveWorkerAssignment" class="space-y-4 text-xs">
                     <div>
-                        <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider">Pilih Mandor / Tukang</label>
-                        <select wire:model="worker_id" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 font-semibold focus:ring-2 focus:ring-blue-500 outline-none">
-                            @foreach($allWorkers as $w)
-                                <option value="{{ $w->id }}">{{ $w->name }} ({{ ucfirst($w->type) }} - {{ $w->specialty }})</option>
-                            @endforeach
+                        <label class="block font-semibold text-purple-900 mb-1 uppercase tracking-wider">Pilih Akun Pengawas Project</label>
+                        <select wire:model="assign_user_id" class="w-full bg-purple-50/50 border border-purple-200 rounded-xl px-3 py-2 text-purple-900 font-bold focus:ring-2 focus:ring-purple-500 outline-none">
+                            @forelse($pengawasUsers as $pu)
+                                <option value="{{ $pu->id }}">{{ $pu->name }} ({{ $pu->email }})</option>
+                            @empty
+                                <option value="">Semua Pengawas Project sudah ditugaskan pada proyek ini</option>
+                            @endforelse
                         </select>
+                        <p class="text-[10px] text-purple-700 mt-1">Satu Pengawas Project dapat ditugaskan pada lebih dari satu proyek secara bersamaan oleh Founder.</p>
                     </div>
 
                     <div>
                         <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider">Peran Penugasan di Proyek</label>
-                        <input type="text" wire:model="assigned_role" placeholder="Mandor Utama Proyek / Penataan Drainase..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 font-bold focus:ring-2 focus:ring-blue-500 outline-none">
+                        <input type="text" wire:model="assigned_role" placeholder="Pengawas Utama Proyek A..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 font-bold focus:ring-2 focus:ring-emerald-500 outline-none">
                     </div>
 
                     <div class="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
                         <button type="button" wire:click="$set('showWorkerModal', false)" class="px-4 py-2 bg-slate-100 text-slate-700 rounded-xl font-semibold hover:bg-slate-200 transition">Batal</button>
-                        <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-500 shadow-md transition">Simpan Penugasan</button>
+                        <button type="submit" class="px-4 py-2 bg-purple-600 text-white rounded-xl font-semibold hover:bg-purple-500 shadow-md transition">Simpan Penugasan Pengawas</button>
                     </div>
                 </form>
             </div>
