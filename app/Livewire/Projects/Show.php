@@ -9,6 +9,7 @@ use App\Models\Project;
 use App\Models\ProjectPayment;
 use App\Models\Unit;
 use App\Services\ImageCompressor;
+use Illuminate\Validation\Rule;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
@@ -29,6 +30,211 @@ class Show extends Component
     public $payment_method = 'Transfer Bank';
     public $payment_notes = '';
     public $payment_receipt_photo = null;
+
+    // Legacy Sale Modal State
+    public bool $showLegacyModal = false;
+    public string $legacy_code = '';
+    public string $legacy_category = 'kavling';
+    public string $legacy_type = 'Kavling Standar';
+    public float $legacy_land_width = 10.0;
+    public float $legacy_land_length = 10.0;
+    public float $legacy_land_area = 100.0;
+    public ?float $legacy_building_area = null;
+    public string $legacy_specifications = '';
+    public float $legacy_hpp = 100000000;
+    public float $legacy_final_selling_price = 150000000;
+    public string $legacy_buyer_name = '';
+    public string $legacy_buyer_phone = '';
+    public string $legacy_buyer_address = '';
+    public string $legacy_sale_date = '';
+    public string $legacy_payment_method = 'Tunai / Cash Lunas';
+    public bool $legacy_record_cashflow = false;
+    public string $legacy_notes = '';
+
+    public function updatedLegacyLandWidth(): void
+    {
+        $this->calculateLegacyLandArea();
+    }
+
+    public function updatedLegacyLandLength(): void
+    {
+        $this->calculateLegacyLandArea();
+    }
+
+    public function calculateLegacyLandArea(): void
+    {
+        $this->legacy_land_area = (float)($this->legacy_land_width ?? 0) * (float)($this->legacy_land_length ?? 0);
+    }
+
+    public function openLegacyModal(): void
+    {
+        $user = auth()->user();
+        if (!$user || !$user->isFounder()) {
+            session()->flash('error', 'Hanya Founder yang berhak mencatat penjualan unit masa lalu.');
+            return;
+        }
+
+        $this->resetValidation();
+        $this->reset(['legacy_code', 'legacy_buyer_name', 'legacy_buyer_phone', 'legacy_buyer_address', 'legacy_notes', 'legacy_specifications', 'legacy_building_area']);
+        $this->legacy_land_width = 10.0;
+        $this->legacy_land_length = 10.0;
+        $this->calculateLegacyLandArea();
+        $this->legacy_hpp = 100000000;
+        $this->legacy_final_selling_price = 150000000;
+        $this->legacy_sale_date = now()->subMonths(6)->toDateString();
+        $this->legacy_record_cashflow = false;
+        $this->showLegacyModal = true;
+    }
+
+    public function closeLegacyModal(): void
+    {
+        $this->showLegacyModal = false;
+    }
+
+    public function submitLegacySale(): void
+    {
+        $user = auth()->user();
+        if (!$user || !$user->isFounder()) {
+            session()->flash('error', 'Hanya Founder yang berhak mencatat penjualan unit masa lalu.');
+            return;
+        }
+
+        $this->validate([
+            'legacy_code' => [
+                'required',
+                'string',
+                'max:50',
+                Rule::unique('units', 'code')->where('project_id', $this->projectId),
+            ],
+            'legacy_category' => 'required|in:kavling,rumah',
+            'legacy_type' => 'required|string|max:100',
+            'legacy_land_width' => 'required|numeric|min:0.1',
+            'legacy_land_length' => 'required|numeric|min:0.1',
+            'legacy_land_area' => 'required|numeric|min:0.1',
+            'legacy_building_area' => 'nullable|numeric|min:0',
+            'legacy_specifications' => 'nullable|string|max:1000',
+            'legacy_hpp' => 'required|numeric|min:1000',
+            'legacy_final_selling_price' => 'required|numeric|min:1000',
+            'legacy_buyer_name' => 'required|string|max:255',
+            'legacy_buyer_phone' => 'required|string|max:50',
+            'legacy_buyer_address' => 'nullable|string|max:500',
+            'legacy_sale_date' => 'required|date',
+            'legacy_payment_method' => 'required|string',
+            'legacy_record_cashflow' => 'boolean',
+            'legacy_notes' => 'nullable|string|max:1000',
+        ], [
+            'legacy_code.required' => 'Kode unit wajib diisi.',
+            'legacy_code.unique' => 'Kode unit "' . strtoupper($this->legacy_code) . '" sudah terdaftar pada proyek ini! Kode unit tidak boleh sama.',
+        ]);
+
+        \Illuminate\Support\Facades\DB::transaction(function () use ($user) {
+            $project = Project::findOrFail($this->projectId);
+
+            // 1. Create Unit with status 'terjual'
+            $unit = Unit::create([
+                'project_id' => $this->projectId,
+                'code' => strtoupper(trim($this->legacy_code)),
+                'category' => $this->legacy_category,
+                'type' => $this->legacy_type,
+                'land_width' => $this->legacy_land_width,
+                'land_length' => $this->legacy_land_length,
+                'land_area' => $this->legacy_land_area,
+                'building_area' => $this->legacy_category === 'rumah' ? $this->legacy_building_area : null,
+                'specifications' => $this->legacy_specifications,
+                'hpp' => $this->legacy_hpp,
+                'final_selling_price' => $this->legacy_final_selling_price,
+                'status' => 'terjual',
+                'created_by' => $user->id,
+            ]);
+
+            // 2. Create Booking (status converted)
+            Booking::create([
+                'project_id' => $this->projectId,
+                'unit_id' => $unit->id,
+                'buyer_name' => $this->legacy_buyer_name,
+                'buyer_phone' => $this->legacy_buyer_phone,
+                'booking_type' => 'unit',
+                'booking_amount' => $this->legacy_final_selling_price,
+                'dp_amount' => $this->legacy_final_selling_price,
+                'booking_date' => $this->legacy_sale_date,
+                'status' => 'converted',
+                'notes' => 'Pencatatan Penjualan Masa Lalu / Lunas 100% (Sebelum SIM Properti). ' . ($this->legacy_notes ?? ''),
+                'created_by' => $user->id,
+            ]);
+
+            // 3. Create PriceProposal (status disetujui)
+            $margin = (float)$this->legacy_final_selling_price - (float)$this->legacy_hpp;
+            $proposal = \App\Models\PriceProposal::create([
+                'unit_id' => $unit->id,
+                'hpp_price' => $this->legacy_hpp,
+                'proposed_price' => $this->legacy_final_selling_price,
+                'margin' => $margin,
+                'is_below_hpp' => $margin < 0,
+                'discount_reason' => $margin < 0 ? 'Penjualan historis di bawah HPP' : null,
+                'proposed_by' => $user->id,
+                'status' => 'disetujui',
+                'notes' => 'Persetujuan otomatis penjualan historis oleh Founder.',
+            ]);
+
+            // 4. Create OfficialDocument (SPP)
+            $docNumber = 'SPP/HISTORIS/' . strtoupper($project->name) . '/' . date('Y/m', strtotime($this->legacy_sale_date)) . '/' . str_pad($unit->id, 4, '0', STR_PAD_LEFT);
+            $officialDoc = OfficialDocument::create([
+                'unit_id' => $unit->id,
+                'price_proposal_id' => $proposal->id,
+                'document_number' => $docNumber,
+                'buyer_name' => $this->legacy_buyer_name,
+                'buyer_contact' => $this->legacy_buyer_phone,
+                'buyer_address' => $this->legacy_buyer_address ?: '-',
+                'issued_by' => $user->id,
+                'issued_at' => $this->legacy_sale_date,
+            ]);
+
+            // 5. Create UnitInstallment & InstallmentPayment (LUNAS 100%)
+            $installment = \App\Models\UnitInstallment::create([
+                'unit_id' => $unit->id,
+                'official_document_id' => $officialDoc->id,
+                'total_price' => $this->legacy_final_selling_price,
+                'down_payment' => $this->legacy_final_selling_price,
+                'installment_count' => 1,
+                'installment_amount' => $this->legacy_final_selling_price,
+                'start_date' => $this->legacy_sale_date,
+                'status' => 'lunas',
+            ]);
+
+            \App\Models\InstallmentPayment::create([
+                'unit_installment_id' => $installment->id,
+                'payment_date' => $this->legacy_sale_date,
+                'amount_paid' => $this->legacy_final_selling_price,
+                'payment_method' => $this->legacy_payment_method,
+                'notes' => 'Pelunasan Historis Masa Lalu (Terjual & Lunas 100%)',
+                'created_by' => $user->id,
+            ]);
+
+            // 6. Record to Cashflow if checkbox is checked
+            if ($this->legacy_record_cashflow) {
+                CashflowTransaction::create([
+                    'project_id' => $this->projectId,
+                    'type' => 'masuk',
+                    'category' => 'penjualan_unit',
+                    'amount' => $this->legacy_final_selling_price,
+                    'transaction_date' => $this->legacy_sale_date,
+                    'description' => "Pencatatan Penjualan Masa Lalu (Lunas 100%): {$this->legacy_buyer_name} (Unit Kode {$unit->code})",
+                    'reference_type' => Unit::class,
+                    'reference_id' => $unit->id,
+                    'created_by' => $user->id,
+                ]);
+            }
+
+            // 7. Record System Log
+            \App\Services\ActivityLogger::log(
+                'LEGACY_UNIT_CREATED',
+                "Founder mencatat unit historis terjual & lunas 100%: Kode Unit {$unit->code} ({$this->legacy_buyer_name} - Rp " . number_format($this->legacy_final_selling_price, 0, ',', '.') . ")"
+            );
+        });
+
+        session()->flash('success', 'Penjualan unit masa lalu atas nama ' . $this->legacy_buyer_name . ' (Unit ' . $this->legacy_code . ') berhasil dicatat!');
+        $this->closeLegacyModal();
+    }
 
     public function mount($id)
     {
@@ -331,6 +537,7 @@ class Show extends Component
             'cashflowNet' => $cashflowNet,
             'projectPaymentsList' => $projectPaymentsList,
             'showPaymentModal' => $this->showPaymentModal,
+            'showLegacyModal' => $this->showLegacyModal,
         ])->layout('components.layouts.app', ['title' => 'Dashboard Detail Proyek - ' . $project->name]);
     }
 }

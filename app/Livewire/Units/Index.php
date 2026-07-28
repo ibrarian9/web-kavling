@@ -5,6 +5,7 @@ namespace App\Livewire\Units;
 use App\Models\Booking;
 use App\Models\Project;
 use App\Models\Unit;
+use Illuminate\Validation\Rule;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -132,13 +133,24 @@ class Index extends Component
 
         $this->validate([
             'selected_project_id' => 'required|exists:projects,id',
-            'code' => 'required|string|max:50',
+            'code' => [
+                'required',
+                'string',
+                'max:50',
+                Rule::unique('units', 'code')
+                    ->where('project_id', $this->selected_project_id)
+                    ->ignore($this->editingUnitId),
+            ],
             'category' => 'required|in:kavling,rumah,infrastruktur',
             'infra_type' => 'nullable|string',
             'building_area' => 'nullable|numeric|min:0',
             'floors_count' => 'nullable|integer|min:1',
             'land_area' => 'required|numeric|min:0',
             'hpp' => 'nullable|numeric|min:0',
+        ], [
+            'selected_project_id.required' => 'Proyek wajib dipilih.',
+            'code.required' => 'Kode unit wajib diisi.',
+            'code.unique' => 'Kode unit "' . strtoupper($this->code) . '" sudah terdaftar pada proyek ini! Kode unit tidak boleh sama.',
         ]);
 
         $project = Project::findOrFail($this->selected_project_id);

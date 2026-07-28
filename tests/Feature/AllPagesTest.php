@@ -39,6 +39,7 @@ class AllPagesTest extends TestCase
             '/projects',
             '/projects/' . $project->id,
             '/units',
+            '/units/legacy-sale',
             '/units/' . $unit->id,
             '/bookings',
             '/proposals',

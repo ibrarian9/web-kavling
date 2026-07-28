@@ -65,14 +65,16 @@
 
     <!-- Key Metrics Highlight Cards (Req #1: dot currency formatting) -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <!-- HPP Pokok -->
-        <div class="card-clean p-4">
-            <p class="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">HPP Pokok Unit</p>
-            <p class="text-xl font-black text-slate-900 font-mono mt-1">
-                Rp {{ number_format($unit->hpp, 0, ',', '.') }}
-            </p>
-            <p class="text-[10px] text-slate-400 mt-1">Dasar: Rp {{ number_format($unit->project->base_price, 0, ',', '.') }} + Kelebihan</p>
-        </div>
+        <!-- HPP Pokok (Founder & Finance Only) -->
+        @if(auth()->user()->canViewHpp())
+            <div class="card-clean p-4">
+                <p class="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">HPP Pokok Unit</p>
+                <p class="text-xl font-black text-slate-900 font-mono mt-1">
+                    Rp {{ number_format($unit->hpp, 0, ',', '.') }}
+                </p>
+                <p class="text-[10px] text-slate-400 mt-1">Dasar: Rp {{ number_format($unit->project->base_price, 0, ',', '.') }} + Kelebihan</p>
+            </div>
+        @endif
 
         <!-- Harga Jual Final -->
         <div class="card-clean p-4">
@@ -648,39 +650,39 @@
         </div>
     @endif
 
-    <!-- Modal Form Payroll Payment for this Unit (Form Lebih Besar & Responsif) -->
+    <!-- Modal Form Payroll Payment for this Unit (Form Responsif Mobile) -->
     @if($showPayrollPaymentModal && $selectedPayroll)
-        <div class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-slate-900/50 backdrop-blur-sm overflow-y-auto">
-            <div class="bg-white border border-slate-200/80 rounded-3xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl space-y-6">
-                <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+        <div class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-slate-900/50 backdrop-blur-sm overflow-y-auto">
+            <div class="bg-white border border-slate-200/80 rounded-2xl sm:rounded-3xl max-w-lg sm:max-w-xl md:max-w-2xl w-full p-4 sm:p-8 shadow-2xl space-y-4 sm:space-y-6 my-auto max-h-[92vh] overflow-y-auto">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-3 sm:pb-4">
                     <div>
-                        <h3 class="font-extrabold text-slate-900 text-lg sm:text-xl tracking-tight">Pembayaran Gaji Unit {{ $unit->code }}</h3>
-                        <p class="text-slate-500 text-xs mt-0.5">Pekerja: {{ $selectedPayroll->worker->name }}</p>
+                        <h3 class="font-extrabold text-slate-900 text-base sm:text-xl tracking-tight">Pembayaran Gaji Unit {{ $unit->code }}</h3>
+                        <p class="text-slate-500 text-[11px] sm:text-xs mt-0.5">Pekerja: {{ $selectedPayroll->worker->name }}</p>
                     </div>
-                    <button wire:click="$set('showPayrollPaymentModal', false)" class="p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition">✕</button>
+                    <button wire:click="$set('showPayrollPaymentModal', false)" class="p-1.5 sm:p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition">✕</button>
                 </div>
 
-                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 text-xs sm:text-sm grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div class="bg-slate-50 p-3 sm:p-4 rounded-xl sm:rounded-2xl border border-slate-200 text-xs sm:text-sm grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
                     <div>
-                        <span class="text-slate-500 block text-xs">Total Gaji Borongan:</span>
-                        <span class="font-bold text-slate-900 font-mono text-base">Rp {{ number_format($selectedPayroll->agreed_salary, 0, ',', '.') }}</span>
+                        <span class="text-slate-500 block text-[11px] sm:text-xs">Total Gaji Borongan:</span>
+                        <span class="font-bold text-slate-900 font-mono text-sm sm:text-base">Rp {{ number_format($selectedPayroll->agreed_salary, 0, ',', '.') }}</span>
                     </div>
                     <div>
-                        <span class="text-slate-500 block text-xs">Sisa Kontrak Belum Dibayar:</span>
-                        <span class="font-bold text-amber-600 font-mono text-base">Rp {{ number_format($selectedPayroll->remaining_salary, 0, ',', '.') }}</span>
+                        <span class="text-slate-500 block text-[11px] sm:text-xs">Sisa Kontrak Belum Dibayar:</span>
+                        <span class="font-bold text-amber-600 font-mono text-sm sm:text-base">Rp {{ number_format($selectedPayroll->remaining_salary, 0, ',', '.') }}</span>
                     </div>
                 </div>
 
-                <form wire:submit.prevent="savePayrollPayment" class="space-y-4 text-xs sm:text-sm">
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <form wire:submit.prevent="savePayrollPayment" class="space-y-3 sm:space-y-4 text-xs sm:text-sm">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                         <div>
-                            <label class="block font-bold text-slate-700 uppercase mb-1.5 text-xs">Tanggal Pembayaran</label>
-                            <input type="date" wire:model="payroll_payment_date" required class="input-clean w-full text-sm font-mono py-2.5 px-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-emerald-500">
+                            <label class="block font-bold text-slate-700 uppercase mb-1 text-[11px] sm:text-xs">Tanggal Pembayaran</label>
+                            <input type="date" wire:model="payroll_payment_date" required class="input-clean w-full text-xs sm:text-sm font-mono py-2 sm:py-2.5 px-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-emerald-500">
                         </div>
 
                         <div>
-                            <label class="block font-bold text-slate-700 uppercase mb-1.5 text-xs">Metode Pembayaran</label>
-                            <select wire:model.live="payroll_payment_method" class="input-clean w-full text-sm font-semibold py-2.5 px-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-emerald-500">
+                            <label class="block font-bold text-slate-700 uppercase mb-1 text-[11px] sm:text-xs">Metode Pembayaran</label>
+                            <select wire:model.live="payroll_payment_method" class="input-clean w-full text-xs sm:text-sm font-semibold py-2 sm:py-2.5 px-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-emerald-500">
                                 <option value="transfer_bank">Transfer Bank</option>
                                 <option value="tunai">Tunai (Cash)</option>
                             </select>
@@ -688,16 +690,16 @@
                     </div>
 
                     <div>
-                        <label class="block font-bold text-slate-700 uppercase mb-1.5 text-xs">Nominal Gaji Dibayarkan (Rp)</label>
-                        <x-currency-input model="payroll_amount_gross" class="input-clean w-full font-mono font-bold text-slate-900 text-base py-3 px-4 rounded-xl border border-slate-200 focus:ring-2 focus:ring-emerald-500" placeholder="Misal: 2.500.000" />
+                        <label class="block font-bold text-slate-700 uppercase mb-1 text-[11px] sm:text-xs">Nominal Gaji Dibayarkan (Rp)</label>
+                        <x-currency-input model="payroll_amount_gross" class="input-clean w-full font-mono font-bold text-slate-900 text-sm sm:text-base py-2.5 sm:py-3 px-3 sm:px-4 rounded-xl border border-slate-200 focus:ring-2 focus:ring-emerald-500" placeholder="Misal: 2.500.000" />
                         @error('payroll_amount_gross') <span class="text-xs text-rose-500 mt-1 block">{{ $message }}</span> @enderror
                     </div>
 
                     <div>
-                        <label class="block font-bold text-slate-700 uppercase mb-1.5 text-xs">
+                        <label class="block font-bold text-slate-700 uppercase mb-1 text-[11px] sm:text-xs">
                             Upload Foto Struk Transfer {{ $payroll_payment_method === 'tunai' ? '(Opsional)' : '(Rekomendasi)' }}
                         </label>
-                        <input type="file" wire:model="payroll_receipt_photo" accept="image/*" class="input-clean w-full text-xs py-2 px-3 rounded-xl border border-slate-200">
+                        <input type="file" wire:model="payroll_receipt_photo" accept="image/*" class="input-clean w-full text-xs py-1.5 sm:py-2 px-3 rounded-xl border border-slate-200">
                         @if($payroll_receipt_photo)
                             <div class="mt-3 text-center bg-slate-50 p-3 rounded-2xl border border-slate-200">
                                 <p class="text-xs text-slate-500 mb-2 font-semibold">Preview Struk Transfer Upload:</p>
@@ -707,13 +709,13 @@
                     </div>
 
                     <div>
-                        <label class="block font-bold text-slate-700 uppercase mb-1.5 text-xs">Catatan Pembayaran</label>
-                        <input type="text" wire:model="payroll_payment_notes" placeholder="Catatan transaksi..." class="input-clean w-full text-sm py-2.5 px-3 rounded-xl border border-slate-200">
+                        <label class="block font-bold text-slate-700 uppercase mb-1 text-[11px] sm:text-xs">Catatan Pembayaran</label>
+                        <input type="text" wire:model="payroll_payment_notes" placeholder="Catatan transaksi..." class="input-clean w-full text-xs sm:text-sm py-2 sm:py-2.5 px-3 rounded-xl border border-slate-200">
                     </div>
 
-                    <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
-                        <button type="button" wire:click="$set('showPayrollPaymentModal', false)" class="btn-secondary px-5 py-2.5 rounded-xl">Batal</button>
-                        <button type="submit" class="btn-primary bg-emerald-600 hover:bg-emerald-700 px-6 py-2.5 rounded-xl shadow-md">Simpan Pembayaran & Cetak Resi</button>
+                    <div class="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2 sm:gap-3 pt-3 sm:pt-4 border-t border-slate-100">
+                        <button type="button" wire:click="$set('showPayrollPaymentModal', false)" class="btn-secondary py-2 sm:py-2.5 px-4 sm:px-5 rounded-xl text-xs sm:text-sm">Batal</button>
+                        <button type="submit" class="btn-primary bg-emerald-600 hover:bg-emerald-700 py-2.5 px-4 sm:px-6 rounded-xl shadow-md text-xs sm:text-sm text-center">Simpan Pembayaran & Cetak Resi</button>
                     </div>
                 </form>
             </div>

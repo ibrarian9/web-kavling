@@ -171,7 +171,17 @@
         <tr>
             <td class="label">Status Verifikasi Kas</td>
             <td class="colon">:</td>
-            <td class="value"><span style="color: #047857; font-weight: bold;">[ DIVERIFIKASI / LUNAS ]</span> - Dicatat oleh Finance</td>
+            <td class="value">
+                @if($booking->status === 'converted')
+                    <span style="color: #047857; font-weight: bold;">[ DIVERIFIKASI / DP ACC ]</span> - Dicatat oleh Finance
+                @elseif($booking->status === 'cancelled')
+                    <span style="color: #b91c1c; font-weight: bold;">[ DITOLAK / DIBATALKAN ]</span> - Ditolak oleh Manajemen
+                @elseif($booking->status === 'refunded')
+                    <span style="color: #d97706; font-weight: bold;">[ DIBATALKAN / DIREFUND ]</span> - DP Telah Dikembalikan
+                @else
+                    <span style="color: #2563eb; font-weight: bold;">[ MENUNGGU ACC FINANCE ]</span> - Menunggu Verifikasi
+                @endif
+            </td>
         </tr>
     </table>
 

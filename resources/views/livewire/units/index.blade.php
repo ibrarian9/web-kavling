@@ -189,12 +189,14 @@
                     ];
                 @endphp
                 <div class="mt-4 pt-3 border-t border-slate-100 space-y-1.5 text-xs">
-                    <div class="flex justify-between items-baseline">
-                        <span class="text-slate-500 font-medium">{{ $unit->category === 'infrastruktur' ? 'Anggaran / HPP Infra:' : 'HPP Pokok:' }}</span>
-                        <span class="font-mono font-bold text-slate-800">
-                            {{ $unit->hpp ? 'Rp ' . number_format($unit->hpp, 0, ',', '.') : 'Belum Diset' }}
-                        </span>
-                    </div>
+                    @if(auth()->user()->canViewHpp())
+                        <div class="flex justify-between items-baseline">
+                            <span class="text-slate-500 font-medium">{{ $unit->category === 'infrastruktur' ? 'Anggaran / HPP Infra:' : 'HPP Pokok:' }}</span>
+                            <span class="font-mono font-bold text-slate-800">
+                                {{ $unit->hpp ? 'Rp ' . number_format($unit->hpp, 0, ',', '.') : 'Belum Diset' }}
+                            </span>
+                        </div>
+                    @endif
 
                     @if($payInfo['deal_price'] > 0 && $unit->category !== 'infrastruktur')
                         <div class="flex justify-between items-baseline text-emerald-700 font-bold">
@@ -380,11 +382,13 @@
                         </div>
                     @endif
 
-                    <div>
-                        <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider">HPP Pokok Final (Rp)</label>
-                        <x-currency-input model="hpp" placeholder="Rp {{ number_format($previewRecommendedHpp, 0, ',', '.') }}" class="input-clean w-full font-bold font-mono text-slate-900" />
-                        <p class="text-[10px] text-slate-500 mt-1">*HPP dapat disesuaikan ulang oleh bagian Finance.</p>
-                    </div>
+                    @if(auth()->user()->canViewHpp())
+                        <div>
+                            <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider">HPP Pokok Final (Rp)</label>
+                            <x-currency-input model="hpp" placeholder="Rp {{ number_format($previewRecommendedHpp, 0, ',', '.') }}" class="input-clean w-full font-bold font-mono text-slate-900" />
+                            <p class="text-[10px] text-slate-500 mt-1">*HPP dapat disesuaikan ulang oleh bagian Finance.</p>
+                        </div>
+                    @endif
 
                     <div class="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
                         <button type="button" wire:click="closeModal" class="btn-secondary">Batal</button>

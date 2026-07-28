@@ -20,6 +20,13 @@
         </div>
     @endif
 
+    @if (session()->has('error'))
+        <div class="p-4 bg-rose-50 border border-rose-200/80 rounded-2xl text-rose-800 text-xs font-semibold flex items-center gap-2">
+            <svg class="w-4 h-4 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            <span>{{ session('error') }}</span>
+        </div>
+    @endif
+
     <!-- KPI Summary Metric Cards -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
         <div class="card-clean p-5 relative overflow-hidden">
@@ -118,7 +125,9 @@
                                 @if ($b->status === 'active')
                                     <span class="status-booked">Active / Menunggu ACC</span>
                                 @elseif ($b->status === 'converted')
-                                    <span class="status-terjual">Verifikasi Finance</span>
+                                    <span class="status-terjual">DP ACC</span>
+                                @elseif ($b->status === 'refunded')
+                                    <span class="status-batal">DP Refund / Batal</span>
                                 @else
                                     <span class="status-batal">Batal</span>
                                 @endif
@@ -128,6 +137,17 @@
                                     <button wire:click="approveDp({{ $b->id }})" wire:confirm="Konfirmasi persetujuan Tanda Jadi untuk {{ $b->buyer_name }}? Arus kas masuk akan dicatat secara otomatis." class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[11px] px-3 py-1.5 rounded-lg transition shadow-sm inline-flex items-center gap-1">
                                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                                         <span>Setujui Tanda Jadi</span>
+                                    </button>
+                                    <button wire:click="rejectDp({{ $b->id }})" wire:confirm="Yakin ingin MENOLAK booking untuk {{ $b->buyer_name }}? Status unit akan dikembalikan menjadi tersedia." class="bg-rose-600 hover:bg-rose-700 text-white font-bold text-[11px] px-3 py-1.5 rounded-lg transition shadow-sm inline-flex items-center gap-1">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                                        <span>Tolak Booking</span>
+                                    </button>
+                                @endif
+
+                                @if($b->status === 'converted' && (auth()->user()->isFinance() || auth()->user()->isFounder()))
+                                    <button wire:click="cancelApprovedDp({{ $b->id }})" wire:confirm="Yakin ingin MEMBATALKAN / REFUND DP untuk {{ $b->buyer_name }}? Pengeluaran kas refund akan dicatat dan status unit akan dikembalikan menjadi tersedia." class="bg-amber-600 hover:bg-amber-700 text-white font-bold text-[11px] px-3 py-1.5 rounded-lg transition shadow-sm inline-flex items-center gap-1">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/></svg>
+                                        <span>Batalkan / Refund DP</span>
                                     </button>
                                 @endif
 
@@ -166,7 +186,7 @@
                 </div>
 
                 <div class="space-y-4 text-xs">
-                    <div class="grid grid-cols-2 gap-3">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
                             <label class="block font-semibold text-slate-700 uppercase mb-1">Perumahan / Proyek</label>
                             <select wire:model.live="project_id" class="input-clean w-full">
@@ -198,7 +218,7 @@
                         </div>
                     @endif
 
-                    <div class="grid grid-cols-2 gap-3">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
                             <label class="block font-semibold text-slate-700 uppercase mb-1">Nama Calon Pembeli</label>
                             <input type="text" wire:model="buyer_name" class="input-clean w-full font-bold">
@@ -217,13 +237,13 @@
                         @error('booking_amount') <span class="text-[10px] text-rose-500 mt-1 block">{{ $message }}</span> @enderror
                     </div>
 
-                    <div class="grid grid-cols-2 gap-3">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
-                            <label class="block font-semibold text-slate-700 uppercase mb-1">Tgl Pembayaran</label>
+                            <label class="block font-semibold text-slate-700 uppercase mb-1 text-[11px] sm:text-xs">Tgl Pembayaran</label>
                             <input type="date" wire:model="booking_date" class="input-clean w-full font-mono">
                         </div>
                         <div>
-                            <label class="block font-semibold text-slate-700 uppercase mb-1">Tgl Jatuh Tempo Booking</label>
+                            <label class="block font-semibold text-slate-700 uppercase mb-1 text-[11px] sm:text-xs">Tgl Jatuh Tempo Booking</label>
                             <input type="date" wire:model="expiry_date" class="input-clean w-full font-mono">
                         </div>
                     </div>

@@ -23,15 +23,47 @@
         </div>
 
         <!-- Verification Status Badge -->
-        <div class="bg-emerald-950/80 border border-emerald-500/50 rounded-2xl p-4 text-center space-y-2 shadow-inner">
-            <div class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-emerald-500 text-slate-950 font-bold mb-1 shadow-md">
-                ✓
+        @if($booking->status === 'converted')
+            <div class="bg-emerald-950/80 border border-emerald-500/50 rounded-2xl p-4 text-center space-y-2 shadow-inner">
+                <div class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-emerald-500 text-slate-950 font-bold mb-1 shadow-md">
+                    ✓
+                </div>
+                <h2 class="text-sm font-extrabold text-emerald-300 uppercase tracking-wider">INVOICE PEMBAYARAN TERVERIFIKASI RESMI (DP ACC)</h2>
+                <p class="text-[11px] text-emerald-400/90 leading-relaxed">
+                    Invoice Pembayaran Tanda Jadi / Booking Fee ini terdaftar secara sah dan disetujui oleh tim Finance / Founder.
+                </p>
             </div>
-            <h2 class="text-sm font-extrabold text-emerald-300 uppercase tracking-wider">INVOICE PEMBAYARAN TERVERIFIKASI RESMI & ASLI</h2>
-            <p class="text-[11px] text-emerald-400/90 leading-relaxed">
-                Invoice Pembayaran Tanda Jadi / Booking Fee ini terdaftar secara sah dan valid dalam database sistem PT. Atlantik Perkasa Abadi.
-            </p>
-        </div>
+        @elseif($booking->status === 'cancelled')
+            <div class="bg-rose-950/80 border border-rose-500/50 rounded-2xl p-4 text-center space-y-2 shadow-inner">
+                <div class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-rose-500 text-white font-bold mb-1 shadow-md">
+                    ✕
+                </div>
+                <h2 class="text-sm font-extrabold text-rose-300 uppercase tracking-wider">BOOKING STATUS: DITOLAK / DIBATALKAN</h2>
+                <p class="text-[11px] text-rose-400/90 leading-relaxed">
+                    Pengajuan booking fee ini telah DITOLAK oleh manajemen dan tidak berlaku lagi.
+                </p>
+            </div>
+        @elseif($booking->status === 'refunded')
+            <div class="bg-amber-950/80 border border-amber-500/50 rounded-2xl p-4 text-center space-y-2 shadow-inner">
+                <div class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-amber-500 text-slate-950 font-bold mb-1 shadow-md">
+                    ↩
+                </div>
+                <h2 class="text-sm font-extrabold text-amber-300 uppercase tracking-wider">BOOKING STATUS: DIBATALKAN & DIREFUND</h2>
+                <p class="text-[11px] text-amber-400/90 leading-relaxed">
+                    Pembayaran booking fee ini telah DIBATALKAN dan dana telah direfund/dikembalikan.
+                </p>
+            </div>
+        @else
+            <div class="bg-blue-950/80 border border-blue-500/50 rounded-2xl p-4 text-center space-y-2 shadow-inner">
+                <div class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-blue-500 text-white font-bold mb-1 shadow-md">
+                    ⏳
+                </div>
+                <h2 class="text-sm font-extrabold text-blue-300 uppercase tracking-wider">MENUNGGU VERIFIKASI FINANCE</h2>
+                <p class="text-[11px] text-blue-400/90 leading-relaxed">
+                    Invoice booking fee ini sedang dalam proses verifikasi oleh tim Finance / Founder.
+                </p>
+            </div>
+        @endif
 
         <!-- Details Card -->
         <div class="bg-slate-900/90 border border-slate-700/60 rounded-2xl p-5 space-y-3.5 text-xs">
@@ -74,9 +106,23 @@
 
             <div class="flex justify-between">
                 <span class="text-slate-400">Status Verifikasi:</span>
-                <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
-                    DIVERIFIKASI / LUNAS
-                </span>
+                @if($booking->status === 'converted')
+                    <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
+                        DIVERIFIKASI / DP ACC
+                    </span>
+                @elseif($booking->status === 'cancelled')
+                    <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-rose-500/20 text-rose-300 border border-rose-500/40">
+                        DITOLAK / DIBATALKAN
+                    </span>
+                @elseif($booking->status === 'refunded')
+                    <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40">
+                        DIBATALKAN / REFUND
+                    </span>
+                @else
+                    <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-blue-500/20 text-blue-300 border border-blue-500/40">
+                        MENUNGGU VERIFIKASI
+                    </span>
+                @endif
             </div>
         </div>
 

@@ -215,7 +215,9 @@
                                 <thead class="bg-slate-50 text-slate-500 uppercase text-[10px] font-bold tracking-wider">
                                     <tr>
                                         <th class="py-2.5 px-3">Unit</th>
-                                        <th class="py-2.5 px-3">HPP</th>
+                                        @if(auth()->user()->canViewHpp())
+                                            <th class="py-2.5 px-3">HPP</th>
+                                        @endif
                                         <th class="py-2.5 px-3">Usulan</th>
                                         <th class="py-2.5 px-3">Status</th>
                                     </tr>
@@ -226,7 +228,9 @@
                                             <td class="py-3 px-3 font-bold text-slate-800">
                                                 {{ $prop->unit->code }} <span class="text-slate-400 font-normal">({{ $prop->unit->project->name }})</span>
                                             </td>
-                                            <td class="py-3 px-3 font-mono text-slate-600">Rp {{ number_format($prop->hpp_price, 0, ',', '.') }}</td>
+                                            @if(auth()->user()->canViewHpp())
+                                                <td class="py-3 px-3 font-mono text-slate-600">Rp {{ number_format($prop->hpp_price, 0, ',', '.') }}</td>
+                                            @endif
                                             <td class="py-3 px-3 font-mono font-bold text-emerald-700">Rp {{ number_format($prop->proposed_price, 0, ',', '.') }}</td>
                                             <td class="py-3 px-3">
                                                 @if($prop->status === 'menunggu')

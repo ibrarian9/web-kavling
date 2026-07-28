@@ -162,6 +162,79 @@ class Index extends Component
         session()->flash('success', 'DP Booking atas nama ' . $booking->buyer_name . ' berhasil disetujui di sistem dan dicatat ke Arus Kas Masuk (Rp ' . number_format($totalDp, 0, ',', '.') . ')!');
     }
 
+    public function rejectDp(int $bookingId): void
+    {
+        $user = Auth::user();
+        if (!$user->isFinance() && !$user->isFounder()) {
+            session()->flash('error', 'Hanya Finance dan Founder yang berhak menolak Tanda Jadi booking.');
+            return;
+        }
+
+        $booking = Booking::with('unit')->findOrFail($bookingId);
+
+        // 1. Update booking status to cancelled
+        $booking->update([
+            'status' => 'cancelled',
+            'notes' => ($booking->notes ? $booking->notes . ' | ' : '') . 'Booking ditolak oleh ' . $user->name . ' pada ' . now()->format('d/m/Y H:i'),
+        ]);
+
+        // 2. Revert unit status back to tersedia
+        if ($booking->unit) {
+            $booking->unit->update(['status' => 'tersedia']);
+        }
+
+        \App\Services\ActivityLogger::log('BOOKING_REJECTED', "Booking atas nama {$booking->buyer_name} ditolak oleh {$user->name} ({$user->role}). Status unit dikembalikan menjadi tersedia.");
+
+        session()->flash('success', 'Booking atas nama ' . $booking->buyer_name . ' berhasil ditolak dan status unit dikembalikan menjadi tersedia.');
+    }
+
+    public function cancelApprovedDp(int $bookingId): void
+    {
+        $user = Auth::user();
+        if (!$user->isFinance() && !$user->isFounder()) {
+            session()->flash('error', 'Hanya Finance dan Founder yang berhak membatalkan atau merefund DP yang telah disetujui.');
+            return;
+        }
+
+        $booking = Booking::with('unit')->findOrFail($bookingId);
+
+        if ($booking->status !== 'converted') {
+            session()->flash('error', 'Hanya booking dengan status DP ACC yang dapat dibatalkan/direfund.');
+            return;
+        }
+
+        $refundAmount = $booking->dp_amount > 0 ? $booking->dp_amount : $booking->booking_amount;
+
+        // 1. Record Outgoing Cashflow transaction (Refund)
+        if ($refundAmount > 0) {
+            CashflowTransaction::create([
+                'project_id' => $booking->project_id,
+                'type' => 'keluar',
+                'category' => 'lainnya',
+                'amount' => $refundAmount,
+                'transaction_date' => now()->toDateString(),
+                'description' => "Pengembalian / Refund DP Booking Pembeli: {$booking->buyer_name}" . ($booking->unit ? " (Unit {$booking->unit->code})" : ""),
+                'reference_type' => Booking::class,
+                'reference_id' => $booking->id,
+                'created_by' => Auth::id(),
+            ]);
+        }
+
+        // 2. Update booking and unit statuses
+        $booking->update([
+            'status' => 'refunded',
+            'notes' => ($booking->notes ? $booking->notes . ' | ' : '') . 'DP dibatalkan/direfund oleh ' . $user->name . ' pada ' . now()->format('d/m/Y H:i'),
+        ]);
+
+        if ($booking->unit) {
+            $booking->unit->update(['status' => 'tersedia']);
+        }
+
+        \App\Services\ActivityLogger::log('BOOKING_REFUNDED', "DP Booking atas nama {$booking->buyer_name} dibatalkan/direfund oleh {$user->name} ({$user->role}). Pengeluaran kas refund dicatat dan unit kembali tersedia.");
+
+        session()->flash('success', 'DP Booking atas nama ' . $booking->buyer_name . ' berhasil dibatalkan/direfund. Pengeluaran kas telah dicatat dan unit kembali tersedia.');
+    }
+
     public function render()
     {
         $query = Booking::query()

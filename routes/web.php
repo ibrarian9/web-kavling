@@ -49,6 +49,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/projects/{id}', ProjectsShow::class)->name('projects.show');
     Route::get('/land-payment/{uuid}/receipt', [LandPaymentReceiptController::class, 'streamReceipt'])->name('land-payment.receipt');
     Route::get('/units', UnitsIndex::class)->name('units.index');
+    Route::get('/units/legacy-sale', \App\Livewire\Units\LegacySale::class)->name('units.legacy-sale');
     Route::get('/units/{id}', UnitShow::class)->name('units.show');
 
     // Worker & Pengawas Lapangan

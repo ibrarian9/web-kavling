@@ -48,10 +48,17 @@
                         <span>Proyek Properti</span>
                     </a>
 
-                    <a href="{{ route('units.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium transition {{ request()->routeIs('units.*') ? 'bg-emerald-500/10 text-emerald-400 border-r-2 border-emerald-500' : 'hover:bg-slate-800 text-slate-400 hover:text-slate-200' }}">
+                    <a href="{{ route('units.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium transition {{ request()->routeIs('units.index') || request()->routeIs('units.show') ? 'bg-emerald-500/10 text-emerald-400 border-r-2 border-emerald-500' : 'hover:bg-slate-800 text-slate-400 hover:text-slate-200' }}">
                         <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
                         <span>Unit Kavling / Rumah</span>
                     </a>
+
+                    @if($isF)
+                        <a href="{{ route('units.legacy-sale') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium transition {{ request()->routeIs('units.legacy-sale') ? 'bg-emerald-500/10 text-emerald-400 border-r-2 border-emerald-500' : 'hover:bg-slate-800 text-slate-400 hover:text-slate-200' }}">
+                            <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            <span>Input Penjualan Lalu</span>
+                        </a>
+                    @endif
 
                     <!-- Section: Pekerja Lapangan (Hidden from Marketing) -->
                     @if($isF || $isS || $isP || $isFI)
@@ -114,7 +121,7 @@
                         </a>
 
                         <a href="{{ route('activity-logs.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium transition {{ request()->routeIs('activity-logs.*') ? 'bg-emerald-500/10 text-emerald-400 border-r-2 border-emerald-500' : 'hover:bg-slate-800 text-slate-400 hover:text-slate-200' }}">
-                            <svg class="w-5 h-5 shrink-0 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                            <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                             <span>Log System & Audit</span>
                         </a>
                     @endif
@@ -201,10 +208,17 @@
                         <span>Proyek Properti</span>
                     </a>
 
-                    <a href="{{ route('units.index') }}" @click="mobileMenuOpen = false" class="flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium transition {{ request()->routeIs('units.*') ? 'bg-emerald-500/10 text-emerald-400 border-r-2 border-emerald-500' : 'hover:bg-slate-800 text-slate-400 hover:text-slate-200' }}">
+                    <a href="{{ route('units.index') }}" @click="mobileMenuOpen = false" class="flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium transition {{ request()->routeIs('units.index') || request()->routeIs('units.show') ? 'bg-emerald-500/10 text-emerald-400 border-r-2 border-emerald-500' : 'hover:bg-slate-800 text-slate-400 hover:text-slate-200' }}">
                         <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
                         <span>Unit Kavling / Rumah</span>
                     </a>
+
+                    @if($isF)
+                        <a href="{{ route('units.legacy-sale') }}" @click="mobileMenuOpen = false" class="flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium transition {{ request()->routeIs('units.legacy-sale') ? 'bg-emerald-500/10 text-emerald-400 border-r-2 border-emerald-500' : 'hover:bg-slate-800 text-slate-400 hover:text-slate-200' }}">
+                            <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            <span>Input Penjualan Lalu</span>
+                        </a>
+                    @endif
 
                     <!-- Section: Pekerja Lapangan -->
                     @if($isF || $isS || $isP || $isFI)
@@ -311,12 +325,12 @@
         <!-- Main Content Wrapper -->
         <div class="flex-1 flex flex-col min-w-0">
             <!-- Top Navigation Bar -->
-            <header class="h-16 bg-white border-b border-slate-200 px-4 sm:px-6 flex items-center justify-between sticky top-0 z-30 shadow-xs">
-                <div class="flex items-center gap-3">
-                    <button @click="mobileMenuOpen = !mobileMenuOpen" class="p-2 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 md:hidden focus:outline-none" aria-label="Buka Menu Mobile">
+            <header class="min-h-16 py-2 bg-white border-b border-slate-200 px-3 sm:px-6 flex items-center justify-between sticky top-0 z-30 shadow-xs">
+                <div class="flex items-center gap-2 sm:gap-3 min-w-0 flex-1 mr-2">
+                    <button @click="mobileMenuOpen = !mobileMenuOpen" class="p-2 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 md:hidden focus:outline-none shrink-0" aria-label="Buka Menu Mobile">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
                     </button>
-                    <h1 class="font-bold text-base sm:text-lg text-slate-900 tracking-tight truncate">{{ $header ?? $title ?? 'Dashboard' }}</h1>
+                    <h1 class="font-bold text-xs sm:text-lg text-slate-900 tracking-tight leading-tight line-clamp-2 break-words">{{ $header ?? $title ?? 'Dashboard' }}</h1>
                 </div>
 
                 <div class="flex items-center gap-4">

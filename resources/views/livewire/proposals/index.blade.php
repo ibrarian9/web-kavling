@@ -23,7 +23,9 @@
                     <tr>
                         <th class="px-5 py-3.5">Unit & Proyek</th>
                         <th class="px-5 py-3.5">Pengaju (Marketing)</th>
-                        <th class="px-5 py-3.5">Harga HPP</th>
+                        @if(auth()->user()->canViewHpp())
+                            <th class="px-5 py-3.5">Harga HPP</th>
+                        @endif
                         <th class="px-5 py-3.5">Harga Usulan Jual</th>
                         <th class="px-5 py-3.5">Approval Founder</th>
                         <th class="px-5 py-3.5">Approval Supervisor</th>
@@ -47,7 +49,9 @@
                                 <p class="font-bold text-slate-800">{{ $prop->proposer->name }}</p>
                                 <p class="text-slate-400 text-[10px] font-mono">{{ $prop->created_at->format('d/m/Y H:i') }}</p>
                             </td>
-                            <td class="px-5 py-4 font-mono font-medium text-slate-600">Rp {{ number_format($prop->hpp_price, 0, ',', '.') }}</td>
+                            @if(auth()->user()->canViewHpp())
+                                <td class="px-5 py-4 font-mono font-medium text-slate-600">Rp {{ number_format($prop->hpp_price, 0, ',', '.') }}</td>
+                            @endif
                             <td class="px-5 py-4 font-mono font-bold text-emerald-700">
                                 Rp {{ number_format($prop->proposed_price, 0, ',', '.') }}
                                 @if($isBelowHpp)
@@ -148,19 +152,21 @@
                         <select wire:change="selectUnitForProposal($event.target.value)" wire:model="unit_id" class="input-clean w-full font-bold">
                             <option value="">-- Pilih Unit Tersedia --</option>
                             @foreach($availableUnits as $u)
-                                <option value="{{ $u->id }}">{{ $u->code }} - {{ $u->project->name }} (HPP: Rp {{ number_format($u->hpp, 0, ',', '.') }})</option>
+                                <option value="{{ $u->id }}">{{ $u->code }} - {{ $u->project->name }} @if(auth()->user()->canViewHpp())(HPP: Rp {{ number_format($u->hpp, 0, ',', '.') }})@endif</option>
                             @endforeach
                         </select>
                         @error('unit_id') <span class="text-rose-500 text-[10px] mt-1 block font-bold">{{ $message }}</span> @enderror
                     </div>
 
                     <!-- Highlight Box HPP -->
-                    <div class="bg-slate-50 border border-slate-200/80 rounded-xl p-3.5 space-y-2">
-                        <div class="flex justify-between items-center text-xs">
-                            <span class="text-slate-500">Harga Pokok (HPP):</span>
-                            <span class="font-mono font-bold text-slate-800">Rp {{ number_format($hpp_price, 0, ',', '.') }}</span>
+                    @if(auth()->user()->canViewHpp())
+                        <div class="bg-slate-50 border border-slate-200/80 rounded-xl p-3.5 space-y-2">
+                            <div class="flex justify-between items-center text-xs">
+                                <span class="text-slate-500">Harga Pokok (HPP):</span>
+                                <span class="font-mono font-bold text-slate-800">Rp {{ number_format($hpp_price, 0, ',', '.') }}</span>
+                            </div>
                         </div>
-                    </div>
+                    @endif
 
                     <div>
                         <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider">Usulan Harga Jual / Penawaran (Rp)</label>
@@ -204,10 +210,12 @@
                             <span class="text-xs text-slate-400 font-medium">{{ $approvalProposal->unit->project->name }}</span>
                         </div>
                         <div class="grid grid-cols-2 gap-2 pt-2 border-t border-slate-800 text-slate-300">
-                            <div>
-                                <p class="text-[10px] text-slate-400 uppercase font-semibold">Harga Pokok (HPP)</p>
-                                <p class="font-mono font-bold text-white text-sm">Rp {{ number_format($approvalProposal->hpp_price, 0, ',', '.') }}</p>
-                            </div>
+                            @if(auth()->user()->canViewHpp())
+                                <div>
+                                    <p class="text-[10px] text-slate-400 uppercase font-semibold">Harga Pokok (HPP)</p>
+                                    <p class="font-mono font-bold text-white text-sm">Rp {{ number_format($approvalProposal->hpp_price, 0, ',', '.') }}</p>
+                                </div>
+                            @endif
                             <div>
                                 <p class="text-[10px] text-slate-400 uppercase font-semibold">Usulan Jual (Marketing)</p>
                                 <p class="font-mono font-bold text-emerald-400 text-sm">Rp {{ number_format($approvalProposal->proposed_price, 0, ',', '.') }}</p>
