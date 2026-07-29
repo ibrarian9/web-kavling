@@ -23,5 +23,8 @@ class AppServiceProvider extends ServiceProvider
         if (config('app.env') === 'production') {
             URL::forceScheme('https');
         }
+
+        \Livewire\Livewire::component('cashflow', \App\Livewire\Cashflow\Index::class);
+        \Livewire\Livewire::component('cashflow.index', \App\Livewire\Cashflow\Index::class);
     }
 }

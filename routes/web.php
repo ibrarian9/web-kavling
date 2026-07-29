@@ -37,9 +37,12 @@ Route::get('/verify-receipt/{id}', [ReceiptVerificationController::class, 'verif
 Route::get('/verify-document/{id}', [DocumentVerificationController::class, 'verify'])->name('verify.document');
 Route::get('/verify-payroll/{uuid}', [PayrollVerificationController::class, 'verify'])->name('verify.payroll');
 Route::get('/verify-land-payment/{uuid}', [LandPaymentReceiptController::class, 'verify'])->name('verify.land-payment');
+Route::get('/verify-cashflow', [\App\Http\Controllers\CashflowVerificationController::class, 'verify'])->name('verify.cashflow');
+Route::get('/verify-installment/{uuid}', [\App\Http\Controllers\InstallmentInvoiceController::class, 'verify'])->name('verify.installment');
+Route::get('/verify-manual-invoice/{uuid}', [\App\Http\Controllers\ManualInvoiceController::class, 'verify'])->name('verify.manual-invoice');
 
 // Authenticated Routes
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', \App\Http\Middleware\EnsureUserIsActive::class])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
     Route::get('/dashboard', Dashboard::class)->name('dashboard');
@@ -51,6 +54,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/units', UnitsIndex::class)->name('units.index');
     Route::get('/units/legacy-sale', \App\Livewire\Units\LegacySale::class)->name('units.legacy-sale');
     Route::get('/units/{id}', UnitShow::class)->name('units.show');
+    Route::get('/installment-invoice/{uuid}', [\App\Http\Controllers\InstallmentInvoiceController::class, 'streamInvoice'])->name('installment.invoice');
 
     // Worker & Pengawas Lapangan
     Route::get('/workers', WorkersIndex::class)->name('workers.index');
@@ -67,6 +71,10 @@ Route::middleware(['auth'])->group(function () {
     // Keuangan & Pembayaran
     Route::get('/installments', InstallmentsIndex::class)->name('installments.index');
     Route::get('/cashflow', CashflowIndex::class)->name('cashflow.index');
+    Route::get('/cashflow/export-pdf', [\App\Http\Controllers\CashflowReportController::class, 'exportPdf'])->name('cashflow.export-pdf');
+    Route::get('/cashflow/export-excel', [\App\Http\Controllers\CashflowReportController::class, 'exportExcel'])->name('cashflow.export-excel');
+    Route::get('/manual-invoices', \App\Livewire\ManualInvoices\Index::class)->name('manual-invoices.index');
+    Route::get('/manual-invoices/{uuid}/pdf', [\App\Http\Controllers\ManualInvoiceController::class, 'streamPdf'])->name('manual-invoices.pdf');
 
     // Manajemen User & System Log (Founder Only)
     Route::get('/users', \App\Livewire\Users\Index::class)->name('users.index');

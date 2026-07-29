@@ -2,8 +2,8 @@
     <!-- Header & Single-row Toolbar -->
     <div class="card-clean p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-            <h1 class="text-xl font-bold text-slate-900 tracking-tight">Master Data Mandor & Tukang</h1>
-            <p class="text-xs text-slate-500 mt-0.5">Pendaftaran dan direktori pekerja lapangan proyek perumahan</p>
+            <h1 class="text-xl font-bold text-slate-900 tracking-tight">Master Data Mandor, Tukang & Kontraktor</h1>
+            <p class="text-xs text-slate-500 mt-0.5">Pendaftaran dan direktori pekerja & kontraktor lapangan proyek perumahan</p>
         </div>
         <button wire:click="create" class="btn-primary whitespace-nowrap">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
@@ -28,6 +28,7 @@
                 <option value="">Semua Tipe Pekerja</option>
                 <option value="mandor">Mandor</option>
                 <option value="tukang">Tukang</option>
+                <option value="kontraktor">Kontraktor</option>
             </select>
         </div>
         <div class="w-full md:w-48">
@@ -68,6 +69,10 @@
                                     @if ($worker->type === 'mandor')
                                         <span class="bg-amber-50 text-amber-800 border border-amber-200 font-semibold px-2 py-0.5 rounded-full text-[10px]">
                                             Mandor
+                                        </span>
+                                    @elseif ($worker->type === 'kontraktor')
+                                        <span class="bg-purple-50 text-purple-800 border border-purple-200 font-semibold px-2 py-0.5 rounded-full text-[10px]">
+                                            Kontraktor
                                         </span>
                                     @else
                                         <span class="bg-sky-50 text-sky-800 border border-sky-200 font-semibold px-2 py-0.5 rounded-full text-[10px]">
@@ -150,6 +155,7 @@
                             <select wire:model="type" class="input-clean w-full">
                                 <option value="tukang">Tukang</option>
                                 <option value="mandor">Mandor</option>
+                                <option value="kontraktor">Kontraktor</option>
                             </select>
                             @error('type') <span class="text-[10px] text-rose-500 mt-1 block">{{ $message }}</span> @enderror
                         </div>

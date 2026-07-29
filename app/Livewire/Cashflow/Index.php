@@ -14,8 +14,16 @@ class Index extends Component
 
     public $filter_project_id = '';
     public $filter_unit_id = '';
+    public $filter_month = ''; // format YYYY-MM
     public $view_mode = 'global'; // 'global', 'project', atau 'unit'
     public $showManualModal = false;
+
+    protected $queryString = [
+        'view_mode' => ['except' => 'global'],
+        'filter_project_id' => ['except' => ''],
+        'filter_unit_id' => ['except' => ''],
+        'filter_month' => ['except' => ''],
+    ];
 
     // Manual Transaction Form
     public $project_id = '';
@@ -25,6 +33,13 @@ class Index extends Component
     public $transaction_date = '';
     public $description = '';
 
+    public function boot()
+    {
+        if (empty($this->filter_month)) {
+            $this->filter_month = date('Y-m');
+        }
+    }
+
     public function mount()
     {
         $user = auth()->user();
@@ -33,16 +48,44 @@ class Index extends Component
             return redirect()->route('dashboard');
         }
 
+        $this->filter_month = date('Y-m');
         $this->transaction_date = date('Y-m-d');
         if (Project::count() > 0) {
             $this->project_id = Project::first()->id;
         }
     }
 
-
     public function updatedFilterProjectId()
     {
         $this->filter_unit_id = '';
+        $this->resetPage();
+    }
+
+    public function updatedFilterUnitId()
+    {
+        $this->resetPage();
+    }
+
+    public function updatedFilterMonth()
+    {
+        $this->resetPage();
+    }
+
+    public function updatedViewMode()
+    {
+        $this->resetPage();
+    }
+
+    public function setAllTime()
+    {
+        $this->filter_month = '';
+        $this->resetPage();
+    }
+
+    public function setCurrentMonth()
+    {
+        $this->filter_month = date('Y-m');
+        $this->resetPage();
     }
 
     public function openManualModal()
@@ -92,16 +135,26 @@ class Index extends Component
             $query->where('project_id', $this->filter_project_id);
         }
 
-        if ($this->filter_unit_id) {
-            $selectedUnit = Unit::find($this->filter_unit_id);
-            if ($selectedUnit) {
-                $query->where(function($q) use ($selectedUnit) {
-                    $q->where('description', 'like', '%' . $selectedUnit->code . '%');
-                });
+        if ($this->view_mode === 'unit' || $this->filter_unit_id) {
+            if ($this->filter_unit_id) {
+                $selectedUnit = Unit::find($this->filter_unit_id);
+                if ($selectedUnit) {
+                    $query->where(function ($q) use ($selectedUnit) {
+                        $q->where('description', 'like', '%' . $selectedUnit->code . '%');
+                    });
+                }
             }
         }
 
-        $transactions = $query->latest('transaction_date')->latest('id')->paginate(12);
+        if ($this->filter_month) {
+            $parts = explode('-', $this->filter_month);
+            if (count($parts) === 2) {
+                $query->whereYear('transaction_date', $parts[0])
+                      ->whereMonth('transaction_date', $parts[1]);
+            }
+        }
+
+        $transactions = (clone $query)->latest('transaction_date')->latest('id')->paginate(12);
         $projects = Project::orderBy('name')->get();
         $availableUnits = $this->filter_project_id ? Unit::where('project_id', $this->filter_project_id)->get() : Unit::all();
 
@@ -116,11 +169,23 @@ class Index extends Component
         $filteredNet = $filteredMasuk - $filteredKeluar;
 
         // Breakdown per project
+        $monthFilter = $this->filter_month;
         $projectBreakdown = Project::withCount('units')
             ->get()
-            ->map(function ($p) {
-                $masuk = CashflowTransaction::where('project_id', $p->id)->where('type', 'masuk')->sum('amount');
-                $keluar = CashflowTransaction::where('project_id', $p->id)->where('type', 'keluar')->sum('amount');
+            ->map(function ($p) use ($monthFilter) {
+                $masukQ = CashflowTransaction::where('project_id', $p->id)->where('type', 'masuk');
+                $keluarQ = CashflowTransaction::where('project_id', $p->id)->where('type', 'keluar');
+
+                if ($monthFilter) {
+                    $parts = explode('-', $monthFilter);
+                    if (count($parts) === 2) {
+                        $masukQ->whereYear('transaction_date', $parts[0])->whereMonth('transaction_date', $parts[1]);
+                        $keluarQ->whereYear('transaction_date', $parts[0])->whereMonth('transaction_date', $parts[1]);
+                    }
+                }
+
+                $masuk = $masukQ->sum('amount');
+                $keluar = $keluarQ->sum('amount');
                 return [
                     'id' => $p->id,
                     'name' => $p->name,
@@ -129,6 +194,49 @@ class Index extends Component
                     'net' => $masuk - $keluar,
                 ];
             });
+
+        // 1. Historical Trend Data (6 Months Trend)
+        $trendMonths = collect();
+        for ($i = 5; $i >= 0; $i--) {
+            $trendMonths->push(now()->subMonths($i)->format('Y-m'));
+        }
+
+        $chartLabels = [];
+        $chartMasuk = [];
+        $chartKeluar = [];
+
+        foreach ($trendMonths as $m) {
+            $parts = explode('-', $m);
+            $year = $parts[0];
+            $monthNum = $parts[1];
+
+            $qM = CashflowTransaction::query();
+            if ($this->view_mode === 'project' && $this->filter_project_id) {
+                $qM->where('project_id', $this->filter_project_id);
+            }
+            $qM->whereYear('transaction_date', $year)->whereMonth('transaction_date', $monthNum);
+
+            $mMasuk = (clone $qM)->where('type', 'masuk')->sum('amount');
+            $mKeluar = (clone $qM)->where('type', 'keluar')->sum('amount');
+
+            $chartLabels[] = \Carbon\Carbon::createFromFormat('Y-m', $m)->translatedFormat('M Y');
+            $chartMasuk[] = (float)$mMasuk;
+            $chartKeluar[] = (float)$mKeluar;
+        }
+
+        // 2. Category Breakdown Kas Masuk (Sales & Income Breakdown)
+        $masukCategories = (clone $query)->where('type', 'masuk')
+            ->selectRaw('category, sum(amount) as total_amount')
+            ->groupBy('category')
+            ->orderByDesc('total_amount')
+            ->get();
+
+        // 3. Category Breakdown Kas Keluar (Costs & Expenses Breakdown)
+        $keluarCategories = (clone $query)->where('type', 'keluar')
+            ->selectRaw('category, sum(amount) as total_amount')
+            ->groupBy('category')
+            ->orderByDesc('total_amount')
+            ->get();
 
         return view('livewire.cashflow.index', [
             'transactions' => $transactions,
@@ -141,8 +249,16 @@ class Index extends Component
             'globalKeluar' => $globalKeluar,
             'globalNet' => $globalNet,
             'projectBreakdown' => $projectBreakdown,
+            'chartLabels' => $chartLabels,
+            'chartMasuk' => $chartMasuk,
+            'chartKeluar' => $chartKeluar,
+            'masukCategories' => $masukCategories,
+            'keluarCategories' => $keluarCategories,
             'view_mode' => $this->view_mode,
+            'filter_project_id' => $this->filter_project_id,
+            'filter_unit_id' => $this->filter_unit_id,
+            'filter_month' => $this->filter_month,
             'showManualModal' => $this->showManualModal,
-        ])->layout('components.layouts.app', ['title' => 'Arus Kas Per-Proyek & Konsolidasi Global']);
+        ])->layout('components.layouts.app', ['title' => 'Arus Kas Per-Proyek, Per-Unit & Konsolidasi Global']);
     }
 }

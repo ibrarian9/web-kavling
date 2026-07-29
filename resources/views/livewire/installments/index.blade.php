@@ -57,6 +57,10 @@
                             <td class="px-5 py-4">
                                 @if($inst->status === 'lunas')
                                     <span class="status-disetujui">LUNAS</span>
+                                @elseif($inst->status === 'konversi_cash')
+                                    <span class="bg-purple-100 text-purple-900 border border-purple-300 font-extrabold px-2.5 py-0.5 rounded-full text-[10px]" title="Skema cicilan dibatalkan & dialihkan ke Pelunasan Cash">
+                                        LUNAS CASH
+                                    </span>
                                 @elseif($inst->status === 'menunggak')
                                     <span class="status-ditolak">MENUNGGAK</span>
                                 @else
@@ -64,15 +68,18 @@
                                 @endif
                             </td>
                             <td class="px-5 py-4 text-right">
-                                <div class="flex items-center justify-end gap-1.5">
+                                <div class="flex items-center justify-end gap-1.5 flex-wrap">
                                     <a href="{{ route('units.show', $inst->unit_id) }}" class="btn-secondary text-[11px] px-2.5 py-1 inline-flex items-center gap-1">
                                         <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                                         <span>Detail Unit</span>
                                     </a>
 
-                                    @if($inst->status !== 'lunas' && (auth()->user()->isFinance() || auth()->user()->isFounder()))
+                                    @if(!in_array($inst->status, ['lunas', 'konversi_cash']) && (auth()->user()->isFinance() || auth()->user()->isFounder()))
                                         <button wire:click="openPaymentModal({{ $inst->id }})" class="btn-primary text-[11px] px-2.5 py-1">
-                                            + Catat Setoran
+                                            + Setoran
+                                        </button>
+                                        <button wire:click="openConvertToCashModal({{ $inst->id }})" class="btn-secondary text-[11px] px-2.5 py-1 text-purple-700 border-purple-200 hover:bg-purple-50 font-bold" title="Batalkan skema cicilan & lunasi Cash">
+                                            Batalkan & Ganti Cash
                                         </button>
                                     @endif
                                 </div>
@@ -210,6 +217,69 @@
                     <div class="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
                         <button type="button" wire:click="$set('showPaymentModal', false)" class="btn-secondary">Batal</button>
                         <button type="submit" class="btn-primary">Simpan & Masukkan Kas</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    @endif
+
+    <!-- Modal Batalkan Skema Cicilan & Ganti ke Pelunasan Cash (Founder & Accounting) -->
+    @if($showConvertToCashModal && $activeConvertToCashInstallment)
+        <div class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs p-3 sm:p-6 md:p-10 flex items-center justify-center min-h-screen">
+            <div class="bg-white border border-slate-200/80 rounded-2xl sm:rounded-3xl max-w-lg w-full p-4 sm:p-6 shadow-2xl space-y-4 my-auto sm:my-8 max-h-[88vh] flex flex-col">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-3 shrink-0">
+                    <div>
+                        <h3 class="font-extrabold text-slate-900 text-sm sm:text-base">Batalkan Skema Cicilan & Ganti Ke Pelunasan Cash</h3>
+                        <p class="text-slate-500 text-[11px]">Unit: <span class="font-bold text-slate-800 font-mono">{{ $activeConvertToCashInstallment->unit->code }}</span> - {{ $activeConvertToCashInstallment->officialDocument->buyer_name ?? 'Pembeli' }}</p>
+                    </div>
+                    <button wire:click="$set('showConvertToCashModal', false)" class="p-1 rounded-lg text-slate-400 hover:text-slate-600">✕</button>
+                </div>
+
+                <form wire:submit.prevent="submitConvertToCash" class="space-y-4 text-xs flex-1 overflow-y-auto pr-1">
+                    <div class="p-4 bg-purple-50/80 border border-purple-200/80 rounded-2xl space-y-2 text-purple-950">
+                        <div class="flex justify-between">
+                            <span class="text-slate-600">Total Harga Unit:</span>
+                            <span class="font-mono font-bold">Rp {{ number_format($activeConvertToCashInstallment->total_price, 0, ',', '.') }}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-600">Sudah Terbayar (DP & Cicilan):</span>
+                            <span class="font-mono font-bold text-emerald-700">Rp {{ number_format($activeConvertToCashInstallment->total_paid, 0, ',', '.') }}</span>
+                        </div>
+                        <div class="flex justify-between pt-2 border-t border-purple-200 font-extrabold">
+                            <span class="text-purple-900">Sisa Pelunasan Cash:</span>
+                            <span class="font-mono text-purple-800 text-sm">Rp {{ number_format($activeConvertToCashInstallment->remaining_balance, 0, ',', '.') }}</span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block font-semibold text-purple-900 mb-1 uppercase tracking-wider">Nominal Pelunasan Cash Diterima (Rp)</label>
+                        <x-currency-input model="cash_payment_amount" class="input-clean w-full font-bold text-sm font-mono text-purple-900 bg-purple-50/30" placeholder="Rp 0" />
+                        <p class="text-[10px] text-slate-500 mt-1">Sisa saldo Rp {{ number_format($activeConvertToCashInstallment->remaining_balance, 0, ',', '.') }} akan dicatat lunas sekaligus dalam Arus Kas.</p>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider">Metode Pembayaran Cash</label>
+                            <select wire:model="cash_payment_method" class="input-clean w-full font-semibold">
+                                <option value="Transfer Bank">Transfer Bank</option>
+                                <option value="Tunai / Cash">Tunai / Cash</option>
+                                <option value="Cek / Giro">Cek / Giro</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider">Tanggal Pelunasan</label>
+                            <input type="date" wire:model="cash_payment_date" required class="input-clean w-full font-mono">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider">Catatan Alasan Pembatalan & Konversi Cash</label>
+                        <textarea wire:model="cash_notes" rows="2" class="input-clean w-full" placeholder="Keterangan pembatalan skema cicilan..."></textarea>
+                    </div>
+
+                    <div class="flex items-center justify-end gap-2 pt-3 border-t border-slate-100 shrink-0">
+                        <button type="button" wire:click="$set('showConvertToCashModal', false)" class="btn-secondary">Batal</button>
+                        <button type="submit" class="btn-primary bg-purple-600 hover:bg-purple-700">Proses Pelunasan Cash & Batalkan Cicilan</button>
                     </div>
                 </form>
             </div>

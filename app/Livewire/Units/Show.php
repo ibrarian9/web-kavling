@@ -117,14 +117,183 @@ class Show extends Component
 
     public function mount($id)
     {
+        $unit = Unit::findOrFail($id);
+        $user = auth()->user();
+        if ($user && $user->isPengawasProject()) {
+            $isAssigned = WorkerAssignment::where('user_id', $user->id)
+                ->where('project_id', $unit->project_id)
+                ->where('status', 'active')
+                ->exists();
+            if (!$isAssigned) {
+                abort(403, 'Anda tidak memiliki hak akses pengawasan pada unit proyek ini.');
+            }
+        }
+
         $this->unitId = $id;
         $this->cost_date = now()->toDateString();
         $this->material_purchase_date = now()->toDateString();
     }
 
+    public function canManageOperational(): bool
+    {
+        $user = auth()->user();
+        if (!$user) return false;
+        if ($user->isFounder() || $user->isFinance() || $user->isSupervisor()) return true;
+        if ($user->isPengawasProject()) {
+            $unit = Unit::find($this->unitId);
+            return $unit && WorkerAssignment::where('user_id', $user->id)
+                ->where('project_id', $unit->project_id)
+                ->where('status', 'active')
+                ->exists();
+        }
+        return false;
+    }
+
+    public function canManageFinancial(): bool
+    {
+        $user = auth()->user();
+        return $user && ($user->isFounder() || $user->isFinance());
+    }
+
+    // Modal Edit Unit Spesifikasi (Founder & Finance)
+    public bool $showEditUnitModal = false;
+    public string $edit_unit_code = '';
+    public string $edit_unit_category = 'kavling';
+    public string $edit_unit_status = 'tersedia';
+    public $edit_land_length = 0;
+    public $edit_land_width = 0;
+    public $edit_land_area = 0;
+    public $edit_building_area = 0;
+    public $edit_final_selling_price = 0;
+    public string $edit_specifications = '';
+
+    public function openEditUnitModal(): void
+    {
+        if (!$this->canManageFinancial()) {
+            session()->flash('error', 'Akses ditolak. Hanya Founder dan Finance yang dapat mengedit spesifikasi unit.');
+            return;
+        }
+        $unit = Unit::findOrFail($this->unitId);
+        $this->resetValidation();
+        $this->edit_unit_code = $unit->code;
+        $this->edit_unit_category = $unit->category;
+        $this->edit_unit_status = $unit->status;
+        $this->edit_land_length = $unit->land_length;
+        $this->edit_land_width = $unit->land_width;
+        $this->edit_land_area = $unit->land_area;
+        $this->edit_building_area = $unit->building_area ?? 0;
+        $this->edit_final_selling_price = $unit->final_selling_price ?? 0;
+        $this->edit_specifications = $unit->specifications ?? '';
+        $this->showEditUnitModal = true;
+    }
+
+    public function saveEditUnit(): void
+    {
+        if (!$this->canManageFinancial()) {
+            session()->flash('error', 'Akses ditolak.');
+            return;
+        }
+        $this->validate([
+            'edit_unit_code' => 'required|string|max:50',
+            'edit_unit_category' => 'required|in:kavling,rumah,infrastruktur',
+            'edit_unit_status' => 'required|string',
+            'edit_land_area' => 'required|numeric|min:1',
+        ]);
+        $unit = Unit::findOrFail($this->unitId);
+        $unit->update([
+            'code' => $this->edit_unit_code,
+            'category' => $this->edit_unit_category,
+            'status' => $this->edit_unit_status,
+            'land_length' => $this->edit_land_length,
+            'land_width' => $this->edit_land_width,
+            'land_area' => $this->edit_land_area,
+            'building_area' => $this->edit_building_area,
+            'final_selling_price' => $this->edit_final_selling_price,
+            'specifications' => $this->edit_specifications,
+        ]);
+        session()->flash('success', 'Spesifikasi & data unit ' . $unit->code . ' berhasil diperbarui!');
+        $this->showEditUnitModal = false;
+    }
+
+    // Worker Assignment Management
+    public ?int $editingAssignmentId = null;
+
+    public function openWorkerModal(): void
+    {
+        $this->resetValidation();
+        $this->editingAssignmentId = null;
+        $this->worker_id = Worker::where('status', 'active')->first()?->id;
+        $this->assigned_role = 'Mandor Lapangan';
+        $this->showWorkerModal = true;
+    }
+
+    public function editWorkerAssignment(int $id): void
+    {
+        if (!$this->canManageOperational()) {
+            session()->flash('error', 'Akses ditolak. Anda tidak memiliki hak akses mengedit penugasan.');
+            return;
+        }
+        $assign = WorkerAssignment::findOrFail($id);
+        $this->resetValidation();
+        $this->editingAssignmentId = $assign->id;
+        $this->worker_id = $assign->worker_id;
+        $this->assigned_role = $assign->assigned_role;
+        $this->showWorkerModal = true;
+    }
+
+    public function deleteWorkerAssignment(int $id): void
+    {
+        if (!$this->canManageOperational()) {
+            session()->flash('error', 'Akses ditolak. Anda tidak memiliki hak akses menghapus penugasan.');
+            return;
+        }
+        $assign = WorkerAssignment::findOrFail($id);
+        $assign->delete();
+        session()->flash('success', 'Penugasan pekerja berhasil dihapus!');
+    }
+
+    public function saveWorkerAssignment(): void
+    {
+        if (!$this->canManageOperational()) {
+            session()->flash('error', 'Akses ditolak.');
+            return;
+        }
+        $this->validate([
+            'worker_id' => 'required|exists:workers,id',
+            'assigned_role' => 'required|string|max:100',
+        ]);
+
+        $unit = Unit::findOrFail($this->unitId);
+
+        if ($this->editingAssignmentId) {
+            $assign = WorkerAssignment::findOrFail($this->editingAssignmentId);
+            $assign->update([
+                'worker_id' => $this->worker_id,
+                'assigned_role' => $this->assigned_role,
+            ]);
+            session()->flash('success', 'Penugasan pekerja berhasil diperbarui!');
+        } else {
+            WorkerAssignment::updateOrCreate([
+                'project_id' => $unit->project_id,
+                'unit_id' => $unit->id,
+                'worker_id' => $this->worker_id,
+            ], [
+                'assigned_role' => $this->assigned_role,
+            ]);
+            session()->flash('success', 'Mandor/Tukang berhasil ditugaskan ke unit ' . $unit->code . '!');
+        }
+
+        $this->showWorkerModal = false;
+        $this->editingAssignmentId = null;
+    }
+
+    // Material Purchase Management
+    public ?int $editingMaterialId = null;
+
     public function openMaterialModal(): void
     {
         $this->resetValidation();
+        $this->editingMaterialId = null;
         $this->reset(['material_worker_id', 'material_item_name', 'material_unit_price', 'material_total_price', 'material_receipt_photo', 'material_notes']);
         $this->material_purchase_date = now()->toDateString();
         $this->material_quantity = 1;
@@ -132,6 +301,43 @@ class Show extends Component
         $this->material_is_deducted_from_loan = false;
         $this->material_worker_id = Worker::where('status', 'active')->first()?->id;
         $this->showMaterialModal = true;
+    }
+
+    public function editMaterialPurchase(int $id): void
+    {
+        if (!$this->canManageOperational()) {
+            session()->flash('error', 'Akses ditolak.');
+            return;
+        }
+        $mat = WeeklyMaterialPurchase::findOrFail($id);
+        $this->resetValidation();
+        $this->editingMaterialId = $mat->id;
+        $this->material_worker_id = $mat->worker_id;
+        $this->material_purchase_date = $mat->purchase_date ? $mat->purchase_date->format('Y-m-d') : date('Y-m-d');
+        $this->material_item_name = $mat->item_name;
+        $this->material_quantity = $mat->quantity;
+        $this->material_unit_measure = $mat->unit_measure;
+        $this->material_unit_price = $mat->unit_price;
+        $this->material_total_price = $mat->total_price;
+        $this->material_receipt_photo = null;
+        $this->material_notes = $mat->notes ?? '';
+        $this->showMaterialModal = true;
+    }
+
+    public function deleteMaterialPurchase(int $id): void
+    {
+        if (!$this->canManageOperational()) {
+            session()->flash('error', 'Akses ditolak.');
+            return;
+        }
+        $mat = WeeklyMaterialPurchase::findOrFail($id);
+        DB::transaction(function () use ($mat) {
+            CashflowTransaction::where('reference_type', WeeklyMaterialPurchase::class)
+                ->where('reference_id', $mat->id)
+                ->delete();
+            $mat->delete();
+        });
+        session()->flash('success', 'Pencatatan belanja material berhasil dihapus!');
     }
 
     public function updatedMaterialQuantity(): void
@@ -150,6 +356,10 @@ class Show extends Component
 
     public function saveMaterialPurchase(): void
     {
+        if (!$this->canManageOperational()) {
+            session()->flash('error', 'Akses ditolak.');
+            return;
+        }
         $this->validate([
             'material_purchase_date' => 'required|date',
             'material_item_name' => 'required|string|max:255',
@@ -168,50 +378,126 @@ class Show extends Component
             $photoPath = \App\Services\ImageCompressor::compressAndStore($this->material_receipt_photo, 'material-receipts');
         }
 
-        DB::transaction(function () use ($unit, $totalPrice, $photoPath) {
-            $purchase = WeeklyMaterialPurchase::create([
-                'project_id' => $unit->project_id,
-                'unit_id' => $unit->id,
-                'worker_id' => $this->material_worker_id ?: Worker::where('status', 'active')->first()?->id,
-                'pengawas_id' => Auth::id(),
-                'purchase_date' => $this->material_purchase_date,
-                'item_name' => $this->material_item_name,
-                'quantity' => $this->material_quantity,
-                'unit_measure' => $this->material_unit_measure,
-                'unit_price' => $this->material_unit_price,
-                'total_price' => $totalPrice,
-                'receipt_photo_path' => $photoPath,
-                'notes' => $this->material_notes,
-            ]);
+        if ($this->editingMaterialId) {
+            $mat = WeeklyMaterialPurchase::findOrFail($this->editingMaterialId);
+            $finalPhoto = $photoPath ?: $mat->receipt_photo_path;
 
-            CashflowTransaction::create([
-                'project_id' => $unit->project_id,
-                'type' => 'keluar',
-                'category' => 'operasional',
-                'amount' => $totalPrice,
-                'transaction_date' => $this->material_purchase_date,
-                'description' => "Pembelian Material Unit {$unit->code}: {$this->material_item_name} ({$this->material_quantity} {$this->material_unit_measure})",
-                'reference_type' => WeeklyMaterialPurchase::class,
-                'reference_id' => $purchase->id,
-                'created_by' => Auth::id(),
-            ]);
-        });
+            DB::transaction(function () use ($unit, $mat, $totalPrice, $finalPhoto) {
+                $mat->update([
+                    'worker_id' => $this->material_worker_id ?: $mat->worker_id,
+                    'purchase_date' => $this->material_purchase_date,
+                    'item_name' => $this->material_item_name,
+                    'quantity' => $this->material_quantity,
+                    'unit_measure' => $this->material_unit_measure,
+                    'unit_price' => $this->material_unit_price,
+                    'total_price' => $totalPrice,
+                    'receipt_photo_path' => $finalPhoto,
+                    'notes' => $this->material_notes,
+                ]);
 
-        session()->flash('success', 'Pembelian barang/material unit ' . $unit->code . ' berhasil dicatat!');
+                $cashflow = CashflowTransaction::where('reference_type', WeeklyMaterialPurchase::class)
+                    ->where('reference_id', $mat->id)
+                    ->first();
+
+                if ($cashflow) {
+                    $cashflow->update([
+                        'amount' => $totalPrice,
+                        'transaction_date' => $this->material_purchase_date,
+                        'description' => "Pembelian Material Unit {$unit->code}: {$this->material_item_name} ({$this->material_quantity} {$this->material_unit_measure})",
+                    ]);
+                }
+            });
+            session()->flash('success', 'Belanja material unit ' . $unit->code . ' berhasil diperbarui!');
+        } else {
+            DB::transaction(function () use ($unit, $totalPrice, $photoPath) {
+                $purchase = WeeklyMaterialPurchase::create([
+                    'project_id' => $unit->project_id,
+                    'unit_id' => $unit->id,
+                    'worker_id' => $this->material_worker_id ?: Worker::where('status', 'active')->first()?->id,
+                    'pengawas_id' => Auth::id(),
+                    'purchase_date' => $this->material_purchase_date,
+                    'item_name' => $this->material_item_name,
+                    'quantity' => $this->material_quantity,
+                    'unit_measure' => $this->material_unit_measure,
+                    'unit_price' => $this->material_unit_price,
+                    'total_price' => $totalPrice,
+                    'receipt_photo_path' => $photoPath,
+                    'notes' => $this->material_notes,
+                ]);
+
+                CashflowTransaction::create([
+                    'project_id' => $unit->project_id,
+                    'type' => 'keluar',
+                    'category' => 'operasional',
+                    'amount' => $totalPrice,
+                    'transaction_date' => $this->material_purchase_date,
+                    'description' => "Pembelian Material Unit {$unit->code}: {$this->material_item_name} ({$this->material_quantity} {$this->material_unit_measure})",
+                    'reference_type' => WeeklyMaterialPurchase::class,
+                    'reference_id' => $purchase->id,
+                    'created_by' => Auth::id(),
+                ]);
+            });
+            session()->flash('success', 'Pembelian barang/material unit ' . $unit->code . ' berhasil dicatat!');
+        }
+
         $this->showMaterialModal = false;
+        $this->editingMaterialId = null;
     }
+
+    // Payroll Setup Management
+    public ?int $editingPayrollId = null;
 
     public function openPayrollSetupModal(): void
     {
         $this->resetValidation();
+        $this->editingPayrollId = null;
         $this->reset(['payroll_worker_id', 'payroll_agreed_salary', 'payroll_notes']);
         $this->payroll_payment_frequency = 'fleksibel';
         $this->payroll_worker_id = Worker::where('status', 'active')->first()?->id;
         $this->showPayrollSetupModal = true;
     }
 
+    public function editPayrollSetup(int $id): void
+    {
+        if (!$this->canManageOperational()) {
+            session()->flash('error', 'Akses ditolak.');
+            return;
+        }
+        $up = WorkerUnitPayroll::findOrFail($id);
+        $this->resetValidation();
+        $this->editingPayrollId = $up->id;
+        $this->payroll_worker_id = $up->worker_id;
+        $this->payroll_agreed_salary = $up->agreed_salary;
+        $this->payroll_payment_frequency = $up->payment_frequency;
+        $this->payroll_notes = $up->notes ?? '';
+        $this->showPayrollSetupModal = true;
+    }
+
+    public function deletePayrollSetup(int $id): void
+    {
+        if (!$this->canManageOperational()) {
+            session()->flash('error', 'Akses ditolak.');
+            return;
+        }
+        $up = WorkerUnitPayroll::findOrFail($id);
+        DB::transaction(function () use ($up) {
+            foreach ($up->salaryPayments as $sp) {
+                CashflowTransaction::where('reference_type', WorkerSalaryPayment::class)
+                    ->where('reference_id', $sp->id)
+                    ->delete();
+                $sp->delete();
+            }
+            $up->delete();
+        });
+        session()->flash('success', 'Penetapan gaji borongan unit berhasil dihapus!');
+    }
+
     public function savePayrollSetup(): void
     {
+        if (!$this->canManageOperational()) {
+            session()->flash('error', 'Akses ditolak.');
+            return;
+        }
         $this->validate([
             'payroll_worker_id' => 'required|exists:workers,id',
             'payroll_agreed_salary' => 'required|numeric|min:10000',
@@ -220,24 +506,39 @@ class Show extends Component
 
         $unit = Unit::findOrFail($this->unitId);
 
-        WorkerUnitPayroll::create([
-            'worker_id' => $this->payroll_worker_id,
-            'project_id' => $unit->project_id,
-            'unit_id' => $unit->id,
-            'agreed_salary' => $this->payroll_agreed_salary,
-            'payment_frequency' => $this->payroll_payment_frequency,
-            'status' => 'berjalan',
-            'notes' => $this->payroll_notes,
-            'created_by' => Auth::id(),
-        ]);
+        if ($this->editingPayrollId) {
+            $up = WorkerUnitPayroll::findOrFail($this->editingPayrollId);
+            $up->update([
+                'worker_id' => $this->payroll_worker_id,
+                'agreed_salary' => $this->payroll_agreed_salary,
+                'payment_frequency' => $this->payroll_payment_frequency,
+                'notes' => $this->payroll_notes,
+            ]);
+            session()->flash('success', 'Penetapan gaji borongan unit berhasil diperbarui!');
+        } else {
+            WorkerUnitPayroll::create([
+                'worker_id' => $this->payroll_worker_id,
+                'project_id' => $unit->project_id,
+                'unit_id' => $unit->id,
+                'agreed_salary' => $this->payroll_agreed_salary,
+                'payment_frequency' => $this->payroll_payment_frequency,
+                'status' => 'berjalan',
+                'notes' => $this->payroll_notes,
+                'created_by' => Auth::id(),
+            ]);
+            session()->flash('success', 'Penetapan gaji unit ' . $unit->code . ' berhasil disimpan!');
+        }
 
-        session()->flash('success', 'Penetapan gaji unit ' . $unit->code . ' berhasil disimpan!');
         $this->showPayrollSetupModal = false;
+        $this->editingPayrollId = null;
     }
+
+    public ?int $editingSalaryPaymentId = null;
 
     public function openPayrollPaymentModal(int $payrollId): void
     {
         $this->resetValidation();
+        $this->editingSalaryPaymentId = null;
         $this->reset(['payroll_amount_gross', 'payroll_receipt_photo', 'payroll_payment_notes']);
         
         $this->selectedPayroll = WorkerUnitPayroll::with(['worker', 'project', 'unit'])->findOrFail($payrollId);
@@ -247,17 +548,74 @@ class Show extends Component
         $this->showPayrollPaymentModal = true;
     }
 
+    public function editPayrollPayment(int $salaryPaymentId): void
+    {
+        if (!$this->canManageOperational()) {
+            session()->flash('error', 'Akses ditolak.');
+            return;
+        }
+
+        $sp = WorkerSalaryPayment::with(['payroll.worker', 'payroll.project', 'payroll.unit'])->findOrFail($salaryPaymentId);
+        $this->resetValidation();
+        $this->editingSalaryPaymentId = $sp->id;
+        $this->selectedPayroll = $sp->payroll;
+        $this->payroll_payment_date = $sp->payment_date ? $sp->payment_date->format('Y-m-d') : date('Y-m-d');
+        $this->payroll_amount_gross = $sp->amount_gross;
+        $this->payroll_payment_method = $sp->payment_method ?? 'transfer_bank';
+        $this->payroll_payment_notes = $sp->notes ?? '';
+        $this->payroll_receipt_photo = null;
+
+        $this->showPayrollPaymentModal = true;
+    }
+
+    public function deletePayrollPayment(int $salaryPaymentId): void
+    {
+        if (!$this->canManageOperational()) {
+            session()->flash('error', 'Akses ditolak.');
+            return;
+        }
+
+        $sp = WorkerSalaryPayment::with('payroll')->findOrFail($salaryPaymentId);
+        $payroll = $sp->payroll;
+
+        DB::transaction(function () use ($sp, $payroll) {
+            CashflowTransaction::where('reference_type', WorkerSalaryPayment::class)
+                ->where('reference_id', $sp->id)
+                ->delete();
+
+            $oldGross = (float)$sp->amount_gross;
+            $sp->delete();
+
+            if ($payroll) {
+                $newPaidTotal = max(0, (float)$payroll->paid_amount - $oldGross);
+                $status = $newPaidTotal >= (float)$payroll->agreed_salary ? 'lunas' : 'berjalan';
+                $payroll->update([
+                    'paid_amount' => $newPaidTotal,
+                    'status' => $status,
+                ]);
+            }
+        });
+
+        session()->flash('success', 'Pencatatan pembayaran gaji worker berhasil dihapus!');
+    }
+
     public function savePayrollPayment(): void
     {
         if (!$this->selectedPayroll) {
             return;
         }
 
-        $remainingSalary = $this->selectedPayroll->remaining_salary;
+        if (!$this->canManageOperational()) {
+            session()->flash('error', 'Akses ditolak.');
+            return;
+        }
+
+        $sp = $this->editingSalaryPaymentId ? WorkerSalaryPayment::find($this->editingSalaryPaymentId) : null;
+        $maxAllowed = (float)$this->selectedPayroll->remaining_salary + ($sp ? (float)$sp->amount_gross : 0);
 
         $this->validate([
             'payroll_payment_date' => 'required|date',
-            'payroll_amount_gross' => 'required|numeric|min:1000|max:' . max(1000, $remainingSalary),
+            'payroll_amount_gross' => 'required|numeric|min:1000|max:' . max(1000, $maxAllowed),
             'payroll_payment_method' => 'required|in:transfer_bank,tunai',
             'payroll_receipt_photo' => 'nullable|image|max:4096',
             'payroll_payment_notes' => 'nullable|string',
@@ -271,48 +629,90 @@ class Show extends Component
             $photoPath = \App\Services\ImageCompressor::compressAndStore($this->payroll_receipt_photo, 'payroll-receipts');
         }
 
-        DB::transaction(function () use ($amountGross, $amountPaid, $photoPath) {
-            $payment = WorkerSalaryPayment::create([
-                'worker_unit_payroll_id' => $this->selectedPayroll->id,
-                'payment_date' => $this->payroll_payment_date,
-                'amount_gross' => $amountGross,
-                'loan_deduction' => 0,
-                'amount_paid' => $amountPaid,
-                'payment_method' => $this->payroll_payment_method,
-                'bank_name' => null,
-                'account_number' => null,
-                'receipt_photo_path' => $photoPath,
-                'notes' => $this->payroll_payment_notes,
-                'created_by' => Auth::id(),
-            ]);
+        if ($this->editingSalaryPaymentId && $sp) {
+            $oldGross = (float)$sp->amount_gross;
+            $finalPhoto = $photoPath ?: $sp->receipt_photo_path;
 
-            $newPaidTotal = (float)$this->selectedPayroll->paid_amount + $amountGross;
-            $status = $newPaidTotal >= (float)$this->selectedPayroll->agreed_salary ? 'lunas' : 'berjalan';
+            DB::transaction(function () use ($sp, $amountGross, $amountPaid, $oldGross, $finalPhoto) {
+                $sp->update([
+                    'payment_date' => $this->payroll_payment_date,
+                    'amount_gross' => $amountGross,
+                    'amount_paid' => $amountPaid,
+                    'payment_method' => $this->payroll_payment_method,
+                    'receipt_photo_path' => $finalPhoto,
+                    'notes' => $this->payroll_payment_notes,
+                ]);
 
-            $this->selectedPayroll->update([
-                'paid_amount' => $newPaidTotal,
-                'status' => $status,
-            ]);
+                $newPaidTotal = (float)$this->selectedPayroll->paid_amount - $oldGross + $amountGross;
+                $status = $newPaidTotal >= (float)$this->selectedPayroll->agreed_salary ? 'lunas' : 'berjalan';
 
-            CashflowTransaction::create([
-                'project_id' => $this->selectedPayroll->project_id,
-                'type' => 'keluar',
-                'category' => 'pembayaran_tukang',
-                'amount' => $amountPaid,
-                'transaction_date' => $this->payroll_payment_date,
-                'description' => "Gaji Worker: {$this->selectedPayroll->worker->name} (Unit {$this->selectedPayroll->unit->code}) - Rp " . number_format($amountPaid, 0, ',', '.'),
-                'reference_type' => WorkerSalaryPayment::class,
-                'reference_id' => $payment->id,
-                'created_by' => Auth::id(),
-            ]);
-        });
+                $this->selectedPayroll->update([
+                    'paid_amount' => $newPaidTotal,
+                    'status' => $status,
+                ]);
 
-        session()->flash('success', 'Pembayaran gaji unit ' . $this->selectedPayroll->unit->code . ' berhasil disimpan!');
+                $cashflow = CashflowTransaction::where('reference_type', WorkerSalaryPayment::class)
+                    ->where('reference_id', $sp->id)
+                    ->first();
+
+                if ($cashflow) {
+                    $cashflow->update([
+                        'amount' => $amountPaid,
+                        'transaction_date' => $this->payroll_payment_date,
+                        'description' => "Gaji Worker: {$this->selectedPayroll->worker->name} (Unit {$this->selectedPayroll->unit->code}) - Rp " . number_format($amountPaid, 0, ',', '.'),
+                    ]);
+                }
+            });
+
+            session()->flash('success', 'Pembayaran gaji unit ' . $this->selectedPayroll->unit->code . ' berhasil diperbarui! Perubahan sudah otomatis memperbarui PDF Resi & QR Code.');
+        } else {
+            DB::transaction(function () use ($amountGross, $amountPaid, $photoPath) {
+                $payment = WorkerSalaryPayment::create([
+                    'worker_unit_payroll_id' => $this->selectedPayroll->id,
+                    'payment_date' => $this->payroll_payment_date,
+                    'amount_gross' => $amountGross,
+                    'loan_deduction' => 0,
+                    'amount_paid' => $amountPaid,
+                    'payment_method' => $this->payroll_payment_method,
+                    'bank_name' => null,
+                    'account_number' => null,
+                    'receipt_photo_path' => $photoPath,
+                    'notes' => $this->payroll_payment_notes,
+                    'created_by' => Auth::id(),
+                ]);
+
+                $newPaidTotal = (float)$this->selectedPayroll->paid_amount + $amountGross;
+                $status = $newPaidTotal >= (float)$this->selectedPayroll->agreed_salary ? 'lunas' : 'berjalan';
+
+                $this->selectedPayroll->update([
+                    'paid_amount' => $newPaidTotal,
+                    'status' => $status,
+                ]);
+
+                CashflowTransaction::create([
+                    'project_id' => $this->selectedPayroll->project_id,
+                    'type' => 'keluar',
+                    'category' => 'pembayaran_tukang',
+                    'amount' => $amountPaid,
+                    'transaction_date' => $this->payroll_payment_date,
+                    'description' => "Gaji Worker: {$this->selectedPayroll->worker->name} (Unit {$this->selectedPayroll->unit->code}) - Rp " . number_format($amountPaid, 0, ',', '.'),
+                    'reference_type' => WorkerSalaryPayment::class,
+                    'reference_id' => $payment->id,
+                    'created_by' => Auth::id(),
+                ]);
+            });
+
+            session()->flash('success', 'Pembayaran gaji unit ' . $this->selectedPayroll->unit->code . ' berhasil disimpan!');
+        }
+
         $this->showPayrollPaymentModal = false;
         $this->selectedPayroll = null;
+        $this->editingSalaryPaymentId = null;
     }
 
     // Modal Setoran Cicilan Pembeli (Khusus Finance & Founder)
+    public ?int $editingInstallmentPaymentId = null;
+
     public function openInstallmentPaymentModal(): void
     {
         $unit = Unit::with('installment')->findOrFail($this->unitId);
@@ -322,11 +722,53 @@ class Show extends Component
         }
 
         $this->resetValidation();
+        $this->editingInstallmentPaymentId = null;
         $this->installment_payment_amount = $unit->installment->installment_amount;
         $this->installment_payment_date = now()->toDateString();
         $this->installment_payment_method = 'Transfer Bank';
         $this->installment_payment_notes = '';
         $this->showInstallmentPaymentModal = true;
+    }
+
+    public function editInstallmentPayment(int $id): void
+    {
+        if (!$this->canManageFinancial()) {
+            session()->flash('error', 'Akses ditolak. Hanya Founder dan Finance.');
+            return;
+        }
+        $pay = InstallmentPayment::findOrFail($id);
+        $this->resetValidation();
+        $this->editingInstallmentPaymentId = $pay->id;
+        $this->installment_payment_amount = $pay->amount_paid;
+        $this->installment_payment_date = $pay->payment_date ? $pay->payment_date->format('Y-m-d') : date('Y-m-d');
+        $this->installment_payment_method = $pay->payment_method;
+        $this->installment_payment_notes = $pay->notes ?? '';
+        $this->showInstallmentPaymentModal = true;
+    }
+
+    public function deleteInstallmentPayment(int $id): void
+    {
+        if (!$this->canManageFinancial()) {
+            session()->flash('error', 'Akses ditolak. Hanya Founder dan Finance.');
+            return;
+        }
+        $pay = InstallmentPayment::findOrFail($id);
+        $inst = $pay->installment;
+
+        DB::transaction(function () use ($pay, $inst) {
+            CashflowTransaction::where('reference_type', InstallmentPayment::class)
+                ->where('reference_id', $pay->id)
+                ->delete();
+            $pay->delete();
+
+            if ($inst) {
+                $totalPaid = $inst->down_payment + $inst->payments()->sum('amount_paid');
+                $status = ($totalPaid >= $inst->total_price) ? 'lunas' : 'berjalan';
+                $inst->update(['status' => $status]);
+            }
+        });
+
+        session()->flash('success', 'Setoran cicilan pembeli berhasil dihapus!');
     }
 
     public function saveInstallmentPayment(): void
@@ -352,48 +794,177 @@ class Show extends Component
             return;
         }
 
-        DB::transaction(function () use ($unit, $inst) {
-            InstallmentPayment::create([
-                'unit_installment_id' => $inst->id,
-                'payment_date' => $this->installment_payment_date,
-                'amount_paid' => $this->installment_payment_amount,
-                'payment_method' => $this->installment_payment_method,
-                'notes' => $this->installment_payment_notes,
-                'created_by' => Auth::id(),
-            ]);
+        if ($this->editingInstallmentPaymentId) {
+            $pay = InstallmentPayment::findOrFail($this->editingInstallmentPaymentId);
+            DB::transaction(function () use ($unit, $inst, $pay) {
+                $pay->update([
+                    'payment_date' => $this->installment_payment_date,
+                    'amount_paid' => $this->installment_payment_amount,
+                    'payment_method' => $this->installment_payment_method,
+                    'notes' => $this->installment_payment_notes,
+                ]);
 
-            CashflowTransaction::create([
-                'project_id' => $unit->project_id,
-                'type' => 'masuk',
-                'category' => 'pembayaran_cicilan_pembeli',
-                'amount' => $this->installment_payment_amount,
-                'transaction_date' => $this->installment_payment_date,
-                'description' => 'Setoran Cicilan Pembeli Unit ' . $unit->code . ' (' . $this->installment_payment_method . ')',
-                'reference_type' => UnitInstallment::class,
-                'reference_id' => $inst->id,
-                'created_by' => Auth::id(),
-            ]);
+                $cashflow = CashflowTransaction::where('reference_type', InstallmentPayment::class)
+                    ->where('reference_id', $pay->id)
+                    ->first();
 
-            // Auto-check status Lunas
-            $totalPaid = $inst->down_payment + $inst->payments()->sum('amount_paid');
-            if ($totalPaid >= $inst->total_price) {
-                $inst->update(['status' => 'lunas']);
-            }
-        });
+                if ($cashflow) {
+                    $cashflow->update([
+                        'amount' => $this->installment_payment_amount,
+                        'transaction_date' => $this->installment_payment_date,
+                        'description' => 'Setoran Cicilan Pembeli Unit ' . $unit->code . ' (' . $this->installment_payment_method . ')',
+                    ]);
+                }
 
-        session()->flash('success', 'Setoran cicilan pembeli Rp ' . number_format($this->installment_payment_amount, 0, ',', '.') . ' berhasil dicatat!');
+                $totalPaid = $inst->down_payment + $inst->payments()->sum('amount_paid');
+                $status = ($totalPaid >= $inst->total_price) ? 'lunas' : 'berjalan';
+                $inst->update(['status' => $status]);
+            });
+            session()->flash('success', 'Setoran cicilan pembeli berhasil diperbarui!');
+        } else {
+            DB::transaction(function () use ($unit, $inst) {
+                $payment = InstallmentPayment::create([
+                    'unit_installment_id' => $inst->id,
+                    'payment_date' => $this->installment_payment_date,
+                    'amount_paid' => $this->installment_payment_amount,
+                    'payment_method' => $this->installment_payment_method,
+                    'notes' => $this->installment_payment_notes,
+                    'created_by' => Auth::id(),
+                ]);
+
+                CashflowTransaction::create([
+                    'project_id' => $unit->project_id,
+                    'type' => 'masuk',
+                    'category' => 'pembayaran_cicilan_pembeli',
+                    'amount' => $this->installment_payment_amount,
+                    'transaction_date' => $this->installment_payment_date,
+                    'description' => 'Setoran Cicilan Pembeli Unit ' . $unit->code . ' (' . $this->installment_payment_method . ')',
+                    'reference_type' => InstallmentPayment::class,
+                    'reference_id' => $payment->id,
+                    'created_by' => Auth::id(),
+                ]);
+
+                $totalPaid = $inst->down_payment + $inst->payments()->sum('amount_paid');
+                if ($totalPaid >= $inst->total_price) {
+                    $inst->update(['status' => 'lunas']);
+                }
+            });
+            session()->flash('success', 'Setoran cicilan pembeli Rp ' . number_format($this->installment_payment_amount, 0, ',', '.') . ' berhasil dicatat!');
+        }
+
         $this->showInstallmentPaymentModal = false;
+        $this->editingInstallmentPaymentId = null;
     }
 
-    // Modal Setup Skema Cicilan Baru
+    // Modal Batalkan Skema Cicilan & Dialihkan ke Cash (Khusus Founder & Finance)
+    public bool $showConvertToCashModal = false;
+    public $cash_payment_amount = 0;
+    public string $cash_payment_date = '';
+    public string $cash_payment_method = 'Transfer Bank';
+    public string $cash_notes = '';
+
+    public function openConvertToCashModal(): void
+    {
+        $user = auth()->user();
+        if (!$user->isFinance() && !$user->isFounder()) {
+            session()->flash('error', 'Hanya tim Finance dan Founder yang berhak membatalkan cicilan dan menggantinya ke Cash.');
+            return;
+        }
+
+        $unit = Unit::with('installment.payments')->findOrFail($this->unitId);
+        if (!$unit->installment) {
+            session()->flash('error', 'Unit ini belum memiliki skema cicilan aktif.');
+            return;
+        }
+
+        $this->resetValidation();
+        $this->cash_payment_amount = $unit->installment->remaining_balance;
+        $this->cash_payment_date = now()->toDateString();
+        $this->cash_payment_method = 'Transfer Bank';
+        $this->cash_notes = 'Pembatalan skema cicilan unit ' . $unit->code . ' dan konversi pelunasan tunai/cash.';
+        $this->showConvertToCashModal = true;
+    }
+
+    public function saveConvertToCash(): void
+    {
+        $user = auth()->user();
+        if (!$user->isFinance() && !$user->isFounder()) {
+            session()->flash('error', 'Hanya tim Finance dan Founder yang berhak membatalkan skema cicilan.');
+            return;
+        }
+
+        $this->validate([
+            'cash_payment_amount' => 'required|numeric|min:0',
+            'cash_payment_date' => 'required|date',
+            'cash_payment_method' => 'required|string',
+            'cash_notes' => 'nullable|string',
+        ]);
+
+        $unit = Unit::with('installment')->findOrFail($this->unitId);
+        $inst = $unit->installment;
+
+        if (!$inst) {
+            session()->flash('error', 'Skema cicilan tidak ditemukan.');
+            return;
+        }
+
+        DB::transaction(function () use ($unit, $inst) {
+            if ($this->cash_payment_amount > 0) {
+                InstallmentPayment::create([
+                    'unit_installment_id' => $inst->id,
+                    'payment_date' => $this->cash_payment_date,
+                    'amount_paid' => $this->cash_payment_amount,
+                    'payment_method' => $this->cash_payment_method,
+                    'notes' => '[Pelunasan Cash - Pembatalan Skema Cicilan] ' . $this->cash_notes,
+                    'created_by' => Auth::id(),
+                ]);
+
+                CashflowTransaction::create([
+                    'project_id' => $unit->project_id,
+                    'type' => 'masuk',
+                    'category' => 'pembayaran_cicilan_pembeli',
+                    'amount' => $this->cash_payment_amount,
+                    'transaction_date' => $this->cash_payment_date,
+                    'description' => 'Pelunasan Cash (Pembatalan Skema Cicilan) Unit ' . $unit->code . ' (' . $this->cash_payment_method . ')',
+                    'reference_type' => UnitInstallment::class,
+                    'reference_id' => $inst->id,
+                    'created_by' => Auth::id(),
+                ]);
+            }
+
+            $inst->update(['status' => 'konversi_cash']);
+
+            \App\Services\ActivityLogger::log('CANCEL_INSTALLMENT_TO_CASH', "Founder/Accounting membatalkan skema cicilan Unit {$unit->code} dan menggantinya ke Pelunasan Cash Lunas sebesar Rp " . number_format($this->cash_payment_amount, 0, ',', '.'));
+        });
+
+        session()->flash('success', 'Skema cicilan unit ' . $unit->code . ' berhasil dibatalkan dan dialihkan ke Pelunasan Cash Lunas!');
+        $this->showConvertToCashModal = false;
+    }
+
+    // Modal Setup & Edit Skema Cicilan
     public function openSetupInstallmentModal(): void
     {
-        $unit = Unit::with(['officialDocument', 'activeProposal'])->findOrFail($this->unitId);
+        $user = auth()->user();
+        if (!$user->isFinance() && !$user->isFounder()) {
+            session()->flash('error', 'Hanya tim Finance dan Founder yang berhak mengonfigurasi skema cicilan.');
+            return;
+        }
+
+        $unit = Unit::with(['officialDocument', 'activeProposal', 'installment'])->findOrFail($this->unitId);
         $this->resetValidation();
-        $this->setup_total_price = (float)($unit->final_selling_price ?: ($unit->activeProposal->proposed_price ?? 0));
-        $this->setup_down_payment = $this->setup_total_price * 0.20;
-        $this->setup_installment_count = 12;
-        $this->setup_start_date = now()->toDateString();
+
+        if ($unit->installment) {
+            $this->setup_total_price = (float)$unit->installment->total_price;
+            $this->setup_down_payment = (float)$unit->installment->down_payment;
+            $this->setup_installment_count = (int)$unit->installment->installment_count;
+            $this->setup_start_date = $unit->installment->start_date ? $unit->installment->start_date->format('Y-m-d') : now()->toDateString();
+        } else {
+            $this->setup_total_price = (float)($unit->final_selling_price ?: ($unit->activeProposal->proposed_price ?? 0));
+            $this->setup_down_payment = $this->setup_total_price * 0.20;
+            $this->setup_installment_count = 12;
+            $this->setup_start_date = now()->toDateString();
+        }
+
         $this->calculateMonthlyInstallment();
         $this->showSetupInstallmentModal = true;
     }
@@ -419,75 +990,68 @@ class Show extends Component
             'setup_start_date' => 'required|date',
         ]);
 
-        $unit = Unit::with('officialDocument')->findOrFail($this->unitId);
+        $unit = Unit::with(['officialDocument', 'installment.payments'])->findOrFail($this->unitId);
 
         DB::transaction(function () use ($unit) {
-            $installment = UnitInstallment::create([
-                'unit_id' => $unit->id,
-                'official_document_id' => $unit->officialDocument->id ?? null,
-                'total_price' => $this->setup_total_price,
-                'down_payment' => $this->setup_down_payment,
-                'installment_count' => $this->setup_installment_count,
-                'installment_amount' => $this->setup_installment_amount,
-                'start_date' => $this->setup_start_date,
-                'status' => 'berjalan',
-            ]);
+            if ($unit->installment) {
+                // Update existing installment scheme
+                $paidSoFar = (float)$this->setup_down_payment + (float)$unit->installment->payments->sum('amount_paid');
+                $remUnpaid = max(0, (float)$this->setup_total_price - $paidSoFar);
+                $newStatus = $remUnpaid <= 0 ? 'lunas' : 'berjalan';
 
-            if ($this->setup_down_payment > 0) {
-                CashflowTransaction::create([
-                    'project_id' => $unit->project_id,
-                    'type' => 'masuk',
-                    'category' => 'pembayaran_cicilan_pembeli',
-                    'amount' => $this->setup_down_payment,
-                    'transaction_date' => $this->setup_start_date,
-                    'description' => 'Pembayaran Uang Muka (DP) Unit ' . $unit->code,
-                    'reference_type' => UnitInstallment::class,
-                    'reference_id' => $installment->id,
-                    'created_by' => Auth::id(),
+                $unit->installment->update([
+                    'total_price' => $this->setup_total_price,
+                    'down_payment' => $this->setup_down_payment,
+                    'installment_count' => $this->setup_installment_count,
+                    'installment_amount' => $this->setup_installment_amount,
+                    'start_date' => $this->setup_start_date,
+                    'status' => $newStatus,
                 ]);
+
+                // Sync Cashflow DP transaction if present
+                $dpCashflow = CashflowTransaction::where('reference_type', UnitInstallment::class)
+                    ->where('reference_id', $unit->installment->id)
+                    ->first();
+                if ($dpCashflow) {
+                    $dpCashflow->update([
+                        'amount' => $this->setup_down_payment,
+                        'transaction_date' => $this->setup_start_date,
+                    ]);
+                }
+            } else {
+                // Create new installment scheme
+                $installment = UnitInstallment::create([
+                    'unit_id' => $unit->id,
+                    'official_document_id' => $unit->officialDocument->id ?? null,
+                    'total_price' => $this->setup_total_price,
+                    'down_payment' => $this->setup_down_payment,
+                    'installment_count' => $this->setup_installment_count,
+                    'installment_amount' => $this->setup_installment_amount,
+                    'start_date' => $this->setup_start_date,
+                    'status' => 'berjalan',
+                ]);
+
+                if ($this->setup_down_payment > 0) {
+                    CashflowTransaction::create([
+                        'project_id' => $unit->project_id,
+                        'type' => 'masuk',
+                        'category' => 'pembayaran_cicilan_pembeli',
+                        'amount' => $this->setup_down_payment,
+                        'transaction_date' => $this->setup_start_date,
+                        'description' => 'Pembayaran Uang Muka (DP) Unit ' . $unit->code,
+                        'reference_type' => UnitInstallment::class,
+                        'reference_id' => $installment->id,
+                        'created_by' => Auth::id(),
+                    ]);
+                }
             }
         });
 
-        session()->flash('success', 'Skema cicilan unit ' . $unit->code . ' berhasil dibuat!');
+        session()->flash('success', 'Skema cicilan & piutang unit ' . $unit->code . ' berhasil diperbarui!');
         $this->showSetupInstallmentModal = false;
     }
 
-    // 1. Worker Assignment Handler (Req #3)
-    public function openWorkerModal(): void
-    {
-        $this->resetValidation();
-        $this->worker_id = Worker::where('status', 'active')->first()?->id;
-        $this->assigned_role = 'Mandor Unit';
-        $this->showWorkerModal = true;
-    }
 
-    public function saveWorkerAssignment(): void
-    {
-        $user = auth()->user();
-        if (!$user->isFounder() && !$user->isSupervisor() && !$user->isPengawasProject()) {
-            session()->flash('error', 'Hanya tim operasional lapangan yang berhak menugaskan pekerja.');
-            return;
-        }
-
-        $this->validate([
-            'worker_id' => 'required|exists:workers,id',
-            'assigned_role' => 'required|string|max:255',
-        ]);
-
-        $unit = Unit::findOrFail($this->unitId);
-
-        WorkerAssignment::create([
-            'worker_id' => $this->worker_id,
-            'project_id' => $unit->project_id,
-            'unit_id' => $unit->id,
-            'assigned_role' => $this->assigned_role,
-            'start_date' => now()->toDateString(),
-            'status' => 'active',
-        ]);
-
-        session()->flash('success', 'Pekerja berhasil ditugaskan langsung pada unit ' . $unit->code . '!');
-        $this->showWorkerModal = false;
-    }
 
     // 3. Direct Booking Handler (Req #2)
     public function openBookingModal(): void
@@ -581,13 +1145,32 @@ class Show extends Component
 
         $combinedExpenses = collect();
 
+        foreach ($unitPayrolls as $up) {
+            $combinedExpenses->push((object)[
+                'id' => $up->id,
+                'source_type' => 'payroll_setup',
+                'date' => $up->created_at,
+                'category_badge' => 'Kontrak Gaji',
+                'badge_class' => 'bg-purple-100 text-purple-800 border-purple-200',
+                'description' => 'Kontrak Borongan Gaji ' . $up->worker->name . ' (' . strtoupper($up->status) . ' - Terbayar Rp ' . number_format($up->paid_amount, 0, ',', '.') . ' / Total Rp ' . number_format($up->agreed_salary, 0, ',', '.') . ')',
+                'amount' => $up->agreed_salary,
+                'gross_amount' => $up->agreed_salary,
+                'loan_deduction' => 0,
+                'receipt_photo_path' => null,
+                'pdf_url' => null,
+                'qr_url' => null,
+                'created_at' => $up->created_at,
+            ]);
+        }
+
         foreach ($salaryPayments as $sp) {
             $combinedExpenses->push((object)[
-                'id' => 'sp_' . $sp->id,
+                'id' => $sp->id,
+                'source_type' => 'salary_payment',
                 'date' => $sp->payment_date,
                 'category_badge' => 'Gaji Worker',
                 'badge_class' => 'bg-emerald-100 text-emerald-800 border-emerald-200',
-                'description' => 'Gaji ' . $sp->payroll->worker->name . ' (' . str_replace('_', ' ', $sp->payment_method) . ')',
+                'description' => 'Pembayaran Gaji ' . $sp->payroll->worker->name . ' (' . str_replace('_', ' ', $sp->payment_method) . ')',
                 'amount' => $sp->amount_paid,
                 'gross_amount' => $sp->amount_gross,
                 'loan_deduction' => $sp->loan_deduction,
@@ -600,7 +1183,8 @@ class Show extends Component
 
         foreach ($materialPurchases as $mp) {
             $combinedExpenses->push((object)[
-                'id' => 'mp_' . $mp->id,
+                'id' => $mp->id,
+                'source_type' => 'material',
                 'date' => $mp->purchase_date,
                 'category_badge' => 'Barang / Material',
                 'badge_class' => 'bg-amber-100 text-amber-800 border-amber-200',
@@ -635,8 +1219,10 @@ class Show extends Component
             'showPayrollPaymentModal' => $this->showPayrollPaymentModal,
             'showInstallmentPaymentModal' => $this->showInstallmentPaymentModal,
             'showSetupInstallmentModal' => $this->showSetupInstallmentModal,
+            'showConvertToCashModal' => $this->showConvertToCashModal,
             'showMaterialModal' => $this->materialModal ?? $this->showMaterialModal,
             'showViewerModal' => $this->showViewerModal,
+            'editingSalaryPaymentId' => $this->editingSalaryPaymentId,
         ])->layout('components.layouts.app', ['title' => 'Detail Unit ' . $unit->code . ' - ' . $unit->project->name]);
     }
 }

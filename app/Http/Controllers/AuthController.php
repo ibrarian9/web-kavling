@@ -23,9 +23,19 @@ class AuthController extends Controller
             'password' => ['required'],
         ]);
 
+        $user = User::where('email', $credentials['email'])->first();
+
+        if ($user && !$user->is_active) {
+            return back()->withErrors([
+                'email' => 'Akun Anda telah dinonaktifkan oleh Founder. Silakan hubungi Founder untuk mengaktifkan kembali akun Anda.',
+            ]);
+        }
+
+        $credentials['is_active'] = true;
+
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-            \App\Services\ActivityLogger::log('AUTH_LOGIN', 'Pengguna berhasil login ke dalam sistem.');
+            \App\Services\ActivityLogger::log('AUTH_LOGIN', 'Pengguna ' . auth()->user()->name . ' berhasil login ke dalam sistem.');
             return redirect()->intended('/dashboard');
         }
 
@@ -36,7 +46,7 @@ class AuthController extends Controller
 
     public function switchRole(Request $request, string $role)
     {
-        $user = User::where('role', $role)->first();
+        $user = User::where('role', $role)->where('is_active', true)->first();
         if ($user) {
             Auth::login($user);
             $request->session()->regenerate();
@@ -44,7 +54,7 @@ class AuthController extends Controller
             return redirect()->route('dashboard')->with('success', 'Berhasil beralih peran sebagai: ' . strtoupper($role));
         }
 
-        return redirect()->back()->with('error', 'User dengan peran tersebut tidak ditemukan.');
+        return redirect()->back()->with('error', 'User aktif dengan peran tersebut tidak ditemukan.');
     }
 
     public function logout(Request $request)

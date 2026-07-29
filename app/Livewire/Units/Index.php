@@ -5,6 +5,7 @@ namespace App\Livewire\Units;
 use App\Models\Booking;
 use App\Models\Project;
 use App\Models\Unit;
+use App\Models\WorkerAssignment;
 use Illuminate\Validation\Rule;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -303,6 +304,14 @@ class Index extends Component
             });
         }
 
+        $user = auth()->user();
+        if ($user && $user->isPengawasProject()) {
+            $assignedProjectIds = WorkerAssignment::where('user_id', $user->id)
+                ->where('status', 'active')
+                ->pluck('project_id');
+            $query->whereIn('project_id', $assignedProjectIds);
+        }
+
         if ($this->project_id) {
             $query->where('project_id', $this->project_id);
         }
@@ -312,7 +321,15 @@ class Index extends Component
         }
 
         $units = $query->latest()->paginate(12);
-        $projects = Project::where('status', 'aktif')->get();
+
+        if ($user && $user->isPengawasProject()) {
+            $assignedProjectIds = WorkerAssignment::where('user_id', $user->id)
+                ->where('status', 'active')
+                ->pluck('project_id');
+            $projects = Project::where('status', 'aktif')->whereIn('id', $assignedProjectIds)->get();
+        } else {
+            $projects = Project::where('status', 'aktif')->get();
+        }
 
         $unitPaymentsData = [];
         foreach ($units as $unit) {

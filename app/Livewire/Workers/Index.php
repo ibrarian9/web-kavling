@@ -31,7 +31,7 @@ class Index extends Component
             'name' => 'required|string|max:255',
             'phone' => 'nullable|string|max:50',
             'address' => 'nullable|string|max:500',
-            'type' => 'required|in:mandor,tukang',
+            'type' => 'required|in:mandor,tukang,kontraktor',
             'specialty' => 'nullable|string|max:255',
             'status' => 'required|in:active,inactive',
             'notes' => 'nullable|string|max:1000',
@@ -102,7 +102,7 @@ class Index extends Component
         $this->assignWorkerId = $worker->id;
         $this->assignProjectId = \App\Models\Project::first()?->id;
         $this->assignUnitId = null;
-        $this->assignedRole = $worker->type === 'mandor' ? 'Mandor Utama Proyek' : 'Tukang Konstruksi Unit';
+        $this->assignedRole = $worker->type === 'mandor' ? 'Mandor Utama Proyek' : ($worker->type === 'kontraktor' ? 'Kontraktor Utama Proyek' : 'Tukang Konstruksi Unit');
         $this->showAssignModal = true;
     }
 
@@ -160,7 +160,7 @@ class Index extends Component
             'availableUnits' => $availableUnits,
             'showModal' => $this->showModal,
             'showAssignModal' => $this->showAssignModal,
-        ])->layout('components.layouts.app', ['title' => 'Manajemen Pekerja Lapangan (Mandor & Tukang)']);
+        ])->layout('components.layouts.app', ['title' => 'Manajemen Pekerja Lapangan (Mandor, Tukang & Kontraktor)']);
     }
 }
 

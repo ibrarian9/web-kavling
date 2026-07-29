@@ -161,6 +161,62 @@ class Index extends Component
         $this->showWorkerModal = false;
     }
 
+    public function removePengawasAssignment($assignmentId)
+    {
+        $user = auth()->user();
+        if (!$user->isFounder()) {
+            session()->flash('error', 'Hanya Founder yang berhak mencopot Pengawas dari proyek.');
+            return;
+        }
+
+        $assignment = WorkerAssignment::with(['user', 'project'])->findOrFail($assignmentId);
+        $pengawasName = $assignment->user->name ?? 'Pengawas';
+        $projectName = $assignment->project->name ?? 'Proyek';
+
+        $assignment->delete();
+
+        \App\Services\ActivityLogger::log('PROJECT_REMOVE_PENGAWAS', "Founder mencopot Pengawas Project {$pengawasName} dari proyek {$projectName}.");
+        session()->flash('success', "Pengawas Project {$pengawasName} berhasil dicopot dari proyek {$projectName}!");
+    }
+
+    public function movePengawasAssignment($assignmentId, $targetProjectId)
+    {
+        $user = auth()->user();
+        if (!$user->isFounder()) {
+            session()->flash('error', 'Hanya Founder yang berhak memindahkan Pengawas ke proyek lain.');
+            return;
+        }
+
+        if (!$targetProjectId) {
+            session()->flash('error', 'Silakan pilih proyek tujuan pemindahan.');
+            return;
+        }
+
+        $assignment = WorkerAssignment::with(['user', 'project'])->findOrFail($assignmentId);
+        $oldProjectName = $assignment->project->name ?? 'Proyek Lama';
+        $targetProject = Project::findOrFail($targetProjectId);
+        $pengawasName = $assignment->user->name ?? 'Pengawas';
+
+        // Check if user is already assigned to target project
+        $exists = WorkerAssignment::where('user_id', $assignment->user_id)
+            ->where('project_id', $targetProject->id)
+            ->where('status', 'active')
+            ->where('id', '!=', $assignmentId)
+            ->exists();
+
+        if ($exists) {
+            $assignment->delete();
+        } else {
+            $assignment->update([
+                'project_id' => $targetProject->id,
+                'status' => 'active',
+            ]);
+        }
+
+        \App\Services\ActivityLogger::log('PROJECT_MOVE_PENGAWAS', "Founder memindahkan Pengawas Project {$pengawasName} dari proyek {$oldProjectName} ke proyek {$targetProject->name}.");
+        session()->flash('success', "Pengawas Project {$pengawasName} berhasil dipindahkan ke proyek {$targetProject->name}!");
+    }
+
     public function render()
     {
         $projectsQuery = Project::with(['units', 'assignments.user'])
@@ -193,9 +249,14 @@ class Index extends Component
             ->orderBy('name')
             ->get();
 
+        $allProjects = Project::orderBy('name')->get();
+        $selectedProjectForModal = $this->assignProjectId ? Project::with('assignments.user')->find($this->assignProjectId) : null;
+
         return view('livewire.projects.index', [
             'projects' => $projects,
             'pengawasUsers' => $pengawasUsers,
+            'allProjects' => $allProjects,
+            'selectedProjectForModal' => $selectedProjectForModal,
             'showModal' => $this->showModal,
             'showWorkerModal' => $this->showWorkerModal,
         ])->layout('components.layouts.app', ['title' => 'Manajemen Proyek Properti']);

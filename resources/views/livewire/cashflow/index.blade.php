@@ -14,11 +14,14 @@
                     Kas Global
                 </button>
                 <button wire:click="$set('view_mode', 'project')" class="px-3 py-1.5 rounded-lg font-semibold transition {{ $view_mode === 'project' ? 'bg-white text-emerald-700 shadow-sm' : 'text-slate-600 hover:text-slate-900' }}">
-                    Per Proyek / Unit
+                    Per Proyek
+                </button>
+                <button wire:click="$set('view_mode', 'unit')" class="px-3 py-1.5 rounded-lg font-semibold transition {{ $view_mode === 'unit' ? 'bg-white text-emerald-700 shadow-sm' : 'text-slate-600 hover:text-slate-900' }}">
+                    Per Unit
                 </button>
             </div>
 
-            @if ($view_mode === 'project')
+            @if ($view_mode === 'project' || $view_mode === 'unit')
                 <!-- Filter Proyek -->
                 <select wire:model.live="filter_project_id" class="input-clean font-semibold text-xs py-2">
                     <option value="">-- Semua Proyek --</option>
@@ -26,15 +29,44 @@
                         <option value="{{ $p->id }}">{{ $p->name }}</option>
                     @endforeach
                 </select>
+            @endif
 
+            @if ($view_mode === 'unit' || ($view_mode === 'project' && $filter_project_id))
                 <!-- Filter Unit -->
                 <select wire:model.live="filter_unit_id" class="input-clean font-semibold text-xs py-2">
-                    <option value="">-- Semua Unit --</option>
+                    <option value="">-- Pilih Unit --</option>
                     @foreach($availableUnits as $u)
                         <option value="{{ $u->id }}">Unit {{ $u->code }} ({{ $u->project->name }})</option>
                     @endforeach
                 </select>
             @endif
+
+            <!-- Filter Bulan / Periode -->
+            <div class="flex items-center gap-1 bg-slate-50 border border-slate-200/80 p-1 rounded-xl">
+                <input type="month" wire:model.live="filter_month" class="input-clean font-semibold text-xs py-1 px-2 border-0 bg-transparent" title="Pilih Bulan & Tahun">
+                @if(!empty($filter_month))
+                    <button type="button" wire:click="$set('filter_month', '')" class="text-[10px] font-bold text-slate-500 hover:text-slate-800 px-1.5 py-0.5 rounded bg-slate-200/60" title="Tampilkan Semua Periode">
+                        Semua
+                    </button>
+                @else
+                    <button type="button" wire:click="$set('filter_month', '{{ date('Y-m') }}')" class="text-[10px] font-bold text-emerald-700 hover:text-emerald-900 px-1.5 py-0.5 rounded bg-emerald-100/70" title="Filter Bulan Ini">
+                        Bulan Ini
+                    </button>
+                @endif
+            </div>
+
+            <!-- Export Buttons -->
+            <div class="flex items-center gap-1.5">
+                <a href="{{ url('/cashflow/export-pdf?' . http_build_query(['view_mode' => $view_mode ?? 'global', 'project_id' => $filter_project_id ?? '', 'unit_id' => $filter_unit_id ?? '', 'month' => $filter_month ?? ''])) }}" target="_blank" class="btn-secondary text-xs px-2.5 py-2 inline-flex items-center gap-1.5 text-rose-700 border-rose-200 hover:bg-rose-50 font-bold" title="Cetak / Download PDF Laporan Arus Kas">
+                    <svg class="w-4 h-4 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                    <span>Export PDF</span>
+                </a>
+
+                <a href="{{ url('/cashflow/export-excel?' . http_build_query(['view_mode' => $view_mode ?? 'global', 'project_id' => $filter_project_id ?? '', 'unit_id' => $filter_unit_id ?? '', 'month' => $filter_month ?? ''])) }}" class="btn-secondary text-xs px-2.5 py-2 inline-flex items-center gap-1.5 text-emerald-700 border-emerald-200 hover:bg-emerald-50 font-bold" title="Download Excel CSV Laporan Arus Kas">
+                    <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                    <span>Export Excel</span>
+                </a>
+            </div>
 
             @if(auth()->user()->isFinance() || auth()->user()->isFounder() || auth()->user()->isPengawasProject())
                 <button wire:click="openManualModal" class="btn-primary whitespace-nowrap text-xs px-3.5 py-2">
@@ -87,6 +119,86 @@
             </div>
             <p class="text-2xl font-extrabold font-mono text-white mt-2">Rp {{ number_format($netCashflow, 0, ',', '.') }}</p>
             <p class="text-[11px] text-slate-400 mt-1">Total akumulasi saldo kas bersih</p>
+        </div>
+    </div>
+
+    <!-- Visual Charts: Tren Arus Kas, Breakdown Penjualan & Biaya-Biaya -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+        <!-- Chart 1: Tren Perbandingan Arus Kas (ApexCharts Area/Line) -->
+        <div class="lg:col-span-2 card-clean p-5 space-y-3">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <div>
+                    <h3 class="font-bold text-slate-900 text-sm flex items-center gap-2">
+                        <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18"/></svg>
+                        <span>Grafik Tren Arus Kas (Pemasukan vs Pengeluaran)</span>
+                    </h3>
+                    <p class="text-[11px] text-slate-500">Perbandingan pemasukan & pengeluaran keuangan dalam 6 bulan terakhir</p>
+                </div>
+            </div>
+
+            <div id="cashflowTrendChart" class="w-full min-h-[280px]"></div>
+        </div>
+
+        <!-- Chart 2: Breakdown Penjualan & Biaya-Biaya (Category Breakdown) -->
+        <div class="card-clean p-5 space-y-4 flex flex-col justify-between">
+            <div>
+                <h3 class="font-bold text-slate-900 text-sm border-b border-slate-100 pb-2.5 flex items-center gap-2">
+                    <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"/></svg>
+                    <span>Analisis Biaya & Penjualan</span>
+                </h3>
+
+                <!-- Tab Switcher for Category Breakdown -->
+                <div x-data="{ chartTab: 'masuk' }" class="mt-3 space-y-3">
+                    <div class="flex bg-slate-100 p-1 rounded-xl text-xs font-semibold">
+                        <button @click="chartTab = 'masuk'" :class="chartTab === 'masuk' ? 'bg-white text-emerald-700 shadow-xs' : 'text-slate-500 hover:text-slate-800'" class="flex-1 py-1.5 rounded-lg text-center transition">
+                            Penjualan & Pemasukan
+                        </button>
+                        <button @click="chartTab = 'keluar'" :class="chartTab === 'keluar' ? 'bg-white text-rose-700 shadow-xs' : 'text-slate-500 hover:text-slate-800'" class="flex-1 py-1.5 rounded-lg text-center transition">
+                            Biaya & Pengeluaran
+                        </button>
+                    </div>
+
+                    <!-- Breakdown Kas Masuk -->
+                    <div x-show="chartTab === 'masuk'" class="space-y-2.5 pt-1">
+                        @forelse($masukCategories as $cat)
+                            @php
+                                $pct = $totalMasuk > 0 ? min(100, round(($cat->total_amount / $totalMasuk) * 100, 1)) : 0;
+                            @endphp
+                            <div class="space-y-1 text-xs">
+                                <div class="flex justify-between font-semibold">
+                                    <span class="text-slate-700 capitalize">{{ str_replace('_', ' ', $cat->category) }}</span>
+                                    <span class="font-mono text-emerald-700">Rp {{ number_format($cat->total_amount, 0, ',', '.') }} ({{ $pct }}%)</span>
+                                </div>
+                                <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+                                    <div class="bg-emerald-500 h-2 rounded-full transition-all duration-500" style="width: {{ $pct }}%"></div>
+                                </div>
+                            </div>
+                        @empty
+                            <p class="text-slate-400 text-xs italic text-center py-4">Belum ada data kas masuk.</p>
+                        @endforelse
+                    </div>
+
+                    <!-- Breakdown Kas Keluar -->
+                    <div x-show="chartTab === 'keluar'" class="space-y-2.5 pt-1" style="display: none;">
+                        @forelse($keluarCategories as $cat)
+                            @php
+                                $pct = $totalKeluar > 0 ? min(100, round(($cat->total_amount / $totalKeluar) * 100, 1)) : 0;
+                            @endphp
+                            <div class="space-y-1 text-xs">
+                                <div class="flex justify-between font-semibold">
+                                    <span class="text-slate-700 capitalize">{{ str_replace('_', ' ', $cat->category) }}</span>
+                                    <span class="font-mono text-rose-700">Rp {{ number_format($cat->total_amount, 0, ',', '.') }} ({{ $pct }}%)</span>
+                                </div>
+                                <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+                                    <div class="bg-rose-500 h-2 rounded-full transition-all duration-500" style="width: {{ $pct }}%"></div>
+                                </div>
+                            </div>
+                        @empty
+                            <p class="text-slate-400 text-xs italic text-center py-4">Belum ada data kas keluar.</p>
+                        @endforelse
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -240,4 +352,81 @@
         </div>
     @endif
 
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            initTrendChart();
+        });
+
+        document.addEventListener('livewire:navigated', function () {
+            initTrendChart();
+        });
+
+        Livewire.hook('commit', ({ component, commit, respond, succeed, fail }) => {
+            succeed(() => {
+                setTimeout(() => {
+                    initTrendChart();
+                }, 100);
+            });
+        });
+
+        function initTrendChart() {
+            const chartEl = document.getElementById('cashflowTrendChart');
+            if (!chartEl) return;
+
+            chartEl.innerHTML = '';
+
+            const options = {
+                series: [{
+                    name: 'Kas Masuk (Pemasukan)',
+                    data: @json($chartMasuk)
+                }, {
+                    name: 'Kas Keluar (Pengeluaran)',
+                    data: @json($chartKeluar)
+                }],
+                chart: {
+                    type: 'area',
+                    height: 280,
+                    toolbar: { show: false },
+                    fontFamily: 'Inter, sans-serif'
+                },
+                colors: ['#10b981', '#f43f5e'],
+                fill: {
+                    type: 'gradient',
+                    gradient: {
+                        shadeIntensity: 1,
+                        opacityFrom: 0.45,
+                        opacityTo: 0.05,
+                        stops: [0, 90, 100]
+                    }
+                },
+                dataLabels: { enabled: false },
+                stroke: { curve: 'smooth', width: 3 },
+                xaxis: {
+                    categories: @json($chartLabels),
+                    labels: { style: { colors: '#64748b', fontSize: '11px' } }
+                },
+                yaxis: {
+                    labels: {
+                        style: { colors: '#64748b', fontSize: '11px' },
+                        formatter: function (val) {
+                            return 'Rp ' + (val / 1000000).toFixed(0) + ' Jt';
+                        }
+                    }
+                },
+                tooltip: {
+                    y: {
+                        formatter: function (val) {
+                            return 'Rp ' + new Intl.NumberFormat('id-ID').format(val);
+                        }
+                    }
+                },
+                grid: { borderColor: '#f1f5f9' },
+                legend: { position: 'top', horizontalAlign: 'right' }
+            };
+
+            const chart = new ApexCharts(chartEl, options);
+            chart.render();
+        }
+    </script>
 </div>

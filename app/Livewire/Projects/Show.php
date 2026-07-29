@@ -30,6 +30,7 @@ class Show extends Component
     public $payment_method = 'Transfer Bank';
     public $payment_notes = '';
     public $payment_receipt_photo = null;
+    public $editingPaymentId = null;
 
     // Legacy Sale Modal State
     public bool $showLegacyModal = false;
@@ -256,15 +257,36 @@ class Show extends Component
     public function openPaymentModal()
     {
         $project = Project::findOrFail($this->projectId);
+        $this->editingPaymentId = null;
         $this->payment_amount = $project->remaining_balance > 0 ? $project->remaining_balance : 0;
         $this->payment_date = date('Y-m-d');
+        $this->payment_method = 'Transfer Bank';
         $this->payment_notes = '';
+        $this->payment_receipt_photo = null;
+        $this->showPaymentModal = true;
+    }
+
+    public function editProjectPayment($paymentId)
+    {
+        $user = auth()->user();
+        if (!$user->isFounder() && !$user->isFinance()) {
+            session()->flash('error', 'Hanya Founder dan Accounting yang berhak mengedit pembayaran proyek.');
+            return;
+        }
+
+        $payment = ProjectPayment::where('project_id', $this->projectId)->findOrFail($paymentId);
+        $this->editingPaymentId = $payment->id;
+        $this->payment_amount = $payment->amount_paid;
+        $this->payment_date = $payment->payment_date ? $payment->payment_date->format('Y-m-d') : date('Y-m-d');
+        $this->payment_method = $payment->payment_method;
+        $this->payment_notes = $payment->notes ?? '';
         $this->payment_receipt_photo = null;
         $this->showPaymentModal = true;
     }
 
     public function closePaymentModal()
     {
+        $this->editingPaymentId = null;
         $this->payment_receipt_photo = null;
         $this->showPaymentModal = false;
     }
@@ -291,6 +313,35 @@ class Show extends Component
             $photoPath = ImageCompressor::compressAndStore($this->payment_receipt_photo, 'project-payments');
         }
 
+        // EDIT MODE
+        if ($this->editingPaymentId) {
+            $payment = ProjectPayment::where('project_id', $this->projectId)->findOrFail($this->editingPaymentId);
+            $updateData = [
+                'payment_date' => $this->payment_date,
+                'amount_paid' => $this->payment_amount,
+                'payment_method' => $this->payment_method,
+                'notes' => $this->payment_notes,
+            ];
+            if ($photoPath) {
+                $updateData['receipt_photo_path'] = $photoPath;
+            }
+            $payment->update($updateData);
+
+            // Sync related CashflowTransaction
+            CashflowTransaction::where('reference_type', ProjectPayment::class)
+                ->where('reference_id', $payment->id)
+                ->update([
+                    'amount' => $this->payment_amount,
+                    'transaction_date' => $this->payment_date,
+                    'description' => 'Pembayaran Lahan Proyek ' . $project->name . ' ke Penjual Tanah (' . $this->payment_method . ')',
+                ]);
+
+            session()->flash('success', 'Data pembayaran lahan berhasil diperbarui! Arus Kas otomatis disesuaikan.');
+            $this->closePaymentModal();
+            return;
+        }
+
+        // CREATE MODE
         $payment = ProjectPayment::create([
             'project_id' => $project->id,
             'payment_date' => $this->payment_date,
@@ -538,6 +589,7 @@ class Show extends Component
             'projectPaymentsList' => $projectPaymentsList,
             'showPaymentModal' => $this->showPaymentModal,
             'showLegacyModal' => $this->showLegacyModal,
+            'editingPaymentId' => $this->editingPaymentId,
         ])->layout('components.layouts.app', ['title' => 'Dashboard Detail Proyek - ' . $project->name]);
     }
 }

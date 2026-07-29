@@ -167,6 +167,81 @@ class Index extends Component
         $this->showPaymentModal = false;
     }
 
+    // Modal Batalkan Skema Cicilan & Dialihkan ke Cash (Founder & Finance Only)
+    public bool $showConvertToCashModal = false;
+    public ?int $convertToCashInstallmentId = null;
+    public $activeConvertToCashInstallment = null;
+    public $cash_payment_amount = 0;
+    public string $cash_payment_date = '';
+    public string $cash_payment_method = 'Transfer Bank';
+    public string $cash_notes = '';
+
+    public function openConvertToCashModal($installmentId)
+    {
+        $user = auth()->user();
+        if (!$user->isFounder() && !$user->isFinance()) {
+            session()->flash('error', 'Hanya Founder dan Tim Accounting/Finance yang berhak membatalkan cicilan dan menggantinya ke Cash.');
+            return;
+        }
+
+        $this->convertToCashInstallmentId = $installmentId;
+        $this->activeConvertToCashInstallment = UnitInstallment::with(['unit.project', 'officialDocument', 'payments'])->findOrFail($installmentId);
+        $this->cash_payment_amount = $this->activeConvertToCashInstallment->remaining_balance;
+        $this->cash_payment_date = date('Y-m-d');
+        $this->cash_payment_method = 'Transfer Bank';
+        $this->cash_notes = 'Pembatalan skema cicilan & konversi pelunasan tunai/cash.';
+        $this->showConvertToCashModal = true;
+    }
+
+    public function submitConvertToCash()
+    {
+        $user = auth()->user();
+        if (!$user->isFounder() && !$user->isFinance()) {
+            session()->flash('error', 'Hanya Founder dan Tim Accounting/Finance yang berhak membatalkan cicilan dan menggantinya ke Cash.');
+            return;
+        }
+
+        $this->validate([
+            'cash_payment_amount' => 'required|numeric|min:0',
+            'cash_payment_date' => 'required|date',
+            'cash_payment_method' => 'required|string',
+        ]);
+
+        $inst = UnitInstallment::with('unit')->findOrFail($this->convertToCashInstallmentId);
+
+        \Illuminate\Support\Facades\DB::transaction(function () use ($inst) {
+            if ($this->cash_payment_amount > 0) {
+                InstallmentPayment::create([
+                    'unit_installment_id' => $inst->id,
+                    'payment_date' => $this->cash_payment_date,
+                    'amount_paid' => $this->cash_payment_amount,
+                    'payment_method' => $this->cash_payment_method,
+                    'notes' => '[Pelunasan Cash - Pembatalan Skema Cicilan] ' . $this->cash_notes,
+                    'created_by' => auth()->id(),
+                ]);
+
+                CashflowTransaction::create([
+                    'project_id' => $inst->unit->project_id,
+                    'type' => 'masuk',
+                    'category' => 'pembayaran_cicilan_pembeli',
+                    'amount' => $this->cash_payment_amount,
+                    'transaction_date' => $this->cash_payment_date,
+                    'description' => 'Pelunasan Cash (Pembatalan Skema Cicilan) Unit ' . $inst->unit->code . ' (' . $this->cash_payment_method . ')',
+                    'reference_type' => UnitInstallment::class,
+                    'reference_id' => $inst->id,
+                    'created_by' => auth()->id(),
+                ]);
+            }
+
+            $inst->update(['status' => 'konversi_cash']);
+
+            \App\Services\ActivityLogger::log('CANCEL_INSTALLMENT_TO_CASH', "Founder/Accounting membatalkan skema cicilan Unit {$inst->unit->code} dan menggantinya ke Pelunasan Cash Lunas sebesar Rp " . number_format($this->cash_payment_amount, 0, ',', '.'));
+        });
+
+        session()->flash('success', 'Skema cicilan Unit ' . $inst->unit->code . ' berhasil dibatalkan dan dialihkan ke Pelunasan Cash Lunas!');
+        $this->showConvertToCashModal = false;
+    }
+
     public function render()
     {
         $installments = UnitInstallment::with(['unit.project', 'officialDocument', 'payments'])
@@ -180,6 +255,7 @@ class Index extends Component
         return view('livewire.installments.index', [
             'installments' => $installments,
             'eligibleUnits' => $eligibleUnits,
+            'showConvertToCashModal' => $this->showConvertToCashModal,
         ])->layout('components.layouts.app', ['title' => 'Cicilan & Piutang Pembeli']);
     }
 }
