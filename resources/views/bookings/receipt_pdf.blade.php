@@ -126,7 +126,7 @@
                 <td style="width: 65%;">
                     <div class="brand-title">PT. ATLANTIK PERKASA ABADI</div>
                     <div class="brand-sub">Pengembangan Kawasan Kavling & Perumahan Modern</div>
-                    <div class="brand-sub">Kota Pekanbaru, Provinsi Riau | Telp/WA: 0812-3456-7890</div>
+                    <div class="brand-sub">Kota Pekanbaru, Provinsi Riau | Telp/WA: 0813-3484-0193</div>
                 </td>
                 <td style="width: 35%; text-align: right;">
                     <div style="font-size: 10px; font-weight: bold; color: #047857;">INVOICE PEMBAYARAN RESMI</div>
@@ -140,7 +140,7 @@
     </div>
 
     <!-- Title -->
-    <div class="doc-title">INVOICE PEMBAYARAN TANDA JADI / BOOKING FEE</div>
+    <div class="doc-title">INVOICE PEMBAYARAN</div>
 
     <!-- Transaction Data Table -->
     <table class="table-data">
@@ -173,11 +173,11 @@
             <td class="colon">:</td>
             <td class="value">
                 @if($booking->status === 'converted')
-                    <span style="color: #047857; font-weight: bold;">[ DIVERIFIKASI / DP ACC ]</span> - Dicatat oleh Finance
+                    <span style="color: #047857; font-weight: bold;">[ DIVERIFIKASI ]</span> - Dicatat oleh Finance
                 @elseif($booking->status === 'cancelled')
-                    <span style="color: #b91c1c; font-weight: bold;">[ DITOLAK / DIBATALKAN ]</span> - Ditolak oleh Manajemen
+                    <span style="color: #b91c1c; font-weight: bold;">[ DITOLAK ]</span> - Ditolak oleh Manajemen
                 @elseif($booking->status === 'refunded')
-                    <span style="color: #d97706; font-weight: bold;">[ DIBATALKAN / DIREFUND ]</span> - DP Telah Dikembalikan
+                    <span style="color: #d97706; font-weight: bold;">[ DIREFUND ]</span> - DP Telah Dikembalikan
                 @else
                     <span style="color: #2563eb; font-weight: bold;">[ MENUNGGU ACC FINANCE ]</span> - Menunggu Verifikasi
                 @endif

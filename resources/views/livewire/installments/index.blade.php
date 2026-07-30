@@ -7,7 +7,7 @@
             <p class="text-slate-500 text-xs mt-0.5">Pantau skema pembayaran berkala pembeli, sisa saldo piutang, dan riwayat setoran</p>
         </div>
 
-        @if(auth()->user()->isFinance() || auth()->user()->isFounder())
+        @if(auth()->user()->isFounder())
             <button wire:click="openSetupModal" class="btn-primary whitespace-nowrap">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                 <span>Setup Skema Cicilan Baru</span>
@@ -74,7 +74,7 @@
                                         <span>Detail Unit</span>
                                     </a>
 
-                                    @if(!in_array($inst->status, ['lunas', 'konversi_cash']) && (auth()->user()->isFinance() || auth()->user()->isFounder()))
+                                    @if(!in_array($inst->status, ['lunas', 'konversi_cash']) && auth()->user()->isFounder())
                                         <button wire:click="openPaymentModal({{ $inst->id }})" class="btn-primary text-[11px] px-2.5 py-1">
                                             + Setoran
                                         </button>

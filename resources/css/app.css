@@ -20,6 +20,15 @@
   --color-role-marketing: #2563eb;
 }
 
+/* Scrollbar Hide Utility */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
 /* Custom Role Badges */
 .badge-role-founder {
   @apply bg-purple-50 text-purple-700 border border-purple-200/80 font-semibold px-2.5 py-1 rounded-lg text-xs inline-flex items-center gap-1 shadow-2xs;
@@ -116,4 +125,33 @@
 
 .btn-outline {
   @apply inline-flex items-center gap-2 bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 font-medium text-sm px-4 py-2.5 rounded-xl transition-all shadow-2xs active:scale-[0.98];
+}
+
+/* Standard Button Utility Classes */
+.btn-action-detail {
+  @apply inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-teal-50 text-teal-800 hover:bg-teal-100 border border-teal-200 text-[11px] font-bold transition shadow-2xs;
+}
+
+.btn-action-edit {
+  @apply inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-amber-50 text-amber-800 hover:bg-amber-100 border border-amber-200 text-[11px] font-bold transition shadow-2xs;
+}
+
+.btn-action-delete {
+  @apply inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200 text-[11px] font-bold transition shadow-2xs;
+}
+
+.btn-action-pdf {
+  @apply inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-sky-50 text-sky-800 hover:bg-sky-100 border border-sky-200 text-[11px] font-bold transition shadow-2xs;
+}
+
+.btn-action-qr {
+  @apply inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-800 hover:bg-emerald-100 border border-emerald-200 text-[11px] font-bold transition shadow-2xs;
+}
+
+.btn-header-pdf {
+  @apply px-3.5 py-2 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 rounded-xl text-xs font-bold inline-flex items-center gap-1.5 transition shadow-2xs;
+}
+
+.btn-header-pdf-disabled {
+  @apply px-3.5 py-2 bg-slate-100 text-slate-400 border border-slate-200 rounded-xl text-xs font-bold inline-flex items-center gap-1.5 cursor-not-allowed opacity-75;
 }

@@ -95,7 +95,7 @@
             <tr>
                 <td>
                     <div class="company-name">MANAJEMEN PROPERTI & KAVLING</div>
-                    <div class="invoice-title">Invoice / Kuitansi Setoran Cicilan Pembeli</div>
+                    <div class="invoice-title">Invoice Setoran Cicilan Pembeli</div>
                 </td>
                 <td style="text-align: right; font-size: 8.5pt; color: #64748b;">
                     No. Ref: <strong class="font-mono text-slate-800">{{ substr($payment->uuid, 0, 8) }}</strong><br>

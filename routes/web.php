@@ -40,6 +40,11 @@ Route::get('/verify-land-payment/{uuid}', [LandPaymentReceiptController::class, 
 Route::get('/verify-cashflow', [\App\Http\Controllers\CashflowVerificationController::class, 'verify'])->name('verify.cashflow');
 Route::get('/verify-installment/{uuid}', [\App\Http\Controllers\InstallmentInvoiceController::class, 'verify'])->name('verify.installment');
 Route::get('/verify-manual-invoice/{uuid}', [\App\Http\Controllers\ManualInvoiceController::class, 'verify'])->name('verify.manual-invoice');
+Route::get('/verify-material-purchase/{id}', [\App\Http\Controllers\MaterialPurchaseReceiptController::class, 'verify'])->name('verify.material-purchase');
+Route::get('/verify-unit-expenses/{id}', [\App\Http\Controllers\UnitExpensesReportController::class, 'verify'])->name('verify.unit-expenses');
+Route::get('/verify-field-expenses', [\App\Http\Controllers\FieldExpensesReportController::class, 'verify'])->name('verify.field-expenses');
+Route::get('/verify-project-land-payments/{id}', [\App\Http\Controllers\ProjectReportController::class, 'verifyLandPayments'])->name('verify.project-land-payments');
+Route::get('/verify-project-sales-profit/{id}', [\App\Http\Controllers\ProjectReportController::class, 'verifySalesProfit'])->name('verify.project-sales-profit');
 
 // Authenticated Routes
 Route::middleware(['auth', \App\Http\Middleware\EnsureUserIsActive::class])->group(function () {
@@ -50,15 +55,20 @@ Route::middleware(['auth', \App\Http\Middleware\EnsureUserIsActive::class])->gro
     // Master Data Proyek & Unit
     Route::get('/projects', ProjectsIndex::class)->name('projects.index');
     Route::get('/projects/{id}', ProjectsShow::class)->name('projects.show');
+    Route::get('/projects/{id}/land-payments-pdf', [\App\Http\Controllers\ProjectReportController::class, 'exportLandPaymentsPdf'])->name('projects.land-payments-pdf');
+    Route::get('/projects/{id}/sales-profit-pdf', [\App\Http\Controllers\ProjectReportController::class, 'exportSalesProfitPdf'])->name('projects.sales-profit-pdf');
     Route::get('/land-payment/{uuid}/receipt', [LandPaymentReceiptController::class, 'streamReceipt'])->name('land-payment.receipt');
     Route::get('/units', UnitsIndex::class)->name('units.index');
     Route::get('/units/legacy-sale', \App\Livewire\Units\LegacySale::class)->name('units.legacy-sale');
     Route::get('/units/{id}', UnitShow::class)->name('units.show');
+    Route::get('/units/{id}/expenses-pdf', [\App\Http\Controllers\UnitExpensesReportController::class, 'exportPdf'])->name('units.expenses-pdf');
     Route::get('/installment-invoice/{uuid}', [\App\Http\Controllers\InstallmentInvoiceController::class, 'streamInvoice'])->name('installment.invoice');
+    Route::get('/material-purchases/{id}/receipt', [\App\Http\Controllers\MaterialPurchaseReceiptController::class, 'streamReceipt'])->name('material-purchases.receipt');
 
     // Worker & Pengawas Lapangan
     Route::get('/workers', WorkersIndex::class)->name('workers.index');
     Route::get('/field-expenses', FieldExpensesIndex::class)->name('field-expenses.index');
+    Route::get('/field-expenses/export-pdf', [\App\Http\Controllers\FieldExpensesReportController::class, 'exportPdf'])->name('field-expenses.export-pdf');
     Route::get('/worker-payroll/{uuid}/receipt', [PayrollReceiptController::class, 'streamReceipt'])->name('payroll.receipt');
 
     // Penjualan, Booking & Approval

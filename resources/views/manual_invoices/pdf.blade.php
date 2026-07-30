@@ -112,7 +112,7 @@
     <div class="box-info">
         <table class="meta-table" style="margin-bottom: 0;">
             <tr>
-                <td style="width: 20%; font-weight: bold; color: #475569;">Penerima / Klien:</td>
+                <td style="width: 20%; font-weight: bold; color: #475569;">Penerima:</td>
                 <td style="width: 30%; font-weight: bold; color: #0f172a;">
                     {{ $invoice->recipient_name }}
                     @if($invoice->recipient_phone)
@@ -147,7 +147,7 @@
     <table class="table-detail">
         <thead>
             <tr>
-                <th style="width: 50%;">Deskripsi / Rincian Pekerjaan & Tagihan</th>
+                <th style="width: 50%;">Rincian Pekerjaan & Tagihan</th>
                 <th style="width: 20%;">Tipe Mutasi</th>
                 <th style="width: 30%; text-align: right;">Nominal (Rp)</th>
             </tr>

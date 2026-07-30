@@ -59,10 +59,17 @@
                 <span>Kembali</span>
             </button>
 
-            @if(auth()->user()->isFounder() || auth()->user()->isFinance())
+            @if(auth()->user()->isFounder())
                 <button wire:click="openEditUnitModal" class="btn-secondary text-xs px-3 py-2 flex items-center gap-1.5 hover:bg-slate-200 transition shadow-xs text-slate-800 font-bold" title="Edit Spesifikasi & Data Unit">
                     <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                     <span>Edit Spesifikasi</span>
+                </button>
+            @endif
+
+            @if(auth()->user()->isFounder())
+                <button wire:click="deleteUnit" wire:confirm="Yakin ingin menghapus unit {{ $unit->code }} dari sistem beserta seluruh histori terikatnya?" class="bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 font-bold text-xs px-3 py-2 rounded-lg transition shadow-xs flex items-center gap-1.5" title="Hapus Unit dari Sistem">
+                    <svg class="w-4 h-4 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                    <span>Hapus Unit</span>
                 </button>
             @endif
 
@@ -211,7 +218,7 @@
                                     <p class="text-[10px] text-slate-400 mt-0.5">Spesialis: {{ $assign->worker->specialty }}</p>
                                 </div>
                                 <div class="flex items-center gap-1.5">
-                                    @if(auth()->user()->isFounder() || auth()->user()->isFinance() || auth()->user()->isSupervisor() || auth()->user()->isPengawasProject())
+                                    @if(auth()->user()->isFounder())
                                         <button wire:click="editWorkerAssignment({{ $assign->id }})" class="p-1 text-slate-400 hover:text-amber-600 rounded transition" title="Edit Penugasan">
                                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                                         </button>
@@ -231,7 +238,7 @@
                                     <p class="text-[10px] text-purple-700 font-medium">{{ $assign->assigned_role }} &bull; Pengawas System</p>
                                 </div>
                                 <div class="flex items-center gap-1.5">
-                                    @if(auth()->user()->isFounder() || auth()->user()->isFinance() || auth()->user()->isSupervisor() || auth()->user()->isPengawasProject())
+                                    @if(auth()->user()->isFounder())
                                         <button wire:click="editWorkerAssignment({{ $assign->id }})" class="p-1 text-slate-400 hover:text-amber-600 rounded transition" title="Edit Penugasan">
                                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                                         </button>
@@ -277,7 +284,7 @@
                                     <p class="text-[10px] text-slate-400 capitalize">{{ $up->worker->type }} {{ $up->worker->specialty ? '('.$up->worker->specialty.')' : '' }}</p>
                                 </div>
                                 <div class="flex items-center gap-1.5">
-                                    @if(auth()->user()->isFounder() || auth()->user()->isFinance() || auth()->user()->isSupervisor() || auth()->user()->isPengawasProject())
+                                    @if(auth()->user()->isFounder())
                                         <button wire:click="editPayrollSetup({{ $up->id }})" class="p-1 text-slate-400 hover:text-amber-600 rounded transition" title="Edit Penetapan Gaji">
                                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                                         </button>
@@ -426,7 +433,7 @@
                             @endif
                         </h3>
 
-                        @if(auth()->user()->isFinance() || auth()->user()->isFounder())
+                        @if(auth()->user()->isFounder())
                             <div class="flex items-center gap-2">
                                 @if(!in_array($unit->installment->status, ['lunas', 'konversi_cash']))
                                     <button wire:click="openInstallmentPaymentModal" class="btn-primary text-xs px-3 py-1.5 flex items-center gap-1.5 bg-blue-600 hover:bg-blue-700 shadow-sm transition">
@@ -483,7 +490,7 @@
                                 </div>
                                 <div class="flex items-center gap-2">
                                     <span class="font-mono text-slate-500 text-[11px]">{{ $pay->payment_date ? (is_string($pay->payment_date) ? $pay->payment_date : $pay->payment_date->format('d/m/Y')) : '-' }}</span>
-                                    @if(auth()->user()->isFounder() || auth()->user()->isFinance())
+                                    @if(auth()->user()->isFounder())
                                         @if($pay->uuid)
                                             <button wire:click="openViewerModal('pdf', '{{ route('installment.invoice', $pay->uuid) }}', 'Pratinjau Invoice Setoran Unit {{ $unit->code }}')" class="inline-flex items-center gap-1 text-[10px] font-bold text-blue-700 hover:text-blue-900 bg-blue-50 hover:bg-blue-100 px-2 py-0.5 rounded-lg border border-blue-200 transition shadow-xs" title="Pratinjau Invoice / Kuitansi PDF (QR Verification)">
                                                 <svg class="w-3.5 h-3.5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
@@ -504,7 +511,7 @@
                         @endforelse
                     </div>
                 </div>
-            @elseif(!auth()->user()->isPengawasProject() && (auth()->user()->isFinance() || auth()->user()->isFounder()) && in_array($unit->status, ['booked', 'disetujui', 'terjual', 'converted']))
+            @elseif(!auth()->user()->isPengawasProject() && auth()->user()->isFounder() && in_array($unit->status, ['booked', 'disetujui', 'terjual', 'converted']))
                 <div class="card-clean p-5 flex items-center justify-between bg-blue-50/50 border border-blue-100">
                     <div>
                         <h4 class="font-bold text-slate-900 text-xs">Skema Cicilan Pembeli Belum Dikonfigurasi</h4>
@@ -529,8 +536,20 @@
                         <p class="text-[11px] text-slate-500">Rekapitulasi gabungan belanja material, gaji worker terbayar, & biaya unit</p>
                     </div>
 
-                    <div class="flex items-center gap-2">
-                        @if(auth()->user()->isFinance() || auth()->user()->isFounder() || auth()->user()->isPengawasProject() || auth()->user()->isSupervisor())
+                    <div class="flex flex-wrap items-center gap-2">
+                        @if(count($combinedExpenses) > 0)
+                            <button wire:click="openViewerModal('pdf', '{{ route('units.expenses-pdf', $unit->id) }}', 'Pratinjau Laporan Rekapitulasi Biaya Unit {{ $unit->code }}')" class="px-3 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 rounded-xl text-xs font-bold inline-flex items-center gap-1.5 transition shadow-xs">
+                                <svg class="w-4 h-4 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                                <span>Lihat PDF Rekap</span>
+                            </button>
+                        @else
+                            <button disabled class="px-3 py-1.5 bg-slate-100 text-slate-400 border border-slate-200 rounded-xl text-xs font-bold inline-flex items-center gap-1.5 cursor-not-allowed opacity-75" title="Belum ada data pengeluaran/belanja unit untuk digenerate PDF">
+                                <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                                <span>PDF Rekap (Belum Ada Data)</span>
+                            </button>
+                        @endif
+
+                        @if(auth()->user()->isFounder() || auth()->user()->isPengawasProject() || auth()->user()->isSupervisor())
                             <button wire:click="openMaterialModal" class="btn-primary text-xs px-3 py-1.5 flex items-center gap-1.5 bg-amber-600 hover:bg-amber-700 shadow-sm transition">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                                 <span>+ Catat Belanja Material</span>
@@ -547,7 +566,7 @@
                                 <th class="px-3 py-2.5">Jenis</th>
                                 <th class="px-3 py-2.5">Uraian Pengeluaran</th>
                                 <th class="px-3 py-2.5 text-right">Nominal</th>
-                                <th class="px-3 py-2.5 text-center">Resi / Bukti</th>
+                                <th class="px-3 py-2.5 text-center">Resi</th>
                                 <th class="px-3 py-2.5 text-center">Aksi</th>
                             </tr>
                         </thead>
@@ -598,7 +617,7 @@
                                     </td>
                                     <td class="px-3 py-3 text-center whitespace-nowrap">
                                         @if(isset($exp->source_type) && $exp->source_type === 'material')
-                                            @if(auth()->user()->isFounder() || auth()->user()->isFinance() || auth()->user()->isSupervisor() || auth()->user()->isPengawasProject())
+                                            @if(auth()->user()->isFounder())
                                                 <div class="flex items-center justify-center gap-1.5">
                                                     <button wire:click="editMaterialPurchase({{ $exp->id }})" class="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-amber-50 text-amber-700 hover:bg-amber-100 border border-amber-200 text-[11px] font-bold transition" title="Edit Belanja Material">
                                                         <svg class="w-3.5 h-3.5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
@@ -613,7 +632,7 @@
                                                 <span class="text-slate-400 text-[10px]">-</span>
                                             @endif
                                         @elseif(isset($exp->source_type) && $exp->source_type === 'salary_payment')
-                                            @if(auth()->user()->isFounder() || auth()->user()->isFinance() || auth()->user()->isSupervisor() || auth()->user()->isPengawasProject())
+                                            @if(auth()->user()->isFounder())
                                                 <div class="flex items-center justify-center gap-1.5">
                                                     <button wire:click="editPayrollPayment({{ $exp->id }})" class="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-amber-50 text-amber-700 hover:bg-amber-100 border border-amber-200 text-[11px] font-bold transition" title="Edit Pembayaran Gaji Worker">
                                                         <svg class="w-3.5 h-3.5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
@@ -628,7 +647,7 @@
                                                 <span class="text-slate-400 text-[10px]">-</span>
                                             @endif
                                         @elseif(isset($exp->source_type) && $exp->source_type === 'payroll_setup')
-                                            @if(auth()->user()->isFounder() || auth()->user()->isFinance() || auth()->user()->isSupervisor() || auth()->user()->isPengawasProject())
+                                            @if(auth()->user()->isFounder())
                                                 <div class="flex items-center justify-center gap-1.5">
                                                     <button wire:click="editPayrollSetup({{ $exp->id }})" class="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-amber-50 text-amber-700 hover:bg-amber-100 border border-amber-200 text-[11px] font-bold transition" title="Edit Kontrak Gaji Worker">
                                                         <svg class="w-3.5 h-3.5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>

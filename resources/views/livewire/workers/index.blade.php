@@ -103,14 +103,15 @@
                                 @endif
                             </td>
                             <td class="px-5 py-4 text-right space-x-1 whitespace-nowrap">
-                                <button wire:click="openAssignModal({{ $worker->id }})" class="px-2.5 py-1 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-lg text-xs font-semibold border border-blue-200 inline-flex items-center gap-1 transition">
+                                <button wire:click="openAssignModal({{ $worker->id }})" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-blue-50 text-blue-800 hover:bg-blue-100 border border-blue-200 text-[11px] font-bold transition shadow-2xs">
                                     + Tugaskan
                                 </button>
-                                <button wire:click="edit({{ $worker->id }})" class="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-semibold border border-slate-300 transition">
-                                    Edit
+                                <button wire:click="edit({{ $worker->id }})" class="btn-action-edit">
+                                    <svg class="w-3.5 h-3.5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                                    <span>Edit</span>
                                 </button>
-                                <button wire:click="toggleStatus({{ $worker->id }})" class="px-2 py-1 text-slate-400 hover:text-slate-600 text-xs transition">
-                                    {{ $worker->status === 'active' ? 'Nonaktifkan' : 'Aktifkan' }}
+                                <button wire:click="toggleStatus({{ $worker->id }})" class="btn-action-delete" title="Ubah Status Pekerja">
+                                    <span>{{ $worker->status === 'active' ? 'Nonaktifkan' : 'Aktifkan' }}</span>
                                 </button>
                             </td>
                         </tr>

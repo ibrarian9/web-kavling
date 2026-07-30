@@ -133,7 +133,7 @@
                                 @endif
                             </td>
                             <td class="px-5 py-4 text-right whitespace-nowrap space-x-1">
-                                @if($b->status === 'active' && (auth()->user()->isFinance() || auth()->user()->isFounder()))
+                                @if($b->status === 'active' && auth()->user()->isFounder())
                                     <button wire:click="approveDp({{ $b->id }})" wire:confirm="Konfirmasi persetujuan Tanda Jadi untuk {{ $b->buyer_name }}? Arus kas masuk akan dicatat secara otomatis." class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[11px] px-3 py-1.5 rounded-lg transition shadow-sm inline-flex items-center gap-1">
                                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                                         <span>Setujui Tanda Jadi</span>
@@ -144,16 +144,16 @@
                                     </button>
                                 @endif
 
-                                @if($b->status === 'converted' && (auth()->user()->isFinance() || auth()->user()->isFounder()))
+                                @if($b->status === 'converted' && auth()->user()->isFounder())
                                     <button wire:click="cancelApprovedDp({{ $b->id }})" wire:confirm="Yakin ingin MEMBATALKAN / REFUND DP untuk {{ $b->buyer_name }}? Pengeluaran kas refund akan dicatat dan status unit akan dikembalikan menjadi tersedia." class="bg-amber-600 hover:bg-amber-700 text-white font-bold text-[11px] px-3 py-1.5 rounded-lg transition shadow-sm inline-flex items-center gap-1">
                                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/></svg>
                                         <span>Batalkan / Refund DP</span>
                                     </button>
                                 @endif
 
-                                <button wire:click="openViewerModal('pdf', '{{ route('bookings.receipt', $b->id) }}', 'Pratinjau Invoice Booking - {{ $b->buyer_name }}')" class="px-2.5 py-1.5 bg-teal-50 hover:bg-teal-100 text-teal-700 rounded-lg text-xs font-semibold border border-teal-200 inline-flex items-center gap-1 shadow-sm">
-                                    <svg class="w-3.5 h-3.5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-                                    <span>Pratinjau Invoice PDF</span>
+                                <button wire:click="openViewerModal('pdf', '{{ route('bookings.receipt', $b->id) }}', 'Pratinjau Invoice Booking - {{ $b->buyer_name }}')" class="btn-action-pdf">
+                                    <svg class="w-3.5 h-3.5 text-sky-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                                    <span>PDF</span>
                                 </button>
                             </td>
                         </tr>

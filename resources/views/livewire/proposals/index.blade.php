@@ -101,7 +101,7 @@
                             <td class="px-5 py-4 text-right space-x-1">
                                 @if((auth()->user()->isFounder() || auth()->user()->isSupervisor()) && $prop->status === 'menunggu')
                                     <button wire:click="openApprovalModal({{ $prop->id }})" class="btn-primary text-[11px] px-2.5 py-1">
-                                        Review / ACC
+                                        Review
                                     </button>
                                 @endif
 
@@ -110,11 +110,11 @@
                                     @if($officialDoc)
                                         <button wire:click="openViewerModal('pdf', '{{ route('documents.stream', $officialDoc->id) }}', 'Pratinjau Surat Pemesanan Properti (SPP) PDF')" class="px-2.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-bold shadow inline-flex items-center gap-1 transition">
                                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-                                            <span>Pratinjau SPP PDF</span>
+                                            <span>SPP PDF</span>
                                         </button>
                                     @else
                                         <button wire:click="openDocModal({{ $prop->id }})" class="btn-secondary text-[11px] px-2.5 py-1">
-                                            Cetak Surat PDF
+                                            PDF
                                         </button>
                                     @endif
                                 @endif

@@ -9,6 +9,7 @@ use App\Models\Project;
 use App\Models\ProjectPayment;
 use App\Models\Unit;
 use App\Services\ImageCompressor;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -25,6 +26,8 @@ class Show extends Component
 
     // Project Payment Modal Form
     public bool $showPaymentModal = false;
+    public $showDetailModal = false;
+    public $selectedTransactionId = null;
     public $payment_amount = 0;
     public $payment_date = '';
     public $payment_method = 'Transfer Bank';
@@ -235,6 +238,141 @@ class Show extends Component
 
         session()->flash('success', 'Penjualan unit masa lalu atas nama ' . $this->legacy_buyer_name . ' (Unit ' . $this->legacy_code . ') berhasil dicatat!');
         $this->closeLegacyModal();
+    }
+
+    public function deleteUnit($unitId)
+    {
+        $user = auth()->user();
+        if (!$user || !$user->isFounder()) {
+            session()->flash('error', 'Hanya Founder yang berhak menghapus unit dari sistem.');
+            return;
+        }
+
+        $unit = Unit::where('project_id', $this->projectId)->where('id', $unitId)->firstOrFail();
+        $code = $unit->code;
+
+        DB::transaction(function () use ($unit) {
+            \App\Models\WorkerAssignment::where('unit_id', $unit->id)->delete();
+            \App\Models\WorkerUnitPayroll::where('unit_id', $unit->id)->delete();
+            \App\Models\WeeklyMaterialPurchase::where('unit_id', $unit->id)->delete();
+
+            if ($unit->installment) {
+                \App\Models\InstallmentPayment::where('unit_installment_id', $unit->installment->id)->delete();
+                $unit->installment->delete();
+            }
+
+            \App\Models\Booking::where('unit_id', $unit->id)->delete();
+            \App\Models\PriceProposal::where('unit_id', $unit->id)->delete();
+            \App\Models\OfficialDocument::where('unit_id', $unit->id)->delete();
+            \App\Models\ManualInvoice::where('unit_id', $unit->id)->update(['unit_id' => null]);
+
+            $unit->delete();
+        });
+
+        session()->flash('success', 'Unit ' . $code . ' berhasil dihapus dari proyek!');
+    }
+
+    public function openDetailModal($id)
+    {
+        $this->selectedTransactionId = $id;
+        $this->showDetailModal = true;
+    }
+
+    public function closeDetailModal()
+    {
+        $this->showDetailModal = false;
+        $this->selectedTransactionId = null;
+    }
+
+    private function resolveAuditTrail(CashflowTransaction $t): array
+    {
+        $inputtedBy = [
+            'name' => $t->creator->name ?? 'Sistem Keuangan',
+            'email' => $t->creator->email ?? '-',
+            'role' => $t->creator->role ?? 'Sistem',
+            'created_at' => $t->created_at ? $t->created_at->translatedFormat('d F Y H:i WIB') : '-',
+        ];
+
+        $approvedBy = [
+            'name' => 'Tim Finance / Founder',
+            'role' => 'Finance & Management ACC',
+            'status' => 'Disetujui & Sah (Lunas)',
+            'approved_at' => $t->transaction_date ? $t->transaction_date->translatedFormat('d F Y') : '-',
+            'notes' => 'Tercatat dalam laporan mutasi arus kas resmi',
+        ];
+
+        $referenceDetail = null;
+
+        if ($t->reference_type && $t->reference_id) {
+            if ($t->reference_type === \App\Models\ManualInvoice::class) {
+                $inv = \App\Models\ManualInvoice::with('creator')->find($t->reference_id);
+                if ($inv) {
+                    $referenceDetail = [
+                        'type' => 'Invoice Manual',
+                        'number' => $inv->invoice_number,
+                        'recipient' => $inv->recipient_name,
+                        'creator' => $inv->creator->name ?? 'Finance',
+                    ];
+                    $approvedBy['name'] = $inv->creator->name ?? 'Tim Finance / Founder';
+                    $approvedBy['notes'] = 'Diterbitkan via Invoice Manual ke ' . $inv->recipient_name;
+                }
+            } elseif ($t->reference_type === \App\Models\InstallmentPayment::class) {
+                $pay = \App\Models\InstallmentPayment::with(['installment.unit.project', 'creator'])->find($t->reference_id);
+                if ($pay) {
+                    $unitCode = $pay->installment->unit->code ?? '-';
+                    $referenceDetail = [
+                        'type' => 'Setoran Cicilan Pembeli',
+                        'number' => 'REF-' . substr($pay->uuid ?? (string)$pay->id, 0, 8),
+                        'recipient' => 'Klien Pembeli Unit ' . $unitCode,
+                        'creator' => $pay->creator->name ?? 'Finance',
+                    ];
+                    $inputtedBy['name'] = $pay->creator->name ?? $inputtedBy['name'];
+                    $approvedBy['notes'] = 'Setoran cicilan pembeli unit ' . $unitCode . ' terkonfirmasi lunas';
+                }
+            } elseif ($t->reference_type === \App\Models\Booking::class) {
+                $b = \App\Models\Booking::with(['unit', 'creator'])->find($t->reference_id);
+                if ($b) {
+                    $referenceDetail = [
+                        'type' => 'Booking Fee / Uang Tanda Jadi',
+                        'number' => 'BOOK-' . $b->id,
+                        'recipient' => $b->buyer_name,
+                        'creator' => $b->creator->name ?? 'Sales Marketing',
+                    ];
+                    $inputtedBy['name'] = $b->creator->name ?? $inputtedBy['name'];
+                    $approvedBy['notes'] = 'Booking fee disetujui & dikonversi oleh Tim Finance/Founder';
+                }
+            } elseif ($t->reference_type === \App\Models\ProjectPayment::class) {
+                $pp = \App\Models\ProjectPayment::with(['project', 'creator'])->find($t->reference_id);
+                if ($pp) {
+                    $referenceDetail = [
+                        'type' => 'Pembayaran Lahan Proyek',
+                        'number' => 'LAND-PAY-' . $pp->id,
+                        'recipient' => 'Penjual Lahan Proyek ' . ($pp->project->name ?? ''),
+                        'creator' => $pp->creator->name ?? 'Founder/Finance',
+                    ];
+                    $inputtedBy['name'] = $pp->creator->name ?? $inputtedBy['name'];
+                    $approvedBy['notes'] = 'Pembayaran lahan proyek terverifikasi & tercatat di kuitansi resmi';
+                }
+            } elseif ($t->reference_type === \App\Models\WorkerSalaryPayment::class) {
+                $sp = \App\Models\WorkerSalaryPayment::with(['payroll.worker', 'creator'])->find($t->reference_id);
+                if ($sp) {
+                    $referenceDetail = [
+                        'type' => 'Gaji Worker / Mandor',
+                        'number' => 'PAYROLL-' . $sp->id,
+                        'recipient' => $sp->payroll->worker->name ?? 'Pekerja Lapangan',
+                        'creator' => $sp->creator->name ?? 'Pengawas/Finance',
+                    ];
+                    $inputtedBy['name'] = $sp->creator->name ?? $inputtedBy['name'];
+                    $approvedBy['notes'] = 'Penggajian pekerja lapangan dikonfirmasi & dibayarkan';
+                }
+            }
+        }
+
+        return [
+            'inputted_by' => $inputtedBy,
+            'approved_by' => $approvedBy,
+            'reference_detail' => $referenceDetail,
+        ];
     }
 
     public function mount($id)
@@ -561,6 +699,17 @@ class Show extends Component
             }
         }
 
+        // Selected transaction audit trail
+        $selectedTransaction = null;
+        $auditTrailInfo = null;
+
+        if ($this->selectedTransactionId) {
+            $selectedTransaction = CashflowTransaction::with(['project', 'creator'])->find($this->selectedTransactionId);
+            if ($selectedTransaction) {
+                $auditTrailInfo = $this->resolveAuditTrail($selectedTransaction);
+            }
+        }
+
         return view('livewire.projects.show', [
             'project' => $project,
             'activeTab' => $this->activeTab,
@@ -589,6 +738,9 @@ class Show extends Component
             'projectPaymentsList' => $projectPaymentsList,
             'showPaymentModal' => $this->showPaymentModal,
             'showLegacyModal' => $this->showLegacyModal,
+            'showDetailModal' => $this->showDetailModal,
+            'selectedTransaction' => $selectedTransaction,
+            'auditTrailInfo' => $auditTrailInfo,
             'editingPaymentId' => $this->editingPaymentId,
         ])->layout('components.layouts.app', ['title' => 'Dashboard Detail Proyek - ' . $project->name]);
     }

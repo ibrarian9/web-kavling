@@ -28,9 +28,9 @@
                 <div class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-emerald-500 text-slate-950 font-bold mb-1 shadow-md">
                     ✓
                 </div>
-                <h2 class="text-sm font-extrabold text-emerald-300 uppercase tracking-wider">INVOICE PEMBAYARAN TERVERIFIKASI RESMI (DP ACC)</h2>
+                <h2 class="text-sm font-extrabold text-emerald-300 uppercase tracking-wider">INVOICE PEMBAYARAN TERVERIFIKASI RESMI</h2>
                 <p class="text-[11px] text-emerald-400/90 leading-relaxed">
-                    Invoice Pembayaran Tanda Jadi / Booking Fee ini terdaftar secara sah dan disetujui oleh tim Finance / Founder.
+                    Invoice Pembayaran ini terdaftar secara sah dan disetujui oleh tim Finance / Founder.
                 </p>
             </div>
         @elseif($booking->status === 'cancelled')
@@ -38,7 +38,7 @@
                 <div class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-rose-500 text-white font-bold mb-1 shadow-md">
                     ✕
                 </div>
-                <h2 class="text-sm font-extrabold text-rose-300 uppercase tracking-wider">BOOKING STATUS: DITOLAK / DIBATALKAN</h2>
+                <h2 class="text-sm font-extrabold text-rose-300 uppercase tracking-wider">BOOKING STATUS: DITOLAK</h2>
                 <p class="text-[11px] text-rose-400/90 leading-relaxed">
                     Pengajuan booking fee ini telah DITOLAK oleh manajemen dan tidak berlaku lagi.
                 </p>
@@ -48,9 +48,9 @@
                 <div class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-amber-500 text-slate-950 font-bold mb-1 shadow-md">
                     ↩
                 </div>
-                <h2 class="text-sm font-extrabold text-amber-300 uppercase tracking-wider">BOOKING STATUS: DIBATALKAN & DIREFUND</h2>
+                <h2 class="text-sm font-extrabold text-amber-300 uppercase tracking-wider">BOOKING STATUS: DIREFUND</h2>
                 <p class="text-[11px] text-amber-400/90 leading-relaxed">
-                    Pembayaran booking fee ini telah DIBATALKAN dan dana telah direfund/dikembalikan.
+                    Pembayaran booking fee ini telah DIBATALKAN dan dana telah dikembalikan.
                 </p>
             </div>
         @else
@@ -108,15 +108,15 @@
                 <span class="text-slate-400">Status Verifikasi:</span>
                 @if($booking->status === 'converted')
                     <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
-                        DIVERIFIKASI / DP ACC
+                        DIVERIFIKASI
                     </span>
                 @elseif($booking->status === 'cancelled')
                     <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-rose-500/20 text-rose-300 border border-rose-500/40">
-                        DITOLAK / DIBATALKAN
+                        DITOLAK
                     </span>
                 @elseif($booking->status === 'refunded')
                     <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40">
-                        DIBATALKAN / REFUND
+                        REFUND
                     </span>
                 @else
                     <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-blue-500/20 text-blue-300 border border-blue-500/40">

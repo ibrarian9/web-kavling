@@ -137,8 +137,8 @@ class Index extends Component
                     'unit_price' => (float)$mp->unit_price,
                     'total_price' => (float)$mp->total_price,
                     'receipt_photo' => $mp->receipt_photo_path ? asset('storage/' . $mp->receipt_photo_path) : null,
-                    'pdf_url' => null,
-                    'qr_url' => null,
+                    'pdf_url' => route('material-purchases.receipt', ['id' => $mp->id]),
+                    'qr_url' => route('verify.material-purchase', ['id' => $mp->id]),
                     'timestamp' => $mp->purchase_date ? $mp->purchase_date->timestamp : $mp->created_at->timestamp,
                 ]);
             }

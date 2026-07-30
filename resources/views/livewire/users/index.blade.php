@@ -110,12 +110,13 @@
                                 {{ $u->created_at ? $u->created_at->format('d/m/Y H:i') : '-' }}
                             </td>
                             <td class="px-5 py-4 text-right space-x-1 whitespace-nowrap">
-                                <button wire:click="openEditModal({{ $u->id }})" class="btn-secondary text-[11px] px-2.5 py-1">
-                                    Edit Akun
+                                <button wire:click="openEditModal({{ $u->id }})" class="btn-action-edit">
+                                    <svg class="w-3.5 h-3.5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                                    <span>Edit</span>
                                 </button>
                                 @if($u->id !== auth()->id())
-                                    <button wire:click="toggleStatus({{ $u->id }})" class="px-2.5 py-1 rounded-lg text-[11px] font-semibold border transition {{ $u->is_active ? 'bg-rose-50 text-rose-700 border-rose-200 hover:bg-rose-100' : 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100' }}">
-                                        {{ $u->is_active ? 'Nonaktifkan' : 'Aktifkan' }}
+                                    <button wire:click="toggleStatus({{ $u->id }})" class="btn-action-delete" title="Ubah Status Akun User">
+                                        <span>{{ $u->is_active ? 'Nonaktifkan' : 'Aktifkan' }}</span>
                                     </button>
                                 @endif
                             </td>

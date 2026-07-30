@@ -205,7 +205,7 @@
 
     @if($receiptPhotoBase64)
         <div class="photo-section">
-            <h4>Lampiran Bukti Transfer / Resi Pembayaran</h4>
+            <h4>Lampiran Resi Pembayaran</h4>
             <img src="{{ $receiptPhotoBase64 }}" class="photo-img" alt="Foto Resi">
         </div>
     @endif

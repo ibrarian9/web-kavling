@@ -58,7 +58,7 @@
             <td style="width: 50%;">
                 <div class="label">Penerima (Pekerja)</div>
                 <div class="value">{{ $worker->name }}</div>
-                <div style="font-size: 10px; color: #475569;">Jabatan/Role: {{ ucfirst($worker->type) }} {{ $worker->specialty ? '('.$worker->specialty.')' : '' }}</div>
+                <div style="font-size: 10px; color: #475569;">Jabatan: {{ ucfirst($worker->type) }} {{ $worker->specialty ? '('.$worker->specialty.')' : '' }}</div>
                 @if($worker->phone)
                     <div style="font-size: 9px; color: #64748b;">Telp: {{ $worker->phone }}</div>
                 @endif

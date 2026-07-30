@@ -18,6 +18,10 @@ class Index extends Component
     public $view_mode = 'global'; // 'global', 'project', atau 'unit'
     public $showManualModal = false;
 
+    // Audit Trail Detail Modal
+    public $showDetailModal = false;
+    public $selectedTransactionId = null;
+
     protected $queryString = [
         'view_mode' => ['except' => 'global'],
         'filter_project_id' => ['except' => ''],
@@ -86,6 +90,132 @@ class Index extends Component
     {
         $this->filter_month = date('Y-m');
         $this->resetPage();
+    }
+
+    public function openDetailModal($id)
+    {
+        $this->selectedTransactionId = $id;
+        $this->showDetailModal = true;
+    }
+
+    public function closeDetailModal()
+    {
+        $this->showDetailModal = false;
+        $this->selectedTransactionId = null;
+    }
+
+    public function deleteTransaction($id)
+    {
+        $user = auth()->user();
+        if (!$user || !$user->isFounder()) {
+            session()->flash('error', 'Hanya Founder yang berhak menghapus data transaksi arus kas.');
+            return;
+        }
+
+        $trx = CashflowTransaction::findOrFail($id);
+        $trxId = $trx->id;
+        $description = $trx->description;
+        $amount = number_format($trx->amount, 0, ',', '.');
+
+        $trx->delete();
+
+        \App\Services\ActivityLogger::log(
+            'CASHFLOW_DELETED',
+            "Founder menghapus transaksi arus kas #TRX-{$trxId}: {$description} (Rp {$amount})"
+        );
+
+        session()->flash('success', "Transaksi mutasi kas #TRX-{$trxId} berhasil dihapus.");
+    }
+
+    private function resolveAuditTrail(CashflowTransaction $t): array
+    {
+        $inputtedBy = [
+            'name' => $t->creator->name ?? 'Sistem Keuangan',
+            'email' => $t->creator->email ?? '-',
+            'role' => $t->creator->role ?? 'Sistem',
+            'created_at' => $t->created_at ? $t->created_at->translatedFormat('d F Y H:i WIB') : '-',
+        ];
+
+        $approvedBy = [
+            'name' => 'Tim Finance / Founder',
+            'role' => 'Finance & Management ACC',
+            'status' => 'Disetujui & Sah (Lunas)',
+            'approved_at' => $t->transaction_date ? $t->transaction_date->translatedFormat('d F Y') : '-',
+            'notes' => 'Tercatat dalam laporan mutasi arus kas resmi',
+        ];
+
+        $referenceDetail = null;
+
+        if ($t->reference_type && $t->reference_id) {
+            if ($t->reference_type === \App\Models\ManualInvoice::class) {
+                $inv = \App\Models\ManualInvoice::with('creator')->find($t->reference_id);
+                if ($inv) {
+                    $referenceDetail = [
+                        'type' => 'Invoice Manual',
+                        'number' => $inv->invoice_number,
+                        'recipient' => $inv->recipient_name,
+                        'creator' => $inv->creator->name ?? 'Finance',
+                    ];
+                    $approvedBy['name'] = $inv->creator->name ?? 'Tim Finance / Founder';
+                    $approvedBy['notes'] = 'Diterbitkan via Invoice Manual ke ' . $inv->recipient_name;
+                }
+            } elseif ($t->reference_type === \App\Models\InstallmentPayment::class) {
+                $pay = \App\Models\InstallmentPayment::with(['installment.unit.project', 'creator'])->find($t->reference_id);
+                if ($pay) {
+                    $unitCode = $pay->installment->unit->code ?? '-';
+                    $referenceDetail = [
+                        'type' => 'Setoran Cicilan Pembeli',
+                        'number' => 'REF-' . substr($pay->uuid ?? (string)$pay->id, 0, 8),
+                        'recipient' => 'Klien Pembeli Unit ' . $unitCode,
+                        'creator' => $pay->creator->name ?? 'Finance',
+                    ];
+                    $inputtedBy['name'] = $pay->creator->name ?? $inputtedBy['name'];
+                    $approvedBy['notes'] = 'Setoran cicilan pembeli unit ' . $unitCode . ' terkonfirmasi lunas';
+                }
+            } elseif ($t->reference_type === \App\Models\Booking::class) {
+                $b = \App\Models\Booking::with(['unit', 'creator'])->find($t->reference_id);
+                if ($b) {
+                    $referenceDetail = [
+                        'type' => 'Booking Fee / Uang Tanda Jadi',
+                        'number' => 'BOOK-' . $b->id,
+                        'recipient' => $b->buyer_name,
+                        'creator' => $b->creator->name ?? 'Sales Marketing',
+                    ];
+                    $inputtedBy['name'] = $b->creator->name ?? $inputtedBy['name'];
+                    $approvedBy['notes'] = 'Booking fee disetujui & dikonversi oleh Tim Finance/Founder';
+                }
+            } elseif ($t->reference_type === \App\Models\ProjectPayment::class) {
+                $pp = \App\Models\ProjectPayment::with(['project', 'creator'])->find($t->reference_id);
+                if ($pp) {
+                    $referenceDetail = [
+                        'type' => 'Pembayaran Lahan Proyek',
+                        'number' => 'LAND-PAY-' . $pp->id,
+                        'recipient' => 'Penjual Lahan Proyek ' . ($pp->project->name ?? ''),
+                        'creator' => $pp->creator->name ?? 'Founder/Finance',
+                    ];
+                    $inputtedBy['name'] = $pp->creator->name ?? $inputtedBy['name'];
+                    $approvedBy['notes'] = 'Pembayaran lahan proyek terverifikasi & tercatat di kuitansi resmi';
+                }
+            } elseif ($t->reference_type === \App\Models\WorkerSalaryPayment::class) {
+                $sp = \App\Models\WorkerSalaryPayment::with(['payroll.worker', 'creator'])->find($t->reference_id);
+                if ($sp) {
+                    $referenceDetail = [
+                        'type' => 'Gaji Worker / Mandor',
+                        'number' => 'PAYROLL-' . $sp->id,
+                        'recipient' => $sp->payroll->worker->name ?? 'Pekerja Lapangan',
+                        'creator' => $sp->creator->name ?? 'Pengawas/Finance',
+                    ];
+                    $inputtedBy['name'] = $sp->creator->name ?? $inputtedBy['name'];
+                    $approvedBy['notes'] = 'Penggajian pekerja lapangan dikonfirmasi & dibayarkan';
+                }
+            }
+        }
+
+        return [
+            'inputted_by' => $inputtedBy,
+            'approved_by' => $approvedBy,
+            'reference_detail' => $referenceDetail,
+        ];
     }
 
     public function openManualModal()
@@ -238,6 +368,17 @@ class Index extends Component
             ->orderByDesc('total_amount')
             ->get();
 
+        // Audit Trail Selected Transaction
+        $selectedTransaction = null;
+        $auditTrailInfo = null;
+
+        if ($this->selectedTransactionId) {
+            $selectedTransaction = CashflowTransaction::with(['project', 'creator'])->find($this->selectedTransactionId);
+            if ($selectedTransaction) {
+                $auditTrailInfo = $this->resolveAuditTrail($selectedTransaction);
+            }
+        }
+
         return view('livewire.cashflow.index', [
             'transactions' => $transactions,
             'projects' => $projects,
@@ -259,6 +400,9 @@ class Index extends Component
             'filter_unit_id' => $this->filter_unit_id,
             'filter_month' => $this->filter_month,
             'showManualModal' => $this->showManualModal,
+            'showDetailModal' => $this->showDetailModal,
+            'selectedTransaction' => $selectedTransaction,
+            'auditTrailInfo' => $auditTrailInfo,
         ])->layout('components.layouts.app', ['title' => 'Arus Kas Per-Proyek, Per-Unit & Konsolidasi Global']);
     }
 }

@@ -57,18 +57,18 @@
 
             <!-- Export Buttons -->
             <div class="flex items-center gap-1.5">
-                <a href="{{ url('/cashflow/export-pdf?' . http_build_query(['view_mode' => $view_mode ?? 'global', 'project_id' => $filter_project_id ?? '', 'unit_id' => $filter_unit_id ?? '', 'month' => $filter_month ?? ''])) }}" target="_blank" class="btn-secondary text-xs px-2.5 py-2 inline-flex items-center gap-1.5 text-rose-700 border-rose-200 hover:bg-rose-50 font-bold" title="Cetak / Download PDF Laporan Arus Kas">
+                <a href="{{ url('/cashflow/export-pdf?' . http_build_query(['view_mode' => $view_mode ?? 'global', 'project_id' => $filter_project_id ?? '', 'unit_id' => $filter_unit_id ?? '', 'month' => $filter_month ?? ''])) }}" target="_blank" class="px-3.5 py-2 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 rounded-xl text-xs font-bold inline-flex items-center gap-1.5 transition shadow-2xs" title="Cetak / Download PDF Laporan Arus Kas">
                     <svg class="w-4 h-4 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                     <span>Export PDF</span>
                 </a>
 
-                <a href="{{ url('/cashflow/export-excel?' . http_build_query(['view_mode' => $view_mode ?? 'global', 'project_id' => $filter_project_id ?? '', 'unit_id' => $filter_unit_id ?? '', 'month' => $filter_month ?? ''])) }}" class="btn-secondary text-xs px-2.5 py-2 inline-flex items-center gap-1.5 text-emerald-700 border-emerald-200 hover:bg-emerald-50 font-bold" title="Download Excel CSV Laporan Arus Kas">
-                    <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                <a href="{{ url('/cashflow/export-excel?' . http_build_query(['view_mode' => $view_mode ?? 'global', 'project_id' => $filter_project_id ?? '', 'unit_id' => $filter_unit_id ?? '', 'month' => $filter_month ?? ''])) }}" class="px-3.5 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 rounded-xl text-xs font-bold inline-flex items-center gap-1.5 transition shadow-2xs" title="Download Excel CSV Laporan Arus Kas">
+                    <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 01-2-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                     <span>Export Excel</span>
                 </a>
             </div>
 
-            @if(auth()->user()->isFinance() || auth()->user()->isFounder() || auth()->user()->isPengawasProject())
+            @if(auth()->user()->isFounder())
                 <button wire:click="openManualModal" class="btn-primary whitespace-nowrap text-xs px-3.5 py-2">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                     <span>+ Catat Mutasi Kas</span>
@@ -250,6 +250,7 @@
                         <th class="px-5 py-3.5">Keterangan Transaksi</th>
                         <th class="px-5 py-3.5">Pencatat</th>
                         <th class="px-5 py-3.5 text-right">Nominal (Rp)</th>
+                        <th class="px-5 py-3.5 text-center">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">
@@ -282,10 +283,24 @@
                             <td class="px-5 py-4 text-right font-mono font-extrabold text-sm {{ $trx->type === 'masuk' ? 'text-emerald-600' : 'text-rose-600' }}">
                                 {{ $trx->type === 'masuk' ? '+' : '-' }}Rp {{ number_format($trx->amount, 0, ',', '.') }}
                             </td>
+                            <td class="px-5 py-4 text-center whitespace-nowrap">
+                                <div class="flex items-center justify-center gap-1.5">
+                                    <button wire:click="openDetailModal({{ $trx->id }})" class="btn-action-detail">
+                                        <svg class="w-3.5 h-3.5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                                        <span>Detail</span>
+                                    </button>
+                                    @if(auth()->user()->isFounder())
+                                        <button wire:click="deleteTransaction({{ $trx->id }})" wire:confirm="Yakin ingin menghapus mutasi transaksi kas #TRX-{{ $trx->id }} ini?" class="btn-action-delete" title="Hapus Transaksi Kas">
+                                            <svg class="w-3.5 h-3.5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                            <span>Hapus</span>
+                                        </button>
+                                    @endif
+                                </div>
+                            </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="px-6 py-12 text-center text-slate-400">
+                            <td colspan="8" class="px-6 py-12 text-center text-slate-400">
                                 <svg class="w-12 h-12 mx-auto text-slate-300 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                                 <p class="font-semibold text-slate-600">Belum Ada Mutasi Transaksi Kas Tercatat</p>
                                 <p class="text-xs text-slate-400 mt-1">Catat transaksi kas masuk atau keluar baru menggunakan tombol di atas.</p>
@@ -348,6 +363,117 @@
                         <button type="submit" class="btn-primary">Simpan Mutasi</button>
                     </div>
                 </form>
+            </div>
+        </div>
+    @endif
+
+    <!-- Modal Detail Alur Keuangan & Audit Trail -->
+    @if(!empty($showDetailModal) && !empty($selectedTransaction))
+        <div class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs p-3 sm:p-6 md:p-10 flex items-center justify-center min-h-screen">
+            <div class="bg-white border border-slate-200 rounded-2xl sm:rounded-3xl max-w-lg sm:max-w-xl w-full p-5 sm:p-6 shadow-2xl space-y-4 my-auto">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                    <div class="flex items-center gap-2.5">
+                        <div class="p-2 rounded-xl bg-teal-50 text-teal-700">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                        </div>
+                        <div>
+                            <h3 class="font-extrabold text-slate-900 text-base">Detail Alur Keuangan & Audit Trail</h3>
+                            <p class="text-[11px] text-slate-500">Nomor Mutasi: <strong class="font-mono text-slate-800">#TRX-{{ $selectedTransaction->id }}</strong></p>
+                        </div>
+                    </div>
+                    <button wire:click="closeDetailModal" class="text-slate-400 hover:text-slate-600 text-sm font-bold">✕</button>
+                </div>
+
+                <!-- Financial Highlight Box -->
+                <div class="p-4 rounded-xl {{ $selectedTransaction->type === 'masuk' ? 'bg-emerald-50 border border-emerald-200/80 text-emerald-900' : 'bg-rose-50 border border-rose-200/80 text-rose-900' }} flex items-center justify-between">
+                    <div>
+                        <span class="text-[10px] font-bold uppercase tracking-wider block opacity-75">Nominal Mutasi Kas</span>
+                        <strong class="text-xl font-mono font-extrabold">
+                            {{ $selectedTransaction->type === 'masuk' ? '+' : '-' }} Rp {{ number_format($selectedTransaction->amount, 0, ',', '.') }}
+                        </strong>
+                    </div>
+                    <div class="text-right">
+                        <span class="px-2.5 py-1 rounded-md text-xs font-extrabold uppercase {{ $selectedTransaction->type === 'masuk' ? 'bg-emerald-600 text-white' : 'bg-rose-600 text-white' }}">
+                            {{ $selectedTransaction->type === 'masuk' ? 'Kas Masuk' : 'Kas Keluar' }}
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Audit Timeline Steps -->
+                <div class="space-y-4 pt-1 text-xs">
+                    <h4 class="font-bold text-slate-800 uppercase tracking-wider text-[11px] border-b border-slate-100 pb-1.5">Alur Pencatatan & Otorisasi</h4>
+
+                    <!-- Step 1: Inputter -->
+                    <div class="flex items-start gap-3 relative pl-2">
+                        <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">
+                            1
+                        </div>
+                        <div class="space-y-0.5 flex-1">
+                            <div class="flex justify-between items-center">
+                                <span class="font-bold text-slate-900">Diinput Oleh</span>
+                                <span class="text-[10px] text-slate-400 font-mono">{{ $auditTrailInfo['inputted_by']['created_at'] }}</span>
+                            </div>
+                            <p class="font-semibold text-blue-800">{{ $auditTrailInfo['inputted_by']['name'] }} <span class="text-slate-500 font-normal">({{ ucfirst($auditTrailInfo['inputted_by']['role']) }})</span></p>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Approver -->
+                    <div class="flex items-start gap-3 relative pl-2">
+                        <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">
+                            2
+                        </div>
+                        <div class="space-y-0.5 flex-1">
+                            <div class="flex justify-between items-center">
+                                <span class="font-bold text-slate-900">Diverifikasi Oleh</span>
+                                <span class="text-[10px] text-emerald-700 font-bold bg-emerald-100 px-2 py-0.5 rounded border border-emerald-200">{{ $auditTrailInfo['approved_by']['status'] }}</span>
+                            </div>
+                            <p class="font-semibold text-emerald-800">{{ $auditTrailInfo['approved_by']['name'] }} <span class="text-slate-500 font-normal">({{ $auditTrailInfo['approved_by']['role'] }})</span></p>
+                            <p class="text-[11px] text-slate-600 italic mt-0.5">"{{ $auditTrailInfo['approved_by']['notes'] }}"</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Scope & Object Detail -->
+                <div class="bg-slate-50 border border-slate-200/80 rounded-xl p-3.5 text-xs space-y-2">
+                    <h4 class="font-bold text-slate-800 uppercase tracking-wider text-[10px]">Cakupan Objek Transaksi</h4>
+                    
+                    <div class="grid grid-cols-2 gap-2 text-[11px]">
+                        <div>
+                            <span class="text-slate-400 block text-[10px]">Proyek Properti:</span>
+                            <strong class="text-slate-800 font-semibold">{{ $selectedTransaction->project->name ?? 'Global' }}</strong>
+                        </div>
+                        <div>
+                            <span class="text-slate-400 block text-[10px]">Kategori Mutasi:</span>
+                            <strong class="text-slate-800 font-semibold capitalize">{{ str_replace('_', ' ', $selectedTransaction->category) }}</strong>
+                        </div>
+                    </div>
+
+                    @if($auditTrailInfo['reference_detail'])
+                        <div class="pt-2 border-t border-slate-200/80 text-[11px] space-y-1">
+                            <div class="flex justify-between">
+                                <span class="text-slate-500">Tipe Referensi:</span>
+                                <span class="font-bold text-teal-700">{{ $auditTrailInfo['reference_detail']['type'] }}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-slate-500">Nomor Referensi:</span>
+                                <span class="font-mono font-bold text-slate-800">{{ $auditTrailInfo['reference_detail']['number'] }}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-slate-500">Penerima / Klien:</span>
+                                <span class="font-bold text-slate-800">{{ $auditTrailInfo['reference_detail']['recipient'] }}</span>
+                            </div>
+                        </div>
+                    @endif
+
+                    <div class="pt-2 border-t border-slate-200/80 text-[11px]">
+                        <span class="text-slate-400 block text-[10px]">Keterangan Transaksi:</span>
+                        <p class="text-slate-700 italic font-medium">{{ $selectedTransaction->description }}</p>
+                    </div>
+                </div>
+
+                <div class="flex justify-end pt-2 border-t border-slate-100">
+                    <button type="button" wire:click="closeDetailModal" class="btn-secondary text-xs px-4 py-2">Tutup Detail</button>
+                </div>
             </div>
         </div>
     @endif

@@ -90,24 +90,25 @@
                                 </span>
                             </td>
                             <td class="p-3.5 text-right space-x-1 whitespace-nowrap">
-                                <a href="{{ route('projects.show', $p->id) }}" class="px-3 py-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-semibold inline-flex items-center gap-1 shadow-sm transition">
-                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5m0 0h5m-5 0v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
-                                    <span>{{ auth()->user()->isPengawasProject() ? 'Detail Proyek' : 'Detail Dashboard & Arus Kas' }}</span>
+                                <a href="{{ route('projects.show', $p->id) }}" class="btn-action-detail">
+                                    <svg class="w-3.5 h-3.5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5m0 0h5m-5 0v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                                    <span>Detail</span>
                                 </a>
 
                                 @if(auth()->user()->isFounder())
-                                    <button wire:click="openWorkerModal({{ $p->id }})" class="px-2.5 py-1 bg-purple-50 hover:bg-purple-100 text-purple-700 rounded-lg text-xs font-semibold border border-purple-200 inline-flex items-center gap-1 transition shadow-xs" title="Hanya Founder yang berhak menugaskan Pengawas Project">
-                                        + Pengawas
+                                    <button wire:click="openWorkerModal({{ $p->id }})" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-purple-50 text-purple-800 hover:bg-purple-100 border border-purple-200/80 text-[11px] font-bold transition shadow-2xs" title="Tugaskan Pengawas Project">
+                                        + Supervisor
                                     </button>
                                 @endif
 
-                                <a href="{{ route('units.index', ['project_id' => $p->id]) }}" class="px-2.5 py-1 bg-sky-50 hover:bg-sky-100 text-sky-700 rounded-lg text-xs font-semibold border border-sky-200 inline-flex items-center gap-1">
-                                    Lihat Unit
+                                <a href="{{ route('units.index', ['project_id' => $p->id]) }}" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-sky-50 text-sky-800 hover:bg-sky-100 border border-sky-200 text-[11px] font-bold transition shadow-2xs">
+                                    Unit
                                 </a>
 
                                 @if(auth()->user()->isFounder() || auth()->user()->isSupervisor())
-                                    <button wire:click="editProject({{ $p->id }})" class="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-semibold border border-slate-300">
-                                        Edit
+                                    <button wire:click="editProject({{ $p->id }})" class="btn-action-edit">
+                                        <svg class="w-3.5 h-3.5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                                        <span>Edit</span>
                                     </button>
                                 @endif
                             </td>

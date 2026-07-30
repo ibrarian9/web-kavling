@@ -11,7 +11,7 @@
                 <span>/</span>
                 <span class="text-slate-600 font-semibold">Detail & Dashboard Proyek</span>
             </div>
-            <h1 class="text-xl font-bold text-slate-900 tracking-tight">{{ $project->name }}</h1>
+            <h1 class="text-lg sm:text-xl font-bold text-slate-900 tracking-tight">{{ $project->name }}</h1>
             <p class="text-xs text-slate-500 mt-0.5 flex items-center gap-1">
                 <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/></svg>
                 {{ $project->location }}
@@ -21,20 +21,20 @@
         <div class="flex flex-wrap items-center gap-2">
             <a href="{{ route('units.index', ['project_id' => $project->id]) }}" class="btn-secondary text-xs flex items-center gap-1.5">
                 <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6z"/></svg>
-                <span>Kelola Stok Unit</span>
+                <span>Stok Unit</span>
             </a>
 
             @if(auth()->user()->isFounder())
                 <button wire:click="openLegacyModal" class="px-3 py-2 rounded-xl bg-purple-900/90 hover:bg-purple-800 text-purple-200 border border-purple-700/60 text-xs font-semibold flex items-center gap-1.5 transition shadow-sm">
                     <svg class="w-4 h-4 text-purple-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                    <span>+ Input Penjualan Lalu</span>
+                    <span>+ Penjualan Lalu</span>
                 </button>
             @endif
 
             @if(!auth()->user()->isPengawasProject())
                 <a href="{{ route('cashflow.index') }}" class="btn-primary text-xs flex items-center gap-1.5">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
-                    <span>Arus Kas Global</span>
+                    <span>Arus Kas</span>
                 </a>
             @endif
         </div>
@@ -42,7 +42,7 @@
 
     <!-- Project Specifications & Workers Strip -->
     <div class="card-clean p-4 bg-slate-900 text-white flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-        <div class="grid grid-cols-2 sm:grid-cols-5 gap-4 text-xs">
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 text-xs">
             <div>
                 <span class="text-slate-400 block text-[10px] uppercase font-bold tracking-wider">Harga Beli Lahan</span>
                 <span class="font-mono font-bold text-sm text-purple-400">
@@ -131,7 +131,7 @@
                     </div>
                 </div>
 
-                @if(auth()->user()->isFounder() || auth()->user()->isFinance() || auth()->user()->isSupervisor())
+                @if(auth()->user()->isFounder())
                     <div class="shrink-0">
                         <button wire:click="openPaymentModal" class="w-full sm:w-auto bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-xs px-4 py-3 rounded-xl shadow-lg transition inline-flex items-center justify-center gap-2">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
@@ -144,9 +144,9 @@
             <!-- Progress Bar -->
             @if($project->total_project_price > 0)
                 <div class="mt-4 pt-3 border-t border-purple-800/60">
-                    <div class="flex items-center justify-between text-[11px] font-bold text-purple-200 mb-1">
-                        <span>Progress Pelunasan Lahan ke Penjual: {{ number_format($project->payment_progress_percentage, 1) }}%</span>
-                        <span>{{ number_format($project->total_paid, 0, ',', '.') }} / {{ number_format($project->total_project_price, 0, ',', '.') }}</span>
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between text-[11px] font-bold text-purple-200 mb-1 gap-0.5">
+                        <span>Progress Pelunasan: {{ number_format($project->payment_progress_percentage, 1) }}%</span>
+                        <span class="font-mono text-[10px] sm:text-[11px]">{{ number_format($project->total_paid, 0, ',', '.') }} / {{ number_format($project->total_project_price, 0, ',', '.') }}</span>
                     </div>
                     <div class="w-full h-2.5 bg-slate-800 rounded-full overflow-hidden border border-purple-700/50">
                         <div class="h-full bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full transition-all duration-500" style="width: {{ $project->payment_progress_percentage }}%"></div>
@@ -266,26 +266,31 @@
     @endif
 
     <!-- Navigation Tabs for Integrated View -->
-    <div class="border-b border-slate-200 flex items-center gap-6 text-sm font-bold">
-        <button wire:click="$set('activeTab', 'units')" class="pb-3 border-b-2 transition flex items-center gap-2 {{ $activeTab === 'units' ? 'border-emerald-600 text-emerald-600' : 'border-transparent text-slate-400 hover:text-slate-600' }}">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6z"/></svg>
-            <span>{{ auth()->user()->isPengawasProject() ? 'Daftar Unit Kavling & Pekerja' : 'Penjualan & Profit Per Unit' }}</span>
-            <span class="bg-slate-100 text-slate-700 text-xs px-2 py-0.5 rounded-full font-mono">{{ count($unitsList) }}</span>
-        </button>
-
-        @if(!auth()->user()->isPengawasProject())
-            <button wire:click="$set('activeTab', 'payments')" class="pb-3 border-b-2 transition flex items-center gap-2 {{ $activeTab === 'payments' ? 'border-emerald-600 text-emerald-600' : 'border-transparent text-slate-400 hover:text-slate-600' }}">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-                <span>Skema & Pembayaran Lahan Proyek</span>
-                <span class="bg-purple-100 text-purple-800 text-xs px-2 py-0.5 rounded-full font-mono">{{ count($projectPaymentsList) }}</span>
+    <div class="border-b border-slate-200 overflow-x-auto scrollbar-hide -mx-1 px-1">
+        <div class="flex items-center gap-2 sm:gap-6 text-sm font-bold min-w-max">
+            <button wire:click="$set('activeTab', 'units')" class="pb-3 border-b-2 transition flex items-center gap-1.5 sm:gap-2 whitespace-nowrap {{ $activeTab === 'units' ? 'border-emerald-600 text-emerald-600' : 'border-transparent text-slate-400 hover:text-slate-600' }}">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6z"/></svg>
+                <span class="hidden sm:inline">{{ auth()->user()->isPengawasProject() ? 'Daftar Unit Kavling & Pekerja' : 'Penjualan & Profit Per Unit' }}</span>
+                <span class="sm:hidden">{{ auth()->user()->isPengawasProject() ? 'Unit & Pekerja' : 'Unit & Profit' }}</span>
+                <span class="bg-slate-100 text-slate-700 text-xs px-2 py-0.5 rounded-full font-mono">{{ count($unitsList) }}</span>
             </button>
 
-            <button wire:click="$set('activeTab', 'cashflow')" class="pb-3 border-b-2 transition flex items-center gap-2 {{ $activeTab === 'cashflow' ? 'border-emerald-600 text-emerald-600' : 'border-transparent text-slate-400 hover:text-slate-600' }}">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
-                <span>Laporan Arus Kas Proyek (Inflow & Outflow)</span>
-                <span class="bg-emerald-100 text-emerald-800 text-xs px-2 py-0.5 rounded-full font-mono">{{ count($cashflowTransactions) }}</span>
-            </button>
-        @endif
+            @if(!auth()->user()->isPengawasProject())
+                <button wire:click="$set('activeTab', 'payments')" class="pb-3 border-b-2 transition flex items-center gap-1.5 sm:gap-2 whitespace-nowrap {{ $activeTab === 'payments' ? 'border-emerald-600 text-emerald-600' : 'border-transparent text-slate-400 hover:text-slate-600' }}">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                    <span class="hidden sm:inline">Skema & Pembayaran Lahan Proyek</span>
+                    <span class="sm:hidden">Bayar Lahan</span>
+                    <span class="bg-purple-100 text-purple-800 text-xs px-2 py-0.5 rounded-full font-mono">{{ count($projectPaymentsList) }}</span>
+                </button>
+
+                <button wire:click="$set('activeTab', 'cashflow')" class="pb-3 border-b-2 transition flex items-center gap-1.5 sm:gap-2 whitespace-nowrap {{ $activeTab === 'cashflow' ? 'border-emerald-600 text-emerald-600' : 'border-transparent text-slate-400 hover:text-slate-600' }}">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                    <span class="hidden sm:inline">Laporan Arus Kas Proyek (Inflow & Outflow)</span>
+                    <span class="sm:hidden">Arus Kas</span>
+                    <span class="bg-emerald-100 text-emerald-800 text-xs px-2 py-0.5 rounded-full font-mono">{{ count($cashflowTransactions) }}</span>
+                </button>
+            @endif
+        </div>
     </div>
 
     <!-- TAB 1: Penjualan & Profit Per Unit -->
@@ -300,12 +305,24 @@
                 </div>
 
                 <div class="flex flex-wrap items-center gap-2 w-full sm:w-auto">
-                    <div class="relative w-full sm:w-56">
+                    @if(count($unitsList) > 0)
+                        <a href="{{ route('projects.sales-profit-pdf', $project->id) }}" target="_blank" class="px-3.5 py-2 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 rounded-xl text-xs font-bold inline-flex items-center gap-1.5 transition shadow-2xs">
+                            <svg class="w-4 h-4 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                            <span>Lihat PDF Rekap</span>
+                        </a>
+                    @else
+                        <button disabled class="px-3.5 py-2 bg-slate-100 text-slate-400 border border-slate-200 rounded-xl text-xs font-bold inline-flex items-center gap-1.5 cursor-not-allowed opacity-75" title="Belum ada data unit untuk digenerate PDF">
+                            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                            <span>PDF Rekap (Belum Ada Data)</span>
+                        </button>
+                    @endif
+
+                    <div class="relative w-full sm:w-48">
                         <input type="text" wire:model.live.debounce.300ms="unitSearch" placeholder="Cari kode unit..." class="input-clean w-full text-xs pl-8 pr-3 py-1.5 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500">
                         <svg class="w-4 h-4 text-slate-400 absolute left-2.5 top-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                     </div>
 
-                    <div class="w-full sm:w-40">
+                    <div class="w-full sm:w-36">
                         <select wire:model.live="statusFilter" class="input-clean w-full text-xs">
                             <option value="">Semua Status Unit</option>
                             <option value="tersedia">Tersedia</option>
@@ -314,7 +331,7 @@
                             <option value="booked">Booked</option>
                         </select>
                     </div>
-                    <div class="w-full sm:w-36">
+                    <div class="w-full sm:w-32">
                         <select wire:model.live="typeFilter" class="input-clean w-full text-xs">
                             <option value="">Semua Tipe</option>
                             <option value="kavling">Kavling Tanah</option>
@@ -326,7 +343,133 @@
 
             <!-- Table: Unit Sales, Costs, and Profit Performance -->
             <div class="card-clean overflow-hidden">
-                <div class="overflow-x-auto">
+
+                <!-- Mobile Card Layout (visible on small screens) -->
+                <div class="md:hidden divide-y divide-slate-100">
+                    @forelse($unitsList as $u)
+                        @php 
+                            $perf = $unitPerformances[$u->id] ?? [
+                                'selling_price' => 0,
+                                'paid_amount' => 0,
+                                'remaining_amount' => 0,
+                                'hpp' => (float)$u->hpp,
+                                'unit_costs' => 0,
+                                'profit' => 0,
+                                'buyer_name' => '-',
+                                'is_sold' => false,
+                            ];
+                        @endphp
+                        <div class="p-4 space-y-3">
+                            <!-- Header: Code + Status + Action -->
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <span class="font-extrabold text-sm font-mono text-emerald-700">{{ $u->code }}</span>
+                                    @if ($u->status === 'tersedia')
+                                        <span class="status-tersedia">Tersedia</span>
+                                    @elseif ($u->status === 'disetujui' || $u->status === 'converted' || $u->status === 'terjual')
+                                        <span class="status-disetujui">Terjual</span>
+                                    @elseif ($u->status === 'booked')
+                                        <span class="status-booked">Booked</span>
+                                    @else
+                                        <span class="status-menunggu">{{ ucfirst($u->status) }}</span>
+                                    @endif
+                                </div>
+                                <div class="flex items-center gap-1.5">
+                                    <a href="{{ route('units.show', $u->id) }}" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-teal-50 text-teal-800 hover:bg-teal-100 border border-teal-200 text-[11px] font-bold transition">
+                                        <svg class="w-3.5 h-3.5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                                        <span>Detail</span>
+                                    </a>
+                                    @if(auth()->user()->isFounder())
+                                        <button wire:click="deleteUnit({{ $u->id }})" wire:confirm="Yakin ingin menghapus unit {{ $u->code }} dari proyek ini beserta seluruh histori terikatnya?" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200 text-[11px] font-bold transition" title="Hapus Unit">
+                                            <svg class="w-3.5 h-3.5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                            <span>Hapus</span>
+                                        </button>
+                                    @endif
+                                </div>
+                            </div>
+
+                            <!-- Category & Area -->
+                            <div class="flex items-center gap-3 text-xs text-slate-600">
+                                <span class="font-semibold capitalize">{{ $u->category ?? $u->type }}</span>
+                                <span class="text-slate-400">•</span>
+                                <span class="font-mono text-slate-500">{{ number_format($u->land_area, 0, ',', '.') }} m²</span>
+                            </div>
+
+                            @if(!auth()->user()->isPengawasProject())
+                                <!-- Financial Grid -->
+                                @if($perf['buyer_name'] !== '-')
+                                    <p class="text-xs font-bold text-slate-800">Pembeli: {{ $perf['buyer_name'] }}</p>
+                                @endif
+                                <div class="grid grid-cols-2 gap-2 text-xs">
+                                    <div class="bg-emerald-50/80 rounded-lg p-2 border border-emerald-100">
+                                        <span class="text-[10px] text-emerald-600 font-semibold block">Harga Deal</span>
+                                        <span class="font-mono font-bold text-emerald-700">
+                                            @if($perf['selling_price'] > 0)
+                                                Rp {{ number_format($perf['selling_price'], 0, ',', '.') }}
+                                            @else
+                                                <span class="text-slate-400 font-normal italic">-</span>
+                                            @endif
+                                        </span>
+                                    </div>
+                                    <div class="bg-sky-50/80 rounded-lg p-2 border border-sky-100">
+                                        <span class="text-[10px] text-sky-600 font-semibold block">Sudah Dibayar</span>
+                                        <span class="font-mono font-bold text-sky-700">
+                                            @if($perf['paid_amount'] > 0)
+                                                Rp {{ number_format($perf['paid_amount'], 0, ',', '.') }}
+                                            @else
+                                                <span class="text-slate-400 font-normal italic">Rp 0</span>
+                                            @endif
+                                        </span>
+                                    </div>
+                                    <div class="bg-amber-50/80 rounded-lg p-2 border border-amber-100">
+                                        <span class="text-[10px] text-amber-600 font-semibold block">Sisa Tagihan</span>
+                                        <span class="font-mono font-bold text-amber-700">
+                                            @if($perf['is_sold'] && $perf['remaining_amount'] > 0)
+                                                Rp {{ number_format($perf['remaining_amount'], 0, ',', '.') }}
+                                            @elseif($perf['is_sold'] && $perf['remaining_amount'] == 0)
+                                                <span class="text-emerald-600 font-bold">LUNAS</span>
+                                            @else
+                                                <span class="text-slate-400 font-normal italic">-</span>
+                                            @endif
+                                        </span>
+                                    </div>
+                                    <div class="rounded-lg p-2 border {{ $perf['is_sold'] && $perf['profit'] >= 0 ? 'bg-emerald-50/80 border-emerald-100' : ($perf['is_sold'] ? 'bg-rose-50/80 border-rose-100' : 'bg-slate-50 border-slate-100') }}">
+                                        <span class="text-[10px] font-semibold block {{ $perf['is_sold'] && $perf['profit'] >= 0 ? 'text-emerald-600' : ($perf['is_sold'] ? 'text-rose-600' : 'text-slate-500') }}">Profit</span>
+                                        <span class="font-mono font-bold">
+                                            @if($perf['is_sold'])
+                                                <span class="{{ $perf['profit'] >= 0 ? 'text-emerald-600' : 'text-rose-600' }}">
+                                                    {{ $perf['profit'] >= 0 ? '+' : '' }} Rp {{ number_format($perf['profit'], 0, ',', '.') }}
+                                                </span>
+                                            @else
+                                                <span class="text-slate-400 font-normal italic text-[11px]">Belum Terjual</span>
+                                            @endif
+                                        </span>
+                                    </div>
+                                </div>
+                            @else
+                                @php $uAssignment = $u->assignments->where('status', 'active')->first(); @endphp
+                                <div class="text-xs">
+                                    @if($uAssignment && $uAssignment->worker)
+                                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-blue-50 text-blue-800 border border-blue-200 font-semibold">
+                                            {{ $uAssignment->worker->name }} ({{ ucfirst($uAssignment->worker->type) }})
+                                        </span>
+                                    @else
+                                        <span class="text-slate-400 italic">Penugasan mengikuti proyek</span>
+                                    @endif
+                                </div>
+                            @endif
+                        </div>
+                    @empty
+                        <div class="px-6 py-12 text-center text-slate-400">
+                            <svg class="w-12 h-12 mx-auto text-slate-300 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6z"/></svg>
+                            <p class="font-semibold text-slate-600">Tidak ada unit kavling ditemukan</p>
+                            <p class="text-xs text-slate-400 mt-1">Coba ganti filter status atau tambahkan unit baru untuk proyek ini.</p>
+                        </div>
+                    @endforelse
+                </div>
+
+                <!-- Desktop Table Layout (hidden on small screens) -->
+                <div class="hidden md:block overflow-x-auto">
                     <table class="w-full text-left text-xs text-slate-600">
                         <thead class="bg-slate-100/90 text-slate-700 uppercase text-[10px] font-bold tracking-wider border-b border-slate-200">
                             <tr>
@@ -441,9 +584,18 @@
                                     @endif
 
                                     <td class="px-3 py-3.5 text-center whitespace-nowrap">
-                                        <a href="{{ route('units.show', $u->id) }}" class="btn-primary text-[11px] px-2.5 py-1">
-                                            Detail Unit
-                                        </a>
+                                        <div class="flex items-center justify-center gap-1.5">
+                                            <a href="{{ route('units.show', $u->id) }}" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-teal-50 text-teal-800 hover:bg-teal-100 border border-teal-200 text-[11px] font-bold transition">
+                                                <svg class="w-3.5 h-3.5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                                                <span>Detail</span>
+                                            </a>
+                                            @if(auth()->user()->isFounder())
+                                                <button wire:click="deleteUnit({{ $u->id }})" wire:confirm="Yakin ingin menghapus unit {{ $u->code }} dari proyek ini beserta seluruh histori terikatnya?" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200 text-[11px] font-bold transition" title="Hapus Unit">
+                                                    <svg class="w-3.5 h-3.5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                                    <span>Hapus</span>
+                                                </button>
+                                            @endif
+                                        </div>
                                     </td>
                                 </tr>
                             @empty
@@ -470,17 +622,96 @@
                     <h3 class="font-bold text-purple-950 text-sm">Riwayat Pembayaran Lahan Proyek ke Penjual</h3>
                     <p class="text-xs text-purple-700">Daftar setoran termin / pembayaran yang telah diserahkan ke pemilik/penjual tanah proyek {{ $project->name }}</p>
                 </div>
-                @if(auth()->user()->isFounder() || auth()->user()->isFinance() || auth()->user()->isSupervisor())
-                    <button wire:click="openPaymentModal" class="btn-primary text-xs px-4 py-2 flex items-center gap-1.5 shadow-sm">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                        <span>+ Catat Bayar Lahan ke Penjual</span>
-                    </button>
-                @endif
+                <div class="flex flex-wrap items-center gap-2">
+                    @if(count($projectPaymentsList) > 0)
+                        <a href="{{ route('projects.land-payments-pdf', $project->id) }}" target="_blank" class="px-3.5 py-2 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 rounded-xl text-xs font-bold inline-flex items-center gap-1.5 transition shadow-2xs">
+                            <svg class="w-4 h-4 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                            <span>Lihat PDF Rekap</span>
+                        </a>
+                    @else
+                        <button disabled class="px-3.5 py-2 bg-slate-100 text-slate-400 border border-slate-200 rounded-xl text-xs font-bold inline-flex items-center gap-1.5 cursor-not-allowed opacity-75" title="Belum ada data pembayaran lahan untuk digenerate PDF">
+                            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                            <span>PDF Rekap (Belum Ada Data)</span>
+                        </button>
+                    @endif
+
+                    @if(auth()->user()->isFounder())
+                        <button wire:click="openPaymentModal" class="btn-primary text-xs px-4 py-2 flex items-center gap-1.5 shadow-sm">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                            <span>+ Catat Bayar Lahan ke Penjual</span>
+                        </button>
+                    @endif
+                </div>
             </div>
 
             <!-- Table of Project Payments -->
             <div class="card-clean overflow-hidden">
-                <div class="overflow-x-auto">
+
+                <!-- Mobile Card Layout -->
+                <div class="md:hidden divide-y divide-slate-100">
+                    @forelse($projectPaymentsList as $index => $pay)
+                        <div class="p-4 space-y-3">
+                            <!-- Header: # + Date + Amount -->
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-6 h-6 rounded-full bg-purple-100 text-purple-800 text-[10px] font-bold flex items-center justify-center">{{ $index + 1 }}</span>
+                                    <span class="font-mono font-bold text-slate-800 text-xs">{{ $pay->payment_date ? $pay->payment_date->format('d M Y') : '-' }}</span>
+                                </div>
+                                <span class="font-mono font-extrabold text-rose-700 text-sm">- Rp {{ number_format($pay->amount_paid, 0, ',', '.') }}</span>
+                            </div>
+
+                            <!-- Payment details -->
+                            <div class="flex flex-wrap items-center gap-2 text-xs">
+                                <span class="px-2 py-0.5 rounded bg-slate-100 border border-slate-200 text-[10px] font-semibold text-slate-700">{{ $pay->payment_method }}</span>
+                                <span class="text-slate-400">•</span>
+                                <span class="text-slate-600 font-medium">{{ $pay->creator->name ?? 'System' }}</span>
+                            </div>
+
+                            @if($pay->notes)
+                                <p class="text-[11px] text-slate-500 italic">{{ $pay->notes }}</p>
+                            @endif
+
+                            <!-- Action buttons -->
+                            <div class="flex flex-wrap items-center gap-1.5">
+                                @if($pay->receipt_photo_url)
+                                    <a href="{{ $pay->receipt_photo_url }}" target="_blank" class="inline-flex items-center gap-1 text-[10px] font-bold text-purple-700 bg-purple-50 hover:bg-purple-100 px-2 py-1 rounded-lg border border-purple-200 transition">
+                                        <svg class="w-3.5 h-3.5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                        <span>Foto Resi</span>
+                                    </a>
+                                @endif
+                                @if($pay->uuid)
+                                    <a href="{{ route('land-payment.receipt', $pay->uuid) }}" target="_blank" class="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 px-2 py-1 rounded-lg border border-emerald-200 transition shadow-xs">
+                                        <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                                        <span>Kuitansi PDF</span>
+                                    </a>
+                                    <a href="{{ route('verify.land-payment', $pay->uuid) }}" target="_blank" class="inline-flex items-center gap-1 text-[10px] font-bold text-purple-700 bg-purple-50 hover:bg-purple-100 px-2 py-1 rounded-lg border border-purple-200 transition shadow-xs">
+                                        <svg class="w-3.5 h-3.5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/></svg>
+                                        <span>Scan QR</span>
+                                    </a>
+                                @endif
+                                @if(auth()->user()->isFounder())
+                                    <button wire:click="editProjectPayment({{ $pay->id }})" class="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-amber-50 text-amber-700 hover:bg-amber-100 border border-amber-200 text-[11px] font-bold transition" title="Edit">
+                                        <svg class="w-3.5 h-3.5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                                        Edit
+                                    </button>
+                                    <button onclick="confirm('Hapus pencatatan pembayaran lahan ini?') || event.stopImmediatePropagation()" wire:click="deleteProjectPayment({{ $pay->id }})" class="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200 text-[11px] font-bold transition" title="Hapus">
+                                        <svg class="w-3.5 h-3.5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                        Hapus
+                                    </button>
+                                @endif
+                            </div>
+                        </div>
+                    @empty
+                        <div class="px-6 py-12 text-center text-slate-400">
+                            <svg class="w-12 h-12 mx-auto text-slate-300 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                            <p class="font-semibold text-slate-600">Belum ada riwayat pembayaran lahan proyek ke penjual</p>
+                            <p class="text-xs text-slate-400 mt-1">Klik tombol "+ Catat Bayar Lahan ke Penjual" untuk memasukkan setoran pelunasan tanah.</p>
+                        </div>
+                    @endforelse
+                </div>
+
+                <!-- Desktop Table Layout -->
+                <div class="hidden md:block overflow-x-auto">
                     <table class="w-full text-left text-xs">
                         <thead class="bg-purple-50 text-purple-900 uppercase text-[10px] font-bold tracking-wider border-b border-purple-100">
                             <tr>
@@ -492,7 +723,7 @@
                                 <th class="px-4 py-3.5">Catatan / Keterangan</th>
                                 <th class="px-4 py-3.5">Dicatat Oleh</th>
                                 <th class="px-4 py-3.5 text-right">Jumlah Dibayar (Rp)</th>
-                                @if(auth()->user()->isFounder() || auth()->user()->isFinance())
+                                @if(auth()->user()->isFounder())
                                     <th class="px-4 py-3.5 text-center">Aksi</th>
                                 @endif
                             </tr>
@@ -545,7 +776,7 @@
                                     <td class="px-4 py-3.5 text-right font-mono font-extrabold text-rose-700 text-sm">
                                         - Rp {{ number_format($pay->amount_paid, 0, ',', '.') }}
                                     </td>
-                                    @if(auth()->user()->isFounder() || auth()->user()->isFinance())
+                                    @if(auth()->user()->isFounder())
                                         <td class="px-4 py-3.5 text-center whitespace-nowrap">
                                             <div class="flex items-center justify-center gap-1.5">
                                                 <button wire:click="editProjectPayment({{ $pay->id }})" class="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-amber-50 text-amber-700 hover:bg-amber-100 border border-amber-200 text-[11px] font-bold transition" title="Edit Pembayaran Lahan">
@@ -603,12 +834,64 @@
 
             <!-- Transaction Logs Table -->
             <div class="card-clean overflow-hidden">
-                <div class="p-4 border-b border-slate-100 flex items-center justify-between">
-                    <h3 class="font-bold text-slate-900 text-sm">Rincian Transaksi Mutasi Kas Proyek</h3>
-                    <span class="text-xs font-mono font-semibold text-slate-500">{{ count($cashflowTransactions) }} Transaksi Recorded</span>
+                <div class="p-4 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <div>
+                        <h3 class="font-bold text-slate-900 text-sm">Rincian Transaksi Mutasi Kas Proyek</h3>
+                        <span class="text-xs font-mono font-semibold text-slate-500">{{ count($cashflowTransactions) }} Transaksi Recorded</span>
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                        @if(count($cashflowTransactions) > 0)
+                            <a href="{{ route('cashflow.export-pdf', ['view_mode' => 'project', 'project_id' => $project->id]) }}" target="_blank" class="px-3.5 py-2 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 rounded-xl text-xs font-bold inline-flex items-center gap-1.5 transition shadow-2xs">
+                                <svg class="w-4 h-4 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                                <span>Lihat PDF Rekap</span>
+                            </a>
+                        @else
+                            <button disabled class="px-3.5 py-2 bg-slate-100 text-slate-400 border border-slate-200 rounded-xl text-xs font-bold inline-flex items-center gap-1.5 cursor-not-allowed opacity-75" title="Belum ada data arus kas untuk digenerate PDF">
+                                <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                                <span>PDF Rekap (Belum Ada Data)</span>
+                            </button>
+                        @endif
+                    </div>
                 </div>
 
-                <div class="overflow-x-auto">
+                <!-- Mobile Card Layout -->
+                <div class="md:hidden divide-y divide-slate-100">
+                    @forelse($cashflowTransactions as $tx)
+                        <div class="p-4 space-y-2">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <span class="font-mono text-slate-600 text-xs">{{ $tx->transaction_date ? $tx->transaction_date->format('d/m/Y') : '-' }}</span>
+                                    @if($tx->type === 'masuk')
+                                        <span class="px-2 py-0.5 text-[10px] font-bold bg-emerald-100 text-emerald-800 rounded-full border border-emerald-200">MASUK</span>
+                                    @else
+                                        <span class="px-2 py-0.5 text-[10px] font-bold bg-rose-100 text-rose-800 rounded-full border border-rose-200">KELUAR</span>
+                                    @endif
+                                </div>
+                                <span class="font-mono font-extrabold text-sm {{ $tx->type === 'masuk' ? 'text-emerald-700' : 'text-rose-700' }}">
+                                    {{ $tx->type === 'masuk' ? '+' : '-' }} Rp {{ number_format($tx->amount, 0, ',', '.') }}
+                                </span>
+                            </div>
+                            <div class="flex items-center gap-2 text-xs">
+                                <span class="font-semibold text-slate-800 capitalize">{{ str_replace('_', ' ', $tx->category) }}</span>
+                            </div>
+                            <p class="text-[11px] text-slate-600 leading-relaxed">{{ $tx->description }}</p>
+                            <button wire:click="openDetailModal({{ $tx->id }})" class="px-2.5 py-1 bg-teal-50 text-teal-800 hover:bg-teal-100 border border-teal-200 text-[11px] font-bold rounded-lg transition inline-flex items-center gap-1">
+                                <svg class="w-3.5 h-3.5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                                <span>Detail</span>
+                            </button>
+                        </div>
+                    @empty
+                        <div class="px-6 py-12 text-center text-slate-400">
+                            <svg class="w-12 h-12 mx-auto text-slate-300 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                            <p class="font-semibold text-slate-600">Belum Ada Mutasi Kas Terdeteksi</p>
+                            <p class="text-xs text-slate-400 mt-1">Transaksi kas masuk dari booking & kas keluar biaya akan tampil di sini secara otomatis.</p>
+                        </div>
+                    @endforelse
+                </div>
+
+                <!-- Desktop Table Layout -->
+                <div class="hidden md:block overflow-x-auto">
                     <table class="w-full text-left text-xs">
                         <thead class="bg-slate-100/90 text-slate-700 uppercase text-[10px] font-bold tracking-wider border-b border-slate-200">
                             <tr>
@@ -617,6 +900,7 @@
                                 <th class="px-4 py-3">Deskripsi / Keterangan Transaksi</th>
                                 <th class="px-4 py-3 text-center">Jenis Mutasi</th>
                                 <th class="px-4 py-3 text-right">Nominal (Rp)</th>
+                                <th class="px-4 py-3 text-center">Aksi</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100">
@@ -635,10 +919,16 @@
                                     <td class="px-4 py-3 text-right font-mono font-extrabold whitespace-nowrap {{ $tx->type === 'masuk' ? 'text-emerald-700' : 'text-rose-700' }}">
                                         {{ $tx->type === 'masuk' ? '+' : '-' }} Rp {{ number_format($tx->amount, 0, ',', '.') }}
                                     </td>
+                                    <td class="px-4 py-3 text-center whitespace-nowrap">
+                                        <button wire:click="openDetailModal({{ $tx->id }})" class="px-2 py-0.5 bg-teal-50 text-teal-800 hover:bg-teal-100 border border-teal-200 text-[11px] font-bold rounded-lg transition inline-flex items-center gap-1">
+                                            <svg class="w-3.5 h-3.5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                                            <span>Detail</span>
+                                        </button>
+                                    </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="5" class="px-6 py-12 text-center text-slate-400">
+                                    <td colspan="6" class="px-6 py-12 text-center text-slate-400">
                                         <svg class="w-12 h-12 mx-auto text-slate-300 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
                                         <p class="font-semibold text-slate-600">Belum Ada Mutasi Kas Terdeteksi</p>
                                         <p class="text-xs text-slate-400 mt-1">Transaksi kas masuk dari booking & kas keluar biaya akan tampil di sini secara otomatis.</p>
@@ -880,6 +1170,118 @@
                         <button type="submit" class="btn-primary bg-purple-700 hover:bg-purple-800 py-2.5 px-5 rounded-xl shadow-md text-xs text-center">Simpan Penjualan Masa Lalu</button>
                     </div>
                 </form>
+            </div>
+        </div>
+    @endif
+
+    <!-- Modal Detail Alur Keuangan & Audit Trail -->
+    @if(!empty($showDetailModal) && !empty($selectedTransaction))
+        <div class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs p-3 sm:p-6 md:p-10 flex items-center justify-center min-h-screen">
+            <div class="bg-white border border-slate-200 rounded-2xl sm:rounded-3xl max-w-lg sm:max-w-xl w-full p-5 sm:p-6 shadow-2xl space-y-4 my-auto">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                    <div class="flex items-center gap-2.5">
+                        <div class="p-2 rounded-xl bg-teal-50 text-teal-700">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                        </div>
+                        <div>
+                            <h3 class="font-extrabold text-slate-900 text-base">Detail Alur Keuangan & Audit Trail</h3>
+                            <p class="text-[11px] text-slate-500">Nomor Mutasi: <strong class="font-mono text-slate-800">#TRX-{{ $selectedTransaction->id }}</strong></p>
+                        </div>
+                    </div>
+                    <button wire:click="closeDetailModal" class="text-slate-400 hover:text-slate-600 text-sm font-bold">✕</button>
+                </div>
+
+                <!-- Financial Highlight Box -->
+                <div class="p-4 rounded-xl {{ $selectedTransaction->type === 'masuk' ? 'bg-emerald-50 border border-emerald-200/80 text-emerald-900' : 'bg-rose-50 border border-rose-200/80 text-rose-900' }} flex items-center justify-between">
+                    <div>
+                        <span class="text-[10px] font-bold uppercase tracking-wider block opacity-75">Nominal Mutasi Kas</span>
+                        <strong class="text-xl font-mono font-extrabold">
+                            {{ $selectedTransaction->type === 'masuk' ? '+' : '-' }} Rp {{ number_format($selectedTransaction->amount, 0, ',', '.') }}
+                        </strong>
+                    </div>
+                    <div class="text-right">
+                        <span class="px-2.5 py-1 rounded-md text-xs font-extrabold uppercase {{ $selectedTransaction->type === 'masuk' ? 'bg-emerald-600 text-white' : 'bg-rose-600 text-white' }}">
+                            {{ $selectedTransaction->type === 'masuk' ? 'Kas Masuk' : 'Kas Keluar' }}
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Audit Timeline Steps -->
+                <div class="space-y-4 pt-1 text-xs">
+                    <h4 class="font-bold text-slate-800 uppercase tracking-wider text-[11px] border-b border-slate-100 pb-1.5">Alur Pencatatan & Otorisasi</h4>
+
+                    <!-- Step 1: Inputter -->
+                    <div class="flex items-start gap-3 relative pl-2">
+                        <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">
+                            1
+                        </div>
+                        <div class="space-y-0.5 flex-1">
+                            <div class="flex justify-between items-center">
+                                <span class="font-bold text-slate-900">Diinput Oleh (Pembuat Data)</span>
+                                <span class="text-[10px] text-slate-400 font-mono">{{ $auditTrailInfo['inputted_by']['created_at'] }}</span>
+                            </div>
+                            <p class="font-semibold text-blue-800">{{ $auditTrailInfo['inputted_by']['name'] }} <span class="text-slate-500 font-normal">({{ ucfirst($auditTrailInfo['inputted_by']['role']) }})</span></p>
+                            <p class="text-[11px] text-slate-500">Email: {{ $auditTrailInfo['inputted_by']['email'] }}</p>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Approver -->
+                    <div class="flex items-start gap-3 relative pl-2">
+                        <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">
+                            2
+                        </div>
+                        <div class="space-y-0.5 flex-1">
+                            <div class="flex justify-between items-center">
+                                <span class="font-bold text-slate-900">Di-ACC / Diverifikasi Oleh</span>
+                                <span class="text-[10px] text-emerald-700 font-bold bg-emerald-100 px-2 py-0.5 rounded border border-emerald-200">{{ $auditTrailInfo['approved_by']['status'] }}</span>
+                            </div>
+                            <p class="font-semibold text-emerald-800">{{ $auditTrailInfo['approved_by']['name'] }} <span class="text-slate-500 font-normal">({{ $auditTrailInfo['approved_by']['role'] }})</span></p>
+                            <p class="text-[11px] text-slate-600 italic mt-0.5">"{{ $auditTrailInfo['approved_by']['notes'] }}"</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Scope & Object Detail -->
+                <div class="bg-slate-50 border border-slate-200/80 rounded-xl p-3.5 text-xs space-y-2">
+                    <h4 class="font-bold text-slate-800 uppercase tracking-wider text-[10px]">Cakupan Objek Transaksi</h4>
+                    
+                    <div class="grid grid-cols-2 gap-2 text-[11px]">
+                        <div>
+                            <span class="text-slate-400 block text-[10px]">Proyek Properti:</span>
+                            <strong class="text-slate-800 font-semibold">{{ $selectedTransaction->project->name ?? 'Global' }}</strong>
+                        </div>
+                        <div>
+                            <span class="text-slate-400 block text-[10px]">Kategori Mutasi:</span>
+                            <strong class="text-slate-800 font-semibold capitalize">{{ str_replace('_', ' ', $selectedTransaction->category) }}</strong>
+                        </div>
+                    </div>
+
+                    @if($auditTrailInfo['reference_detail'])
+                        <div class="pt-2 border-t border-slate-200/80 text-[11px] space-y-1">
+                            <div class="flex justify-between">
+                                <span class="text-slate-500">Tipe Referensi:</span>
+                                <span class="font-bold text-teal-700">{{ $auditTrailInfo['reference_detail']['type'] }}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-slate-500">Nomor Referensi:</span>
+                                <span class="font-mono font-bold text-slate-800">{{ $auditTrailInfo['reference_detail']['number'] }}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-slate-500">Penerima / Klien:</span>
+                                <span class="font-bold text-slate-800">{{ $auditTrailInfo['reference_detail']['recipient'] }}</span>
+                            </div>
+                        </div>
+                    @endif
+
+                    <div class="pt-2 border-t border-slate-200/80 text-[11px]">
+                        <span class="text-slate-400 block text-[10px]">Keterangan Transaksi:</span>
+                        <p class="text-slate-700 italic font-medium">{{ $selectedTransaction->description }}</p>
+                    </div>
+                </div>
+
+                <div class="flex justify-end pt-2 border-t border-slate-100">
+                    <button type="button" wire:click="closeDetailModal" class="btn-secondary text-xs px-4 py-2">Tutup Detail</button>
+                </div>
             </div>
         </div>
     @endif

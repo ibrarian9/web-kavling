@@ -1188,13 +1188,13 @@ class Show extends Component
                 'date' => $mp->purchase_date,
                 'category_badge' => 'Barang / Material',
                 'badge_class' => 'bg-amber-100 text-amber-800 border-amber-200',
-                'description' => $mp->item_name . ' (' . number_format($mp->quantity, 0, ',', '.') . ' ' . $mp->unit_measure . ' @ Rp ' . number_format($mp->unit_price, 0, ',', '.') . ')' . ($mp->worker ? ' oleh ' . $mp->worker->name : ''),
+                'description' => $mp->item_name . ' (' . number_format($mp->quantity, 0, ',', '.') . ' ' . $mp->unit_measure . ' @ Rp ' . number_format($mp->unit_price, 0, ',', '.') . ')',
                 'amount' => $mp->total_price,
                 'gross_amount' => $mp->total_price,
                 'loan_deduction' => 0,
                 'receipt_photo_path' => $mp->receipt_photo_path,
-                'pdf_url' => null,
-                'qr_url' => null,
+                'pdf_url' => route('material-purchases.receipt', $mp->id),
+                'qr_url' => route('verify.material-purchase', $mp->id),
                 'created_at' => $mp->created_at,
             ]);
         }
@@ -1224,5 +1224,38 @@ class Show extends Component
             'showViewerModal' => $this->showViewerModal,
             'editingSalaryPaymentId' => $this->editingSalaryPaymentId,
         ])->layout('components.layouts.app', ['title' => 'Detail Unit ' . $unit->code . ' - ' . $unit->project->name]);
+    }
+
+    public function deleteUnit()
+    {
+        $user = auth()->user();
+        if (!$user || !$user->isFounder()) {
+            session()->flash('error', 'Hanya Founder yang berhak menghapus unit dari sistem.');
+            return;
+        }
+
+        $unit = Unit::findOrFail($this->unitId);
+        $code = $unit->code;
+
+        DB::transaction(function () use ($unit) {
+            WorkerAssignment::where('unit_id', $unit->id)->delete();
+            WorkerUnitPayroll::where('unit_id', $unit->id)->delete();
+            WeeklyMaterialPurchase::where('unit_id', $unit->id)->delete();
+
+            if ($unit->installment) {
+                InstallmentPayment::where('unit_installment_id', $unit->installment->id)->delete();
+                $unit->installment->delete();
+            }
+
+            Booking::where('unit_id', $unit->id)->delete();
+            \App\Models\PriceProposal::where('unit_id', $unit->id)->delete();
+            \App\Models\OfficialDocument::where('unit_id', $unit->id)->delete();
+            \App\Models\ManualInvoice::where('unit_id', $unit->id)->update(['unit_id' => null]);
+
+            $unit->delete();
+        });
+
+        session()->flash('success', 'Unit ' . $code . ' berhasil dihapus dari sistem!');
+        return redirect()->route('units.index');
     }
 }
