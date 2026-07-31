@@ -49,4 +49,9 @@ class ProjectPayment extends Model
     {
         return $this->belongsTo(User::class, 'created_by');
     }
+
+    public function cashflowTransaction()
+    {
+        return $this->morphOne(CashflowTransaction::class, 'reference');
+    }
 }

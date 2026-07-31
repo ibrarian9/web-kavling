@@ -15,6 +15,46 @@
         @endif
     </div>
 
+    <!-- Summary KPI Cards Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
+        <div class="kpi-card-blue">
+            <div class="flex items-center justify-between">
+                <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Total Proposal Usulan</span>
+                <div class="p-2.5 rounded-xl bg-purple-50 text-purple-600 border border-purple-100">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                </div>
+            </div>
+            <p class="text-2xl font-extrabold text-slate-900 font-mono mt-2">{{ $proposals->total() }} Proposal</p>
+            <p class="text-[11px] text-slate-400 mt-1">Usulan penawaran harga dari marketing</p>
+        </div>
+
+        <div class="kpi-card-amber">
+            <div class="flex items-center justify-between">
+                <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Menunggu Approval</span>
+                <div class="p-2.5 rounded-xl bg-amber-50 text-amber-600 border border-amber-100">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </div>
+            </div>
+            <p class="text-2xl font-extrabold text-amber-600 font-mono mt-2">
+                {{ \App\Models\PriceProposal::where('status', 'menunggu')->count() }} Menunggu
+            </p>
+            <p class="text-[11px] text-slate-400 mt-1">Memerlukan keputusannya Founder & Supervisor</p>
+        </div>
+
+        <div class="kpi-card-emerald">
+            <div class="flex items-center justify-between">
+                <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Proposal Disetujui (ACC)</span>
+                <div class="p-2.5 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </div>
+            </div>
+            <p class="text-2xl font-extrabold text-emerald-700 font-mono mt-2">
+                {{ \App\Models\PriceProposal::where('status', 'disetujui')->count() }} Disetujui
+            </p>
+            <p class="text-[11px] text-slate-400 mt-1">Harga disetujui & siap cetak SPP</p>
+        </div>
+    </div>
+
     <!-- Table Card -->
     <div class="card-clean overflow-hidden">
         <div class="overflow-x-auto">
@@ -27,9 +67,10 @@
                             <th class="px-5 py-3.5">Harga HPP</th>
                         @endif
                         <th class="px-5 py-3.5">Harga Usulan Jual</th>
-                        <th class="px-5 py-3.5">Approval Founder</th>
-                        <th class="px-5 py-3.5">Approval Supervisor</th>
-                        <th class="px-5 py-3.5">Status Final</th>
+                        <th class="px-5 py-3.5 text-center">Approval Founder</th>
+                        <th class="px-5 py-3.5 text-center">Approval Supervisor</th>
+                        <th class="px-5 py-3.5 text-center">Status Final</th>
+                        <th class="px-5 py-3.5 text-center">Dokumen SPP</th>
                         <th class="px-5 py-3.5 text-right">Aksi</th>
                     </tr>
                 </thead>
@@ -62,7 +103,7 @@
                             </td>
 
                             <!-- Founder Approval Status Pill -->
-                            <td class="px-5 py-4">
+                            <td class="px-5 py-4 text-center whitespace-nowrap">
                                 @if($founderApp)
                                     @if($founderApp->decision === 'disetujui')
                                         <span class="status-disetujui">Founder: ACC</span>
@@ -75,7 +116,7 @@
                             </td>
 
                             <!-- Supervisor Approval Status Pill -->
-                            <td class="px-5 py-4">
+                            <td class="px-5 py-4 text-center whitespace-nowrap">
                                 @if($superApp)
                                     @if($superApp->decision === 'disetujui')
                                         <span class="status-disetujui">Supervisor: ACC</span>
@@ -88,7 +129,7 @@
                             </td>
 
                             <!-- Final Status -->
-                            <td class="px-5 py-4">
+                            <td class="px-5 py-4 text-center whitespace-nowrap">
                                 @if($prop->status === 'menunggu')
                                     <span class="status-menunggu">Menunggu ACC</span>
                                 @elseif($prop->status === 'disetujui')
@@ -98,31 +139,45 @@
                                 @endif
                             </td>
 
-                            <td class="px-5 py-4 text-right space-x-1">
-                                @if((auth()->user()->isFounder() || auth()->user()->isSupervisor()) && $prop->status === 'menunggu')
-                                    <button wire:click="openApprovalModal({{ $prop->id }})" class="btn-primary text-[11px] px-2.5 py-1">
-                                        Review
-                                    </button>
-                                @endif
+                            <!-- Dokumen SPP PDF -->
+                            <td class="px-5 py-4 text-center whitespace-nowrap">
+                                <div class="flex items-center justify-center gap-1.5 flex-wrap">
+                                    @if($prop->status === 'disetujui' || $prop->unit->officialDocument)
+                                        @php $officialDoc = $prop->unit->officialDocument ?? \App\Models\OfficialDocument::where('price_proposal_id', $prop->id)->first(); @endphp
+                                        @if($officialDoc)
+                                            <button wire:click="openViewerModal('pdf', '{{ route('documents.stream', $officialDoc->id) }}', 'Pratinjau Surat Pemesanan Properti (SPP) PDF')" class="btn-action-pdf" title="Lihat SPP PDF">
+                                                <svg class="w-3.5 h-3.5 text-sky-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                                                <span>SPP PDF</span>
+                                            </button>
+                                        @else
+                                            <button wire:click="openDocModal({{ $prop->id }})" class="btn-action-detail" title="Terbitkan Surat Pemesanan Properti">
+                                                <svg class="w-3.5 h-3.5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                                                <span>Terbitkan SPP</span>
+                                            </button>
+                                        @endif
+                                    @else
+                                        <span class="text-slate-400 italic text-[11px]">-</span>
+                                    @endif
+                                </div>
+                            </td>
 
-                                @if($prop->status === 'disetujui' || $prop->unit->officialDocument)
-                                    @php $officialDoc = $prop->unit->officialDocument ?? \App\Models\OfficialDocument::where('price_proposal_id', $prop->id)->first(); @endphp
-                                    @if($officialDoc)
-                                        <button wire:click="openViewerModal('pdf', '{{ route('documents.stream', $officialDoc->id) }}', 'Pratinjau Surat Pemesanan Properti (SPP) PDF')" class="px-2.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-bold shadow inline-flex items-center gap-1 transition">
-                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-                                            <span>SPP PDF</span>
+                            <!-- Aksi Review -->
+                            <td class="px-5 py-4 text-right whitespace-nowrap">
+                                <div class="flex items-center justify-end gap-1.5 flex-wrap">
+                                    @if((auth()->user()->isFounder() || auth()->user()->isSupervisor()) && $prop->status === 'menunggu')
+                                        <button wire:click="openApprovalModal({{ $prop->id }})" class="btn-action-edit" title="Review Keputusan Approval">
+                                            <svg class="w-3.5 h-3.5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                                            <span>Review</span>
                                         </button>
                                     @else
-                                        <button wire:click="openDocModal({{ $prop->id }})" class="btn-secondary text-[11px] px-2.5 py-1">
-                                            PDF
-                                        </button>
+                                        <span class="text-slate-400 italic text-[11px]">-</span>
                                     @endif
-                                @endif
+                                </div>
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="8" class="px-6 py-12 text-center text-slate-400">
+                            <td colspan="{{ auth()->user()->canViewHpp() ? 9 : 8 }}" class="px-6 py-12 text-center text-slate-400">
                                 <svg class="w-12 h-12 mx-auto text-slate-300 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                                 <p class="font-semibold text-slate-600">Belum Ada Pengajuan Harga Jual</p>
                                 <p class="text-xs text-slate-400 mt-1">Gunakan tombol "Buat Pengajuan Harga" untuk membuat usulan penawaran baru.</p>

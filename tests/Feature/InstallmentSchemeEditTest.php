@@ -8,6 +8,8 @@ use Spatie\Permission\Models\Role;
 use App\Livewire\Units\Show as UnitShow;
 use Livewire\Livewire;
 
+uses(Illuminate\Foundation\Testing\RefreshDatabase::class);
+
 test('founder and finance can edit installment scheme and update remaining unpaid balance', function () {
     Role::findOrCreate('founder', 'web');
 

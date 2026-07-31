@@ -7,6 +7,8 @@ use App\Models\UnitInstallment;
 use App\Models\User;
 use Spatie\Permission\Models\Role;
 
+uses(Illuminate\Foundation\Testing\RefreshDatabase::class);
+
 test('founder and finance can export buyer installment invoice pdf, while guest can verify publicly via qr link', function () {
     Role::findOrCreate('founder', 'web');
     Role::findOrCreate('finance', 'web');

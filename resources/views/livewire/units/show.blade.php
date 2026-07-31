@@ -54,86 +54,103 @@
         </div>
 
         <div class="flex flex-wrap items-center gap-2">
-            <button onclick="history.back()" class="btn-secondary text-xs px-3.5 py-2 flex items-center gap-1.5 hover:bg-slate-200 transition shadow-xs" title="Kembali ke Halaman Sebelumnya">
+            <button onclick="history.back()" class="btn-secondary text-xs flex items-center gap-1.5 shadow-xs" title="Kembali ke Halaman Sebelumnya">
                 <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
                 <span>Kembali</span>
             </button>
 
             @if(auth()->user()->isFounder())
-                <button wire:click="openEditUnitModal" class="btn-secondary text-xs px-3 py-2 flex items-center gap-1.5 hover:bg-slate-200 transition shadow-xs text-slate-800 font-bold" title="Edit Spesifikasi & Data Unit">
-                    <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                <button wire:click="openEditUnitModal" class="btn-action-edit px-3.5 py-2 text-xs rounded-xl shadow-2xs" title="Edit Spesifikasi & Data Unit">
+                    <svg class="w-4 h-4 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                     <span>Edit Spesifikasi</span>
                 </button>
             @endif
 
             @if(auth()->user()->isFounder())
-                <button wire:click="deleteUnit" wire:confirm="Yakin ingin menghapus unit {{ $unit->code }} dari sistem beserta seluruh histori terikatnya?" class="bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 font-bold text-xs px-3 py-2 rounded-lg transition shadow-xs flex items-center gap-1.5" title="Hapus Unit dari Sistem">
+                <button wire:click="deleteUnit" wire:confirm="Yakin ingin menghapus unit {{ $unit->code }} dari sistem beserta seluruh histori terikatnya?" class="btn-action-delete px-3.5 py-2 text-xs rounded-xl shadow-2xs" title="Hapus Unit dari Sistem">
                     <svg class="w-4 h-4 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                     <span>Hapus Unit</span>
                 </button>
             @endif
 
             @if(!auth()->user()->isPengawasProject() && $unit->category !== 'infrastruktur' && in_array($unit->status, ['tersedia', 'disetujui']))
-                <button wire:click="openBookingModal" class="bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-3 py-2 rounded-lg transition shadow-sm flex items-center gap-1.5">
+                <button wire:click="openBookingModal" class="btn-primary text-xs flex items-center gap-1.5 shadow-sm">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                    <span>Booking Unit Ini</span>
+                    <span>+ Booking Unit Ini</span>
                 </button>
             @endif
 
             @if(auth()->user()->isMarketing() && $unit->category !== 'infrastruktur' && $unit->status === 'tersedia')
-                <a href="{{ route('proposals.index', ['create_unit_id' => $unit->id]) }}" class="btn-primary text-xs px-3 py-2">
-                    <span>Ajukan Penawaran Harga</span> &rarr;
+                <a href="{{ route('proposals.index', ['create_unit_id' => $unit->id]) }}" class="btn-primary text-xs px-3.5 py-2 shadow-sm">
+                    <span>+ Ajukan Penawaran Harga</span> &rarr;
                 </a>
             @endif
         </div>
     </div>
 
-    <!-- Key Metrics Highlight Cards (Req #1: dot currency formatting) -->
+    <!-- Key Metrics Highlight Cards -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <!-- HPP Pokok (Founder & Finance Only) -->
         @if(auth()->user()->canViewHpp())
-            <div class="card-clean p-4">
-                <p class="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">HPP Pokok Unit</p>
-                <p class="text-xl font-black text-slate-900 font-mono mt-1">
+            <div class="kpi-card-blue">
+                <div class="flex items-center justify-between">
+                    <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">HPP Pokok Unit</span>
+                    <div class="p-2.5 rounded-xl bg-blue-50 text-blue-600 border border-blue-100">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                    </div>
+                </div>
+                <p class="text-2xl font-extrabold text-slate-900 font-mono mt-2">
                     Rp {{ number_format($unit->hpp, 0, ',', '.') }}
                 </p>
-                <p class="text-[10px] text-slate-400 mt-1">Dasar: Rp {{ number_format($unit->project->base_price, 0, ',', '.') }} + Kelebihan</p>
+                <p class="text-[11px] text-slate-400 mt-1">Dasar: Rp {{ number_format($unit->project->base_price, 0, ',', '.') }} + Kelebihan</p>
             </div>
         @endif
 
         <!-- Harga Jual Final -->
-        <div class="card-clean p-4">
-            <p class="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Harga Jual Disetujui</p>
-            <p class="text-xl font-black text-emerald-700 font-mono mt-1">
+        <div class="kpi-card-emerald">
+            <div class="flex items-center justify-between">
+                <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Harga Jual Disetujui</span>
+                <div class="p-2.5 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </div>
+            </div>
+            <p class="text-2xl font-extrabold text-emerald-700 font-mono mt-2">
                 {{ $unit->final_selling_price ? 'Rp ' . number_format($unit->final_selling_price, 0, ',', '.') : 'Belum Disetujui' }}
             </p>
-            <p class="text-[10px] text-emerald-600 mt-1">Status: {{ ucfirst($unit->status) }}</p>
+            <p class="text-[11px] text-slate-400 mt-1">Status: {{ ucfirst($unit->status) }}</p>
         </div>
 
         <!-- Total Cash In (Financial Metric - Hidden from Pengawas) -->
         @if(!auth()->user()->isPengawasProject())
-            <div class="card-clean p-4">
-                <p class="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Total Kas Masuk (DP + Cicilan)</p>
-                <p class="text-xl font-black text-blue-700 font-mono mt-1">
+            <div class="kpi-card-emerald">
+                <div class="flex items-center justify-between">
+                    <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Total Kas Masuk Terbayar</span>
+                    <div class="p-2.5 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    </div>
+                </div>
+                <p class="text-2xl font-extrabold text-emerald-700 font-mono mt-2">
                     Rp {{ number_format($totalCashIn, 0, ',', '.') }}
                 </p>
-                <p class="text-[10px] text-slate-400 mt-1">
-                    {{ $unit->installment ? 'Skema: ' . $unit->installment->installment_count . 'x Cicilan' : 'Belum Ada Cicilan' }}
+                <p class="text-[11px] text-slate-400 mt-1">
+                    {{ $unit->installment ? 'Skema: ' . $unit->installment->installment_count . 'x Cicilan' : 'Setoran DP / Booking / Cicilan' }}
                 </p>
             </div>
-        @endif
 
-        <!-- Total Biaya Unit -->
-        @php
-            $unitTotalExpenses = $combinedExpenses->sum('amount');
-        @endphp
-        <div class="card-clean p-4">
-            <p class="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Total Pengeluaran / Belanja</p>
-            <p class="text-xl font-black text-rose-700 font-mono mt-1">
-                Rp {{ number_format($unitTotalExpenses, 0, ',', '.') }}
-            </p>
-            <p class="text-[10px] text-slate-400 mt-1">Akumulasi Gaji Worker & Belanja Material</p>
-        </div>
+            <!-- Total Pengeluaran Unit -->
+            <div class="kpi-card-rose">
+                <div class="flex items-center justify-between">
+                    <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Total Pengeluaran Unit</span>
+                    <div class="p-2.5 rounded-xl bg-rose-50 text-rose-600 border border-rose-100">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    </div>
+                </div>
+                <p class="text-2xl font-extrabold text-rose-700 font-mono mt-2">
+                    Rp {{ number_format($totalUnitExpenses ?? 0, 0, ',', '.') }}
+                </p>
+                <p class="text-[11px] text-slate-400 mt-1">Material + Upah Gaji Worker</p>
+            </div>
+        @endif
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -219,14 +236,16 @@
                                 </div>
                                 <div class="flex items-center gap-1.5">
                                     @if(auth()->user()->isFounder())
-                                        <button wire:click="editWorkerAssignment({{ $assign->id }})" class="p-1 text-slate-400 hover:text-amber-600 rounded transition" title="Edit Penugasan">
-                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                                        <button wire:click="editWorkerAssignment({{ $assign->id }})" class="btn-action-edit" title="Edit Penugasan">
+                                            <svg class="w-3.5 h-3.5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                                            <span>Edit</span>
                                         </button>
-                                        <button wire:click="deleteWorkerAssignment({{ $assign->id }})" wire:confirm="Yakin ingin menghapus penugasan pekerja ini?" class="p-1 text-slate-400 hover:text-rose-600 rounded transition" title="Hapus Penugasan">
-                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                        <button wire:click="deleteWorkerAssignment({{ $assign->id }})" wire:confirm="Yakin ingin menghapus penugasan pekerja ini?" class="btn-action-delete" title="Hapus Penugasan">
+                                            <svg class="w-3.5 h-3.5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                            <span>Hapus</span>
                                         </button>
                                     @endif
-                                    <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800">
+                                    <span class="status-tersedia text-[10px]">
                                         Active
                                     </span>
                                 </div>
@@ -239,14 +258,16 @@
                                 </div>
                                 <div class="flex items-center gap-1.5">
                                     @if(auth()->user()->isFounder())
-                                        <button wire:click="editWorkerAssignment({{ $assign->id }})" class="p-1 text-slate-400 hover:text-amber-600 rounded transition" title="Edit Penugasan">
-                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                                        <button wire:click="editWorkerAssignment({{ $assign->id }})" class="btn-action-edit" title="Edit Penugasan">
+                                            <svg class="w-3.5 h-3.5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                                            <span>Edit</span>
                                         </button>
-                                        <button wire:click="deleteWorkerAssignment({{ $assign->id }})" wire:confirm="Yakin ingin menghapus penugasan pekerja ini?" class="p-1 text-slate-400 hover:text-rose-600 rounded transition" title="Hapus Penugasan">
-                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                        <button wire:click="deleteWorkerAssignment({{ $assign->id }})" wire:confirm="Yakin ingin menghapus penugasan pekerja ini?" class="btn-action-delete" title="Hapus Penugasan">
+                                            <svg class="w-3.5 h-3.5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                            <span>Hapus</span>
                                         </button>
                                     @endif
-                                    <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-purple-100 text-purple-800">
+                                    <span class="badge-role-pengawas text-[10px]">
                                         Pengawas
                                     </span>
                                 </div>
@@ -285,14 +306,16 @@
                                 </div>
                                 <div class="flex items-center gap-1.5">
                                     @if(auth()->user()->isFounder())
-                                        <button wire:click="editPayrollSetup({{ $up->id }})" class="p-1 text-slate-400 hover:text-amber-600 rounded transition" title="Edit Penetapan Gaji">
-                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                                        <button wire:click="editPayrollSetup({{ $up->id }})" class="btn-action-edit" title="Edit Penetapan Gaji">
+                                            <svg class="w-3.5 h-3.5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                                            <span>Edit</span>
                                         </button>
-                                        <button wire:click="deletePayrollSetup({{ $up->id }})" wire:confirm="Yakin ingin menghapus penetapan gaji unit ini beserta riwayat pembayarannya?" class="p-1 text-slate-400 hover:text-rose-600 rounded transition" title="Hapus Penetapan Gaji">
-                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                        <button wire:click="deletePayrollSetup({{ $up->id }})" wire:confirm="Yakin ingin menghapus penetapan gaji unit ini beserta riwayat pembayarannya?" class="btn-action-delete" title="Hapus Penetapan Gaji">
+                                            <svg class="w-3.5 h-3.5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                            <span>Hapus</span>
                                         </button>
                                     @endif
-                                    <span class="px-2 py-0.5 rounded text-[10px] font-bold {{ $up->status === 'lunas' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800' }}">
+                                    <span class="{{ $up->status === 'lunas' ? 'status-lunas' : 'status-booked' }} text-[10px]">
                                         {{ strtoupper($up->status) }}
                                     </span>
                                 </div>
@@ -492,16 +515,18 @@
                                     <span class="font-mono text-slate-500 text-[11px]">{{ $pay->payment_date ? (is_string($pay->payment_date) ? $pay->payment_date : $pay->payment_date->format('d/m/Y')) : '-' }}</span>
                                     @if(auth()->user()->isFounder())
                                         @if($pay->uuid)
-                                            <button wire:click="openViewerModal('pdf', '{{ route('installment.invoice', $pay->uuid) }}', 'Pratinjau Invoice Setoran Unit {{ $unit->code }}')" class="inline-flex items-center gap-1 text-[10px] font-bold text-blue-700 hover:text-blue-900 bg-blue-50 hover:bg-blue-100 px-2 py-0.5 rounded-lg border border-blue-200 transition shadow-xs" title="Pratinjau Invoice / Kuitansi PDF (QR Verification)">
-                                                <svg class="w-3.5 h-3.5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                                            <button wire:click="openViewerModal('pdf', '{{ route('installment.invoice', $pay->uuid) }}', 'Pratinjau Invoice Setoran Unit {{ $unit->code }}')" class="btn-action-pdf" title="Pratinjau Invoice / Kuitansi PDF (QR Verification)">
+                                                <svg class="w-3.5 h-3.5 text-sky-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                                                 <span>Invoice PDF</span>
                                             </button>
                                         @endif
-                                        <button wire:click="editInstallmentPayment({{ $pay->id }})" class="p-1 text-slate-400 hover:text-amber-600 rounded transition" title="Edit Setoran">
-                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                                        <button wire:click="editInstallmentPayment({{ $pay->id }})" class="btn-action-edit" title="Edit Setoran">
+                                            <svg class="w-3.5 h-3.5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                                            <span>Edit</span>
                                         </button>
-                                        <button wire:click="deleteInstallmentPayment({{ $pay->id }})" wire:confirm="Yakin ingin menghapus setoran cicilan pembeli ini?" class="p-1 text-slate-400 hover:text-rose-600 rounded transition" title="Hapus Setoran">
-                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                        <button wire:click="deleteInstallmentPayment({{ $pay->id }})" wire:confirm="Yakin ingin menghapus setoran cicilan pembeli ini?" class="btn-action-delete" title="Hapus Setoran">
+                                            <svg class="w-3.5 h-3.5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                            <span>Hapus</span>
                                         </button>
                                     @endif
                                 </div>
@@ -538,12 +563,12 @@
 
                     <div class="flex flex-wrap items-center gap-2">
                         @if(count($combinedExpenses) > 0)
-                            <button wire:click="openViewerModal('pdf', '{{ route('units.expenses-pdf', $unit->id) }}', 'Pratinjau Laporan Rekapitulasi Biaya Unit {{ $unit->code }}')" class="px-3 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 rounded-xl text-xs font-bold inline-flex items-center gap-1.5 transition shadow-xs">
+                            <button wire:click="openViewerModal('pdf', '{{ route('units.expenses-pdf', $unit->id) }}', 'Pratinjau Laporan Rekapitulasi Biaya Unit {{ $unit->code }}')" class="btn-header-pdf">
                                 <svg class="w-4 h-4 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                                 <span>Lihat PDF Rekap</span>
                             </button>
                         @else
-                            <button disabled class="px-3 py-1.5 bg-slate-100 text-slate-400 border border-slate-200 rounded-xl text-xs font-bold inline-flex items-center gap-1.5 cursor-not-allowed opacity-75" title="Belum ada data pengeluaran/belanja unit untuk digenerate PDF">
+                            <button disabled class="btn-header-pdf-disabled" title="Belum ada data pengeluaran/belanja unit untuk digenerate PDF">
                                 <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
                                 <span>PDF Rekap (Belum Ada Data)</span>
                             </button>
@@ -590,23 +615,23 @@
                                     <td class="px-3 py-3 text-center whitespace-nowrap">
                                         <div class="flex items-center justify-center gap-1.5">
                                             @if($exp->receipt_photo_path)
-                                                <button wire:click="openViewerModal('image', '{{ asset('storage/' . $exp->receipt_photo_path) }}', 'Pratinjau Foto Struk Nota Belanja')" title="Pratinjau Foto Struk" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-amber-50 text-amber-800 hover:bg-amber-100 border border-amber-200 text-[11px] font-bold transition">
-                                                    <svg class="w-3.5 h-3.5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                                                    Struk
+                                                <button wire:click="openViewerModal('image', '{{ asset('storage/' . $exp->receipt_photo_path) }}', 'Pratinjau Foto Struk Nota Belanja')" title="Pratinjau Foto Struk" class="btn-action-pdf">
+                                                    <svg class="w-3.5 h-3.5 text-sky-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                                    <span>Struk</span>
                                                 </button>
                                             @endif
 
                                             @if($exp->pdf_url)
-                                                <button wire:click="openViewerModal('pdf', '{{ $exp->pdf_url }}', 'Pratinjau Resi Gaji PDF')" title="Pratinjau PDF Resi" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-sky-50 text-sky-800 hover:bg-sky-100 border border-sky-200 text-[11px] font-bold transition">
+                                                <button wire:click="openViewerModal('pdf', '{{ $exp->pdf_url }}', 'Pratinjau Resi Gaji PDF')" title="Pratinjau PDF Resi" class="btn-action-pdf">
                                                     <svg class="w-3.5 h-3.5 text-sky-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
-                                                    PDF
+                                                    <span>PDF</span>
                                                 </button>
                                             @endif
 
                                             @if($exp->qr_url)
-                                                <button wire:click="openViewerModal('qr', '{{ $exp->qr_url }}', 'Verifikasi Resi Gaji Publik (QR Code)')" title="Pratinjau QR Code Verifikasi" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-800 hover:bg-emerald-100 border border-emerald-200 text-[11px] font-bold transition">
+                                                <button wire:click="openViewerModal('qr', '{{ $exp->qr_url }}', 'Verifikasi Resi Gaji Publik (QR Code)')" title="Pratinjau QR Code Verifikasi" class="btn-action-qr">
                                                     <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/></svg>
-                                                    QR
+                                                    <span>QR</span>
                                                 </button>
                                             @endif
 
@@ -619,13 +644,13 @@
                                         @if(isset($exp->source_type) && $exp->source_type === 'material')
                                             @if(auth()->user()->isFounder())
                                                 <div class="flex items-center justify-center gap-1.5">
-                                                    <button wire:click="editMaterialPurchase({{ $exp->id }})" class="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-amber-50 text-amber-700 hover:bg-amber-100 border border-amber-200 text-[11px] font-bold transition" title="Edit Belanja Material">
+                                                    <button wire:click="editMaterialPurchase({{ $exp->id }})" class="btn-action-edit" title="Edit Belanja Material">
                                                         <svg class="w-3.5 h-3.5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-                                                        Edit
+                                                        <span>Edit</span>
                                                     </button>
-                                                    <button wire:click="deleteMaterialPurchase({{ $exp->id }})" wire:confirm="Yakin ingin menghapus data belanja material ini?" class="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200 text-[11px] font-bold transition" title="Hapus Belanja Material">
+                                                    <button wire:click="deleteMaterialPurchase({{ $exp->id }})" wire:confirm="Yakin ingin menghapus data belanja material ini?" class="btn-action-delete" title="Hapus Belanja Material">
                                                         <svg class="w-3.5 h-3.5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                                                        Hapus
+                                                        <span>Hapus</span>
                                                     </button>
                                                 </div>
                                             @else
@@ -634,13 +659,13 @@
                                         @elseif(isset($exp->source_type) && $exp->source_type === 'salary_payment')
                                             @if(auth()->user()->isFounder())
                                                 <div class="flex items-center justify-center gap-1.5">
-                                                    <button wire:click="editPayrollPayment({{ $exp->id }})" class="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-amber-50 text-amber-700 hover:bg-amber-100 border border-amber-200 text-[11px] font-bold transition" title="Edit Pembayaran Gaji Worker">
+                                                    <button wire:click="editPayrollPayment({{ $exp->id }})" class="btn-action-edit" title="Edit Pembayaran Gaji Worker">
                                                         <svg class="w-3.5 h-3.5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-                                                        Edit
+                                                        <span>Edit</span>
                                                     </button>
-                                                    <button wire:click="deletePayrollPayment({{ $exp->id }})" wire:confirm="Yakin ingin menghapus pencatatan pembayaran gaji ini?" class="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200 text-[11px] font-bold transition" title="Hapus Pembayaran Gaji Worker">
+                                                    <button wire:click="deletePayrollPayment({{ $exp->id }})" wire:confirm="Yakin ingin menghapus pencatatan pembayaran gaji ini?" class="btn-action-delete" title="Hapus Pembayaran Gaji Worker">
                                                         <svg class="w-3.5 h-3.5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                                                        Hapus
+                                                        <span>Hapus</span>
                                                     </button>
                                                 </div>
                                             @else
@@ -649,13 +674,13 @@
                                         @elseif(isset($exp->source_type) && $exp->source_type === 'payroll_setup')
                                             @if(auth()->user()->isFounder())
                                                 <div class="flex items-center justify-center gap-1.5">
-                                                    <button wire:click="editPayrollSetup({{ $exp->id }})" class="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-amber-50 text-amber-700 hover:bg-amber-100 border border-amber-200 text-[11px] font-bold transition" title="Edit Kontrak Gaji Worker">
+                                                    <button wire:click="editPayrollSetup({{ $exp->id }})" class="btn-action-edit" title="Edit Kontrak Gaji Worker">
                                                         <svg class="w-3.5 h-3.5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-                                                        Edit
+                                                        <span>Edit</span>
                                                     </button>
-                                                    <button wire:click="deletePayrollSetup({{ $exp->id }})" wire:confirm="Yakin ingin menghapus penetapan gaji unit ini beserta riwayat pembayarannya?" class="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200 text-[11px] font-bold transition" title="Hapus Kontrak Gaji Worker">
+                                                    <button wire:click="deletePayrollSetup({{ $exp->id }})" wire:confirm="Yakin ingin menghapus penetapan gaji unit ini beserta riwayat pembayarannya?" class="btn-action-delete" title="Hapus Kontrak Gaji Worker">
                                                         <svg class="w-3.5 h-3.5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                                                        Hapus
+                                                        <span>Hapus</span>
                                                     </button>
                                                 </div>
                                             @else
@@ -678,590 +703,15 @@
 
         </div>
 
-    </div>
-
-    <!-- Modal Form Worker Assignment Directly from Unit (Req #3) -->
-    @if($showWorkerModal)
-        <div class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs p-3 sm:p-6 md:p-10 flex items-center justify-center min-h-screen">
-            <div class="bg-white border border-slate-200/80 rounded-2xl sm:rounded-3xl max-w-md w-full p-4 sm:p-6 shadow-2xl space-y-4 my-auto sm:my-8 max-h-[88vh] sm:max-h-[85vh] flex flex-col">
-                <div class="flex items-center justify-between border-b border-slate-100 pb-3 shrink-0">
-                    <h3 class="font-bold text-slate-900 text-sm sm:text-base">Tugaskan Mandor / Tukang ke Unit {{ $unit->code }}</h3>
-                    <button wire:click="$set('showWorkerModal', false)" class="p-1 rounded-lg text-slate-400 hover:text-slate-600">✕</button>
-                </div>
-
-                <form wire:submit.prevent="saveWorkerAssignment" class="space-y-4 text-xs sm:text-sm flex-1 overflow-y-auto pr-1">
-                    <div>
-                        <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider text-[11px] sm:text-xs">Pilih Pekerja (Mandor / Tukang)</label>
-                        <select wire:model="worker_id" class="input-clean w-full font-semibold text-xs sm:text-sm py-2.5 px-3 rounded-xl border border-slate-200">
-                            @foreach($allWorkers as $w)
-                                <option value="{{ $w->id }}">{{ $w->name }} ({{ ucfirst($w->type) }} - {{ $w->specialty }})</option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <div>
-                        <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider text-[11px] sm:text-xs">Peran Penugasan</label>
-                        <input type="text" wire:model="assigned_role" placeholder="Tukang Keramik / Mandor Finishing..." class="input-clean w-full font-bold text-xs sm:text-sm py-2.5 px-3 rounded-xl border border-slate-200">
-                    </div>
-
-                    <div class="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2 sm:gap-3 pt-3 border-t border-slate-100 shrink-0">
-                        <button type="button" wire:click="$set('showWorkerModal', false)" class="btn-secondary py-2 sm:py-2.5 px-4 sm:px-5 rounded-xl text-xs sm:text-sm">Batal</button>
-                        <button type="submit" class="btn-primary py-2.5 px-5 rounded-xl text-xs sm:text-sm text-center">Simpan Penugasan</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    @endif
-
-    <!-- Modal Form Booking Unit Directly from Detail Page (Req #2) -->
-    @if($showBookingModal)
-        <div class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs p-3 sm:p-6 md:p-10 flex items-center justify-center min-h-screen">
-            <div class="bg-white border border-slate-200/80 rounded-2xl sm:rounded-3xl max-w-md w-full p-4 sm:p-6 shadow-2xl space-y-4 my-auto sm:my-8 max-h-[88vh] sm:max-h-[85vh] flex flex-col">
-                <div class="flex items-center justify-between border-b border-slate-100 pb-3 shrink-0">
-                    <div>
-                        <h3 class="font-extrabold text-slate-900 text-sm sm:text-base">Booking Unit {{ $unit->code }}</h3>
-                        <p class="text-slate-500 text-[11px]">Pencatatan booking & DP langsung di dalam sistem</p>
-                    </div>
-                    <button wire:click="$set('showBookingModal', false)" class="p-1 rounded-lg text-slate-400 hover:text-slate-600">✕</button>
-                </div>
-
-                <form wire:submit.prevent="saveBooking" class="space-y-4 text-xs sm:text-sm flex-1 overflow-y-auto pr-1">
-                    <div>
-                        <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider text-[11px] sm:text-xs">Nama Pembeli</label>
-                        <input type="text" wire:model="buyer_name" required placeholder="Bpk. H. Hendra Wijaya" class="input-clean w-full font-bold text-xs sm:text-sm py-2.5 px-3 rounded-xl border border-slate-200">
-                    </div>
-
-                    <div>
-                        <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider text-[11px] sm:text-xs">Nomor HP / WhatsApp Pembeli</label>
-                        <input type="text" wire:model="buyer_phone" required placeholder="081234567890" class="input-clean w-full font-mono text-xs sm:text-sm py-2.5 px-3 rounded-xl border border-slate-200">
-                    </div>
-
-                    <div>
-                        <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider text-[11px] sm:text-xs">Nominal Tanda Jadi / Booking Fee (Rp)</label>
-                        <x-currency-input model="booking_amount" class="input-clean w-full font-mono font-bold text-teal-700 text-xs sm:text-sm py-2.5 px-3 rounded-xl border border-slate-200" />
-                        @error('booking_amount') <span class="text-rose-500 text-[10px] mt-1 block">{{ $message }}</span> @enderror
-                    </div>
-
-                    <div>
-                        <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider text-[11px] sm:text-xs">Catatan Pembayaran & Bukti DP</label>
-                        <textarea wire:model="booking_notes" rows="2" placeholder="Informasi bukti transfer DP..." class="input-clean w-full text-xs sm:text-sm py-2 px-3 rounded-xl border border-slate-200"></textarea>
-                    </div>
-
-                    <div class="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2 sm:gap-3 pt-3 border-t border-slate-100 shrink-0">
-                        <button type="button" wire:click="$set('showBookingModal', false)" class="btn-secondary py-2 sm:py-2.5 px-4 sm:px-5 rounded-xl text-xs sm:text-sm">Batal</button>
-                        <button type="submit" class="btn-primary py-2.5 px-5 rounded-xl text-xs sm:text-sm text-center">Proses Booking Unit</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    @endif
-
-    <!-- Modal Form Payroll Setup for this Unit -->
-    @if($showPayrollSetupModal)
-        <div class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs p-3 sm:p-6 md:p-10 flex items-center justify-center min-h-screen">
-            <div class="bg-white border border-slate-200/80 rounded-2xl sm:rounded-3xl max-w-md w-full p-4 sm:p-6 shadow-2xl space-y-4 my-auto sm:my-8 max-h-[88vh] sm:max-h-[85vh] flex flex-col">
-                <div class="flex items-center justify-between border-b border-slate-100 pb-3 shrink-0">
-                    <div>
-                        <h3 class="font-extrabold text-slate-900 text-sm sm:text-base">Set Gaji Borongan Unit {{ $unit->code }}</h3>
-                        <p class="text-slate-500 text-[11px]">Proyek: {{ $unit->project->name }}</p>
-                    </div>
-                    <button wire:click="$set('showPayrollSetupModal', false)" class="p-1 rounded-lg text-slate-400 hover:text-slate-600">✕</button>
-                </div>
-
-                <form wire:submit.prevent="savePayrollSetup" class="space-y-4 text-xs sm:text-sm flex-1 overflow-y-auto pr-1">
-                    <div>
-                        <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider text-[11px] sm:text-xs">Pilih Pekerja (Mandor / Tukang)</label>
-                        <select wire:model="payroll_worker_id" class="input-clean w-full font-bold text-xs sm:text-sm py-2.5 px-3 rounded-xl border border-slate-200">
-                            @foreach($allWorkers as $w)
-                                <option value="{{ $w->id }}">{{ $w->name }} ({{ ucfirst($w->type) }} - {{ $w->specialty }})</option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <div>
-                        <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider text-[11px] sm:text-xs">Total Nominal Gaji (Rp)</label>
-                        <x-currency-input model="payroll_agreed_salary" class="input-clean w-full font-mono font-bold text-slate-900 text-xs sm:text-sm py-2.5 px-3 rounded-xl border border-slate-200" placeholder="Contoh: 15.000.000" />
-                        @error('payroll_agreed_salary') <span class="text-rose-500 text-[10px] mt-1 block">{{ $message }}</span> @enderror
-                    </div>
-
-                    <div>
-                        <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider text-[11px] sm:text-xs">Skema Pembayaran</label>
-                        <select wire:model="payroll_payment_frequency" class="input-clean w-full font-semibold text-xs sm:text-sm py-2.5 px-3 rounded-xl border border-slate-200">
-                            <option value="fleksibel">Fleksibel (Sesuai Permintaan Mandor)</option>
-                            <option value="harian">Harian</option>
-                            <option value="mingguan">Mingguan (Per-Minggu)</option>
-                            <option value="bulanan">Bulanan</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider text-[11px] sm:text-xs">Catatan Tambahan</label>
-                        <textarea wire:model="payroll_notes" rows="2" placeholder="Lingkup kerja borongan unit..." class="input-clean w-full text-xs sm:text-sm py-2 px-3 rounded-xl border border-slate-200"></textarea>
-                    </div>
-
-                    <div class="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2 sm:gap-3 pt-3 border-t border-slate-100 shrink-0">
-                        <button type="button" wire:click="$set('showPayrollSetupModal', false)" class="btn-secondary py-2 sm:py-2.5 px-4 sm:px-5 rounded-xl text-xs sm:text-sm">Batal</button>
-                        <button type="submit" class="btn-primary py-2.5 px-5 rounded-xl text-xs sm:text-sm text-center">Simpan Kesepakatan Gaji</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    @endif
-
-    <!-- Modal Form Payroll Payment for this Unit (Form Responsif Mobile) -->
-    @if($showPayrollPaymentModal && $selectedPayroll)
-        <div class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs p-3 sm:p-6 md:p-10 flex items-center justify-center min-h-screen">
-            <div class="bg-white border border-slate-200/80 rounded-2xl sm:rounded-3xl max-w-lg sm:max-w-xl md:max-w-2xl w-full p-4 sm:p-7 shadow-2xl space-y-4 my-auto sm:my-8 max-h-[88vh] sm:max-h-[85vh] flex flex-col">
-                <div class="flex items-center justify-between border-b border-slate-100 pb-3 shrink-0">
-                    <div>
-                        <h3 class="font-extrabold text-slate-900 text-base sm:text-xl tracking-tight">{{ !empty($editingSalaryPaymentId) ? 'Edit Pembayaran Gaji Unit' : 'Pembayaran Gaji Unit' }} {{ $unit->code }}</h3>
-                        <p class="text-slate-500 text-[11px] sm:text-xs mt-0.5">Pekerja: {{ $selectedPayroll->worker->name }}</p>
-                    </div>
-                    <button wire:click="$set('showPayrollPaymentModal', false)" class="p-1.5 sm:p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition">✕</button>
-                </div>
-
-                <div class="bg-slate-50 p-3 sm:p-4 rounded-xl sm:rounded-2xl border border-slate-200 text-xs sm:text-sm grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 shrink-0">
-                    <div>
-                        <span class="text-slate-500 block text-[11px] sm:text-xs">Total Gaji Borongan:</span>
-                        <span class="font-bold text-slate-900 font-mono text-sm sm:text-base">Rp {{ number_format($selectedPayroll->agreed_salary, 0, ',', '.') }}</span>
-                    </div>
-                    <div>
-                        <span class="text-slate-500 block text-[11px] sm:text-xs">Sisa Kontrak Belum Dibayar:</span>
-                        <span class="font-bold text-amber-600 font-mono text-sm sm:text-base">Rp {{ number_format($selectedPayroll->remaining_salary, 0, ',', '.') }}</span>
-                    </div>
-                </div>
-
-                <form wire:submit.prevent="savePayrollPayment" class="space-y-3 sm:space-y-4 text-xs sm:text-sm flex-1 overflow-y-auto pr-1">
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                        <div>
-                            <label class="block font-bold text-slate-700 uppercase mb-1 text-[11px] sm:text-xs">Tanggal Pembayaran</label>
-                            <input type="date" wire:model="payroll_payment_date" required class="input-clean w-full text-xs sm:text-sm font-mono py-2 sm:py-2.5 px-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-emerald-500">
-                        </div>
-
-                        <div>
-                            <label class="block font-bold text-slate-700 uppercase mb-1 text-[11px] sm:text-xs">Metode Pembayaran</label>
-                            <select wire:model.live="payroll_payment_method" class="input-clean w-full text-xs sm:text-sm font-semibold py-2 sm:py-2.5 px-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-emerald-500">
-                                <option value="transfer_bank">Transfer Bank</option>
-                                <option value="tunai">Tunai (Cash)</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div>
-                        <label class="block font-bold text-slate-700 uppercase mb-1 text-[11px] sm:text-xs">Nominal Gaji Dibayarkan (Rp)</label>
-                        <x-currency-input model="payroll_amount_gross" class="input-clean w-full font-mono font-bold text-slate-900 text-sm sm:text-base py-2.5 sm:py-3 px-3 sm:px-4 rounded-xl border border-slate-200 focus:ring-2 focus:ring-emerald-500" placeholder="Misal: 2.500.000" />
-                        @error('payroll_amount_gross') <span class="text-xs text-rose-500 mt-1 block">{{ $message }}</span> @enderror
-                    </div>
-
-                    <div>
-                        <label class="block font-bold text-slate-700 uppercase mb-1 text-[11px] sm:text-xs">
-                            Upload Foto Struk Transfer {{ $payroll_payment_method === 'tunai' ? '(Opsional)' : '(Rekomendasi)' }}
-                        </label>
-                        <input type="file" wire:model="payroll_receipt_photo" accept="image/*" class="input-clean w-full text-xs py-1.5 sm:py-2 px-3 rounded-xl border border-slate-200">
-                        @if($payroll_receipt_photo)
-                            <div class="mt-3 text-center bg-slate-50 p-3 rounded-2xl border border-slate-200">
-                                <p class="text-xs text-slate-500 mb-2 font-semibold">Preview Struk Transfer Upload:</p>
-                                <img src="{{ $payroll_receipt_photo->temporaryUrl() }}" class="max-h-48 mx-auto rounded-xl border border-slate-200 shadow-md">
-                            </div>
-                        @endif
-                    </div>
-
-                    <div>
-                        <label class="block font-bold text-slate-700 uppercase mb-1 text-[11px] sm:text-xs">Catatan Pembayaran</label>
-                        <input type="text" wire:model="payroll_payment_notes" placeholder="Catatan transaksi..." class="input-clean w-full text-xs sm:text-sm py-2 sm:py-2.5 px-3 rounded-xl border border-slate-200">
-                    </div>
-
-                    <div class="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2 sm:gap-3 pt-3 sm:pt-4 border-t border-slate-100 shrink-0">
-                        <button type="button" wire:click="$set('showPayrollPaymentModal', false)" class="btn-secondary py-2 sm:py-2.5 px-4 sm:px-5 rounded-xl text-xs sm:text-sm">Batal</button>
-                        <button type="submit" class="btn-primary bg-emerald-600 hover:bg-emerald-700 py-2.5 px-4 sm:px-6 rounded-xl shadow-md text-xs sm:text-sm text-center">Simpan Pembayaran & Cetak Resi</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    @endif
-
-    <!-- Modal Form Material Purchase (Catat Belanja Barang Unit - Responsif Mobile & Desktop Mulus Scroll) -->
-    @if($showMaterialModal)
-        <div class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs p-3 sm:p-6 md:p-10 flex items-center justify-center min-h-screen">
-            <div class="bg-white border border-slate-200/80 rounded-2xl sm:rounded-3xl max-w-2xl md:max-w-3xl w-full p-4 sm:p-7 shadow-2xl space-y-4 my-auto sm:my-8 max-h-[88vh] sm:max-h-[85vh] flex flex-col">
-                <div class="flex items-center justify-between border-b border-slate-100 pb-3 shrink-0">
-                    <div>
-                        <h3 class="font-extrabold text-slate-900 text-base sm:text-lg tracking-tight">Catat Belanja Barang / Material Unit {{ $unit->code }}</h3>
-                        <p class="text-slate-500 text-xs mt-0.5">Proyek: {{ $unit->project->name }}</p>
-                    </div>
-                    <button wire:click="$set('showMaterialModal', false)" class="p-1.5 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition">✕</button>
-                </div>
-
-                <form wire:submit.prevent="saveMaterialPurchase" class="space-y-4 text-xs sm:text-sm flex-1 overflow-y-auto pr-1">
-                    <div>
-                        <label class="block font-bold text-slate-700 mb-1.5 uppercase tracking-wider text-xs">Pekerja / Mandor Pembeli (Opsional)</label>
-                        <select wire:model="material_worker_id" class="input-clean w-full text-xs sm:text-sm font-bold py-2.5 px-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-amber-500">
-                            @foreach($allWorkers as $w)
-                                <option value="{{ $w->id }}">{{ $w->name }} ({{ ucfirst($w->type) }} - {{ $w->specialty }})</option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
-                        <div>
-                            <label class="block font-bold text-slate-700 mb-1.5 uppercase tracking-wider text-xs">Tanggal Pembelian</label>
-                            <input type="date" wire:model="material_purchase_date" required class="input-clean w-full text-xs sm:text-sm font-mono py-2.5 px-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-amber-500">
-                        </div>
-                        <div>
-                            <label class="block font-bold text-slate-700 mb-1.5 uppercase tracking-wider text-xs">Nama Barang / Material</label>
-                            <input type="text" wire:model="material_item_name" required placeholder="Contoh: Semen Gresik / Pasir / Cat" class="input-clean w-full text-xs sm:text-sm font-bold py-2.5 px-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-amber-500">
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4">
-                        <div>
-                            <label class="block font-bold text-slate-700 mb-1.5 uppercase tracking-wider text-xs">Jumlah (Qty)</label>
-                            <input type="number" step="0.01" wire:model.live="material_quantity" required class="input-clean w-full text-xs sm:text-sm font-mono font-bold py-2.5 px-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-amber-500">
-                        </div>
-                        <div>
-                            <label class="block font-bold text-slate-700 mb-1.5 uppercase tracking-wider text-xs">Satuan</label>
-                            <input type="text" wire:model="material_unit_measure" required placeholder="sak / m3 / btg" class="input-clean w-full text-xs sm:text-sm font-semibold py-2.5 px-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-amber-500">
-                        </div>
-                        <div>
-                            <label class="block font-bold text-slate-700 mb-1.5 uppercase tracking-wider text-xs">Harga Satuan (Rp)</label>
-                            <x-currency-input model="material_unit_price" class="input-clean w-full text-xs sm:text-sm font-mono font-bold py-2.5 px-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-amber-500" placeholder="65.000" />
-                        </div>
-                    </div>
-
-                    <div class="p-3.5 bg-amber-50 rounded-2xl border border-amber-200/80 flex justify-between items-center text-amber-900 font-bold">
-                        <span class="text-xs sm:text-sm">Total Belanja Material:</span>
-                        <span class="text-base sm:text-xl font-mono text-amber-700">Rp {{ number_format(((float)($material_quantity ?? 0)) * ((float)($material_unit_price ?? 0)), 0, ',', '.') }}</span>
-                    </div>
-
-                    <div>
-                        <label class="block font-bold text-slate-700 uppercase mb-1.5 text-xs">Upload Foto Struk / Nota Pembelian</label>
-                        <input type="file" wire:model="material_receipt_photo" accept="image/*" class="input-clean w-full text-xs py-2 px-3 rounded-xl border border-slate-200">
-                        <span class="text-[11px] text-slate-400 mt-1 block">Foto nota akan dikompresi otomatis & disimpan di sistem.</span>
-                        @if($material_receipt_photo)
-                            <div class="mt-3 text-center bg-slate-50 p-3 rounded-2xl border border-slate-200">
-                                <p class="text-xs text-slate-500 mb-2 font-semibold">Preview Struk Nota Upload:</p>
-                                <img src="{{ $material_receipt_photo->temporaryUrl() }}" class="max-h-48 mx-auto rounded-xl border border-slate-200 shadow-md">
-                            </div>
-                        @endif
-                    </div>
-
-                    <div>
-                        <label class="block font-bold text-slate-700 uppercase mb-1.5 text-xs">Catatan Belanja</label>
-                        <input type="text" wire:model="material_notes" placeholder="Catatan supplier / lokasi toko..." class="input-clean w-full text-xs sm:text-sm py-2.5 px-3 rounded-xl border border-slate-200">
-                    </div>
-
-                    <div class="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2 sm:gap-3 pt-3 border-t border-slate-100 shrink-0">
-                        <button type="button" wire:click="$set('showMaterialModal', false)" class="btn-secondary py-2 sm:py-2.5 px-4 sm:px-5 rounded-xl text-xs sm:text-sm">Batal</button>
-                        <button type="submit" class="btn-primary bg-amber-600 hover:bg-amber-700 py-2.5 px-4 sm:px-6 rounded-xl shadow-md text-xs sm:text-sm text-center">Simpan Pembelian Material</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    @endif
-
-    <!-- Modal Input Setoran Cicilan Pembeli (Khusus Finance & Founder) -->
-    @if($showInstallmentPaymentModal && $unit->installment)
-        <div class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs p-3 sm:p-6 md:p-10 flex items-center justify-center min-h-screen">
-            <div class="bg-white border border-slate-200/80 rounded-2xl sm:rounded-3xl max-w-lg w-full p-4 sm:p-6 shadow-2xl space-y-4 my-auto sm:my-8 max-h-[88vh] sm:max-h-[85vh] flex flex-col">
-                <div class="flex items-center justify-between border-b border-slate-100 pb-3 shrink-0">
-                    <h3 class="font-extrabold text-slate-900 text-sm sm:text-base flex items-center gap-2">
-                        <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-                        Input Setoran Cicilan Unit {{ $unit->code }}
-                    </h3>
-                    <button wire:click="$set('showInstallmentPaymentModal', false)" class="text-slate-400 hover:text-slate-600 text-sm">✕</button>
-                </div>
-
-                <form wire:submit.prevent="saveInstallmentPayment" class="space-y-4 text-xs sm:text-sm flex-1 overflow-y-auto pr-1">
-                    <div class="bg-blue-50 border border-blue-100 p-3 rounded-xl space-y-1">
-                        <div class="flex justify-between">
-                            <span class="text-slate-500">Target Cicilan per Bulan:</span>
-                            <span class="font-bold font-mono text-blue-800">Rp {{ number_format($unit->installment->installment_amount, 0, ',', '.') }}</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-slate-500">Sisa Tagihan Cicilan:</span>
-                            <span class="font-bold font-mono text-amber-700">Rp {{ number_format($unit->installment->remaining_balance, 0, ',', '.') }}</span>
-                        </div>
-                    </div>
-
-                    <div>
-                        <label class="block text-slate-700 font-bold mb-1">Tanggal Setoran</label>
-                        <input type="date" wire:model="installment_payment_date" class="w-full input-clean text-xs sm:text-sm font-mono py-2.5 px-3 rounded-xl border border-slate-200">
-                        @error('installment_payment_date') <span class="text-rose-600 text-[10px]">{{ $message }}</span> @enderror
-                    </div>
-
-                    <div>
-                        <label class="block text-slate-700 font-bold mb-1">Nominal Setoran (Rp)</label>
-                        <x-currency-input model="installment_payment_amount" class="w-full input-clean font-mono text-xs sm:text-sm font-bold py-2.5 px-3 rounded-xl border border-slate-200" placeholder="Contoh: 5.000.000" />
-                        @error('installment_payment_amount') <span class="text-rose-600 text-[10px]">{{ $message }}</span> @enderror
-                    </div>
-
-                    <div>
-                        <label class="block text-slate-700 font-bold mb-1">Metode Pembayaran</label>
-                        <select wire:model="installment_payment_method" class="w-full input-clean text-xs sm:text-sm py-2.5 px-3 rounded-xl border border-slate-200">
-                            <option value="Transfer Bank">Transfer Bank (BRK Syariah / Mandiri / BRI / BCA)</option>
-                            <option value="Tunai">Tunai / Cash</option>
-                            <option value="Cek / Giro">Cek / Giro</option>
-                        </select>
-                        @error('installment_payment_method') <span class="text-rose-600 text-[10px]">{{ $message }}</span> @enderror
-                    </div>
-
-                    <div>
-                        <label class="block text-slate-700 font-bold mb-1">Catatan / Keterangan (Opsional)</label>
-                        <textarea wire:model="installment_payment_notes" rows="2" class="w-full input-clean text-xs sm:text-sm py-2 px-3 rounded-xl border border-slate-200" placeholder="Setoran cicilan bulan ke-X..."></textarea>
-                    </div>
-
-                    <div class="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2 sm:gap-3 pt-3 border-t border-slate-100 shrink-0">
-                        <button type="button" wire:click="$set('showInstallmentPaymentModal', false)" class="btn-secondary py-2 sm:py-2.5 px-4 sm:px-5 rounded-xl text-xs sm:text-sm">Batal</button>
-                        <button type="submit" class="btn-primary py-2.5 px-5 rounded-xl text-xs sm:text-sm bg-blue-600 hover:bg-blue-700 text-center">Simpan Setoran</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    @endif
-
-    <!-- Modal Setup Skema Cicilan Baru (Khusus Finance & Founder) -->
-    @if($showSetupInstallmentModal)
-        <div class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs p-3 sm:p-6 md:p-10 flex items-center justify-center min-h-screen">
-            <div class="bg-white border border-slate-200/80 rounded-2xl sm:rounded-3xl max-w-lg w-full p-4 sm:p-6 shadow-2xl space-y-4 my-auto sm:my-8 max-h-[88vh] sm:max-h-[85vh] flex flex-col">
-                <div class="flex items-center justify-between border-b border-slate-100 pb-3 shrink-0">
-                    <h3 class="font-extrabold text-slate-900 text-sm sm:text-base flex items-center gap-2">
-                        <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                        Konfigurasi Skema Cicilan Unit {{ $unit->code }}
-                    </h3>
-                    <button wire:click="$set('showSetupInstallmentModal', false)" class="text-slate-400 hover:text-slate-600 text-sm">✕</button>
-                </div>
-
-                <form wire:submit.prevent="saveSetupInstallment" class="space-y-4 text-xs sm:text-sm flex-1 overflow-y-auto pr-1">
-                    <div>
-                        <label class="block text-slate-700 font-bold mb-1">Total Harga Deal Unit (Rp)</label>
-                        <x-currency-input model="setup_total_price" class="w-full input-clean font-mono text-xs sm:text-sm font-bold py-2.5 px-3 rounded-xl border border-slate-200" placeholder="Contoh: 150.000.000" />
-                        @error('setup_total_price') <span class="text-rose-600 text-[10px]">{{ $message }}</span> @enderror
-                    </div>
-
-                    <div>
-                        <label class="block text-slate-700 font-bold mb-1">Uang Muka / DP (Rp)</label>
-                        <x-currency-input model="setup_down_payment" class="w-full input-clean font-mono text-xs sm:text-sm font-bold py-2.5 px-3 rounded-xl border border-slate-200" placeholder="Contoh: 30.000.000" />
-                    </div>
-
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <div>
-                            <label class="block text-slate-700 font-bold mb-1">Tenor (Berapa Kali Cicilan)</label>
-                            <input type="number" min="1" max="120" wire:model.live="setup_installment_count" wire:change="calculateMonthlyInstallment" class="w-full input-clean text-xs sm:text-sm py-2.5 px-3 rounded-xl border border-slate-200">
-                        </div>
-                        <div>
-                            <label class="block text-slate-700 font-bold mb-1">Tanggal Mulai Skema</label>
-                            <input type="date" wire:model="setup_start_date" class="w-full input-clean text-xs sm:text-sm font-mono py-2.5 px-3 rounded-xl border border-slate-200">
-                        </div>
-                    </div>
-
-                    <div class="bg-slate-50 border border-slate-200 p-3 rounded-xl space-y-1">
-                        <div class="flex justify-between font-bold text-slate-800">
-                            <span>Estimasi Cicilan per Bulan:</span>
-                            <span class="font-mono text-blue-700">Rp {{ number_format($setup_installment_amount, 0, ',', '.') }}</span>
-                        </div>
-                    </div>
-
-                    <div class="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2 sm:gap-3 pt-3 border-t border-slate-100 shrink-0">
-                        <button type="button" wire:click="$set('showSetupInstallmentModal', false)" class="btn-secondary py-2 sm:py-2.5 px-4 sm:px-5 rounded-xl text-xs sm:text-sm">Batal</button>
-                        <button type="submit" class="btn-primary py-2.5 px-5 rounded-xl text-xs sm:text-sm bg-blue-600 hover:bg-blue-700 text-center">Simpan Skema Cicilan</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    @endif
-
-    <!-- Modal Jendela Melayang (Viewer Modal: Foto Struk / PDF Resi / QR Verifikasi) -->
-    @if($showViewerModal)
-        <div class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-slate-900/60 backdrop-blur-md">
-            <div class="bg-white rounded-3xl max-w-4xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden border border-slate-200">
-                <!-- Modal Header -->
-                <div class="px-6 py-4 bg-slate-900 text-white flex items-center justify-between shrink-0">
-                    <div class="flex items-center gap-3">
-                        @if($viewerType === 'image')
-                            <span class="p-2 rounded-xl bg-amber-500/20 text-amber-400">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                            </span>
-                        @elseif($viewerType === 'pdf')
-                            <span class="p-2 rounded-xl bg-sky-500/20 text-sky-400">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
-                            </span>
-                        @else
-                            <span class="p-2 rounded-xl bg-emerald-500/20 text-emerald-400">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/></svg>
-                            </span>
-                        @endif
-                        <div>
-                            <h3 class="font-bold text-base tracking-tight text-white">{{ $viewerTitle }}</h3>
-                            <p class="text-[11px] text-slate-400">Pratinjau langsung di dalam aplikasi</p>
-                        </div>
-                    </div>
-
-                    <div class="flex items-center gap-2">
-                        <a href="{{ $viewerUrl }}" target="_blank" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold flex items-center gap-1 transition">
-                            <span>Buka Tab Baru ↗</span>
-                        </a>
-                        <button wire:click="closeViewerModal" class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white transition">
-                            ✕
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Modal Body -->
-                <div class="flex-1 bg-slate-950 p-4 overflow-auto flex items-center justify-center min-h-[60vh]">
-                    @if($viewerType === 'image')
-                        <img src="{{ $viewerUrl }}" class="max-h-[75vh] w-auto max-w-full object-contain rounded-2xl shadow-2xl border border-slate-800" alt="Foto Struk / Resi">
-                    @elseif($viewerType === 'pdf')
-                        <iframe src="{{ $viewerUrl }}" class="w-full h-[75vh] rounded-2xl bg-white border-0 shadow-lg"></iframe>
-                    @elseif($viewerType === 'qr')
-                        <iframe src="{{ $viewerUrl }}" class="w-full h-[75vh] rounded-2xl bg-white border-0 shadow-lg"></iframe>
-                    @endif
-                </div>
-            </div>
-        </div>
-    @endif
-
-    <!-- Modal Batalkan Skema Cicilan & Ganti Ke Pelunasan Cash (Founder & Finance) -->
-    @if($showConvertToCashModal && $unit->installment)
-        <div class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs p-3 sm:p-6 md:p-10 flex items-center justify-center min-h-screen">
-            <div class="bg-white border border-slate-200/80 rounded-2xl sm:rounded-3xl max-w-lg w-full p-4 sm:p-6 shadow-2xl space-y-4 my-auto sm:my-8 max-h-[88vh] flex flex-col">
-                <div class="flex items-center justify-between border-b border-slate-100 pb-3 shrink-0">
-                    <div>
-                        <h3 class="font-extrabold text-slate-900 text-sm sm:text-base">Batalkan Skema Cicilan & Ganti Ke Pelunasan Cash</h3>
-                        <p class="text-slate-500 text-[11px]">Unit: <span class="font-bold text-slate-800 font-mono">{{ $unit->code }}</span> - {{ $unit->officialDocument->buyer_name ?? 'Pembeli' }}</p>
-                    </div>
-                    <button wire:click="$set('showConvertToCashModal', false)" class="p-1 rounded-lg text-slate-400 hover:text-slate-600">✕</button>
-                </div>
-
-                <form wire:submit.prevent="saveConvertToCash" class="space-y-4 text-xs flex-1 overflow-y-auto pr-1">
-                    <div class="p-4 bg-purple-50/80 border border-purple-200/80 rounded-2xl space-y-2 text-purple-950">
-                        <div class="flex justify-between">
-                            <span class="text-slate-600">Total Harga Unit:</span>
-                            <span class="font-mono font-bold">Rp {{ number_format($unit->installment->total_price, 0, ',', '.') }}</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-slate-600">Sudah Terbayar (DP & Cicilan):</span>
-                            <span class="font-mono font-bold text-emerald-700">Rp {{ number_format($unit->installment->total_paid, 0, ',', '.') }}</span>
-                        </div>
-                        <div class="flex justify-between pt-2 border-t border-purple-200 font-extrabold">
-                            <span class="text-purple-900">Sisa Pelunasan Cash:</span>
-                            <span class="font-mono text-purple-800 text-sm">Rp {{ number_format($unit->installment->remaining_balance, 0, ',', '.') }}</span>
-                        </div>
-                    </div>
-
-                    <div>
-                        <label class="block font-semibold text-purple-900 mb-1 uppercase tracking-wider">Nominal Pelunasan Cash Diterima (Rp)</label>
-                        <x-currency-input model="cash_payment_amount" class="input-clean w-full font-bold text-sm font-mono text-purple-900 bg-purple-50/30" placeholder="Rp 0" />
-                        <p class="text-[10px] text-slate-500 mt-1">Sisa saldo Rp {{ number_format($unit->installment->remaining_balance, 0, ',', '.') }} akan dicatat lunas sekaligus dalam Arus Kas.</p>
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-3">
-                        <div>
-                            <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider">Metode Pembayaran Cash</label>
-                            <select wire:model="cash_payment_method" class="input-clean w-full font-semibold">
-                                <option value="Transfer Bank">Transfer Bank</option>
-                                <option value="Tunai / Cash">Tunai / Cash</option>
-                                <option value="Cek / Giro">Cek / Giro</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider">Tanggal Pelunasan</label>
-                            <input type="date" wire:model="cash_payment_date" required class="input-clean w-full font-mono">
-                        </div>
-                    </div>
-
-                    <div>
-                        <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider">Catatan Alasan Pembatalan & Konversi Cash</label>
-                        <textarea wire:model="cash_notes" rows="2" class="input-clean w-full" placeholder="Keterangan pembatalan skema cicilan..."></textarea>
-                    </div>
-
-                    <div class="flex items-center justify-end gap-2 pt-3 border-t border-slate-100 shrink-0">
-                        <button type="button" wire:click="$set('showConvertToCashModal', false)" class="btn-secondary">Batal</button>
-                        <button type="submit" class="btn-primary bg-purple-600 hover:bg-purple-700">Proses Pelunasan Cash & Batalkan Cicilan</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    @endif
-
-    <!-- Modal Form Edit Unit Spesifikasi & Status (Founder & Finance) -->
-    @if($showEditUnitModal)
-        <div class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs p-3 sm:p-6 md:p-10 flex items-center justify-center min-h-screen">
-            <div class="bg-white border border-slate-200/80 rounded-2xl sm:rounded-3xl max-w-lg w-full p-4 sm:p-6 shadow-2xl space-y-4 my-auto sm:my-8 max-h-[90vh] flex flex-col">
-                <div class="flex items-center justify-between border-b border-slate-100 pb-3 shrink-0">
-                    <div>
-                        <h3 class="font-extrabold text-slate-900 text-sm sm:text-base">Edit Spesifikasi & Data Unit {{ $edit_unit_code }}</h3>
-                        <p class="text-slate-500 text-[11px]">Pembaruan spesifikasi fisik, harga final, dan status unit</p>
-                    </div>
-                    <button wire:click="$set('showEditUnitModal', false)" class="p-1 rounded-lg text-slate-400 hover:text-slate-600">✕</button>
-                </div>
-
-                <form wire:submit.prevent="saveEditUnit" class="space-y-4 text-xs sm:text-sm flex-1 overflow-y-auto pr-1">
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <div>
-                            <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider text-[10px]">Kode Unit</label>
-                            <input type="text" wire:model="edit_unit_code" required class="input-clean w-full font-mono font-bold text-xs py-2 px-3 rounded-xl border border-slate-200">
-                        </div>
-
-                        <div>
-                            <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider text-[10px]">Kategori Unit</label>
-                            <select wire:model="edit_unit_category" class="input-clean w-full font-bold text-xs py-2 px-3 rounded-xl border border-slate-200">
-                                <option value="kavling">Kavling Tanah</option>
-                                <option value="rumah">Rumah / Bangunan</option>
-                                <option value="infrastruktur">Infrastruktur / Fasum</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                        <div>
-                            <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider text-[10px]">Panjang (m)</label>
-                            <input type="number" step="0.1" wire:model="edit_land_length" class="input-clean w-full font-mono text-xs py-2 px-3 rounded-xl border border-slate-200">
-                        </div>
-                        <div>
-                            <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider text-[10px]">Lebar (m)</label>
-                            <input type="number" step="0.1" wire:model="edit_land_width" class="input-clean w-full font-mono text-xs py-2 px-3 rounded-xl border border-slate-200">
-                        </div>
-                        <div>
-                            <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider text-[10px]">Luas Tanah (m²)</label>
-                            <input type="number" step="0.1" wire:model="edit_land_area" required class="input-clean w-full font-mono font-bold text-xs py-2 px-3 rounded-xl border border-slate-200">
-                        </div>
-                    </div>
-
-                    @if($edit_unit_category === 'rumah')
-                        <div>
-                            <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider text-[10px]">Luas Bangunan (m²)</label>
-                            <input type="number" step="0.1" wire:model="edit_building_area" class="input-clean w-full font-mono text-xs py-2 px-3 rounded-xl border border-slate-200">
-                        </div>
-                    @endif
-
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <div>
-                            <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider text-[10px]">Harga Jual Final (Rp)</label>
-                            <x-currency-input model="edit_final_selling_price" class="input-clean w-full font-mono font-bold text-xs py-2 px-3 rounded-xl border border-slate-200" />
-                        </div>
-                        <div>
-                            <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider text-[10px]">Status Unit</label>
-                            <select wire:model="edit_unit_status" class="input-clean w-full font-bold text-xs py-2 px-3 rounded-xl border border-slate-200">
-                                <option value="tersedia">Tersedia</option>
-                                <option value="booked">Booked</option>
-                                <option value="disetujui">Harga ACC</option>
-                                <option value="terjual">Terjual</option>
-                                <option value="infrastruktur">Infrastruktur</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div>
-                        <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider text-[10px]">Spesifikasi / Catatan Tambahan</label>
-                        <textarea wire:model="edit_specifications" rows="2" class="input-clean w-full text-xs py-2 px-3 rounded-xl border border-slate-200"></textarea>
-                    </div>
-
-                    <div class="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2 sm:gap-3 pt-3 border-t border-slate-100 shrink-0">
-                        <button type="button" wire:click="$set('showEditUnitModal', false)" class="btn-secondary py-2 px-4 rounded-xl text-xs">Batal</button>
-                        <button type="submit" class="btn-primary py-2 px-5 rounded-xl text-xs text-center">Simpan Pembaruan Unit</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    @endif
+    <!-- Include Floating Modals -->
+    @include('livewire.units.partials.modal-worker-assignment')
+    @include('livewire.units.partials.modal-booking')
+    @include('livewire.units.partials.modal-payroll-setup')
+    @include('livewire.units.partials.modal-payroll-payment')
+    @include('livewire.units.partials.modal-material-purchase')
+    @include('livewire.units.partials.modal-installment-payment')
+    @include('livewire.units.partials.modal-setup-installment')
+    @include('livewire.units.partials.modal-viewer')
+    @include('livewire.units.partials.modal-convert-to-cash')
+    @include('livewire.units.partials.modal-edit-unit')
 </div>

@@ -65,6 +65,59 @@
         </div>
     </div>
 
+    <!-- Summary KPI Cards Grid -->
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
+        <div class="kpi-card-blue">
+            <div class="flex items-center justify-between">
+                <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Total Stok Unit</span>
+                <div class="p-2 rounded-xl bg-purple-50 text-purple-600 border border-purple-100">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
+                </div>
+            </div>
+            <p class="text-2xl font-extrabold text-slate-900 font-mono mt-1.5">{{ $units->total() }} Unit</p>
+            <p class="text-[10px] text-slate-400 mt-0.5">Total unit kavling & rumah</p>
+        </div>
+
+        <div class="kpi-card-emerald">
+            <div class="flex items-center justify-between">
+                <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Unit Tersedia</span>
+                <div class="p-2 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </div>
+            </div>
+            <p class="text-2xl font-extrabold text-emerald-700 font-mono mt-1.5">
+                {{ \App\Models\Unit::where('status', 'tersedia')->count() }} Unit
+            </p>
+            <p class="text-[10px] text-slate-400 mt-0.5">Siap dijual / dipesan</p>
+        </div>
+
+        <div class="kpi-card-amber">
+            <div class="flex items-center justify-between">
+                <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Booked & Pending</span>
+                <div class="p-2 rounded-xl bg-amber-50 text-amber-600 border border-amber-100">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </div>
+            </div>
+            <p class="text-2xl font-extrabold text-amber-700 font-mono mt-1.5">
+                {{ \App\Models\Unit::whereIn('status', ['booked', 'menunggu_persetujuan'])->count() }} Unit
+            </p>
+            <p class="text-[10px] text-slate-400 mt-0.5">Dalam proses transaksi</p>
+        </div>
+
+        <div class="kpi-card-rose">
+            <div class="flex items-center justify-between">
+                <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Unit Terjual / ACC</span>
+                <div class="p-2 rounded-xl bg-rose-50 text-rose-600 border border-rose-100">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                </div>
+            </div>
+            <p class="text-2xl font-extrabold text-rose-700 font-mono mt-1.5">
+                {{ \App\Models\Unit::whereIn('status', ['disetujui', 'terjual', 'converted'])->count() }} Unit
+            </p>
+            <p class="text-[10px] text-slate-400 mt-0.5">Penjualan lunas / cicilan</p>
+        </div>
+    </div>
+
     <!-- Units Grid Cards -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         @forelse($units as $unit)

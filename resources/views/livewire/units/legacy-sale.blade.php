@@ -10,9 +10,9 @@
             <p class="text-xs text-slate-500 mt-1">Form khusus pendaftaran unit kavling/rumah yang sudah terjual & lunas 100% sebelum sistem SIM Properti dibuat.</p>
         </div>
 
-        <button wire:click="openCreateModal" class="btn-primary bg-purple-700 hover:bg-purple-800 text-white whitespace-nowrap shadow-md">
+        <button wire:click="openCreateModal" class="btn-header-setup bg-purple-700 hover:bg-purple-800 text-white">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-            <span>+ Catat Unit Terjual Lunas (Masa Lalu)</span>
+            <span>Catat Unit Terjual Lunas</span>
         </button>
     </div>
 
@@ -31,8 +31,8 @@
     @endif
 
     <!-- Highlight Information Banner -->
-    <div class="bg-amber-50/80 border border-amber-200 rounded-2xl p-4 text-amber-900 text-xs flex items-start gap-3 shadow-sm">
-        <div class="p-2 bg-amber-100 rounded-xl text-amber-700 shrink-0">
+    <div class="card-clean bg-amber-50/70 border border-amber-200/90 p-4 text-amber-900 text-xs flex items-start gap-3 shadow-2xs">
+        <div class="p-2 bg-amber-100/80 rounded-xl text-amber-700 shrink-0">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
         </div>
         <div class="space-y-1">
@@ -48,7 +48,7 @@
         <div class="p-4 border-b border-slate-100 flex items-center justify-between">
             <h3 class="font-extrabold text-slate-800 text-sm flex items-center gap-2">
                 <svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                Daftar Unit Terjual & Lunas (Termasuk Pencatatan Masa Lalu)
+                <span>Daftar Unit Terjual & Lunas (Termasuk Pencatatan Masa Lalu)</span>
             </h3>
         </div>
         <div class="overflow-x-auto">
@@ -90,23 +90,25 @@
                                 Rp {{ number_format($unit->final_selling_price ?? $unit->hpp, 0, ',', '.') }}
                             </td>
                             <td class="px-5 py-4 text-center">
-                                <span class="inline-flex items-center gap-1 text-[10px] font-bold px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300">
+                                <span class="status-lunas font-bold">
                                     <svg class="w-3 h-3 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                                     LUNAS 100%
                                 </span>
                             </td>
-                            <td class="px-5 py-4 text-right whitespace-nowrap space-x-1">
-                                <a href="{{ route('units.show', $unit->id) }}" class="btn-secondary text-[11px] px-2.5 py-1.5 inline-flex items-center gap-1">
-                                    <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-                                    <span>Detail Unit</span>
-                                </a>
+                            <td class="px-5 py-4 text-right whitespace-nowrap">
+                                <div class="flex items-center justify-end gap-1.5 flex-wrap">
+                                    <a href="{{ route('units.show', $unit->id) }}" class="btn-action-unit" title="Lihat Detail Unit">
+                                        <svg class="w-3.5 h-3.5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                                        <span>Detail Unit</span>
+                                    </a>
 
-                                @if($unit->officialDocument)
-                                    <button wire:click="openViewerModal('pdf', '{{ route('documents.stream', $unit->officialDocument->id) }}', 'Pratinjau Surat SPP Lunas - {{ $unit->code }}')" class="px-2.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-[11px] font-bold shadow inline-flex items-center gap-1 transition">
-                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                                        <span>SPP PDF</span>
-                                    </button>
-                                @endif
+                                    @if($unit->officialDocument)
+                                        <button wire:click="openViewerModal('pdf', '{{ route('documents.stream', $unit->officialDocument->id) }}', 'Pratinjau Surat SPP Lunas - {{ $unit->code }}')" class="btn-action-pdf" title="Lihat Surat SPP PDF">
+                                            <svg class="w-3.5 h-3.5 text-sky-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                                            <span>SPP PDF</span>
+                                        </button>
+                                    @endif
+                                </div>
                             </td>
                         </tr>
                     @empty
@@ -114,7 +116,7 @@
                             <td colspan="7" class="px-6 py-12 text-center text-slate-400">
                                 <svg class="w-12 h-12 mx-auto text-slate-300 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                                 <p class="font-semibold text-slate-600">Belum Ada Data Unit Terjual</p>
-                                <p class="text-xs text-slate-400 mt-1">Gunakan tombol "+ Catat Unit Terjual Lunas (Masa Lalu)" untuk mendaftarkan penjualan historis.</p>
+                                <p class="text-xs text-slate-400 mt-1">Gunakan tombol "Catat Unit Terjual Lunas (Masa Lalu)" untuk mendaftarkan penjualan historis.</p>
                             </td>
                         </tr>
                     @endforelse

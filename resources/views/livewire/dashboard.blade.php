@@ -67,91 +67,91 @@
 
     <!-- KPI Metric Cards Grid -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-        <!-- Stat Card 1 -->
-        <div class="card-clean p-5">
-            <div class="flex items-center justify-between mb-3">
-                <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Proyek Aktif</span>
-                <div class="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center">
+        <!-- Stat Card 1: Proyek Aktif -->
+        <div class="kpi-card-blue">
+            <div class="flex items-center justify-between">
+                <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Proyek Aktif</span>
+                <div class="p-2.5 rounded-xl bg-purple-50 text-purple-600 border border-purple-100">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5m0 0h5m-5 0v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
                 </div>
             </div>
-            <p class="text-3xl font-extrabold text-slate-900 tracking-tight">{{ $totalProjects }}</p>
-            <p class="text-xs text-slate-500 mt-1">Kawasan perumahan & kavling</p>
+            <p class="text-2xl font-extrabold text-slate-900 font-mono mt-2">{{ $totalProjects }} Proyek</p>
+            <p class="text-[11px] text-slate-400 mt-1">Kawasan perumahan & kavling aktif</p>
         </div>
 
-        <!-- Stat Card 2 -->
-        <div class="card-clean p-5">
-            <div class="flex items-center justify-between mb-3">
-                <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Unit Kavling & Rumah</span>
-                <div class="w-10 h-10 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center">
+        <!-- Stat Card 2: Unit Kavling & Rumah -->
+        <div class="kpi-card-emerald">
+            <div class="flex items-center justify-between">
+                <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Unit Kavling & Rumah</span>
+                <div class="p-2.5 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
                 </div>
             </div>
-            <div class="flex items-baseline gap-2">
-                <span class="text-3xl font-extrabold text-slate-900 tracking-tight">{{ $totalUnits }}</span>
-                <span class="text-xs font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
+            <div class="flex items-baseline gap-2 mt-2">
+                <span class="text-2xl font-extrabold text-slate-900 font-mono">{{ $totalUnits }}</span>
+                <span class="status-tersedia">
                     {{ $availableUnits }} Tersedia
                 </span>
             </div>
-            <p class="text-xs text-slate-500 mt-1">Total stok unit proyek</p>
+            <p class="text-[11px] text-slate-400 mt-1">Total stok unit proyek terdaftar</p>
         </div>
 
         @if($user->isPengawasProject())
             <!-- Stat Card 3 (Worker for Pengawas) -->
-            <div class="card-clean p-5">
-                <div class="flex items-center justify-between mb-3">
-                    <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Pekerja Lapangan</span>
-                    <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
+            <div class="kpi-card-amber">
+                <div class="flex items-center justify-between">
+                    <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Pekerja Lapangan</span>
+                    <div class="p-2.5 rounded-xl bg-amber-50 text-amber-600 border border-amber-100">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
                     </div>
                 </div>
-                <p class="text-3xl font-extrabold text-amber-600 tracking-tight">{{ \App\Models\Worker::where('status', 'active')->count() }}</p>
-                <p class="text-xs text-slate-500 mt-1">Mandor & Tukang Aktif</p>
+                <p class="text-2xl font-extrabold text-amber-600 font-mono mt-2">{{ \App\Models\Worker::where('status', 'active')->count() }} Orang</p>
+                <p class="text-[11px] text-slate-400 mt-1">Mandor & Tukang bertugas aktif</p>
             </div>
 
-            <!-- Stat Card 4 (Belanja Material & Upah for Pengawas) -->
-            <div class="card-clean p-5">
-                <div class="flex items-center justify-between mb-3">
-                    <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Total Belanja Material</span>
-                    <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+            <!-- Stat Card 4 (Belanja Material for Pengawas) -->
+            <div class="kpi-card-emerald">
+                <div class="flex items-center justify-between">
+                    <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Total Belanja Material</span>
+                    <div class="p-2.5 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
                     </div>
                 </div>
-                <p class="text-2xl font-bold text-emerald-600 tracking-tight font-mono">
+                <p class="text-2xl font-extrabold text-emerald-600 font-mono mt-2">
                     Rp {{ number_format(\App\Models\WeeklyMaterialPurchase::sum('total_price'), 0, ',', '.') }}
                 </p>
-                <p class="text-xs text-slate-500 mt-1">Pembelian bahan bangunan unit</p>
+                <p class="text-[11px] text-slate-400 mt-1">Pembelian bahan bangunan unit</p>
             </div>
         @else
             <!-- Stat Card 3 (Proposals for Executives/Sales) -->
-            <div class="card-clean p-5">
-                <div class="flex items-center justify-between mb-3">
-                    <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Pengajuan Harga</span>
-                    <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
+            <div class="kpi-card-amber">
+                <div class="flex items-center justify-between">
+                    <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Pengajuan Harga</span>
+                    <div class="p-2.5 rounded-xl bg-amber-50 text-amber-600 border border-amber-100">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                     </div>
                 </div>
-                <div class="flex items-baseline gap-2">
-                    <span class="text-3xl font-extrabold text-amber-600 tracking-tight">{{ $pendingProposalsCount }}</span>
-                    <span class="text-xs font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
+                <div class="flex items-baseline gap-2 mt-2">
+                    <span class="text-2xl font-extrabold text-amber-600 font-mono">{{ $pendingProposalsCount }}</span>
+                    <span class="status-disetujui">
                         {{ $approvedProposalsCount }} Disetujui
                     </span>
                 </div>
-                <p class="text-xs text-slate-500 mt-1">Proposal usulan penawaran</p>
+                <p class="text-[11px] text-slate-400 mt-1">Proposal penawaran harga</p>
             </div>
 
             <!-- Stat Card 4 (Arus Kas Global for Finance/Founder) -->
-            <div class="card-clean p-5">
-                <div class="flex items-center justify-between mb-3">
-                    <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Arus Kas Global</span>
-                    <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+            <div class="kpi-card-emerald">
+                <div class="flex items-center justify-between">
+                    <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Arus Kas Global</span>
+                    <div class="p-2.5 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                     </div>
                 </div>
-                <p class="text-2xl font-bold text-emerald-600 tracking-tight font-mono">
+                <p class="text-2xl font-extrabold text-emerald-600 font-mono mt-2">
                     Rp {{ number_format($netCashflow, 0, ',', '.') }}
                 </p>
-                <p class="text-xs text-slate-500 mt-1">Masuk: Rp {{ number_format($totalCashIn, 0, ',', '.') }}</p>
+                <p class="text-[11px] text-slate-400 mt-1">Masuk: Rp {{ number_format($totalCashIn, 0, ',', '.') }}</p>
             </div>
         @endif
     </div>

@@ -8,6 +8,8 @@ use App\Livewire\Cashflow\Index as CashflowIndex;
 use Livewire\Livewire;
 use Spatie\Permission\Models\Role;
 
+uses(Illuminate\Foundation\Testing\RefreshDatabase::class);
+
 beforeEach(function () {
     Role::findOrCreate('founder', 'web');
     Role::findOrCreate('finance', 'web');
@@ -65,6 +67,8 @@ test('finance and founder can view audit trail details of cashflow transactions'
         ->assertSee('Detail Alur Keuangan')
         ->assertSee('Founder Audit')
         ->assertSee('Klien Audit Test')
+        ->assertSee('Menu Invoice Manual')
+        ->assertSee('Waktu System')
         ->call('closeDetailModal')
         ->assertSet('showDetailModal', false);
 });

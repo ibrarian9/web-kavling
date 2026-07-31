@@ -313,3 +313,47 @@ test('editing worker salary payment updates pdf receipt and qr verification rout
     $response = $this->actingAs($finance)->get(route('payroll.receipt', $sp->uuid));
     $response->assertStatus(200);
 });
+
+test('heic file upload preview does not crash component and shows safe fallback message', function () {
+    $founder = User::create([
+        'name' => 'Founder HEIC Test',
+        'email' => 'founder_heic_' . Str::random(5) . '@test.com',
+        'password' => bcrypt('password'),
+        'role' => 'founder',
+        'is_active' => true,
+    ]);
+    $founder->assignRole('founder');
+
+    $project = Project::create([
+        'name' => 'Kavling HEIC',
+        'location' => 'Jalan HEIC',
+        'land_purchase_price' => 100000000,
+        'standard_land_area' => 100,
+        'excess_price_per_sqm' => 500000,
+        'base_price' => 120000000,
+        'created_by' => $founder->id,
+    ]);
+
+    $unit = Unit::create([
+        'project_id' => $project->id,
+        'code' => 'HEIC_01',
+        'category' => 'kavling',
+        'land_length' => 10,
+        'land_width' => 10,
+        'land_area' => 100,
+        'building_area' => 0,
+        'hpp' => 100000000,
+        'final_selling_price' => 150000000,
+        'status' => 'tersedia',
+        'created_by' => $founder->id,
+    ]);
+
+    $heicFile = \Illuminate\Http\UploadedFile::fake()->create('nota_material.heic', 500, 'image/heic');
+
+    Livewire::actingAs($founder)
+        ->test(UnitShow::class, ['id' => $unit->id])
+        ->call('openMaterialModal')
+        ->set('material_receipt_photo', $heicFile)
+        ->assertSee('nota_material.heic')
+        ->assertSee('tidak mendukung pratinjau langsung');
+});

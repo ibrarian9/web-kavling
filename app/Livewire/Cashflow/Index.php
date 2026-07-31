@@ -129,18 +129,55 @@ class Index extends Component
 
     private function resolveAuditTrail(CashflowTransaction $t): array
     {
+        // 1. Source Menu Determination
+        $sourceMenu = '📝 Input Direct Modul Arus Kas';
+        if ($t->reference_type) {
+            if ($t->reference_type === \App\Models\ManualInvoice::class) {
+                $sourceMenu = '📄 Menu Invoice Manual / Kuitansi';
+            } elseif ($t->reference_type === \App\Models\InstallmentPayment::class) {
+                $sourceMenu = '💳 Menu Cicilan Pembeli & Setoran Unit';
+            } elseif ($t->reference_type === \App\Models\Booking::class) {
+                $sourceMenu = '📌 Menu Booking Unit & Penjualan';
+            } elseif ($t->reference_type === \App\Models\ProjectPayment::class) {
+                $sourceMenu = '🏗️ Menu Detail Proyek (Lahan & Operasional)';
+            } elseif ($t->reference_type === \App\Models\WorkerSalaryPayment::class) {
+                $sourceMenu = '👷 Menu Penggajian Worker / Detail Unit';
+            }
+        } else {
+            $descLower = strtolower($t->description ?? '');
+            if (str_contains($descLower, 'material') || str_contains($descLower, 'semen') || str_contains($descLower, 'pasir') || str_contains($descLower, 'bata')) {
+                $sourceMenu = '🧱 Menu Detail Unit (Belanja Material)';
+            } elseif (str_contains($descLower, 'lapangan') || str_contains($descLower, 'operasional')) {
+                $sourceMenu = '🛠️ Menu Pengeluaran Lapangan / Operasional';
+            }
+        }
+
+        // 2. Day, Date, and Time Formatting (Hari, Tanggal, Jam)
+        $dayNameCreated = $t->created_at ? $t->created_at->locale('id')->isoFormat('dddd') : '-';
+        $fullCreatedAt = $t->created_at 
+            ? $t->created_at->locale('id')->isoFormat('dddd, D MMMM YYYY [pukul] HH:mm:ss [WIB]')
+            : '-';
+
+        $dayNameTrx = $t->transaction_date ? $t->transaction_date->locale('id')->isoFormat('dddd') : '-';
+        $fullTrxDate = $t->transaction_date 
+            ? $t->transaction_date->locale('id')->isoFormat('dddd, D MMMM YYYY')
+            : '-';
+
         $inputtedBy = [
             'name' => $t->creator->name ?? 'Sistem Keuangan',
             'email' => $t->creator->email ?? '-',
             'role' => $t->creator->role ?? 'Sistem',
-            'created_at' => $t->created_at ? $t->created_at->translatedFormat('d F Y H:i WIB') : '-',
+            'created_at' => $fullCreatedAt,
+            'day' => $dayNameCreated,
+            'time' => $t->created_at ? $t->created_at->format('H:i') . ' WIB' : '-',
         ];
 
         $approvedBy = [
             'name' => 'Tim Finance / Founder',
             'role' => 'Finance & Management ACC',
             'status' => 'Disetujui & Sah (Lunas)',
-            'approved_at' => $t->transaction_date ? $t->transaction_date->translatedFormat('d F Y') : '-',
+            'approved_at' => $fullTrxDate,
+            'day' => $dayNameTrx,
             'notes' => 'Tercatat dalam laporan mutasi arus kas resmi',
         ];
 
@@ -212,6 +249,9 @@ class Index extends Component
         }
 
         return [
+            'source_menu' => $sourceMenu,
+            'created_at_full' => $fullCreatedAt,
+            'transaction_date_full' => $fullTrxDate,
             'inputted_by' => $inputtedBy,
             'approved_by' => $approvedBy,
             'reference_detail' => $referenceDetail,

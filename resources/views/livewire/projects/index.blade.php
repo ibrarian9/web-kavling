@@ -22,6 +22,59 @@
         </div>
     @endif
 
+    <!-- Summary KPI Cards Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
+        <div class="kpi-card-blue">
+            <div class="flex items-center justify-between">
+                <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Total Proyek Kavling</span>
+                <div class="p-2.5 rounded-xl bg-purple-50 text-purple-600 border border-purple-100">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5m0 0h5m-5 0v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                </div>
+            </div>
+            <p class="text-2xl font-extrabold text-slate-900 font-mono mt-2">{{ $projects->total() }} Proyek</p>
+            <p class="text-[11px] text-slate-400 mt-1">Lokasi perumahan & kavling terdaftar</p>
+        </div>
+
+        <div class="kpi-card-emerald">
+            <div class="flex items-center justify-between">
+                <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Total Unit Terdaftar</span>
+                <div class="p-2.5 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 01-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
+                </div>
+            </div>
+            <p class="text-2xl font-extrabold text-slate-900 font-mono mt-2">{{ \App\Models\Unit::count() }} Unit</p>
+            <p class="text-[11px] text-slate-400 mt-1">Kavling tanah & rumah di seluruh proyek</p>
+        </div>
+
+        @if(auth()->user()->canViewHpp())
+            <div class="kpi-card-amber">
+                <div class="flex items-center justify-between">
+                    <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Total Harga Beli Lahan</span>
+                    <div class="p-2.5 rounded-xl bg-amber-50 text-amber-600 border border-amber-100">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    </div>
+                </div>
+                <p class="text-2xl font-extrabold text-amber-600 font-mono mt-2">
+                    Rp {{ number_format(\App\Models\Project::sum('total_project_price'), 0, ',', '.') }}
+                </p>
+                <p class="text-[11px] text-slate-400 mt-1">Akumulasi komitmen bayar ke penjual</p>
+            </div>
+        @else
+            <div class="kpi-card-amber">
+                <div class="flex items-center justify-between">
+                    <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Pengawas Bertugas</span>
+                    <div class="p-2.5 rounded-xl bg-purple-50 text-purple-600 border border-purple-100">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                    </div>
+                </div>
+                <p class="text-2xl font-extrabold text-purple-700 font-mono mt-2">
+                    {{ \App\Models\WorkerAssignment::where('status', 'active')->whereNotNull('user_id')->count() }} Penugasan
+                </p>
+                <p class="text-[11px] text-slate-400 mt-1">Pengawas proyek aktif</p>
+            </div>
+        @endif
+    </div>
+
     <!-- Projects Table Card -->
     <div class="bg-white border border-slate-200/80 rounded-2xl shadow-sm overflow-hidden">
         <div class="overflow-x-auto">
@@ -89,28 +142,32 @@
                                     {{ $p->units_count }} Unit
                                 </span>
                             </td>
-                            <td class="p-3.5 text-right space-x-1 whitespace-nowrap">
-                                <a href="{{ route('projects.show', $p->id) }}" class="btn-action-detail">
-                                    <svg class="w-3.5 h-3.5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5m0 0h5m-5 0v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
-                                    <span>Detail</span>
-                                </a>
+                            <td class="p-3.5 text-right whitespace-nowrap">
+                                <div class="flex items-center justify-end gap-1.5 flex-wrap">
+                                    <a href="{{ route('projects.show', $p->id) }}" class="btn-action-detail" title="Lihat Dashboard & Arus Kas Proyek">
+                                        <svg class="w-3.5 h-3.5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                                        <span>Detail</span>
+                                    </a>
 
-                                @if(auth()->user()->isFounder())
-                                    <button wire:click="openWorkerModal({{ $p->id }})" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-purple-50 text-purple-800 hover:bg-purple-100 border border-purple-200/80 text-[11px] font-bold transition shadow-2xs" title="Tugaskan Pengawas Project">
-                                        + Supervisor
-                                    </button>
-                                @endif
+                                    @if(auth()->user()->isFounder())
+                                        <button wire:click="openWorkerModal({{ $p->id }})" class="btn-action-supervisor" title="Tugaskan Pengawas Project">
+                                            <svg class="w-3.5 h-3.5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                                            <span>Supervisor</span>
+                                        </button>
+                                    @endif
 
-                                <a href="{{ route('units.index', ['project_id' => $p->id]) }}" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-sky-50 text-sky-800 hover:bg-sky-100 border border-sky-200 text-[11px] font-bold transition shadow-2xs">
-                                    Unit
-                                </a>
+                                    <a href="{{ route('units.index', ['project_id' => $p->id]) }}" class="btn-action-unit" title="Lihat Daftar Unit Proyek">
+                                        <svg class="w-3.5 h-3.5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+                                        <span>Unit</span>
+                                    </a>
 
-                                @if(auth()->user()->isFounder() || auth()->user()->isSupervisor())
-                                    <button wire:click="editProject({{ $p->id }})" class="btn-action-edit">
-                                        <svg class="w-3.5 h-3.5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-                                        <span>Edit</span>
-                                    </button>
-                                @endif
+                                    @if(auth()->user()->isFounder() || auth()->user()->isSupervisor())
+                                        <button wire:click="editProject({{ $p->id }})" class="btn-action-edit" title="Edit Data Proyek">
+                                            <svg class="w-3.5 h-3.5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                                            <span>Edit</span>
+                                        </button>
+                                    @endif
+                                </div>
                             </td>
                         </tr>
                     @empty

@@ -242,6 +242,22 @@ class Index extends Component
         $this->showConvertToCashModal = false;
     }
 
+    // Modal Detail Skema & Riwayat Setoran
+    public bool $showDetailModal = false;
+    public $selectedDetailInstallment = null;
+
+    public function openDetailModal($installmentId)
+    {
+        $this->selectedDetailInstallment = UnitInstallment::with(['unit.project', 'officialDocument', 'payments.creator'])->findOrFail($installmentId);
+        $this->showDetailModal = true;
+    }
+
+    public function closeDetailModal()
+    {
+        $this->showDetailModal = false;
+        $this->selectedDetailInstallment = null;
+    }
+
     public function render()
     {
         $installments = UnitInstallment::with(['unit.project', 'officialDocument', 'payments'])
@@ -256,6 +272,8 @@ class Index extends Component
             'installments' => $installments,
             'eligibleUnits' => $eligibleUnits,
             'showConvertToCashModal' => $this->showConvertToCashModal,
+            'showDetailModal' => $this->showDetailModal,
+            'selectedDetailInstallment' => $this->selectedDetailInstallment,
         ])->layout('components.layouts.app', ['title' => 'Cicilan & Piutang Pembeli']);
     }
 }

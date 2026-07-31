@@ -3,28 +3,28 @@
     <!-- Header Section & Toolbar -->
     <div class="card-clean p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-            <h2 class="text-xl font-bold text-slate-900 tracking-tight">Arus Kas Per-Proyek, Per-Unit & Konsolidasi Global</h2>
+            <h2 class="text-xl font-bold text-slate-900 tracking-tight">Arus Kas Global</h2>
             <p class="text-slate-500 text-xs mt-0.5">Rekapitulasi kas masuk & keluar per unit & lokasi perumahan serta rincian konsolidasi global</p>
         </div>
 
         <div class="flex flex-wrap items-center gap-2">
             <!-- Mode Switcher -->
             <div class="bg-slate-100 p-1 rounded-xl border border-slate-200/80 flex text-xs">
-                <button wire:click="$set('view_mode', 'global')" class="px-3 py-1.5 rounded-lg font-semibold transition {{ $view_mode === 'global' ? 'bg-white text-emerald-700 shadow-sm' : 'text-slate-600 hover:text-slate-900' }}">
+                <button wire:click="$set('view_mode', 'global')" class="px-3 py-1.5 rounded-lg font-semibold transition {{ $view_mode === 'global' ? 'bg-white text-emerald-700 shadow-xs' : 'text-slate-600 hover:text-slate-900' }}">
                     Kas Global
                 </button>
-                <button wire:click="$set('view_mode', 'project')" class="px-3 py-1.5 rounded-lg font-semibold transition {{ $view_mode === 'project' ? 'bg-white text-emerald-700 shadow-sm' : 'text-slate-600 hover:text-slate-900' }}">
+                <button wire:click="$set('view_mode', 'project')" class="px-3 py-1.5 rounded-lg font-semibold transition {{ $view_mode === 'project' ? 'bg-white text-emerald-700 shadow-xs' : 'text-slate-600 hover:text-slate-900' }}">
                     Per Proyek
                 </button>
-                <button wire:click="$set('view_mode', 'unit')" class="px-3 py-1.5 rounded-lg font-semibold transition {{ $view_mode === 'unit' ? 'bg-white text-emerald-700 shadow-sm' : 'text-slate-600 hover:text-slate-900' }}">
+                <button wire:click="$set('view_mode', 'unit')" class="px-3 py-1.5 rounded-lg font-semibold transition {{ $view_mode === 'unit' ? 'bg-white text-emerald-700 shadow-xs' : 'text-slate-600 hover:text-slate-900' }}">
                     Per Unit
                 </button>
             </div>
 
             @if ($view_mode === 'project' || $view_mode === 'unit')
                 <!-- Filter Proyek -->
-                <select wire:model.live="filter_project_id" class="input-clean font-semibold text-xs py-2">
-                    <option value="">-- Semua Proyek --</option>
+                <select wire:model.live="filter_project_id" class="select-clean text-xs">
+                    <option value="">🏗️ Semua Proyek</option>
                     @foreach($projects as $p)
                         <option value="{{ $p->id }}">{{ $p->name }}</option>
                     @endforeach
@@ -33,8 +33,8 @@
 
             @if ($view_mode === 'unit' || ($view_mode === 'project' && $filter_project_id))
                 <!-- Filter Unit -->
-                <select wire:model.live="filter_unit_id" class="input-clean font-semibold text-xs py-2">
-                    <option value="">-- Pilih Unit --</option>
+                <select wire:model.live="filter_unit_id" class="select-clean text-xs">
+                    <option value="">🏡 Pilih Unit</option>
                     @foreach($availableUnits as $u)
                         <option value="{{ $u->id }}">Unit {{ $u->code }} ({{ $u->project->name }})</option>
                     @endforeach
@@ -57,8 +57,8 @@
 
             <!-- Export Buttons -->
             <div class="flex items-center gap-1.5">
-                <a href="{{ url('/cashflow/export-pdf?' . http_build_query(['view_mode' => $view_mode ?? 'global', 'project_id' => $filter_project_id ?? '', 'unit_id' => $filter_unit_id ?? '', 'month' => $filter_month ?? ''])) }}" target="_blank" class="px-3.5 py-2 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 rounded-xl text-xs font-bold inline-flex items-center gap-1.5 transition shadow-2xs" title="Cetak / Download PDF Laporan Arus Kas">
-                    <svg class="w-4 h-4 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                <a href="{{ url('/cashflow/export-pdf?' . http_build_query(['view_mode' => $view_mode ?? 'global', 'project_id' => $filter_project_id ?? '', 'unit_id' => $filter_unit_id ?? '', 'month' => $filter_month ?? ''])) }}" target="_blank" class="btn-header-pdf" title="Cetak / Download PDF Laporan Arus Kas">
+                    <svg class="w-4 h-4 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 01-2-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                     <span>Export PDF</span>
                 </a>
 
@@ -69,7 +69,7 @@
             </div>
 
             @if(auth()->user()->isFounder())
-                <button wire:click="openManualModal" class="btn-primary whitespace-nowrap text-xs px-3.5 py-2">
+                <button wire:click="openManualModal" class="btn-primary text-xs px-3.5 py-2">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                     <span>+ Catat Mutasi Kas</span>
                 </button>
@@ -80,12 +80,12 @@
     <!-- Summary KPI Cards Grid -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
         <!-- Total Masuk -->
-        <div class="card-clean p-5 relative overflow-hidden">
+        <div class="kpi-card-emerald">
             <div class="flex items-center justify-between">
                 <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">
                     {{ $view_mode === 'global' ? 'Kas Masuk Global' : 'Kas Masuk (Tersaring)' }}
                 </span>
-                <div class="p-2.5 rounded-xl bg-emerald-50 text-emerald-600">
+                <div class="p-2.5 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg>
                 </div>
             </div>
@@ -94,12 +94,12 @@
         </div>
 
         <!-- Total Keluar -->
-        <div class="card-clean p-5 relative overflow-hidden">
+        <div class="kpi-card-rose">
             <div class="flex items-center justify-between">
                 <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">
                     {{ $view_mode === 'global' ? 'Kas Keluar Global' : 'Kas Keluar (Tersaring)' }}
                 </span>
-                <div class="p-2.5 rounded-xl bg-rose-50 text-rose-600">
+                <div class="p-2.5 rounded-xl bg-rose-50 text-rose-600 border border-rose-100">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"/></svg>
                 </div>
             </div>
@@ -108,12 +108,12 @@
         </div>
 
         <!-- Net Cashflow -->
-        <div class="bg-slate-900 text-white rounded-2xl p-5 shadow-xl space-y-1 relative overflow-hidden">
+        <div class="kpi-card-dark">
             <div class="flex items-center justify-between">
                 <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">
                     Saldo Kas {{ $view_mode === 'global' ? 'Konsolidasi Global' : 'Bersih' }}
                 </span>
-                <div class="p-2 rounded-xl bg-emerald-500/20 text-emerald-400">
+                <div class="p-2.5 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
                 </div>
             </div>
@@ -316,167 +316,10 @@
     </div>
 
     <!-- Modal Catat Kas Manual -->
-    @if($showManualModal)
-        <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm">
-            <div class="bg-white border border-slate-200/80 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
-                <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-                    <h3 class="font-bold text-slate-900 text-base">Catat Mutasi Kas Manual</h3>
-                    <button wire:click="$set('showManualModal', false)" class="text-slate-400 hover:text-slate-600">✕</button>
-                </div>
-
-                <form wire:submit.prevent="saveTransaction" class="space-y-4 text-xs">
-                    <div>
-                        <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider">Pilih Proyek</label>
-                        <select wire:model="project_id" class="input-clean w-full font-semibold">
-                            @foreach($projects as $p)
-                                <option value="{{ $p->id }}">{{ $p->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-3">
-                        <div>
-                            <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider">Tipe Arus Kas</label>
-                            <select wire:model="type" class="input-clean w-full font-bold">
-                                <option value="masuk">Pemasukan (Masuk)</option>
-                                <option value="keluar">Pengeluaran (Keluar)</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider">Tanggal Mutasi</label>
-                            <input type="date" wire:model="transaction_date" class="input-clean w-full font-mono">
-                        </div>
-                    </div>
-
-                    <div>
-                        <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider">Nominal (Rp)</label>
-                        <x-currency-input model="amount" class="input-clean w-full font-bold text-sm font-mono" placeholder="Rp 0" />
-                    </div>
-
-                    <div>
-                        <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider">Keterangan Transaksi</label>
-                        <input type="text" wire:model="description" required placeholder="Pendapatan lain / Konsumsi tukang..." class="input-clean w-full">
-                    </div>
-
-                    <div class="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
-                        <button type="button" wire:click="$set('showManualModal', false)" class="btn-secondary">Batal</button>
-                        <button type="submit" class="btn-primary">Simpan Mutasi</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    @endif
+    @include('livewire.cashflow.partials.modal-manual-transaction')
 
     <!-- Modal Detail Alur Keuangan & Audit Trail -->
-    @if(!empty($showDetailModal) && !empty($selectedTransaction))
-        <div class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs p-3 sm:p-6 md:p-10 flex items-center justify-center min-h-screen">
-            <div class="bg-white border border-slate-200 rounded-2xl sm:rounded-3xl max-w-lg sm:max-w-xl w-full p-5 sm:p-6 shadow-2xl space-y-4 my-auto">
-                <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-                    <div class="flex items-center gap-2.5">
-                        <div class="p-2 rounded-xl bg-teal-50 text-teal-700">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                        </div>
-                        <div>
-                            <h3 class="font-extrabold text-slate-900 text-base">Detail Alur Keuangan & Audit Trail</h3>
-                            <p class="text-[11px] text-slate-500">Nomor Mutasi: <strong class="font-mono text-slate-800">#TRX-{{ $selectedTransaction->id }}</strong></p>
-                        </div>
-                    </div>
-                    <button wire:click="closeDetailModal" class="text-slate-400 hover:text-slate-600 text-sm font-bold">✕</button>
-                </div>
-
-                <!-- Financial Highlight Box -->
-                <div class="p-4 rounded-xl {{ $selectedTransaction->type === 'masuk' ? 'bg-emerald-50 border border-emerald-200/80 text-emerald-900' : 'bg-rose-50 border border-rose-200/80 text-rose-900' }} flex items-center justify-between">
-                    <div>
-                        <span class="text-[10px] font-bold uppercase tracking-wider block opacity-75">Nominal Mutasi Kas</span>
-                        <strong class="text-xl font-mono font-extrabold">
-                            {{ $selectedTransaction->type === 'masuk' ? '+' : '-' }} Rp {{ number_format($selectedTransaction->amount, 0, ',', '.') }}
-                        </strong>
-                    </div>
-                    <div class="text-right">
-                        <span class="px-2.5 py-1 rounded-md text-xs font-extrabold uppercase {{ $selectedTransaction->type === 'masuk' ? 'bg-emerald-600 text-white' : 'bg-rose-600 text-white' }}">
-                            {{ $selectedTransaction->type === 'masuk' ? 'Kas Masuk' : 'Kas Keluar' }}
-                        </span>
-                    </div>
-                </div>
-
-                <!-- Audit Timeline Steps -->
-                <div class="space-y-4 pt-1 text-xs">
-                    <h4 class="font-bold text-slate-800 uppercase tracking-wider text-[11px] border-b border-slate-100 pb-1.5">Alur Pencatatan & Otorisasi</h4>
-
-                    <!-- Step 1: Inputter -->
-                    <div class="flex items-start gap-3 relative pl-2">
-                        <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">
-                            1
-                        </div>
-                        <div class="space-y-0.5 flex-1">
-                            <div class="flex justify-between items-center">
-                                <span class="font-bold text-slate-900">Diinput Oleh</span>
-                                <span class="text-[10px] text-slate-400 font-mono">{{ $auditTrailInfo['inputted_by']['created_at'] }}</span>
-                            </div>
-                            <p class="font-semibold text-blue-800">{{ $auditTrailInfo['inputted_by']['name'] }} <span class="text-slate-500 font-normal">({{ ucfirst($auditTrailInfo['inputted_by']['role']) }})</span></p>
-                        </div>
-                    </div>
-
-                    <!-- Step 2: Approver -->
-                    <div class="flex items-start gap-3 relative pl-2">
-                        <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">
-                            2
-                        </div>
-                        <div class="space-y-0.5 flex-1">
-                            <div class="flex justify-between items-center">
-                                <span class="font-bold text-slate-900">Diverifikasi Oleh</span>
-                                <span class="text-[10px] text-emerald-700 font-bold bg-emerald-100 px-2 py-0.5 rounded border border-emerald-200">{{ $auditTrailInfo['approved_by']['status'] }}</span>
-                            </div>
-                            <p class="font-semibold text-emerald-800">{{ $auditTrailInfo['approved_by']['name'] }} <span class="text-slate-500 font-normal">({{ $auditTrailInfo['approved_by']['role'] }})</span></p>
-                            <p class="text-[11px] text-slate-600 italic mt-0.5">"{{ $auditTrailInfo['approved_by']['notes'] }}"</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Scope & Object Detail -->
-                <div class="bg-slate-50 border border-slate-200/80 rounded-xl p-3.5 text-xs space-y-2">
-                    <h4 class="font-bold text-slate-800 uppercase tracking-wider text-[10px]">Cakupan Objek Transaksi</h4>
-                    
-                    <div class="grid grid-cols-2 gap-2 text-[11px]">
-                        <div>
-                            <span class="text-slate-400 block text-[10px]">Proyek Properti:</span>
-                            <strong class="text-slate-800 font-semibold">{{ $selectedTransaction->project->name ?? 'Global' }}</strong>
-                        </div>
-                        <div>
-                            <span class="text-slate-400 block text-[10px]">Kategori Mutasi:</span>
-                            <strong class="text-slate-800 font-semibold capitalize">{{ str_replace('_', ' ', $selectedTransaction->category) }}</strong>
-                        </div>
-                    </div>
-
-                    @if($auditTrailInfo['reference_detail'])
-                        <div class="pt-2 border-t border-slate-200/80 text-[11px] space-y-1">
-                            <div class="flex justify-between">
-                                <span class="text-slate-500">Tipe Referensi:</span>
-                                <span class="font-bold text-teal-700">{{ $auditTrailInfo['reference_detail']['type'] }}</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-slate-500">Nomor Referensi:</span>
-                                <span class="font-mono font-bold text-slate-800">{{ $auditTrailInfo['reference_detail']['number'] }}</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-slate-500">Penerima / Klien:</span>
-                                <span class="font-bold text-slate-800">{{ $auditTrailInfo['reference_detail']['recipient'] }}</span>
-                            </div>
-                        </div>
-                    @endif
-
-                    <div class="pt-2 border-t border-slate-200/80 text-[11px]">
-                        <span class="text-slate-400 block text-[10px]">Keterangan Transaksi:</span>
-                        <p class="text-slate-700 italic font-medium">{{ $selectedTransaction->description }}</p>
-                    </div>
-                </div>
-
-                <div class="flex justify-end pt-2 border-t border-slate-100">
-                    <button type="button" wire:click="closeDetailModal" class="btn-secondary text-xs px-4 py-2">Tutup Detail</button>
-                </div>
-            </div>
-        </div>
-    @endif
+    @include('livewire.cashflow.partials.modal-detail-transaction')
 
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <script>

@@ -366,7 +366,7 @@ class Show extends Component
             'material_quantity' => 'required|numeric|min:0.01',
             'material_unit_measure' => 'required|string|max:50',
             'material_unit_price' => 'required|numeric|min:0',
-            'material_receipt_photo' => 'nullable|image|max:4096',
+            'material_receipt_photo' => 'nullable|file|mimes:jpg,jpeg,png,webp,heic,heif,pdf|max:10240',
             'material_notes' => 'nullable|string',
         ]);
 
@@ -617,7 +617,7 @@ class Show extends Component
             'payroll_payment_date' => 'required|date',
             'payroll_amount_gross' => 'required|numeric|min:1000|max:' . max(1000, $maxAllowed),
             'payroll_payment_method' => 'required|in:transfer_bank,tunai',
-            'payroll_receipt_photo' => 'nullable|image|max:4096',
+            'payroll_receipt_photo' => 'nullable|file|mimes:jpg,jpeg,png,webp,heic,heif,pdf|max:10240',
             'payroll_payment_notes' => 'nullable|string',
         ]);
 

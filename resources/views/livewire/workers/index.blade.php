@@ -18,6 +18,46 @@
         </div>
     @endif
 
+    <!-- Summary KPI Cards Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
+        <div class="kpi-card-blue">
+            <div class="flex items-center justify-between">
+                <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Total Pekerja Terdaftar</span>
+                <div class="p-2.5 rounded-xl bg-purple-50 text-purple-600 border border-purple-100">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                </div>
+            </div>
+            <p class="text-2xl font-extrabold text-slate-900 font-mono mt-2">{{ $workers->total() }} Orang</p>
+            <p class="text-[11px] text-slate-400 mt-1">Direktori mandor, tukang & kontraktor</p>
+        </div>
+
+        <div class="kpi-card-amber">
+            <div class="flex items-center justify-between">
+                <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Mandor & Kontraktor</span>
+                <div class="p-2.5 rounded-xl bg-amber-50 text-amber-600 border border-amber-100">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                </div>
+            </div>
+            <p class="text-2xl font-extrabold text-amber-600 font-mono mt-2">
+                {{ \App\Models\Worker::whereIn('type', ['mandor', 'kontraktor'])->count() }} Orang
+            </p>
+            <p class="text-[11px] text-slate-400 mt-1">Penanggung jawab pekerjaan</p>
+        </div>
+
+        <div class="kpi-card-emerald">
+            <div class="flex items-center justify-between">
+                <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Tukang Lapangan</span>
+                <div class="p-2.5 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+                </div>
+            </div>
+            <p class="text-2xl font-extrabold text-emerald-700 font-mono mt-2">
+                {{ \App\Models\Worker::where('type', 'tukang')->count() }} Orang
+            </p>
+            <p class="text-[11px] text-slate-400 mt-1">Tenaga ahli & pembantu tukang</p>
+        </div>
+    </div>
+
     <!-- Filters Toolbar -->
     <div class="card-clean p-4 flex flex-col md:flex-row gap-3">
         <div class="flex-1">
@@ -102,17 +142,26 @@
                                     <span class="status-draft">Nonaktif</span>
                                 @endif
                             </td>
-                            <td class="px-5 py-4 text-right space-x-1 whitespace-nowrap">
-                                <button wire:click="openAssignModal({{ $worker->id }})" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-blue-50 text-blue-800 hover:bg-blue-100 border border-blue-200 text-[11px] font-bold transition shadow-2xs">
-                                    + Tugaskan
-                                </button>
-                                <button wire:click="edit({{ $worker->id }})" class="btn-action-edit">
-                                    <svg class="w-3.5 h-3.5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-                                    <span>Edit</span>
-                                </button>
-                                <button wire:click="toggleStatus({{ $worker->id }})" class="btn-action-delete" title="Ubah Status Pekerja">
-                                    <span>{{ $worker->status === 'active' ? 'Nonaktifkan' : 'Aktifkan' }}</span>
-                                </button>
+                            <td class="px-5 py-4 text-right whitespace-nowrap">
+                                <div class="flex items-center justify-end gap-1.5 flex-wrap">
+                                    <button wire:click="openAssignModal({{ $worker->id }})" class="btn-action-assign" title="Tugaskan Pekerja ke Proyek / Unit">
+                                        <svg class="w-3.5 h-3.5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                                        <span>Tugaskan</span>
+                                    </button>
+                                    <button wire:click="edit({{ $worker->id }})" class="btn-action-edit" title="Edit Data Pekerja">
+                                        <svg class="w-3.5 h-3.5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                                        <span>Edit</span>
+                                    </button>
+                                    <button wire:click="toggleStatus({{ $worker->id }})" class="{{ $worker->status === 'active' ? 'btn-action-delete' : 'btn-action-payment' }}" title="Ubah Status Aktif/Nonaktif Pekerja">
+                                        @if($worker->status === 'active')
+                                            <svg class="w-3.5 h-3.5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg>
+                                            <span>Nonaktifkan</span>
+                                        @else
+                                            <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                            <span>Aktifkan</span>
+                                        @endif
+                                    </button>
+                                </div>
                             </td>
                         </tr>
                     @empty

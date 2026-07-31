@@ -29,24 +29,26 @@
 
     <!-- KPI Summary Metric Cards -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-        <div class="card-clean p-5 relative overflow-hidden">
+        <div class="kpi-card-teal">
             <div class="flex items-center justify-between">
                 <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Total Booking Fee Aktif</span>
-                <div class="p-2.5 rounded-xl bg-teal-50 text-teal-600">
+                <div class="p-2.5 rounded-xl bg-teal-50 text-teal-600 border border-teal-100">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"/></svg>
                 </div>
             </div>
-            <p class="text-2xl font-extrabold text-teal-600 font-mono mt-2">Rp {{ number_format($totalBookingAmount, 0, ',', '.') }}</p>
+            <p class="text-2xl font-extrabold text-teal-600 font-mono tracking-tight mt-2">Rp {{ number_format($totalBookingAmount, 0, ',', '.') }}</p>
+            <p class="text-[11px] text-slate-400 mt-1">Akumulasi tanda jadi pemesanan unit/proyek</p>
         </div>
 
-        <div class="card-clean p-5 relative overflow-hidden">
+        <div class="kpi-card-emerald">
             <div class="flex items-center justify-between">
                 <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Total DP (Uang Muka) Aktif</span>
-                <div class="p-2.5 rounded-xl bg-emerald-50 text-emerald-600">
+                <div class="p-2.5 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
                 </div>
             </div>
-            <p class="text-2xl font-extrabold text-emerald-600 font-mono mt-2">Rp {{ number_format($totalDpAmount, 0, ',', '.') }}</p>
+            <p class="text-2xl font-extrabold text-emerald-600 font-mono tracking-tight mt-2">Rp {{ number_format($totalDpAmount, 0, ',', '.') }}</p>
+            <p class="text-[11px] text-slate-400 mt-1">Total pembayaran uang muka yang disetujui</p>
         </div>
     </div>
 
@@ -89,7 +91,8 @@
                         <th class="px-5 py-3.5">Tingkat Booking</th>
                         <th class="px-5 py-3.5 text-right">Nominal Tanda Jadi</th>
                         <th class="px-5 py-3.5 text-center">Status</th>
-                        <th class="px-5 py-3.5 text-right">Aksi & Resi Invoice</th>
+                        <th class="px-5 py-3.5 text-center">Resi Invoice</th>
+                        <th class="px-5 py-3.5 text-right">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">
@@ -132,34 +135,43 @@
                                     <span class="status-batal">Batal</span>
                                 @endif
                             </td>
-                            <td class="px-5 py-4 text-right whitespace-nowrap space-x-1">
-                                @if($b->status === 'active' && auth()->user()->isFounder())
-                                    <button wire:click="approveDp({{ $b->id }})" wire:confirm="Konfirmasi persetujuan Tanda Jadi untuk {{ $b->buyer_name }}? Arus kas masuk akan dicatat secara otomatis." class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[11px] px-3 py-1.5 rounded-lg transition shadow-sm inline-flex items-center gap-1">
-                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                                        <span>Setujui Tanda Jadi</span>
+                            <td class="px-5 py-4 text-center whitespace-nowrap">
+                                <div class="flex items-center justify-center gap-1.5 flex-wrap">
+                                    <button wire:click="openViewerModal('pdf', '{{ route('bookings.receipt', $b->id) }}', 'Pratinjau Invoice Booking - {{ $b->buyer_name }}')" class="btn-action-pdf" title="Lihat PDF Invoice Booking">
+                                        <svg class="w-3.5 h-3.5 text-sky-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                                        <span>PDF</span>
                                     </button>
-                                    <button wire:click="rejectDp({{ $b->id }})" wire:confirm="Yakin ingin MENOLAK booking untuk {{ $b->buyer_name }}? Status unit akan dikembalikan menjadi tersedia." class="bg-rose-600 hover:bg-rose-700 text-white font-bold text-[11px] px-3 py-1.5 rounded-lg transition shadow-sm inline-flex items-center gap-1">
-                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                                        <span>Tolak Booking</span>
-                                    </button>
-                                @endif
+                                </div>
+                            </td>
+                            <td class="px-5 py-4 text-right whitespace-nowrap">
+                                <div class="flex items-center justify-end gap-1.5 flex-wrap">
+                                    @if($b->status === 'active' && auth()->user()->isFounder())
+                                        <button wire:click="approveDp({{ $b->id }})" wire:confirm="Konfirmasi persetujuan Tanda Jadi untuk {{ $b->buyer_name }}? Arus kas masuk akan dicatat secara otomatis." class="btn-action-payment" title="Setujui Tanda Jadi / DP">
+                                            <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                            <span>Setujui DP</span>
+                                        </button>
+                                        <button wire:click="rejectDp({{ $b->id }})" wire:confirm="Yakin ingin MENOLAK booking untuk {{ $b->buyer_name }}? Status unit akan dikembalikan menjadi tersedia." class="btn-action-delete" title="Tolak Booking">
+                                            <svg class="w-3.5 h-3.5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                                            <span>Tolak</span>
+                                        </button>
+                                    @endif
 
-                                @if($b->status === 'converted' && auth()->user()->isFounder())
-                                    <button wire:click="cancelApprovedDp({{ $b->id }})" wire:confirm="Yakin ingin MEMBATALKAN / REFUND DP untuk {{ $b->buyer_name }}? Pengeluaran kas refund akan dicatat dan status unit akan dikembalikan menjadi tersedia." class="bg-amber-600 hover:bg-amber-700 text-white font-bold text-[11px] px-3 py-1.5 rounded-lg transition shadow-sm inline-flex items-center gap-1">
-                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/></svg>
-                                        <span>Batalkan / Refund DP</span>
-                                    </button>
-                                @endif
+                                    @if($b->status === 'converted' && auth()->user()->isFounder())
+                                        <button wire:click="cancelApprovedDp({{ $b->id }})" wire:confirm="Yakin ingin MEMBATALKAN / REFUND DP untuk {{ $b->buyer_name }}? Pengeluaran kas refund akan dicatat dan status unit akan dikembalikan menjadi tersedia." class="btn-action-convert" title="Batalkan / Refund DP">
+                                            <svg class="w-3.5 h-3.5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/></svg>
+                                            <span>Batalkan & Refund</span>
+                                        </button>
+                                    @endif
 
-                                <button wire:click="openViewerModal('pdf', '{{ route('bookings.receipt', $b->id) }}', 'Pratinjau Invoice Booking - {{ $b->buyer_name }}')" class="btn-action-pdf">
-                                    <svg class="w-3.5 h-3.5 text-sky-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-                                    <span>PDF</span>
-                                </button>
+                                    @if(!($b->status === 'active' && auth()->user()->isFounder()) && !($b->status === 'converted' && auth()->user()->isFounder()))
+                                        <span class="text-slate-400 italic text-[11px]">-</span>
+                                    @endif
+                                </div>
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="px-6 py-12 text-center text-slate-400">
+                            <td colspan="8" class="px-6 py-12 text-center text-slate-400">
                                 <svg class="w-12 h-12 mx-auto text-slate-300 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"/></svg>
                                 <p class="font-semibold text-slate-600">Belum Ada Transaksi Booking Fee atau Tanda Jadi</p>
                                 <p class="text-xs text-slate-400 mt-1">Gunakan tombol "Catat Booking / Tanda Jadi Baru" di atas untuk menambahkan penerimaan.</p>

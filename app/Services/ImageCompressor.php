@@ -31,6 +31,17 @@ class ImageCompressor
             $image = @imagecreatefrompng($tempPath);
         } elseif ($extension === 'webp') {
             $image = @imagecreatefromwebp($tempPath);
+        } elseif (in_array($extension, ['heic', 'heif']) && class_exists('Imagick')) {
+            try {
+                $imagick = new \Imagick($tempPath);
+                $imagick->setImageFormat('jpeg');
+                $tempJpeg = tempnam(sys_get_temp_dir(), 'heic_') . '.jpg';
+                $imagick->writeImage($tempJpeg);
+                $image = @imagecreatefromjpeg($tempJpeg);
+                @unlink($tempJpeg);
+            } catch (\Throwable $e) {
+                $image = null;
+            }
         }
 
         if ($image) {

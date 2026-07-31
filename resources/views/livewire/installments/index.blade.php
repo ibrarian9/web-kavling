@@ -8,11 +8,51 @@
         </div>
 
         @if(auth()->user()->isFounder())
-            <button wire:click="openSetupModal" class="btn-primary whitespace-nowrap">
+            <button wire:click="openSetupModal" class="btn-header-setup">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                 <span>Setup Skema Cicilan Baru</span>
             </button>
         @endif
+    </div>
+
+    <!-- Summary KPI Cards Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
+        <div class="kpi-card-blue">
+            <div class="flex items-center justify-between">
+                <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Total Unit Berjalan Cicilan</span>
+                <div class="p-2.5 rounded-xl bg-purple-50 text-purple-600 border border-purple-100">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                </div>
+            </div>
+            <p class="text-2xl font-extrabold text-slate-900 font-mono mt-2">{{ $installments->total() }} Skema</p>
+            <p class="text-[11px] text-slate-400 mt-1">Skema kredit & cicilan terdaftar</p>
+        </div>
+
+        <div class="kpi-card-emerald">
+            <div class="flex items-center justify-between">
+                <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Total Terbayar Pembeli</span>
+                <div class="p-2.5 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </div>
+            </div>
+            <p class="text-2xl font-extrabold text-emerald-700 font-mono mt-2">
+                Rp {{ number_format(\App\Models\UnitInstallment::all()->sum('total_paid'), 0, ',', '.') }}
+            </p>
+            <p class="text-[11px] text-slate-400 mt-1">Uang muka DP & setoran bulanan</p>
+        </div>
+
+        <div class="kpi-card-amber">
+            <div class="flex items-center justify-between">
+                <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Sisa Piutang Berjalan</span>
+                <div class="p-2.5 rounded-xl bg-amber-50 text-amber-600 border border-amber-100">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </div>
+            </div>
+            <p class="text-2xl font-extrabold text-amber-700 font-mono mt-2">
+                Rp {{ number_format(\App\Models\UnitInstallment::all()->sum(fn($i) => $i->remaining_balance), 0, ',', '.') }}
+            </p>
+            <p class="text-[11px] text-slate-400 mt-1">Sisa tagihan pembeli belum lunas</p>
+        </div>
     </div>
 
     <!-- Table Card -->
@@ -69,17 +109,24 @@
                             </td>
                             <td class="px-5 py-4 text-right">
                                 <div class="flex items-center justify-end gap-1.5 flex-wrap">
-                                    <a href="{{ route('units.show', $inst->unit_id) }}" class="btn-secondary text-[11px] px-2.5 py-1 inline-flex items-center gap-1">
-                                        <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-                                        <span>Detail Unit</span>
+                                    <button wire:click="openDetailModal({{ $inst->id }})" class="btn-action-detail">
+                                        <svg class="w-3.5 h-3.5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                                        <span>Detail</span>
+                                    </button>
+
+                                    <a href="{{ route('units.show', $inst->unit_id) }}" class="btn-action-unit" title="Lihat Halaman Detail Unit">
+                                        <svg class="w-3.5 h-3.5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+                                        <span>Unit</span>
                                     </a>
 
                                     @if(!in_array($inst->status, ['lunas', 'konversi_cash']) && auth()->user()->isFounder())
-                                        <button wire:click="openPaymentModal({{ $inst->id }})" class="btn-primary text-[11px] px-2.5 py-1">
-                                            + Setoran
+                                        <button wire:click="openPaymentModal({{ $inst->id }})" class="btn-action-payment" title="Catat Setoran Cicilan Pembeli">
+                                            <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                                            <span>Setoran</span>
                                         </button>
-                                        <button wire:click="openConvertToCashModal({{ $inst->id }})" class="btn-secondary text-[11px] px-2.5 py-1 text-purple-700 border-purple-200 hover:bg-purple-50 font-bold" title="Batalkan skema cicilan & lunasi Cash">
-                                            Batalkan & Ganti Cash
+                                        <button wire:click="openConvertToCashModal({{ $inst->id }})" class="btn-action-convert" title="Batalkan skema cicilan & lunasi Cash">
+                                            <svg class="w-3.5 h-3.5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
+                                            <span>Batalkan & Ganti Cash</span>
                                         </button>
                                     @endif
                                 </div>
@@ -88,7 +135,7 @@
                     @empty
                         <tr>
                             <td colspan="8" class="px-6 py-12 text-center text-slate-400">
-                                <svg class="w-12 h-12 mx-auto text-slate-300 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                                <svg class="w-12 h-12 mx-auto text-slate-300 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
                                 <p class="font-semibold text-slate-600">Belum Ada Skema Cicilan / Piutang</p>
                                 <p class="text-xs text-slate-400 mt-1">Gunakan tombol "Setup Skema Cicilan Baru" untuk memproses unit kredit.</p>
                             </td>
@@ -102,188 +149,16 @@
         </div>
     </div>
 
-    <!-- Modal Setup Skema Cicilan -->
-    @if($showSetupModal)
-        <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm">
-            <div class="bg-white border border-slate-200/80 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
-                <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-                    <h3 class="font-bold text-slate-900 text-base">Setup Skema Cicilan Pembeli</h3>
-                    <button wire:click="$set('showSetupModal', false)" class="text-slate-400 hover:text-slate-600">✕</button>
-                </div>
-
-                <form wire:submit.prevent="saveSetup" class="space-y-4 text-xs">
-                    <div>
-                        <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider">Pilih Unit Terjual</label>
-                        <select wire:change="selectUnitForInstallment($event.target.value)" wire:model="unit_id" class="input-clean w-full font-bold">
-                            <option value="">-- Pilih Unit --</option>
-                            @foreach($eligibleUnits as $u)
-                                <option value="{{ $u->id }}">{{ $u->code }} - {{ $u->project->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-3">
-                        <div>
-                            <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider">Total Harga Jual (Rp)</label>
-                            <x-currency-input model="total_price" class="input-clean w-full font-bold font-mono" placeholder="Rp 0" />
-                        </div>
-                        <div>
-                            <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider">Uang Muka / DP (Rp)</label>
-                            <x-currency-input model="down_payment" class="input-clean w-full font-bold font-mono text-emerald-700" placeholder="Rp 0" />
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-3">
-                        <div>
-                            <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider">Jumlah Bulan Termin</label>
-                            <input type="number" wire:model.live="installment_count" min="1" max="60" class="input-clean w-full font-bold">
-                        </div>
-                        <div>
-                            <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider">Mulai Tanggal</label>
-                            <input type="date" wire:model="start_date" class="input-clean w-full font-mono">
-                        </div>
-                    </div>
-
-                    <!-- Highlight Box Kalkulasi Cicilan -->
-                    <div class="bg-emerald-50 border border-emerald-200/80 rounded-xl p-3.5 space-y-1.5 text-emerald-900">
-                        <div class="flex justify-between text-xs">
-                            <span class="text-emerald-800">Sisa Pokok Piutang:</span>
-                            <span class="font-mono font-bold">Rp {{ number_format(max(0, $total_price - $down_payment), 0, ',', '.') }}</span>
-                        </div>
-                        <div class="flex justify-between text-xs font-bold pt-1.5 border-t border-emerald-200/80">
-                            <span>Nominal Cicilan Per Bulan:</span>
-                            <span class="font-mono text-emerald-700 text-sm">Rp {{ number_format($installment_amount, 0, ',', '.') }}</span>
-                        </div>
-                    </div>
-
-                    <div class="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
-                        <button type="button" wire:click="$set('showSetupModal', false)" class="btn-secondary">Batal</button>
-                        <button type="submit" class="btn-primary">Simpan Skema</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    @endif
+    <!-- Modal Setup Skema Cicilan Baru -->
+    @include('livewire.installments.partials.modal-setup-installment')
 
     <!-- Modal Catat Pembayaran Setoran -->
-    @if($showPaymentModal && $activeInstallment)
-        <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm">
-            <div class="bg-white border border-slate-200/80 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
-                <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-                    <div>
-                        <h3 class="font-bold text-slate-900 text-base">Catat Setoran Cicilan</h3>
-                        <p class="text-slate-500 text-[11px]">Unit: {{ $activeInstallment->unit->code }} (Pembeli: {{ $activeInstallment->officialDocument->buyer_name ?? '-' }})</p>
-                    </div>
-                    <button wire:click="$set('showPaymentModal', false)" class="text-slate-400 hover:text-slate-600">✕</button>
-                </div>
+    @include('livewire.installments.partials.modal-installment-payment')
 
-                <form wire:submit.prevent="submitPayment" class="space-y-4 text-xs">
-                    <div class="bg-slate-900 text-white rounded-xl p-3.5 space-y-1.5 shadow-inner">
-                        <div class="flex justify-between text-xs">
-                            <span class="text-slate-400">Total Sisa Piutang:</span>
-                            <span class="font-mono font-bold text-rose-400">Rp {{ number_format($activeInstallment->remaining_balance, 0, ',', '.') }}</span>
-                        </div>
-                        <div class="flex justify-between text-xs">
-                            <span class="text-slate-400">Standar Cicilan Bulanan:</span>
-                            <span class="font-mono text-emerald-400">Rp {{ number_format($activeInstallment->installment_amount, 0, ',', '.') }}</span>
-                        </div>
-                    </div>
+    <!-- Modal Batalkan Skema Cicilan & Ganti ke Pelunasan Cash -->
+    @include('livewire.installments.partials.modal-convert-to-cash')
 
-                    <div>
-                        <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider">Nominal Pembayaran Diterima (Rp)</label>
-                        <x-currency-input model="payment_amount" class="input-clean w-full font-bold text-sm font-mono" placeholder="Rp 0" />
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-3">
-                        <div>
-                            <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider">Metode Bayar</label>
-                            <select wire:model="payment_method" class="input-clean w-full font-semibold">
-                                <option value="Transfer Bank">Transfer Bank</option>
-                                <option value="Tunai / Cash">Tunai / Cash</option>
-                                <option value="Cek / Giro">Cek / Giro</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider">Tanggal Bayar</label>
-                            <input type="date" wire:model="payment_date" required class="input-clean w-full font-mono">
-                        </div>
-                    </div>
-
-                    <div>
-                        <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider">Catatan Pembayaran</label>
-                        <input type="text" wire:model="payment_notes" placeholder="Setoran bulan ke-2..." class="input-clean w-full">
-                    </div>
-
-                    <div class="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
-                        <button type="button" wire:click="$set('showPaymentModal', false)" class="btn-secondary">Batal</button>
-                        <button type="submit" class="btn-primary">Simpan & Masukkan Kas</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    @endif
-
-    <!-- Modal Batalkan Skema Cicilan & Ganti ke Pelunasan Cash (Founder & Accounting) -->
-    @if($showConvertToCashModal && $activeConvertToCashInstallment)
-        <div class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs p-3 sm:p-6 md:p-10 flex items-center justify-center min-h-screen">
-            <div class="bg-white border border-slate-200/80 rounded-2xl sm:rounded-3xl max-w-lg w-full p-4 sm:p-6 shadow-2xl space-y-4 my-auto sm:my-8 max-h-[88vh] flex flex-col">
-                <div class="flex items-center justify-between border-b border-slate-100 pb-3 shrink-0">
-                    <div>
-                        <h3 class="font-extrabold text-slate-900 text-sm sm:text-base">Batalkan Skema Cicilan & Ganti Ke Pelunasan Cash</h3>
-                        <p class="text-slate-500 text-[11px]">Unit: <span class="font-bold text-slate-800 font-mono">{{ $activeConvertToCashInstallment->unit->code }}</span> - {{ $activeConvertToCashInstallment->officialDocument->buyer_name ?? 'Pembeli' }}</p>
-                    </div>
-                    <button wire:click="$set('showConvertToCashModal', false)" class="p-1 rounded-lg text-slate-400 hover:text-slate-600">✕</button>
-                </div>
-
-                <form wire:submit.prevent="submitConvertToCash" class="space-y-4 text-xs flex-1 overflow-y-auto pr-1">
-                    <div class="p-4 bg-purple-50/80 border border-purple-200/80 rounded-2xl space-y-2 text-purple-950">
-                        <div class="flex justify-between">
-                            <span class="text-slate-600">Total Harga Unit:</span>
-                            <span class="font-mono font-bold">Rp {{ number_format($activeConvertToCashInstallment->total_price, 0, ',', '.') }}</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-slate-600">Sudah Terbayar (DP & Cicilan):</span>
-                            <span class="font-mono font-bold text-emerald-700">Rp {{ number_format($activeConvertToCashInstallment->total_paid, 0, ',', '.') }}</span>
-                        </div>
-                        <div class="flex justify-between pt-2 border-t border-purple-200 font-extrabold">
-                            <span class="text-purple-900">Sisa Pelunasan Cash:</span>
-                            <span class="font-mono text-purple-800 text-sm">Rp {{ number_format($activeConvertToCashInstallment->remaining_balance, 0, ',', '.') }}</span>
-                        </div>
-                    </div>
-
-                    <div>
-                        <label class="block font-semibold text-purple-900 mb-1 uppercase tracking-wider">Nominal Pelunasan Cash Diterima (Rp)</label>
-                        <x-currency-input model="cash_payment_amount" class="input-clean w-full font-bold text-sm font-mono text-purple-900 bg-purple-50/30" placeholder="Rp 0" />
-                        <p class="text-[10px] text-slate-500 mt-1">Sisa saldo Rp {{ number_format($activeConvertToCashInstallment->remaining_balance, 0, ',', '.') }} akan dicatat lunas sekaligus dalam Arus Kas.</p>
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-3">
-                        <div>
-                            <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider">Metode Pembayaran Cash</label>
-                            <select wire:model="cash_payment_method" class="input-clean w-full font-semibold">
-                                <option value="Transfer Bank">Transfer Bank</option>
-                                <option value="Tunai / Cash">Tunai / Cash</option>
-                                <option value="Cek / Giro">Cek / Giro</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider">Tanggal Pelunasan</label>
-                            <input type="date" wire:model="cash_payment_date" required class="input-clean w-full font-mono">
-                        </div>
-                    </div>
-
-                    <div>
-                        <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider">Catatan Alasan Pembatalan & Konversi Cash</label>
-                        <textarea wire:model="cash_notes" rows="2" class="input-clean w-full" placeholder="Keterangan pembatalan skema cicilan..."></textarea>
-                    </div>
-
-                    <div class="flex items-center justify-end gap-2 pt-3 border-t border-slate-100 shrink-0">
-                        <button type="button" wire:click="$set('showConvertToCashModal', false)" class="btn-secondary">Batal</button>
-                        <button type="submit" class="btn-primary bg-purple-600 hover:bg-purple-700">Proses Pelunasan Cash & Batalkan Cicilan</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    @endif
+    <!-- Modal Detail Rincian Skema Cicilan & Riwayat Setoran -->
+    @include('livewire.installments.partials.modal-installment-detail')
 
 </div>
