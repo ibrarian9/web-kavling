@@ -50,7 +50,7 @@
 
                 <div>
                     <label class="block font-semibold text-slate-700 mb-1 text-xs uppercase tracking-wider">
-                        Upload Foto Struk Transfer {{ $payroll_payment_method === 'tunai' ? '(Opsional)' : '(Rekomendasi)' }}
+                        Upload Foto Struk Transfer {{ $payroll_payment_method === 'tunai' ? '(Opsional)' : '(Rekomendasi)' }} <span class="text-emerald-700 font-bold lowercase text-[10px] bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">(Maks. 2MB)</span>
                     </label>
                     <input type="file" wire:model="payroll_receipt_photo" accept="image/*,.heic,.heif,.pdf" class="input-clean w-full text-xs">
                     @error('payroll_receipt_photo') <span class="text-rose-500 text-[10px] block mt-1 font-medium">{{ $message }}</span> @enderror

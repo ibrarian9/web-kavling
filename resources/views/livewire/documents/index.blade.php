@@ -105,18 +105,24 @@
                             </td>
                             <td class="px-5 py-4 text-center whitespace-nowrap">
                                 <div class="flex items-center justify-center gap-1.5 flex-wrap">
-                                    <button wire:click="openViewerModal('pdf', '{{ route('documents.stream', $doc->id) }}', 'Pratinjau Dokumen SPP - {{ $doc->document_number }}')" class="btn-action-pdf" title="Pratinjau SPP PDF">
+                                    <button wire:click="openViewerModal('pdf', '{{ route('documents.stream', $doc->id) }}', 'Pratinjau Dokumen SPP - {{ $doc->document_number }}')" class="btn-action-pdf" title="Lihat Dokumen SPP PDF">
                                         <svg class="w-3.5 h-3.5 text-sky-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
-                                        <span>Preview PDF</span>
+                                        <span>PDF</span>
                                     </button>
                                 </div>
                             </td>
                             <td class="px-5 py-4 text-right whitespace-nowrap">
                                 <div class="flex items-center justify-end gap-1.5 flex-wrap">
-                                    <a href="{{ route('documents.stream', $doc->id) }}" target="_blank" class="btn-action-pdf" title="Generate & Unduh Direct Dokumen SPP PDF">
-                                        <svg class="w-3.5 h-3.5 text-sky-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                                        <span>Generate PDF</span>
-                                    </a>
+                                    @if (auth()->user()->isFounder())
+                                        <button wire:click="editDocument({{ $doc->id }})" class="btn-action-edit" title="Edit Dokumen SPP">
+                                            <svg class="w-3.5 h-3.5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                                            <span>Edit</span>
+                                        </button>
+                                        <button wire:click="deleteDocument({{ $doc->id }})" wire:confirm="Yakin ingin MENGHAPUS dokumen SPP {{ $doc->document_number }} ini?" class="btn-action-delete" title="Hapus Dokumen SPP">
+                                            <svg class="w-3.5 h-3.5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                            <span>Hapus</span>
+                                        </button>
+                                    @endif
                                     @if ($doc->unit_id)
                                         <a href="{{ route('units.show', $doc->unit_id) }}" class="btn-action-unit" title="Lihat Detail Unit {{ $doc->unit->code }}">
                                             <svg class="w-3.5 h-3.5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
@@ -150,7 +156,7 @@
                 <div class="flex items-center justify-between border-b border-slate-100 pb-3">
                     <h3 class="font-extrabold text-slate-900 text-base flex items-center gap-2">
                         <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                        <span>Generate & Terbitkan SPP PDF Baru</span>
+                        <span>{{ $editingDocumentId ? 'Edit Data Dokumen SPP' : 'Generate & Terbitkan SPP PDF Baru' }}</span>
                     </h3>
                     <button wire:click="$set('showGenerateModal', false)" class="text-slate-400 hover:text-slate-600">✕</button>
                 </div>
@@ -186,7 +192,7 @@
 
                     <div class="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
                         <button type="button" wire:click="$set('showGenerateModal', false)" class="btn-secondary">Batal</button>
-                        <button type="submit" class="btn-primary">Generate SPP PDF</button>
+                        <button type="submit" class="btn-primary">{{ $editingDocumentId ? 'Simpan Perubahan' : 'Generate SPP PDF' }}</button>
                     </div>
                 </form>
             </div>

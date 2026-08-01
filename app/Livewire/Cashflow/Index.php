@@ -304,7 +304,7 @@ class Index extends Component
             'amount' => 'required|numeric|min:1000',
             'description' => 'required|string|max:255',
             'transaction_date' => 'required|date',
-            'receipt_photo' => 'nullable|image|max:10240',
+            'receipt_photo' => 'nullable|image|max:2048',
         ]);
 
         $receiptPath = null;

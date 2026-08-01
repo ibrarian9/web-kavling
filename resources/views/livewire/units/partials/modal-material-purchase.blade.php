@@ -57,9 +57,9 @@
                 </div>
 
                 <div>
-                    <label class="block font-semibold text-slate-700 mb-1 text-xs uppercase tracking-wider">Upload Foto Struk / Nota Pembelian</label>
+                    <label class="block font-semibold text-slate-700 mb-1 text-xs uppercase tracking-wider">Upload Foto Struk / Nota Pembelian <span class="text-amber-700 font-bold lowercase text-[10px] bg-amber-50 px-1.5 py-0.5 rounded border border-amber-200">(Opsional, Maks. 2MB)</span></label>
                     <input type="file" wire:model="material_receipt_photo" accept="image/*,.heic,.heif,.pdf" class="input-clean w-full text-xs">
-                    <span class="text-[11px] text-slate-400 mt-1 block">Foto nota akan dikompresi otomatis & disimpan di sistem.</span>
+                    <span class="text-[11px] text-slate-400 mt-1 block">Foto nota maksimal 2MB (JPG, PNG, HEIC, PDF) dan akan disimpan secara aman di sistem.</span>
                     @error('material_receipt_photo') <span class="text-rose-500 text-[10px] block mt-1 font-medium">{{ $message }}</span> @enderror
                     @if($material_receipt_photo)
                         <div class="mt-3 text-center bg-slate-50 p-3 rounded-2xl border border-slate-200 space-y-2">

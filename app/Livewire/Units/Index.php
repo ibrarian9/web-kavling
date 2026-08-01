@@ -287,7 +287,7 @@ class Index extends Component
             'buyer_name' => 'required|string|max:255',
             'buyer_phone' => 'required|string|max:50',
             'booking_amount' => 'required|numeric|min:1000',
-            'receipt_photo' => 'nullable|image|max:10240',
+            'receipt_photo' => 'nullable|image|max:2048',
         ]);
 
         $unit = Unit::findOrFail($this->bookingUnitId);

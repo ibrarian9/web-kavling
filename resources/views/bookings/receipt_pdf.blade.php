@@ -4,103 +4,115 @@
     <meta charset="UTF-8">
     <title>Resi Booking Fee {{ $booking->buyer_name }}</title>
     <style>
+        * {
+            box-sizing: border-box;
+        }
         @page {
             size: A5 landscape;
-            margin: 15mm;
+            margin: 8mm 10mm;
+        }
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
         }
         body {
             font-family: 'Helvetica', 'Arial', sans-serif;
-            font-size: 11px;
+            font-size: 10px;
             color: #1e293b;
-            line-height: 1.4;
+            line-height: 1.3;
+            page-break-inside: avoid;
+        }
+        table, tr, td, div {
+            page-break-inside: avoid;
         }
         .header {
             border-bottom: 2px solid #059669;
-            padding-bottom: 8px;
-            margin-bottom: 15px;
+            padding-bottom: 5px;
+            margin-bottom: 8px;
         }
         .brand-title {
-            font-size: 16px;
+            font-size: 14px;
             font-weight: bold;
             color: #065f46;
             letter-spacing: 0.5px;
             text-transform: uppercase;
         }
         .brand-sub {
-            font-size: 9px;
+            font-size: 8.5px;
             color: #64748b;
         }
         .doc-title {
             text-align: center;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: bold;
             color: #0f172a;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             background: #f0fdf4;
-            padding: 6px;
+            padding: 4px;
             border: 1px solid #a7f3d0;
-            border-radius: 6px;
+            border-radius: 5px;
         }
         .table-data {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 15px;
+            margin-bottom: 8px;
         }
         .table-data td {
-            padding: 5px 8px;
+            padding: 3px 6px;
             vertical-align: top;
         }
         .label {
-            width: 32%;
+            width: 30%;
             font-weight: bold;
             color: #475569;
         }
         .colon {
-            width: 3%;
+            width: 2%;
         }
         .value {
-            width: 65%;
+            width: 68%;
             color: #0f172a;
         }
         .amount-box {
             background-color: #ecfdf5;
             border: 1px dashed #059669;
-            padding: 10px 14px;
-            border-radius: 8px;
-            margin-bottom: 15px;
+            padding: 6px 10px;
+            border-radius: 6px;
+            margin-bottom: 8px;
         }
         .amount-num {
-            font-size: 16px;
+            font-size: 14px;
             font-weight: bold;
             color: #047857;
             font-family: monospace;
         }
         .terbilang {
             font-style: italic;
-            font-size: 10px;
+            font-size: 9px;
             color: #065f46;
-            margin-top: 3px;
+            margin-top: 2px;
         }
         .footer-section {
             width: 100%;
-            margin-top: 15px;
+            margin-top: 6px;
         }
         .footer-note {
-            font-size: 9px;
+            font-size: 8.5px;
             color: #64748b;
-            width: 60%;
+            width: 65%;
             float: left;
         }
         .qr-section {
-            width: 35%;
+            width: 30%;
             float: right;
             text-align: center;
         }
         .qr-img {
-            width: 75px;
-            height: 75px;
+            width: 58px;
+            height: 58px;
             border: 1px solid #cbd5e1;
             padding: 2px;
             background: #fff;
@@ -109,7 +121,7 @@
         .qr-label {
             font-size: 8px;
             color: #475569;
-            margin-top: 3px;
+            margin-top: 2px;
             font-weight: bold;
         }
         .clear {

@@ -3,6 +3,7 @@
 namespace App\Livewire\Documents;
 
 use App\Models\OfficialDocument;
+use App\Services\ActivityLogger;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -45,8 +46,9 @@ class Index extends Component
         $this->viewerTitle = '';
     }
 
-    // Generate Document Modal
+    // Generate / Edit Document Modal
     public bool $showGenerateModal = false;
+    public ?int $editingDocumentId = null;
     public ?int $selected_unit_id = null;
     public string $buyer_name = '';
     public string $buyer_contact = '';
@@ -54,6 +56,7 @@ class Index extends Component
 
     public function openGenerateModal(): void
     {
+        $this->editingDocumentId = null;
         $this->selected_unit_id = null;
         $this->buyer_name = '';
         $this->buyer_contact = '';
@@ -61,18 +64,69 @@ class Index extends Component
         $this->showGenerateModal = true;
     }
 
+    public function editDocument($id): void
+    {
+        $user = auth()->user();
+        if (!$user->isFounder()) {
+            session()->flash('error', 'Hanya Founder yang berhak mengubah dokumen SPP.');
+            return;
+        }
+
+        $doc = OfficialDocument::findOrFail((int) $id);
+        $this->editingDocumentId = $doc->id;
+        $this->selected_unit_id = $doc->unit_id;
+        $this->buyer_name = $doc->buyer_name;
+        $this->buyer_contact = $doc->buyer_contact;
+        $this->buyer_address = $doc->buyer_address;
+        $this->showGenerateModal = true;
+    }
+
     public function generateDocument(): void
     {
+        $user = auth()->user();
+
+        if ($this->editingDocumentId) {
+            if (!$user->isFounder()) {
+                session()->flash('error', 'Hanya Founder yang berhak mengedit dokumen SPP.');
+                return;
+            }
+
+            $this->validate([
+                'selected_unit_id' => 'required|exists:units,id',
+                'buyer_name' => 'required|string|max:255',
+                'buyer_contact' => 'required|string|max:255',
+            ]);
+
+            $doc = OfficialDocument::findOrFail($this->editingDocumentId);
+            $unit = \App\Models\Unit::with('project', 'proposals')->findOrFail($this->selected_unit_id);
+            $proposal = $unit->proposals()->where('status', 'disetujui')->latest()->first();
+
+            $doc->update([
+                'unit_id' => $unit->id,
+                'price_proposal_id' => $proposal?->id ?? $doc->price_proposal_id,
+                'buyer_name' => $this->buyer_name,
+                'buyer_contact' => $this->buyer_contact,
+                'buyer_address' => $this->buyer_address ?: '-',
+            ]);
+
+            ActivityLogger::log('DOCUMENT_UPDATED', "Dokumen SPP {$doc->document_number} (ID #{$doc->id}) telah diperbarui oleh Founder.");
+
+            session()->flash('success', 'Dokumen SPP ' . $doc->document_number . ' berhasil diperbarui oleh Founder.');
+            $this->showGenerateModal = false;
+            $this->editingDocumentId = null;
+            return;
+        }
+
         $this->validate([
             'selected_unit_id' => 'required|exists:units,id',
             'buyer_name' => 'required|string|max:255',
             'buyer_contact' => 'required|string|max:255',
         ]);
 
-        $unit = \App\Models\Unit::with('project', 'priceProposals')->findOrFail($this->selected_unit_id);
+        $unit = \App\Models\Unit::with('project', 'proposals')->findOrFail($this->selected_unit_id);
 
         $docNumber = 'SPP/' . strtoupper($unit->project->name) . '/' . date('Y/m') . '/' . str_pad(rand(1, 999), 3, '0', STR_PAD_LEFT);
-        $proposal = $unit->priceProposals()->where('status', 'disetujui')->latest()->first();
+        $proposal = $unit->proposals()->where('status', 'disetujui')->latest()->first();
 
         $doc = OfficialDocument::create([
             'unit_id' => $unit->id,
@@ -89,6 +143,23 @@ class Index extends Component
         session()->flash('success', 'Surat Pemesanan Properti (SPP PDF) ' . $docNumber . ' berhasil diterbitkan!');
 
         $this->openViewerModal('pdf', route('documents.stream', $doc->id), 'Pratinjau Surat SPP PDF - ' . $doc->document_number);
+    }
+
+    public function deleteDocument($id): void
+    {
+        $user = auth()->user();
+        if (!$user->isFounder()) {
+            session()->flash('error', 'Hanya Founder yang berhak menghapus dokumen SPP.');
+            return;
+        }
+
+        $doc = OfficialDocument::findOrFail((int) $id);
+        $docNumber = $doc->document_number;
+        $doc->delete();
+
+        ActivityLogger::log('DOCUMENT_DELETED', "Dokumen SPP {$docNumber} (ID #{$id}) telah dihapus oleh Founder.");
+
+        session()->flash('success', 'Dokumen SPP ' . $docNumber . ' berhasil dihapus oleh Founder.');
     }
 
     public function render()

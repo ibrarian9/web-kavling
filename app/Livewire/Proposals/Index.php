@@ -3,9 +3,10 @@
 namespace App\Livewire\Proposals;
 
 use App\Models\Approval;
+use App\Models\OfficialDocument;
 use App\Models\PriceProposal;
 use App\Models\Unit;
-use App\Models\OfficialDocument;
+use App\Services\ActivityLogger;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -14,6 +15,7 @@ class Index extends Component
     use WithPagination;
 
     public $create_unit_id = null;
+    public $editingProposalId = null;
     public $showCreateModal = false;
     public $showApprovalModal = false;
     public $showDocModal = false;
@@ -95,6 +97,7 @@ class Index extends Component
 
     public function openCreateModal()
     {
+        $this->editingProposalId = null;
         $this->resetProposalForm();
         $firstAvailable = Unit::where('status', 'tersedia')->first();
         if ($firstAvailable) {
@@ -110,13 +113,74 @@ class Index extends Component
         $this->proposed_price = 0;
         $this->margin = 0;
         $this->proposal_notes = '';
+        $this->discount_reason = '';
     }
 
     public $discount_reason = '';
 
+    public function editProposal($id)
+    {
+        $user = auth()->user();
+        if (!$user->isFounder()) {
+            session()->flash('error', 'Hanya Founder yang berhak mengubah pengajuan harga.');
+            return;
+        }
+
+        $proposal = PriceProposal::with('unit')->findOrFail((int) $id);
+        $this->editingProposalId = $proposal->id;
+        $this->unit_id = $proposal->unit_id;
+        $this->hpp_price = (float) $proposal->hpp_price;
+        $this->proposed_price = (float) $proposal->proposed_price;
+        $this->margin = (float) $proposal->margin;
+        $this->discount_reason = $proposal->discount_reason ?? '';
+        $this->proposal_notes = $proposal->notes ?? '';
+        $this->showCreateModal = true;
+    }
+
     public function submitProposal()
     {
         $user = auth()->user();
+
+        if ($this->editingProposalId) {
+            if (!$user->isFounder()) {
+                session()->flash('error', 'Hanya Founder yang berhak mengedit pengajuan harga.');
+                return;
+            }
+
+            $this->validate([
+                'unit_id' => 'required|exists:units,id',
+                'proposed_price' => 'required|numeric|min:0',
+            ]);
+
+            $proposal = PriceProposal::with('unit')->findOrFail($this->editingProposalId);
+            $unit = Unit::findOrFail($this->unit_id);
+            $hpp = (float) $unit->hpp;
+            $proposed = (float) $this->proposed_price;
+            $isBelowHpp = $proposed < $hpp;
+
+            $proposal->update([
+                'unit_id' => $unit->id,
+                'hpp_price' => $hpp,
+                'proposed_price' => $proposed,
+                'margin' => $proposed - $hpp,
+                'is_below_hpp' => $isBelowHpp,
+                'discount_reason' => $this->discount_reason,
+                'notes' => $this->proposal_notes,
+            ]);
+
+            if ($proposal->status === 'disetujui') {
+                $unit->update(['final_selling_price' => $proposed]);
+            }
+
+            ActivityLogger::log('PROPOSAL_UPDATED', "Pengajuan harga unit {$unit->code} (ID #{$proposal->id}) telah diperbarui oleh Founder.");
+
+            session()->flash('success', 'Pengajuan harga unit ' . $unit->code . ' berhasil diperbarui oleh Founder.');
+            $this->showCreateModal = false;
+            $this->editingProposalId = null;
+            $this->resetProposalForm();
+            return;
+        }
+
         if (!$user->isMarketing() && !$user->isFounder()) {
             session()->flash('error', 'Hanya Marketing dan Founder yang berhak membuat pengajuan harga baru.');
             return;
@@ -154,6 +218,31 @@ class Index extends Component
         session()->flash('success', $msg);
         $this->showCreateModal = false;
         $this->resetProposalForm();
+    }
+
+    public function deleteProposal($id)
+    {
+        $user = auth()->user();
+        if (!$user->isFounder()) {
+            session()->flash('error', 'Hanya Founder yang berhak menghapus pengajuan harga.');
+            return;
+        }
+
+        $proposal = PriceProposal::with(['unit', 'approvals'])->findOrFail((int) $id);
+        $unitCode = $proposal->unit->code ?? 'Unit';
+
+        if ($proposal->unit && $proposal->unit->status === 'menunggu_persetujuan') {
+            $proposal->unit->update(['status' => 'tersedia']);
+        }
+
+        OfficialDocument::where('price_proposal_id', $proposal->id)->delete();
+        Approval::where('price_proposal_id', $proposal->id)->delete();
+
+        $proposal->delete();
+
+        ActivityLogger::log('PROPOSAL_DELETED', "Pengajuan harga unit {$unitCode} (ID #{$id}) telah dihapus oleh Founder.");
+
+        session()->flash('success', 'Pengajuan harga unit ' . $unitCode . ' berhasil dihapus oleh Founder.');
     }
 
     public function openApprovalModal($proposalId)

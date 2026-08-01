@@ -22,7 +22,7 @@ class BookingReceiptController extends Controller
             'isRemoteEnabled' => true,
             'isHtml5ParserEnabled' => true,
             'chroot' => public_path(),
-        ])->loadView('bookings.receipt_pdf', [
+        ])->setPaper('a5', 'landscape')->loadView('bookings.receipt_pdf', [
             'booking' => $booking,
             'unit' => $booking->unit,
             'project' => $booking->project,

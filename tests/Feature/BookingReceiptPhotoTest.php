@@ -62,9 +62,65 @@ test('user can upload receipt photo when creating booking and view photo modal',
 
     Storage::disk('public')->assertExists($booking->receipt_photo_path);
 
-    // Test opening image viewer modal in component
+    // Test opening image modal
     Livewire::test(\App\Livewire\Bookings\Index::class)
-        ->call('openImageModal', asset('storage/' . $booking->receipt_photo_path), 'Foto Struk Resi Booking - Bpk. Ahmad Santoso')
+        ->call('openImageModal', asset('storage/' . $booking->receipt_photo_path), 'Foto Resi Bukti Transfer / DP')
         ->assertSet('showImageModal', true)
-        ->assertSet('imageModalTitle', 'Foto Struk Resi Booking - Bpk. Ahmad Santoso');
+        ->assertSet('imageModalTitle', 'Foto Resi Bukti Transfer / DP');
+});
+
+test('founder can edit booking data and sync cashflow', function () {
+    $booking = Booking::create([
+        'project_id' => $this->project->id,
+        'unit_id' => $this->unit->id,
+        'buyer_name' => 'Bpk. Bambang',
+        'buyer_phone' => '0811111111',
+        'booking_type' => 'unit',
+        'booking_amount' => 3000000,
+        'dp_amount' => 0,
+        'booking_date' => now()->toDateString(),
+        'status' => 'active',
+        'created_by' => $this->founder->id,
+    ]);
+
+    $this->actingAs($this->founder);
+
+    Livewire::test(\App\Livewire\Bookings\Index::class)
+        ->call('editBooking', $booking->id)
+        ->assertSet('editingBookingId', $booking->id)
+        ->assertSet('buyer_name', 'Bpk. Bambang')
+        ->set('buyer_name', 'Bpk. Bambang Edit')
+        ->set('booking_amount', 7000000)
+        ->call('save')
+        ->assertHasNoErrors();
+
+    $booking->refresh();
+    expect($booking->buyer_name)->toBe('Bpk. Bambang Edit');
+    expect((float) $booking->booking_amount)->toBe(7000000.0);
+});
+
+test('founder can delete booking data and revert unit status', function () {
+    $this->unit->update(['status' => 'booked']);
+
+    $booking = Booking::create([
+        'project_id' => $this->project->id,
+        'unit_id' => $this->unit->id,
+        'buyer_name' => 'Bpk. Candra',
+        'buyer_phone' => '0822222222',
+        'booking_type' => 'unit',
+        'booking_amount' => 5000000,
+        'dp_amount' => 0,
+        'booking_date' => now()->toDateString(),
+        'status' => 'active',
+        'created_by' => $this->founder->id,
+    ]);
+
+    $this->actingAs($this->founder);
+
+    Livewire::test(\App\Livewire\Bookings\Index::class)
+        ->call('deleteBooking', $booking->id)
+        ->assertHasNoErrors();
+
+    expect(Booking::find($booking->id))->toBeNull();
+    expect($this->unit->fresh()->status)->toBe('tersedia');
 });

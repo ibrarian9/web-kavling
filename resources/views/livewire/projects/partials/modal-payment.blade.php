@@ -40,7 +40,7 @@
                 </div>
 
                 <div>
-                    <label class="block font-semibold text-slate-700 mb-1 text-xs uppercase tracking-wider">Foto Resi / Bukti Transfer (Opsional)</label>
+                    <label class="block font-semibold text-slate-700 mb-1 text-xs uppercase tracking-wider">Foto Resi / Bukti Transfer <span class="text-purple-700 font-bold lowercase text-[10px] bg-purple-50 px-1.5 py-0.5 rounded border border-purple-200">(Opsional, Maks. 2MB)</span></label>
                     <input type="file" wire:model="payment_receipt_photo" accept="image/*,.heic,.heif,.pdf" class="w-full text-xs text-slate-600 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100">
                     @error('payment_receipt_photo') <span class="text-rose-500 text-[10px] block mt-1">{{ $message }}</span> @enderror
                     @if ($payment_receipt_photo)
@@ -53,8 +53,8 @@
                                 <button type="button" wire:click="$set('payment_receipt_photo', null)" class="text-rose-500 hover:text-rose-700 text-[10px] underline font-bold">Hapus Foto</button>
                             </div>
                             @if (method_exists($payment_receipt_photo, 'isPreviewable') && $payment_receipt_photo->isPreviewable())
-                                <div class="relative max-h-44 overflow-hidden rounded-lg border border-slate-200 bg-slate-900 flex items-center justify-center p-1">
-                                    <img src="{{ $payment_receipt_photo->temporaryUrl() }}" alt="Preview Resi" class="max-h-40 w-full object-contain rounded-md">
+                                <div class="relative max-h-36 sm:max-h-40 overflow-y-auto rounded-xl border border-slate-200 bg-slate-900 flex items-center justify-center p-1.5">
+                                    <img src="{{ $payment_receipt_photo->temporaryUrl() }}" alt="Preview Resi" class="max-h-32 sm:max-h-36 w-auto max-w-full object-contain rounded-lg shadow-sm">
                                 </div>
                             @else
                                 <div class="p-3 bg-amber-50 border border-amber-200/80 rounded-xl text-amber-800 text-xs font-semibold flex items-center gap-2">

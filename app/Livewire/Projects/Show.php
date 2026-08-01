@@ -500,7 +500,7 @@ class Show extends Component
             'payment_amount' => 'required|numeric|min:1000',
             'payment_date' => 'required|date',
             'payment_method' => 'required|string',
-            'payment_receipt_photo' => 'nullable|file|mimes:jpg,jpeg,png,webp,heic,heif,pdf|max:10240',
+            'payment_receipt_photo' => 'nullable|file|mimes:jpg,jpeg,png,webp,heic,heif,pdf|max:2048',
         ]);
 
         $project = Project::findOrFail($this->projectId);
