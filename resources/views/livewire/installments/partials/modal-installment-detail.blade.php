@@ -83,9 +83,16 @@
                                 <p class="text-[11px] text-slate-500">{{ $pay->notes ?: 'Setoran cicilan berkala' }}</p>
                                 <p class="text-[10px] text-slate-400 font-mono">Pencatat: {{ $pay->creator->name ?? 'Finance' }}</p>
                             </div>
-                            <div class="text-right shrink-0">
+                            <div class="text-right shrink-0 space-y-1">
                                 <span class="font-mono text-slate-600 font-semibold block text-[11px]">{{ $pay->payment_date ? \Carbon\Carbon::parse($pay->payment_date)->locale('id')->isoFormat('D MMM YYYY') : '-' }}</span>
-                                <span class="text-[10px] text-emerald-600 font-bold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 inline-block mt-0.5">TERBAYAR</span>
+                                <div class="flex items-center justify-end gap-1.5">
+                                    <span class="text-[10px] text-emerald-600 font-bold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 inline-block">TERBAYAR</span>
+                                    @if(auth()->user()->isFounder())
+                                        <button onclick="confirm('Hapus pencatatan setoran cicilan ini?') || event.stopImmediatePropagation()" wire:click="deleteInstallmentPayment({{ $pay->id }})" class="btn-action-delete text-[10px] px-2 py-0.5" title="Hapus Setoran">
+                                            <span>Hapus</span>
+                                        </button>
+                                    @endif
+                                </div>
                             </div>
                         </div>
                     @empty

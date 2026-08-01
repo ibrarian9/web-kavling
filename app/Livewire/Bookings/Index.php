@@ -8,11 +8,13 @@ use App\Models\Project;
 use App\Models\Unit;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 use Livewire\WithPagination;
 
 class Index extends Component
 {
     use WithPagination;
+    use WithFileUploads;
 
     public ?int $projectFilter = null;
     public string $typeFilter = '';
@@ -23,6 +25,11 @@ class Index extends Component
     public string $viewerType = 'pdf';
     public string $viewerUrl = '';
     public string $viewerTitle = '';
+
+    // Image Modal (Foto Resi Pembayaran Modal)
+    public bool $showImageModal = false;
+    public string $imageModalUrl = '';
+    public string $imageModalTitle = '';
 
     public function openViewerModal(string $type, string $url, string $title = ''): void
     {
@@ -40,6 +47,20 @@ class Index extends Component
         $this->viewerTitle = '';
     }
 
+    public function openImageModal(string $url, string $title = ''): void
+    {
+        $this->imageModalUrl = $url;
+        $this->imageModalTitle = $title ?: 'Foto Resi Bukti Transfer / DP';
+        $this->showImageModal = true;
+    }
+
+    public function closeImageModal(): void
+    {
+        $this->showImageModal = false;
+        $this->imageModalUrl = '';
+        $this->imageModalTitle = '';
+    }
+
     // Modal state
     public bool $showModal = false;
     public ?int $project_id = null;
@@ -52,6 +73,7 @@ class Index extends Component
     public ?string $booking_date = null;
     public ?string $expiry_date = null;
     public string $notes = '';
+    public $receipt_photo = null;
 
     protected function rules(): array
     {
@@ -65,13 +87,14 @@ class Index extends Component
             'booking_date' => 'required|date',
             'expiry_date' => 'nullable|date|after_or_equal:booking_date',
             'notes' => 'nullable|string|max:500',
+            'receipt_photo' => 'nullable|image|max:10240',
         ];
     }
 
     public function create(): void
     {
         $this->resetValidation();
-        $this->reset(['project_id', 'unit_id', 'buyer_name', 'buyer_phone', 'booking_amount', 'dp_amount', 'notes']);
+        $this->reset(['project_id', 'unit_id', 'buyer_name', 'buyer_phone', 'booking_amount', 'dp_amount', 'notes', 'receipt_photo']);
         $this->booking_amount = 5000000;
         $this->dp_amount = 0;
         $this->booking_type = 'unit';
@@ -92,6 +115,11 @@ class Index extends Component
         $validated['dp_amount'] = 0;
         $validated['status'] = 'active';
         $validated['created_by'] = Auth::id();
+
+        if ($this->receipt_photo) {
+            $validated['receipt_photo_path'] = $this->receipt_photo->store('receipts/bookings', 'public');
+        }
+        unset($validated['receipt_photo']);
 
         $booking = Booking::create($validated);
 
@@ -265,6 +293,10 @@ class Index extends Component
             'availableUnits' => $units,
             'totalBookingAmount' => $totalBookingAmount,
             'totalDpAmount' => $totalDpAmount,
+            'showImageModal' => $this->showImageModal,
+            'imageModalUrl' => $this->imageModalUrl,
+            'imageModalTitle' => $this->imageModalTitle,
+            'receipt_photo' => $this->receipt_photo,
         ])->layout('components.layouts.app', ['title' => 'Manajemen Booking & DP Pembeli']);
     }
 }

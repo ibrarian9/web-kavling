@@ -8,11 +8,13 @@ use App\Models\Unit;
 use App\Models\WorkerAssignment;
 use Illuminate\Validation\Rule;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 use Livewire\WithPagination;
 
 class Index extends Component
 {
     use WithPagination;
+    use WithFileUploads;
 
     public $project_id;
     public $showModal = false;
@@ -44,6 +46,7 @@ class Index extends Component
     public $booking_amount = 5000000;
     public $dp_amount = 25000000;
     public $booking_notes = '';
+    public $receipt_photo = null;
 
     // Computed preview properties for auto calculation
     public $previewExcessArea = 0;
@@ -268,6 +271,7 @@ class Index extends Component
         $this->booking_amount = 5000000;
         $this->dp_amount = 0;
         $this->booking_notes = 'Booking unit ' . $unit->code . ' via sistem.';
+        $this->receipt_photo = null;
         $this->showBookingModal = true;
     }
 
@@ -283,9 +287,15 @@ class Index extends Component
             'buyer_name' => 'required|string|max:255',
             'buyer_phone' => 'required|string|max:50',
             'booking_amount' => 'required|numeric|min:1000',
+            'receipt_photo' => 'nullable|image|max:10240',
         ]);
 
         $unit = Unit::findOrFail($this->bookingUnitId);
+
+        $receiptPath = null;
+        if ($this->receipt_photo) {
+            $receiptPath = $this->receipt_photo->store('receipts/bookings', 'public');
+        }
 
         Booking::create([
             'project_id' => $unit->project_id,
@@ -297,9 +307,9 @@ class Index extends Component
             'dp_amount' => 0,
             'booking_date' => now()->toDateString(),
             'expiry_date' => now()->addDays(14)->toDateString(),
-
             'status' => 'active',
             'notes' => $this->booking_notes,
+            'receipt_photo_path' => $receiptPath,
             'created_by' => auth()->id(),
         ]);
 

@@ -6,11 +6,13 @@ use App\Models\CashflowTransaction;
 use App\Models\Project;
 use App\Models\Unit;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 use Livewire\WithPagination;
 
 class Index extends Component
 {
     use WithPagination;
+    use WithFileUploads;
 
     public $filter_project_id = '';
     public $filter_unit_id = '';
@@ -21,6 +23,25 @@ class Index extends Component
     // Audit Trail Detail Modal
     public $showDetailModal = false;
     public $selectedTransactionId = null;
+
+    // Image Modal (Foto Resi Pembayaran Modal)
+    public bool $showImageModal = false;
+    public string $imageModalUrl = '';
+    public string $imageModalTitle = '';
+
+    public function openImageModal(string $url, string $title = ''): void
+    {
+        $this->imageModalUrl = $url;
+        $this->imageModalTitle = $title ?: 'Foto Resi Bukti Transfer / Transaksi';
+        $this->showImageModal = true;
+    }
+
+    public function closeImageModal(): void
+    {
+        $this->showImageModal = false;
+        $this->imageModalUrl = '';
+        $this->imageModalTitle = '';
+    }
 
     protected $queryString = [
         'view_mode' => ['except' => 'global'],
@@ -36,6 +57,7 @@ class Index extends Component
     public $amount = 0;
     public $transaction_date = '';
     public $description = '';
+    public $receipt_photo = null;
 
     public function boot()
     {
@@ -271,6 +293,7 @@ class Index extends Component
         $this->amount = 0;
         $this->transaction_date = date('Y-m-d');
         $this->description = '';
+        $this->receipt_photo = null;
     }
 
     public function saveTransaction()
@@ -281,7 +304,13 @@ class Index extends Component
             'amount' => 'required|numeric|min:1000',
             'description' => 'required|string|max:255',
             'transaction_date' => 'required|date',
+            'receipt_photo' => 'nullable|image|max:10240',
         ]);
+
+        $receiptPath = null;
+        if ($this->receipt_photo) {
+            $receiptPath = $this->receipt_photo->store('receipts/cashflow', 'public');
+        }
 
         CashflowTransaction::create([
             'project_id' => $this->project_id,
@@ -290,6 +319,7 @@ class Index extends Component
             'amount' => $this->amount,
             'transaction_date' => $this->transaction_date,
             'description' => $this->description,
+            'receipt_photo_path' => $receiptPath,
             'created_by' => auth()->id(),
         ]);
 
@@ -443,6 +473,10 @@ class Index extends Component
             'showDetailModal' => $this->showDetailModal,
             'selectedTransaction' => $selectedTransaction,
             'auditTrailInfo' => $auditTrailInfo,
+            'showImageModal' => $this->showImageModal,
+            'imageModalUrl' => $this->imageModalUrl,
+            'imageModalTitle' => $this->imageModalTitle,
+            'receipt_photo' => $this->receipt_photo,
         ])->layout('components.layouts.app', ['title' => 'Arus Kas Per-Proyek, Per-Unit & Konsolidasi Global']);
     }
 }

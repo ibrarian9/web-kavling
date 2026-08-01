@@ -119,6 +119,15 @@
                         <span class="text-slate-400 block text-[10px]">Keterangan Transaksi:</span>
                         <p class="text-slate-700 italic font-medium">{{ $selectedTransaction->description }}</p>
                     </div>
+
+                    @if ($selectedTransaction->receipt_photo_url)
+                        <div class="pt-2 border-t border-slate-200/80 text-[11px] sm:text-xs space-y-1">
+                            <span class="text-slate-500 font-bold block text-[10px] uppercase tracking-wider">Foto Struk / Bukti Transfer:</span>
+                            <div class="relative max-h-52 overflow-hidden rounded-xl border border-slate-200 bg-slate-900 flex items-center justify-center p-1 mt-1">
+                                <img src="{{ $selectedTransaction->receipt_photo_url }}" alt="Foto Struk Resi Kas" class="max-h-48 w-auto max-w-full object-contain rounded-lg shadow-sm">
+                            </div>
+                        </div>
+                    @endif
                 </div>
             </div>
 

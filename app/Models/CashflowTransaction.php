@@ -17,6 +17,7 @@ class CashflowTransaction extends Model
         'amount',
         'transaction_date',
         'description',
+        'receipt_photo_path',
         'reference_type',
         'reference_id',
         'created_by',
@@ -35,5 +36,28 @@ class CashflowTransaction extends Model
     public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function getReceiptPhotoUrlAttribute(): ?string
+    {
+        if ($this->receipt_photo_path) {
+            return asset('storage/' . $this->receipt_photo_path);
+        }
+
+        if ($this->reference_type && $this->reference_id) {
+            try {
+                $refClass = $this->reference_type;
+                if (class_exists($refClass)) {
+                    $ref = $refClass::find($this->reference_id);
+                    if ($ref && !empty($ref->receipt_photo_path)) {
+                        return asset('storage/' . $ref->receipt_photo_path);
+                    }
+                }
+            } catch (\Throwable $e) {
+                // ignore
+            }
+        }
+
+        return null;
     }
 }

@@ -91,7 +91,7 @@
                         <th class="px-5 py-3.5">Tingkat Booking</th>
                         <th class="px-5 py-3.5 text-right">Nominal Tanda Jadi</th>
                         <th class="px-5 py-3.5 text-center">Status</th>
-                        <th class="px-5 py-3.5 text-center">Resi Invoice</th>
+                        <th class="px-5 py-3.5 text-center">Foto Resi & Invoice</th>
                         <th class="px-5 py-3.5 text-right">Aksi</th>
                     </tr>
                 </thead>
@@ -137,6 +137,12 @@
                             </td>
                             <td class="px-5 py-4 text-center whitespace-nowrap">
                                 <div class="flex items-center justify-center gap-1.5 flex-wrap">
+                                    @if ($b->receipt_photo_path)
+                                        <button wire:click="openImageModal('{{ asset('storage/' . $b->receipt_photo_path) }}', 'Foto Struk Resi Booking - {{ $b->buyer_name }}')" class="btn-action-pdf bg-amber-50 text-amber-800 border-amber-200 hover:bg-amber-100" title="Buka Foto Struk Bukti Transfer / DP">
+                                            <svg class="w-3.5 h-3.5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                            <span>Foto Struk</span>
+                                        </button>
+                                    @endif
                                     <button wire:click="openViewerModal('pdf', '{{ route('bookings.receipt', $b->id) }}', 'Pratinjau Invoice Booking - {{ $b->buyer_name }}')" class="btn-action-pdf" title="Lihat PDF Invoice Booking">
                                         <svg class="w-3.5 h-3.5 text-sky-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
                                         <span>PDF</span>
@@ -249,6 +255,37 @@
                         @error('booking_amount') <span class="text-[10px] text-rose-500 mt-1 block">{{ $message }}</span> @enderror
                     </div>
 
+                    <div>
+                        <label class="block font-semibold text-slate-700 uppercase mb-1">Foto Struk / Bukti Transfer (Opsional)</label>
+                        <input type="file" wire:model="receipt_photo" accept="image/*,.heic,.heif,.pdf" class="w-full text-xs text-slate-600 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100 transition cursor-pointer">
+                        <div wire:loading wire:target="receipt_photo" class="text-[11px] text-amber-600 font-semibold mt-1 flex items-center gap-1.5">
+                            <svg class="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                            <span>Mengunggah foto resi...</span>
+                        </div>
+                        @error('receipt_photo') <span class="text-[10px] text-rose-500 mt-1 block font-semibold">{{ $message }}</span> @enderror
+                        @if ($receipt_photo ?? false)
+                            <div class="mt-2.5 p-2.5 bg-slate-50 border border-slate-200 rounded-2xl space-y-2">
+                                <div class="flex items-center justify-between text-[11px] font-semibold text-slate-700">
+                                    <span class="flex items-center gap-1 text-emerald-600">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                        <span>Berkas Terpilih ({{ method_exists($receipt_photo, 'getClientOriginalName') ? $receipt_photo->getClientOriginalName() : 'Foto Resi' }}):</span>
+                                    </span>
+                                    <button type="button" wire:click="$set('receipt_photo', null)" class="text-rose-500 hover:text-rose-700 text-[10px] underline font-bold">Hapus Foto</button>
+                                </div>
+                                @if (is_object($receipt_photo) && method_exists($receipt_photo, 'isPreviewable') && $receipt_photo->isPreviewable())
+                                    <div class="relative max-h-52 overflow-hidden rounded-xl border border-slate-200 bg-slate-900 flex items-center justify-center p-1">
+                                        <img src="{{ $receipt_photo->temporaryUrl() }}" alt="Preview Resi" class="max-h-48 w-auto max-w-full object-contain rounded-lg shadow-sm">
+                                    </div>
+                                @else
+                                    <div class="p-2.5 bg-amber-50 border border-amber-200/80 rounded-xl text-amber-800 text-[11px] font-semibold flex items-center gap-2">
+                                        <svg class="w-4 h-4 text-amber-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                        <span>Format berkas siap diunggah. Pratinjau langsung didukung untuk file gambar (JPG/PNG).</span>
+                                    </div>
+                                @endif
+                            </div>
+                        @endif
+                    </div>
+
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
                             <label class="block font-semibold text-slate-700 uppercase mb-1 text-[11px] sm:text-xs">Tgl Pembayaran</label>
@@ -294,6 +331,31 @@
                         <span>Buka di Tab Baru / Cetak Direct</span>
                     </a>
                     <button wire:click="closeViewerModal" class="btn-primary bg-slate-800 hover:bg-slate-900 text-xs px-5 py-2">Tutup Pratinjau</button>
+                </div>
+            </div>
+        </div>
+    @endif
+
+    <!-- Foto Struk Resi Viewer Modal -->
+    @if($showImageModal ?? false)
+        <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+            <div class="bg-white border border-slate-200 rounded-3xl max-w-2xl w-full p-6 shadow-2xl space-y-4 max-h-[92vh] flex flex-col">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                    <h3 class="font-extrabold text-slate-900 text-base flex items-center gap-2">
+                        <svg class="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                        {{ $imageModalTitle }}
+                    </h3>
+                    <button wire:click="closeImageModal" class="p-1.5 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition">✕</button>
+                </div>
+                <div class="flex-1 overflow-auto flex items-center justify-center p-2 bg-slate-50 rounded-2xl border border-slate-200 min-h-[300px]">
+                    <img src="{{ $imageModalUrl }}" alt="Foto Struk Resi" class="max-h-[600px] w-auto max-w-full object-contain rounded-xl shadow-sm">
+                </div>
+                <div class="flex items-center justify-between border-t border-slate-100 pt-3 text-xs">
+                    <a href="{{ $imageModalUrl }}" target="_blank" class="btn-secondary text-xs px-4 py-2 flex items-center gap-1.5">
+                        <svg class="w-4 h-4 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                        <span>Buka Gambar Asli</span>
+                    </a>
+                    <button wire:click="closeImageModal" class="btn-primary bg-slate-800 hover:bg-slate-900 text-xs px-5 py-2">Tutup</button>
                 </div>
             </div>
         </div>

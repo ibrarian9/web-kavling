@@ -6,7 +6,21 @@
             <h2 class="text-xl font-extrabold text-slate-900 tracking-tight">Surat Pemesanan Properti (SPP PDF)</h2>
             <p class="text-slate-500 text-xs mt-0.5">Arsip resmi dokumen SPP & kuitansi pemesanan unit properti yang telah diterbitkan</p>
         </div>
+
+        @if(auth()->user()->isFounder() || auth()->user()->isFinance() || auth()->user()->isMarketing())
+            <button wire:click="openGenerateModal" class="btn-primary text-xs sm:text-sm font-bold shadow-md" title="Generate & Terbitkan Surat Pemesanan Properti (SPP PDF) Baru">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                <span>Generate SPP PDF Baru</span>
+            </button>
+        @endif
     </div>
+
+    @if (session()->has('success'))
+        <div class="p-4 bg-emerald-50 border border-emerald-200/80 rounded-2xl text-emerald-800 text-xs font-semibold flex items-center gap-2">
+            <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            <span>{{ session('success') }}</span>
+        </div>
+    @endif
 
     <!-- KPI Summary Metric Cards -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -93,19 +107,21 @@
                                 <div class="flex items-center justify-center gap-1.5 flex-wrap">
                                     <button wire:click="openViewerModal('pdf', '{{ route('documents.stream', $doc->id) }}', 'Pratinjau Dokumen SPP - {{ $doc->document_number }}')" class="btn-action-pdf" title="Pratinjau SPP PDF">
                                         <svg class="w-3.5 h-3.5 text-sky-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
-                                        <span>PDF</span>
+                                        <span>Preview PDF</span>
                                     </button>
                                 </div>
                             </td>
                             <td class="px-5 py-4 text-right whitespace-nowrap">
                                 <div class="flex items-center justify-end gap-1.5 flex-wrap">
+                                    <a href="{{ route('documents.stream', $doc->id) }}" target="_blank" class="btn-action-pdf" title="Generate & Unduh Direct Dokumen SPP PDF">
+                                        <svg class="w-3.5 h-3.5 text-sky-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                                        <span>Generate PDF</span>
+                                    </a>
                                     @if ($doc->unit_id)
                                         <a href="{{ route('units.show', $doc->unit_id) }}" class="btn-action-unit" title="Lihat Detail Unit {{ $doc->unit->code }}">
-                                            <svg class="w-3.5 h-3.5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 001 1v4a1 1 0 001 1m-6 0h6"/></svg>
+                                            <svg class="w-3.5 h-3.5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
                                             <span>Unit</span>
                                         </a>
-                                    @else
-                                        <span class="text-slate-400 italic text-[11px]">-</span>
                                     @endif
                                 </div>
                             </td>
@@ -115,7 +131,7 @@
                             <td colspan="8" class="px-6 py-12 text-center text-slate-400">
                                 <svg class="w-12 h-12 mx-auto text-slate-300 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                                 <p class="font-bold text-slate-600">Belum Ada Dokumen Surat Pemesanan Properti (SPP)</p>
-                                <p class="text-xs text-slate-400 mt-1">Dokumen resmi SPP akan muncul setelah pengajuan harga jual disetujui penuh.</p>
+                                <p class="text-xs text-slate-400 mt-1">Klik tombol "Generate SPP PDF Baru" di atas untuk menerbitkan dokumen resmi.</p>
                             </td>
                         </tr>
                     @endforelse
@@ -126,6 +142,56 @@
             {{ $documents->links() }}
         </div>
     </div>
+
+    <!-- Modal Form Generate SPP PDF Baru -->
+    @if($showGenerateModal)
+        <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+            <div class="bg-white border border-slate-200 rounded-3xl max-w-lg w-full p-6 shadow-2xl space-y-4">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                    <h3 class="font-extrabold text-slate-900 text-base flex items-center gap-2">
+                        <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                        <span>Generate & Terbitkan SPP PDF Baru</span>
+                    </h3>
+                    <button wire:click="$set('showGenerateModal', false)" class="text-slate-400 hover:text-slate-600">✕</button>
+                </div>
+
+                <form wire:submit.prevent="generateDocument" class="space-y-4 text-xs">
+                    <div>
+                        <label class="block font-bold text-slate-700 uppercase mb-1">Pilih Unit Kavling / Rumah *</label>
+                        <select wire:model="selected_unit_id" required class="input-clean w-full font-semibold">
+                            <option value="">-- Pilih Unit --</option>
+                            @foreach($allUnits as $u)
+                                <option value="{{ $u->id }}">{{ $u->code }} - {{ $u->project->name }} (Status: {{ ucfirst($u->status) }})</option>
+                            @endforeach
+                        </select>
+                        @error('selected_unit_id') <span class="text-rose-500 text-[10px] mt-1 block font-bold">{{ $message }}</span> @enderror
+                    </div>
+
+                    <div>
+                        <label class="block font-bold text-slate-700 uppercase mb-1">Nama Lengkap Pembeli *</label>
+                        <input type="text" wire:model="buyer_name" required placeholder="Contoh: Bpk. H. Hendra Wijaya" class="input-clean w-full font-bold">
+                        @error('buyer_name') <span class="text-rose-500 text-[10px] mt-1 block font-bold">{{ $message }}</span> @enderror
+                    </div>
+
+                    <div>
+                        <label class="block font-bold text-slate-700 uppercase mb-1">No. HP / WhatsApp Pembeli *</label>
+                        <input type="text" wire:model="buyer_contact" required placeholder="081234567890" class="input-clean w-full font-mono">
+                        @error('buyer_contact') <span class="text-rose-500 text-[10px] mt-1 block font-bold">{{ $message }}</span> @enderror
+                    </div>
+
+                    <div>
+                        <label class="block font-bold text-slate-700 uppercase mb-1">Alamat Lengkap Pembeli</label>
+                        <input type="text" wire:model="buyer_address" placeholder="Jl. Sudirman No. 123, Pekanbaru" class="input-clean w-full">
+                    </div>
+
+                    <div class="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
+                        <button type="button" wire:click="$set('showGenerateModal', false)" class="btn-secondary">Batal</button>
+                        <button type="submit" class="btn-primary">Generate SPP PDF</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    @endif
 
     <!-- PDF Viewer Modal (Dokumen SPP PDF) -->
     @if($showViewerModal)
@@ -151,4 +217,5 @@
             </div>
         </div>
     @endif
+
 </div>

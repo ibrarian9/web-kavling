@@ -1051,6 +1051,52 @@ class Show extends Component
         $this->showSetupInstallmentModal = false;
     }
 
+    public function deleteInstallmentScheme(): void
+    {
+        $user = auth()->user();
+        if (!$user || !$user->isFounder()) {
+            session()->flash('error', 'Hanya Founder yang berhak menghapus skema cicilan pembeli.');
+            return;
+        }
+
+        $unit = Unit::with('installment')->findOrFail($this->unitId);
+        if (!$unit->installment) {
+            session()->flash('error', 'Unit ini tidak memiliki skema cicilan aktif.');
+            return;
+        }
+
+        $instId = $unit->installment->id;
+        $code = $unit->code;
+
+        DB::transaction(function () use ($unit, $instId, $code) {
+            $paymentIds = InstallmentPayment::where('unit_installment_id', $instId)->pluck('id');
+
+            // 1. Delete associated cashflow transactions
+            CashflowTransaction::where('reference_type', UnitInstallment::class)
+                ->where('reference_id', $instId)
+                ->delete();
+
+            if ($paymentIds->count() > 0) {
+                CashflowTransaction::where('reference_type', InstallmentPayment::class)
+                    ->whereIn('reference_id', $paymentIds)
+                    ->delete();
+            }
+
+            // 2. Delete payments
+            InstallmentPayment::where('unit_installment_id', $instId)->delete();
+
+            // 3. Delete unit installment scheme
+            $unit->installment->delete();
+
+            \App\Services\ActivityLogger::log(
+                'DELETE_INSTALLMENT_SCHEME',
+                "Founder menghapus skema cicilan & piutang pembeli untuk Unit {$code}"
+            );
+        });
+
+        session()->flash('success', "Skema cicilan Unit {$code} berhasil dihapus dari sistem!");
+    }
+
 
 
     // 3. Direct Booking Handler (Req #2)
@@ -1062,6 +1108,7 @@ class Show extends Component
         $this->booking_amount = 5000000;
         $this->dp_amount = 0;
         $this->booking_notes = 'Booking unit ' . $unit->code . ' via Halaman Detail Unit.';
+        $this->receipt_photo = null;
         $this->showBookingModal = true;
     }
 
@@ -1077,9 +1124,15 @@ class Show extends Component
             'buyer_name' => 'required|string|max:255',
             'buyer_phone' => 'required|string|max:50',
             'booking_amount' => 'required|numeric|min:1000',
+            'receipt_photo' => 'nullable|image|max:10240',
         ]);
 
         $unit = Unit::findOrFail($this->unitId);
+
+        $receiptPath = null;
+        if ($this->receipt_photo) {
+            $receiptPath = $this->receipt_photo->store('receipts/bookings', 'public');
+        }
 
         Booking::create([
             'project_id' => $unit->project_id,
@@ -1093,6 +1146,7 @@ class Show extends Component
             'expiry_date' => now()->addDays(14)->toDateString(),
             'status' => 'active',
             'notes' => $this->booking_notes,
+            'receipt_photo_path' => $receiptPath,
             'created_by' => Auth::id(),
         ]);
 
@@ -1243,9 +1297,23 @@ class Show extends Component
             WeeklyMaterialPurchase::where('unit_id', $unit->id)->delete();
 
             if ($unit->installment) {
+                $paymentIds = InstallmentPayment::where('unit_installment_id', $unit->installment->id)->pluck('id');
+                CashflowTransaction::where('reference_type', UnitInstallment::class)
+                    ->where('reference_id', $unit->installment->id)
+                    ->delete();
+                if ($paymentIds->count() > 0) {
+                    CashflowTransaction::where('reference_type', InstallmentPayment::class)
+                        ->whereIn('reference_id', $paymentIds)
+                        ->delete();
+                }
                 InstallmentPayment::where('unit_installment_id', $unit->installment->id)->delete();
                 $unit->installment->delete();
             }
+
+            // Delete direct Cashflow Transactions linked to Unit (e.g. legacy sale)
+            CashflowTransaction::where('reference_type', Unit::class)
+                ->where('reference_id', $unit->id)
+                ->delete();
 
             Booking::where('unit_id', $unit->id)->delete();
             \App\Models\PriceProposal::where('unit_id', $unit->id)->delete();
@@ -1253,6 +1321,11 @@ class Show extends Component
             \App\Models\ManualInvoice::where('unit_id', $unit->id)->update(['unit_id' => null]);
 
             $unit->delete();
+
+            \App\Services\ActivityLogger::log(
+                'DELETE_UNIT',
+                "Founder menghapus Unit {$code} dari sistem beserta seluruh histori terikatnya"
+            );
         });
 
         session()->flash('success', 'Unit ' . $code . ' berhasil dihapus dari sistem!');

@@ -22,6 +22,7 @@ class Booking extends Model
         'expiry_date',
         'status',
         'notes',
+        'receipt_photo_path',
         'created_by',
     ];
 

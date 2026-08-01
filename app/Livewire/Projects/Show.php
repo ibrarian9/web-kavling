@@ -28,6 +28,25 @@ class Show extends Component
     public bool $showPaymentModal = false;
     public $showDetailModal = false;
     public $selectedTransactionId = null;
+
+    // Image Modal (Foto Resi Pembayaran Modal)
+    public bool $showImageModal = false;
+    public string $imageModalUrl = '';
+    public string $imageModalTitle = '';
+
+    public function openImageModal(string $url, string $title = ''): void
+    {
+        $this->imageModalUrl = $url;
+        $this->imageModalTitle = $title ?: 'Foto Resi Bukti Transfer / Transaksi';
+        $this->showImageModal = true;
+    }
+
+    public function closeImageModal(): void
+    {
+        $this->showImageModal = false;
+        $this->imageModalUrl = '';
+        $this->imageModalTitle = '';
+    }
     public $payment_amount = 0;
     public $payment_date = '';
     public $payment_method = 'Transfer Bank';
@@ -801,6 +820,9 @@ class Show extends Component
             'selectedTransaction' => $selectedTransaction,
             'auditTrailInfo' => $auditTrailInfo,
             'editingPaymentId' => $this->editingPaymentId,
+            'showImageModal' => $this->showImageModal,
+            'imageModalUrl' => $this->imageModalUrl,
+            'imageModalTitle' => $this->imageModalTitle,
         ])->layout('components.layouts.app', ['title' => 'Dashboard Detail Proyek - ' . $project->name]);
     }
 }

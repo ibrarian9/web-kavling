@@ -18,6 +18,7 @@ Dokumen ini merupakan panduan resmi untuk **menyeragamkan tampilan, warna, ukura
 | **Input Setoran / Bayar** | Emerald Soft (`#ecfdf5`) | `bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border-emerald-200` | + Setoran Cicilan, Bayar Pembeli | `btn-action-payment` atau `bg-emerald-50 text-emerald-800 border border-emerald-200 hover:bg-emerald-100` |
 | **Konversi / Ganti Cash** | Purple Soft (`#faf5ff`) | `bg-purple-50 hover:bg-purple-100 text-purple-800 border-purple-200` | Batalkan & Ganti Cash, Konversi Skema | `btn-action-convert` atau `bg-purple-50 text-purple-800 border border-purple-200 hover:bg-purple-100` |
 | **QR Code Verification** | Emerald Soft (`#ecfdf5`) | `bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border-emerald-200` | Scan QR Code, Verifikasi Kuitansi | `btn-action-qr` atau `bg-emerald-50 text-emerald-800 border border-emerald-200 hover:bg-emerald-100` |
+| **Navigasi / Kembali** | Slate Light (`#f1f5f9`) | `bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-200/80` | Kembali ke Halaman Sebelumnya, Navigasi Back Header | `btn-action-back` atau `bg-slate-100 text-slate-700 border border-slate-200/80 hover:bg-slate-200` |
 | **Disabled / Empty Data** | Slate Muted (`#f1f5f9`) | `bg-slate-100 text-slate-400 border-slate-200 cursor-not-allowed` | PDF Rekap (Belum Ada Data), Akses Terkunci | `bg-slate-100 text-slate-400 border border-slate-200 cursor-not-allowed opacity-75` |
 
 ---
@@ -87,6 +88,12 @@ Digunakan pada **Header Card**, **Filter Toolbar**, dan **Jendela Pengaturan Sec
     <span>Lihat PDF Rekap</span>
 </button>
 
+<!-- Tombol Kembali / Navigasi Header Toolbar -->
+<button onclick="history.back()" class="btn-action-back" title="Kembali ke Halaman Sebelumnya">
+    <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+    <span>Kembali</span>
+</button>
+
 <!-- Tombol Lihat PDF Rekap (Disabled / Data Kosong) -->
 <button disabled class="px-3.5 py-2 bg-slate-100 text-slate-400 border border-slate-200 rounded-xl text-xs font-bold inline-flex items-center gap-1.5 cursor-not-allowed opacity-75" title="Belum ada data pengeluaran/belanja untuk digenerate PDF">
     <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
@@ -137,11 +144,12 @@ Untuk mencegah **redudansi data & teks yang terlalu panjang**, penamaan tombol h
 2. **Gunakan teks label bersih tanpa simbol plus mentah:**
    - ✅ `Setup Skema Cicilan Baru`
    - ✅ `Setoran`
-   - ✅ `Proyek Baru`
-   - ✅ `Unit`
-   - ✅ `+ Unit`
-   - ✅ `+ Supervisor`
-   - ✅ `+ Catat Belanja`
+   - ✅ `Booking Unit Ini`
+   - ✅ `Tugaskan Pekerja`
+   - ✅ `Set Gaji Unit`
+   - ✅ `Catat Belanja Material`
+   - ✅ `Ajukan Penawaran Harga`
+   - ❌ *Hindari menyisipkan karakter `+` mentah di dalam teks label (misal: "+ Booking Unit", "+ Tugaskan", "+ Catat Belanja")*
 3. **Sertakan indikator status jika tombol di-disable:**
    - ✅ `PDF Rekap (Belum Ada Data)`
 
@@ -188,10 +196,28 @@ Daftar kelas bantuan CSS di bawah ini telah disiapkan untuk dipakai secara terpu
 .btn-header-setup {
   @apply px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs sm:text-sm font-bold inline-flex items-center gap-2 transition shadow-md hover:shadow-lg active:scale-[0.98] whitespace-nowrap;
 }
+
+.btn-action-back {
+  @apply px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200/80 rounded-xl text-xs font-bold inline-flex items-center gap-1.5 transition shadow-2xs active:scale-[0.98];
+}
 ```
 
 ---
 
-## 📋 5. Ringkasan Implementasi
+## 🎨 5. Standarisasi Tombol Aksi Berdasarkan Tema Kartu Section (Section Header Cards)
+
+Untuk menciptakan tampilan UI yang selaras, modern, dan tidak kontras secara kasar dengan warna blok solid yang terlalu berat, tombol aksi pada header kartu section menggunakan **Soft Action Theme** yang diselaraskan dengan skema warna kartu tersebut:
+
+| Nama Tombol | Tema Section Card | Skema Warna Tombol & Border | Sintaks Tailwind Standard |
+| :--- | :--- | :--- | :--- |
+| **Booking Unit Ini** | Header / Unit Status (Emerald) | Soft Emerald (`bg-emerald-50 text-emerald-800 border-emerald-200`) | `px-3.5 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 rounded-xl text-xs font-bold inline-flex items-center gap-1.5 transition shadow-2xs active:scale-[0.98]` |
+| **Tugaskan Pekerja** | Mandor & Tukang Bertugas (Blue) | Soft Blue (`bg-blue-50 text-blue-800 border-blue-200`) | `px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-800 border border-blue-200 rounded-xl text-xs font-bold inline-flex items-center gap-1.5 transition shadow-2xs active:scale-[0.98]` |
+| **Set Gaji Unit** | Penggajian Borongan Unit (Emerald) | Soft Emerald (`bg-emerald-50 text-emerald-800 border-emerald-200`) | `px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 rounded-xl text-xs font-bold inline-flex items-center gap-1.5 transition shadow-2xs active:scale-[0.98]` |
+| **Catat Belanja Material** | Biaya & Pengeluaran (Amber) | Soft Amber (`bg-amber-50 text-amber-800 border-amber-200`) | `px-3.5 py-2 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 rounded-xl text-xs font-bold inline-flex items-center gap-1.5 transition shadow-2xs active:scale-[0.98]` |
+| **Ajukan Penawaran Harga** | Proposal Marketing (Blue) | Soft Blue (`bg-blue-50 text-blue-800 border-blue-200`) | `px-3.5 py-2 bg-blue-50 hover:bg-blue-100 text-blue-800 border border-blue-200 rounded-xl text-xs font-bold inline-flex items-center gap-1.5 transition shadow-2xs active:scale-[0.98]` |
+
+---
+
+## 📋 6. Ringkasan Implementasi
 
 Setiap penambahan menu atau tombol baru di website wajib menggunakan acuan di atas agar **skema warna, ukuran icon, ketebalan font, dan interaksi hover** selaras di seluruh halaman.

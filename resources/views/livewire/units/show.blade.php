@@ -15,12 +15,12 @@
     <div class="card-clean p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
             <div class="flex items-center gap-2 text-xs text-slate-500 mb-1">
-                <a href="javascript:history.back()" class="hover:text-emerald-700 font-medium inline-flex items-center gap-1">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
-                    <span>Kembali</span>
+                <a href="{{ route('projects.show', $unit->project_id) }}" class="hover:text-emerald-700 font-medium inline-flex items-center gap-1">
+                    <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5m0 0h5m-5 0v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                    <span>{{ $unit->project->name }}</span>
                 </a>
                 <span>/</span>
-                <span class="font-semibold text-slate-700">{{ $unit->project->name }}</span>
+                <span class="font-semibold text-slate-700">Detail Unit {{ $unit->code }}</span>
             </div>
             <div class="flex items-center gap-3">
                 <h1 class="text-2xl font-extrabold text-slate-900 font-mono tracking-tight">{{ $unit->code }}</h1>
@@ -54,7 +54,7 @@
         </div>
 
         <div class="flex flex-wrap items-center gap-2">
-            <button onclick="history.back()" class="btn-secondary text-xs flex items-center gap-1.5 shadow-xs" title="Kembali ke Halaman Sebelumnya">
+            <button onclick="history.back()" class="btn-action-back" title="Kembali ke Halaman Sebelumnya">
                 <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
                 <span>Kembali</span>
             </button>
@@ -74,15 +74,16 @@
             @endif
 
             @if(!auth()->user()->isPengawasProject() && $unit->category !== 'infrastruktur' && in_array($unit->status, ['tersedia', 'disetujui']))
-                <button wire:click="openBookingModal" class="btn-primary text-xs flex items-center gap-1.5 shadow-sm">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                    <span>+ Booking Unit Ini</span>
+                <button wire:click="openBookingModal" class="px-3.5 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 rounded-xl text-xs font-bold inline-flex items-center gap-1.5 transition shadow-2xs active:scale-[0.98]" title="Booking Unit Ini">
+                    <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    <span>Booking Unit Ini</span>
                 </button>
             @endif
 
             @if(auth()->user()->isMarketing() && $unit->category !== 'infrastruktur' && $unit->status === 'tersedia')
-                <a href="{{ route('proposals.index', ['create_unit_id' => $unit->id]) }}" class="btn-primary text-xs px-3.5 py-2 shadow-sm">
-                    <span>+ Ajukan Penawaran Harga</span> &rarr;
+                <a href="{{ route('proposals.index', ['create_unit_id' => $unit->id]) }}" class="px-3.5 py-2 bg-blue-50 hover:bg-blue-100 text-blue-800 border border-blue-200 rounded-xl text-xs font-bold inline-flex items-center gap-1.5 transition shadow-2xs active:scale-[0.98]">
+                    <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                    <span>Ajukan Penawaran Harga</span> &rarr;
                 </a>
             @endif
         </div>
@@ -219,8 +220,9 @@
                     </h3>
                     
                     @if(auth()->user()->isSupervisor() || auth()->user()->isPengawasProject() || auth()->user()->isFounder())
-                        <button wire:click="openWorkerModal" class="btn-primary text-[11px] px-2.5 py-1 flex items-center gap-1">
-                            <span>+ Tugaskan</span>
+                        <button wire:click="openWorkerModal" class="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-800 border border-blue-200 rounded-xl text-xs font-bold inline-flex items-center gap-1.5 transition shadow-2xs active:scale-[0.98]">
+                            <svg class="w-3.5 h-3.5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                            <span>Tugaskan Pekerja</span>
                         </button>
                     @endif
                 </div>
@@ -290,8 +292,9 @@
                     </h3>
 
                     @if(auth()->user()->isSupervisor() || auth()->user()->isPengawasProject() || auth()->user()->isFounder())
-                        <button wire:click="openPayrollSetupModal" class="btn-primary text-[11px] px-2.5 py-1 flex items-center gap-1">
-                            <span>+ Set Gaji Unit</span>
+                        <button wire:click="openPayrollSetupModal" class="px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 rounded-xl text-xs font-bold inline-flex items-center gap-1.5 transition shadow-2xs active:scale-[0.98]">
+                            <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                            <span>Set Gaji Unit</span>
                         </button>
                     @endif
                 </div>
@@ -341,8 +344,9 @@
                             <div class="flex items-center justify-between pt-1 border-t border-slate-200/60 text-[10px]">
                                 <span class="text-slate-400">Sisa: <strong class="font-mono text-amber-700">Rp {{ number_format($up->remaining_salary, 0, ',', '.') }}</strong></span>
                                 @if($up->status !== 'lunas')
-                                    <button wire:click="openPayrollPaymentModal({{ $up->id }})" class="btn-primary text-[10px] px-2 py-0.5 bg-emerald-600 hover:bg-emerald-700">
-                                        + Bayar Gaji
+                                    <button wire:click="openPayrollPaymentModal({{ $up->id }})" class="btn-action-payment text-[11px] px-2.5 py-1 flex items-center gap-1 font-bold">
+                                        <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                                        <span>Bayar Gaji</span>
                                     </button>
                                 @endif
                             </div>
@@ -409,8 +413,9 @@
                         <div class="flex items-center justify-between mb-2">
                             <p class="text-xs font-bold text-slate-700">Riwayat Proposal Harga Jual:</p>
                             @if(auth()->user()->isMarketing() && $unit->category !== 'infrastruktur' && $unit->status === 'tersedia')
-                                <a href="{{ route('proposals.index', ['create_unit_id' => $unit->id]) }}" class="text-[11px] font-semibold text-blue-600 hover:underline">
-                                    + Ajukan Proposal Baru
+                                <a href="{{ route('proposals.index', ['create_unit_id' => $unit->id]) }}" class="btn-action-detail text-[11px] px-2.5 py-1 inline-flex items-center gap-1 font-bold">
+                                    <svg class="w-3.5 h-3.5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                                    <span>Ajukan Proposal Baru</span>
                                 </a>
                             @endif
                         </div>
@@ -459,20 +464,25 @@
                         @if(auth()->user()->isFounder())
                             <div class="flex items-center gap-2">
                                 @if(!in_array($unit->installment->status, ['lunas', 'konversi_cash']))
-                                    <button wire:click="openInstallmentPaymentModal" class="btn-primary text-xs px-3 py-1.5 flex items-center gap-1.5 bg-blue-600 hover:bg-blue-700 shadow-sm transition">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                                        <span>+ Input Setoran</span>
+                                    <button wire:click="openInstallmentPaymentModal" class="btn-action-payment text-xs px-3 py-1.5 flex items-center gap-1.5 shadow-2xs" title="Input Setoran Cicilan Pembeli">
+                                        <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                                        <span>Input Setoran</span>
                                     </button>
                                 @endif
-                                <button wire:click="openSetupInstallmentModal" class="btn-secondary text-xs px-3 py-1.5 flex items-center gap-1.5 text-amber-800 bg-amber-50 hover:bg-amber-100 border-amber-200 font-bold shadow-xs transition" title="Edit Skema Cicilan & Piutang Pembeli">
+                                <button wire:click="openSetupInstallmentModal" class="btn-action-edit text-xs px-3 py-1.5 flex items-center gap-1.5 shadow-2xs" title="Edit Skema Cicilan & Piutang Pembeli">
                                     <svg class="w-3.5 h-3.5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                                     <span>Edit Skema</span>
                                 </button>
                                 @if(!in_array($unit->installment->status, ['lunas', 'konversi_cash']))
-                                    <button wire:click="openConvertToCashModal" class="btn-secondary text-xs px-3 py-1.5 flex items-center gap-1.5 text-purple-700 border-purple-200 hover:bg-purple-50 font-bold shadow-sm transition" title="Batalkan skema cicilan & pelunasan Cash">
+                                    <button wire:click="openConvertToCashModal" class="btn-action-convert text-xs px-3 py-1.5 flex items-center gap-1.5 shadow-2xs" title="Batalkan skema cicilan & pelunasan Cash">
+                                        <svg class="w-3.5 h-3.5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
                                         <span>Batalkan & Ganti Cash</span>
                                     </button>
                                 @endif
+                                <button onclick="confirm('Yakin ingin menghapus skema cicilan Unit {{ $unit->code }} beserta seluruh riwayat setoran terikatnya?') || event.stopImmediatePropagation()" wire:click="deleteInstallmentScheme" class="btn-action-delete text-xs px-3 py-1.5 flex items-center gap-1.5 shadow-2xs" title="Hapus Skema Cicilan Pembeli">
+                                    <svg class="w-3.5 h-3.5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                    <span>Hapus Skema</span>
+                                </button>
                             </div>
                         @endif
                     </div>
@@ -542,9 +552,9 @@
                         <h4 class="font-bold text-slate-900 text-xs">Skema Cicilan Pembeli Belum Dikonfigurasi</h4>
                         <p class="text-[11px] text-slate-500">Unit ini sudah terpesan/terjual. Klik tombol untuk mengonfigurasi skema harga & tenor cicilan.</p>
                     </div>
-                    <button wire:click="openSetupInstallmentModal" class="btn-primary text-xs px-3 py-2 bg-blue-600 hover:bg-blue-700 shadow-xs flex items-center gap-1">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                        <span>+ Buat Skema Cicilan Pembeli</span>
+                    <button wire:click="openSetupInstallmentModal" class="px-3.5 py-2 bg-blue-50 hover:bg-blue-100 text-blue-800 border border-blue-200 rounded-xl text-xs font-bold inline-flex items-center gap-1.5 transition shadow-2xs active:scale-[0.98]">
+                        <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                        <span>Buat Skema Cicilan Pembeli</span>
                     </button>
                 </div>
             @endif
@@ -575,9 +585,9 @@
                         @endif
 
                         @if(auth()->user()->isFounder() || auth()->user()->isPengawasProject() || auth()->user()->isSupervisor())
-                            <button wire:click="openMaterialModal" class="btn-primary text-xs px-3 py-1.5 flex items-center gap-1.5 bg-amber-600 hover:bg-amber-700 shadow-sm transition">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                                <span>+ Catat Belanja Material</span>
+                            <button wire:click="openMaterialModal" class="px-3.5 py-2 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 rounded-xl text-xs font-bold inline-flex items-center gap-1.5 transition shadow-2xs active:scale-[0.98]">
+                                <svg class="w-4 h-4 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                                <span>Catat Belanja Material</span>
                             </button>
                         @endif
                     </div>

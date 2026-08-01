@@ -96,7 +96,7 @@
                 <div class="px-6 py-12 text-center text-slate-400">
                     <svg class="w-12 h-12 mx-auto text-slate-300 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
                     <p class="font-semibold text-slate-600">Belum ada riwayat pembayaran lahan proyek ke penjual</p>
-                    <p class="text-xs text-slate-400 mt-1">Klik tombol "+ Catat Bayar Lahan ke Penjual" untuk memasukkan setoran pelunasan tanah.</p>
+                    <p class="text-xs text-slate-400 mt-1">Klik tombol "Catat Bayar Lahan ke Penjual" untuk memasukkan setoran pelunasan tanah.</p>
                 </div>
             @endforelse
         </div>
@@ -192,7 +192,7 @@
                             <td colspan="9" class="px-6 py-12 text-center text-slate-400">
                                 <svg class="w-12 h-12 mx-auto text-slate-300 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
                                 <p class="font-semibold text-slate-600">Belum ada riwayat pembayaran lahan proyek ke penjual</p>
-                                <p class="text-xs text-slate-400 mt-1">Klik tombol "+ Catat Bayar Lahan ke Penjual" untuk memasukkan setoran pelunasan tanah.</p>
+                                <p class="text-xs text-slate-400 mt-1">Klik tombol "Catat Bayar Lahan ke Penjual" untuk memasukkan setoran pelunasan tanah.</p>
                             </td>
                         </tr>
                     @endforelse

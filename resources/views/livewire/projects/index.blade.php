@@ -8,7 +8,7 @@
         </div>
 
         @if(auth()->user()->isFounder() || auth()->user()->isSupervisor())
-            <button wire:click="openModal" class="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs px-4 py-2.5 rounded-xl shadow-md transition inline-flex items-center gap-2">
+            <button wire:click="openModal" class="btn-primary text-xs sm:text-sm font-bold shadow-md">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                 <span>Tambah Proyek Baru</span>
             </button>
@@ -298,7 +298,7 @@
 
                     <!-- Section 2: Form Tambah Penugasan Pengawas Baru -->
                     <div class="pt-3 border-t border-slate-100">
-                        <h4 class="font-bold text-slate-800 mb-2 uppercase text-[11px] tracking-wider">+ Penugasan Pengawas Baru</h4>
+                        <h4 class="font-bold text-slate-800 mb-2 uppercase text-[11px] tracking-wider">Penugasan Pengawas Baru</h4>
                         <form wire:submit.prevent="saveWorkerAssignment" class="space-y-3">
                             <div>
                                 <label class="block font-semibold text-purple-900 mb-1">Pilih Akun Pengawas Project</label>

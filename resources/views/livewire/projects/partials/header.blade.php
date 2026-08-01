@@ -23,9 +23,9 @@
         </a>
 
         @if(auth()->user()->isFounder())
-            <button wire:click="openLegacyModal" class="px-3 py-2 rounded-xl bg-purple-900/90 hover:bg-purple-800 text-purple-200 border border-purple-700/60 text-xs font-semibold flex items-center gap-1.5 transition shadow-sm">
-                <svg class="w-4 h-4 text-purple-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                <span>+ Penjualan Lalu</span>
+            <button wire:click="openLegacyModal" class="btn-action-convert text-xs px-3.5 py-2 flex items-center gap-1.5 shadow-2xs" title="Catat Penjualan Unit Masa Lalu / Sebelum System">
+                <svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                <span>Penjualan Lalu</span>
             </button>
         @endif
 

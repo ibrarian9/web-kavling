@@ -258,6 +258,85 @@ class Index extends Component
         $this->selectedDetailInstallment = null;
     }
 
+    public function deleteInstallment($id)
+    {
+        $user = auth()->user();
+        if (!$user || !$user->isFounder()) {
+            session()->flash('error', 'Hanya Founder yang berhak menghapus skema cicilan pembeli.');
+            return;
+        }
+
+        $inst = UnitInstallment::with('unit')->findOrFail($id);
+        $code = $inst->unit->code ?? '-';
+
+        \Illuminate\Support\Facades\DB::transaction(function () use ($inst, $code) {
+            $paymentIds = InstallmentPayment::where('unit_installment_id', $inst->id)->pluck('id');
+
+            // Delete associated cashflow transactions
+            CashflowTransaction::where('reference_type', UnitInstallment::class)
+                ->where('reference_id', $inst->id)
+                ->delete();
+
+            if ($paymentIds->count() > 0) {
+                CashflowTransaction::where('reference_type', InstallmentPayment::class)
+                    ->whereIn('reference_id', $paymentIds)
+                    ->delete();
+            }
+
+            // Delete payments
+            InstallmentPayment::where('unit_installment_id', $inst->id)->delete();
+
+            // Delete unit installment scheme
+            $inst->delete();
+
+            \App\Services\ActivityLogger::log(
+                'DELETE_INSTALLMENT_SCHEME',
+                "Founder menghapus skema cicilan & piutang pembeli untuk Unit {$code}"
+            );
+        });
+
+        session()->flash('success', "Skema cicilan Unit {$code} berhasil dihapus!");
+
+        if ($this->selectedDetailInstallment && $this->selectedDetailInstallment->id == $id) {
+            $this->closeDetailModal();
+        }
+    }
+
+    public function deleteInstallmentPayment($paymentId)
+    {
+        $user = auth()->user();
+        if (!$user || !$user->isFounder()) {
+            session()->flash('error', 'Hanya Founder yang berhak menghapus setoran cicilan pembeli.');
+            return;
+        }
+
+        $pay = InstallmentPayment::with('installment.unit')->findOrFail($paymentId);
+        $instId = $pay->unit_installment_id;
+        $unitCode = $pay->installment->unit->code ?? '-';
+        $amount = $pay->amount_paid;
+
+        \Illuminate\Support\Facades\DB::transaction(function () use ($pay, $instId) {
+            CashflowTransaction::where('reference_type', InstallmentPayment::class)
+                ->where('reference_id', $pay->id)
+                ->delete();
+
+            $pay->delete();
+
+            $inst = UnitInstallment::find($instId);
+            if ($inst) {
+                $totalPaid = (float)$inst->down_payment + (float)$inst->payments()->sum('amount_paid');
+                $status = ($totalPaid >= (float)$inst->total_price) ? 'lunas' : 'berjalan';
+                $inst->update(['status' => $status]);
+            }
+        });
+
+        session()->flash('success', "Pencatatan setoran cicilan Rp " . number_format($amount, 0, ',', '.') . " Unit {$unitCode} berhasil dihapus!");
+
+        if ($this->selectedDetailInstallment && $this->selectedDetailInstallment->id == $instId) {
+            $this->selectedDetailInstallment = UnitInstallment::with(['unit.project', 'officialDocument', 'payments.creator'])->find($instId);
+        }
+    }
+
     public function render()
     {
         $installments = UnitInstallment::with(['unit.project', 'officialDocument', 'payments'])
