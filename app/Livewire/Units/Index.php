@@ -36,6 +36,7 @@ class Index extends Component
 
     public $category_filter = '';
     public string $search = '';
+    public string $viewMode = 'table'; // 'table' or 'siteplan'
 
     // Booking Modal State
     public $showBookingModal = false;

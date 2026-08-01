@@ -47,6 +47,25 @@ class Show extends Component
         $this->imageModalUrl = '';
         $this->imageModalTitle = '';
     }
+
+    // Siteplan Unit Modal Quick Actions
+    public bool $showSiteplanModal = false;
+    public $selectedSiteplanUnit = null;
+
+    public function openSiteplanUnitModal($id): void
+    {
+        $this->selectedSiteplanUnit = Unit::with(['project', 'proposals.proposer', 'officialDocument', 'installment.payments', 'assignments.worker'])->find((int) $id);
+        if ($this->selectedSiteplanUnit) {
+            $this->showSiteplanModal = true;
+        }
+    }
+
+    public function closeSiteplanUnitModal(): void
+    {
+        $this->showSiteplanModal = false;
+        $this->selectedSiteplanUnit = null;
+    }
+
     public $payment_amount = 0;
     public $payment_date = '';
     public $payment_method = 'Transfer Bank';
@@ -823,6 +842,8 @@ class Show extends Component
             'showImageModal' => $this->showImageModal,
             'imageModalUrl' => $this->imageModalUrl,
             'imageModalTitle' => $this->imageModalTitle,
+            'showSiteplanModal' => $this->showSiteplanModal,
+            'selectedSiteplanUnit' => $this->selectedSiteplanUnit,
         ])->layout('components.layouts.app', ['title' => 'Dashboard Detail Proyek - ' . $project->name]);
     }
 }

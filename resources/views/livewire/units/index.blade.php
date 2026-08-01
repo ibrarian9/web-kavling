@@ -50,6 +50,18 @@
                     </select>
                 </div>
 
+                <!-- Toggle View Mode Button (Tabel ↔ Site Plan Visual) -->
+                <div class="flex items-center bg-slate-100 p-1 rounded-xl border border-slate-200 shrink-0">
+                    <button wire:click="$set('viewMode', 'table')" type="button" class="px-2.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 {{ $viewMode === 'table' ? 'bg-white text-emerald-700 shadow-sm' : 'text-slate-500 hover:text-slate-800' }}">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
+                        <span>Tabel</span>
+                    </button>
+                    <button wire:click="$set('viewMode', 'siteplan')" type="button" class="px-2.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 {{ $viewMode === 'siteplan' ? 'bg-white text-emerald-700 shadow-sm' : 'text-slate-500 hover:text-slate-800' }}">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6z"/></svg>
+                        <span>Site Plan Visual</span>
+                    </button>
+                </div>
+
                 <!-- Tombol Tambah Unit -->
                 @if(auth()->user()->isFounder() || auth()->user()->isSupervisor())
                     <button wire:click="openModal" 
@@ -118,8 +130,72 @@
         </div>
     </div>
 
-    <!-- Units Grid Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+    @if($viewMode === 'siteplan')
+        <div class="card-clean p-4 sm:p-6 bg-slate-900/5 border border-slate-200 mb-6">
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 sm:gap-4">
+                @forelse($units as $unit)
+                    @php
+                        $isInfra = ($unit->category === 'infrastruktur' || $unit->type === 'infrastruktur');
+                        $isSold = in_array($unit->status, ['terjual', 'disetujui']);
+                        $isBooked = in_array($unit->status, ['booked', 'menunggu_persetujuan']);
+                        $isAvailable = in_array($unit->status, ['tersedia', 'draft']);
+
+                        if ($isInfra) {
+                            $cardBg = 'bg-indigo-50/90 border-indigo-200 hover:border-indigo-400 text-indigo-950';
+                            $badgeBg = 'bg-indigo-100 text-indigo-800 border-indigo-200';
+                            $statusLabel = 'Fasum';
+                        } elseif ($isSold) {
+                            $cardBg = 'bg-rose-50/90 border-rose-200 hover:border-rose-400 text-rose-950';
+                            $badgeBg = 'bg-rose-100 text-rose-800 border-rose-200';
+                            $statusLabel = 'Terjual';
+                        } elseif ($isBooked) {
+                            $cardBg = 'bg-amber-50/90 border-amber-200 hover:border-amber-400 text-amber-950';
+                            $badgeBg = 'bg-amber-100 text-amber-800 border-amber-200';
+                            $statusLabel = 'Booked';
+                        } else {
+                            $cardBg = 'bg-emerald-50/90 border-emerald-200 hover:border-emerald-400 text-emerald-950';
+                            $badgeBg = 'bg-emerald-100 text-emerald-800 border-emerald-200';
+                            $statusLabel = 'Tersedia';
+                        }
+                    @endphp
+
+                    <a href="{{ route('units.show', $unit->id) }}" class="{{ $cardBg }} border rounded-2xl p-3 flex flex-col justify-between transition-all duration-200 transform hover:-translate-y-1 hover:shadow-md cursor-pointer group relative overflow-hidden min-h-[128px]">
+                        <div class="flex items-center justify-between gap-1">
+                            <span class="text-[9px] font-extrabold uppercase px-2 py-0.5 rounded-full border {{ $badgeBg }}">
+                                {{ $statusLabel }}
+                            </span>
+                            <span class="text-[10px] font-mono text-slate-500 font-semibold">
+                                {{ (float)$unit->land_area }} m²
+                            </span>
+                        </div>
+
+                        <div class="my-2">
+                            <p class="text-base sm:text-lg font-black font-mono tracking-tight group-hover:text-emerald-700 transition">
+                                {{ $unit->code }}
+                            </p>
+                            <p class="text-[10px] text-slate-500 font-medium capitalize truncate">
+                                {{ $unit->project->name ?? 'Proyek' }}
+                            </p>
+                        </div>
+
+                        <div class="pt-1.5 border-t border-slate-200/60 flex items-center justify-between text-[11px]">
+                            <span class="font-mono font-bold text-slate-800">
+                                Rp {{ number_format($unit->final_selling_price ?? $unit->hpp ?? 0, 0, ',', '.') }}
+                            </span>
+                            <svg class="w-3.5 h-3.5 text-slate-400 group-hover:text-emerald-600 transform group-hover:translate-x-0.5 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                        </div>
+                    </a>
+                @empty
+                    <div class="col-span-full py-12 text-center text-slate-400">
+                        <svg class="w-12 h-12 mx-auto text-slate-300 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6z"/></svg>
+                        <p class="font-bold text-slate-600">Tidak ada unit yang sesuai dengan filter site plan</p>
+                    </div>
+                @endforelse
+            </div>
+        </div>
+    @else
+        <!-- Units Grid Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         @forelse($units as $unit)
             <div class="card-clean p-5 space-y-4 flex flex-col justify-between hover:shadow-md transition">
                 <div>
@@ -313,6 +389,7 @@
             </div>
         @endforelse
     </div>
+    @endif
 
     <div class="mt-4">
         {{ $units->links() }}
