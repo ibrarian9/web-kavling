@@ -115,7 +115,13 @@
                                     <span>Edit</span>
                                 </button>
                                 @if($u->id !== auth()->id())
-                                    <button wire:click="toggleStatus({{ $u->id }})" class="btn-action-delete" title="Ubah Status Akun User">
+                                    <button type="button" @click="confirmModalAction({
+                                        title: '{{ $u->is_active ? "Nonaktifkan Akun User" : "Aktifkan Akun User" }}',
+                                        message: '{{ $u->is_active ? "Yakin ingin menonaktifkan akun user " . $u->name . "? User ini tidak akan dapat login ke dalam sistem." : "Yakin ingin mengaktifkan kembali akun user " . $u->name . "? User ini dapat kembali login ke dalam sistem." }}',
+                                        confirmText: '{{ $u->is_active ? "Nonaktifkan User" : "Aktifkan User" }}',
+                                        btnClass: '{{ $u->is_active ? "px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5" : "px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5" }}',
+                                        onConfirm: () => $wire.toggleStatus({{ $u->id }})
+                                    })" class="{{ $u->is_active ? 'btn-action-delete' : 'btn-action-payment' }}" title="Ubah Status Akun User">
                                         <span>{{ $u->is_active ? 'Nonaktifkan' : 'Aktifkan' }}</span>
                                     </button>
                                 @endif

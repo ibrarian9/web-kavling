@@ -152,15 +152,21 @@
                                         <svg class="w-3.5 h-3.5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                                         <span>Edit</span>
                                     </button>
-                                    <button wire:click="toggleStatus({{ $worker->id }})" class="{{ $worker->status === 'active' ? 'btn-action-delete' : 'btn-action-payment' }}" title="Ubah Status Aktif/Nonaktif Pekerja">
-                                        @if($worker->status === 'active')
-                                            <svg class="w-3.5 h-3.5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg>
-                                            <span>Nonaktifkan</span>
-                                        @else
-                                            <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                                            <span>Aktifkan</span>
-                                        @endif
-                                    </button>
+                                     <button type="button" @click="confirmModalAction({
+                                         title: '{{ $worker->status === "active" ? "Nonaktifkan Status Pekerja" : "Aktifkan Status Pekerja" }}',
+                                         message: '{{ $worker->status === "active" ? "Yakin ingin menonaktifkan status pekerja " . $worker->name . "?" : "Yakin ingin mengaktifkan kembali status pekerja " . $worker->name . "?" }}',
+                                         confirmText: '{{ $worker->status === "active" ? "Nonaktifkan Pekerja" : "Aktifkan Pekerja" }}',
+                                         btnClass: '{{ $worker->status === "active" ? "px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5" : "px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5" }}',
+                                         onConfirm: () => $wire.toggleStatus({{ $worker->id }})
+                                     })" class="{{ $worker->status === 'active' ? 'btn-action-delete' : 'btn-action-payment' }}" title="Ubah Status Aktif/Nonaktif Pekerja">
+                                         @if($worker->status === 'active')
+                                             <svg class="w-3.5 h-3.5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg>
+                                             <span>Nonaktifkan</span>
+                                         @else
+                                             <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                             <span>Aktifkan</span>
+                                         @endif
+                                     </button>
                                 </div>
                             </td>
                         </tr>
