@@ -10,6 +10,10 @@ use App\Livewire\Projects\Show as ProjectsShow;
 use Livewire\Livewire;
 use Spatie\Permission\Models\Role;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
+
+uses(RefreshDatabase::class);
+
 beforeEach(function () {
     Role::findOrCreate('founder', 'web');
     Role::findOrCreate('finance', 'web');

@@ -152,18 +152,36 @@
                             <td class="px-5 py-4 text-right whitespace-nowrap">
                                 <div class="flex items-center justify-end gap-1.5 flex-wrap">
                                     @if($b->status === 'active' && auth()->user()->isFounder())
-                                        <button wire:click="approveDp({{ $b->id }})" wire:confirm="Konfirmasi persetujuan Tanda Jadi untuk {{ $b->buyer_name }}? Arus kas masuk akan dicatat secara otomatis." class="btn-action-payment" title="Setujui Tanda Jadi / DP">
+                                        <button type="button" @click="confirmModalAction({
+                                            title: 'Persetujuan Tanda Jadi / DP',
+                                            message: 'Konfirmasi persetujuan Tanda Jadi untuk {{ $b->buyer_name }}? Arus kas masuk akan dicatat secara otomatis.',
+                                            confirmText: 'Setujui DP',
+                                            btnClass: 'px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5',
+                                            onConfirm: () => $wire.approveDp({{ $b->id }})
+                                        })" class="btn-action-payment" title="Setujui Tanda Jadi / DP">
                                             <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                                             <span>Setujui DP</span>
                                         </button>
-                                        <button wire:click="rejectDp({{ $b->id }})" wire:confirm="Yakin ingin MENOLAK booking untuk {{ $b->buyer_name }}? Status unit akan dikembalikan menjadi tersedia." class="btn-action-delete" title="Tolak Booking">
+                                        <button type="button" @click="confirmModalAction({
+                                            title: 'Penolakan Booking Fee',
+                                            message: 'Yakin ingin MENOLAK booking untuk {{ $b->buyer_name }}? Status unit akan dikembalikan menjadi tersedia.',
+                                            confirmText: 'Tolak Booking',
+                                            btnClass: 'px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5',
+                                            onConfirm: () => $wire.rejectDp({{ $b->id }})
+                                        })" class="btn-action-delete" title="Tolak Booking">
                                             <svg class="w-3.5 h-3.5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                                             <span>Tolak</span>
                                         </button>
                                     @endif
 
                                     @if($b->status === 'converted' && auth()->user()->isFounder())
-                                        <button wire:click="cancelApprovedDp({{ $b->id }})" wire:confirm="Yakin ingin MEMBATALKAN / REFUND DP untuk {{ $b->buyer_name }}? Pengeluaran kas refund akan dicatat dan status unit akan dikembalikan menjadi tersedia." class="btn-action-convert" title="Batalkan / Refund DP">
+                                        <button type="button" @click="confirmModalAction({
+                                            title: 'Pembatalan & Refund DP',
+                                            message: 'Yakin ingin MEMBATALKAN / REFUND DP untuk {{ $b->buyer_name }}? Pengeluaran kas refund akan dicatat dan status unit akan dikembalikan menjadi tersedia.',
+                                            confirmText: 'Refund DP',
+                                            btnClass: 'px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5',
+                                            onConfirm: () => $wire.cancelApprovedDp({{ $b->id }})
+                                        })" class="btn-action-convert" title="Batalkan / Refund DP">
                                             <svg class="w-3.5 h-3.5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/></svg>
                                             <span>Batalkan & Refund</span>
                                         </button>
@@ -174,7 +192,13 @@
                                             <svg class="w-3.5 h-3.5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                                             <span>Edit</span>
                                         </button>
-                                        <button wire:click="deleteBooking({{ $b->id }})" wire:confirm="Yakin ingin MENGHAPUS data booking atas nama {{ $b->buyer_name }}? Transaksi arus kas terkait akan dihapus dan unit akan dikembalikan menjadi tersedia." class="btn-action-delete" title="Hapus Data Booking">
+                                        <button type="button" @click="confirmModalAction({
+                                            title: 'Hapus Data Booking',
+                                            message: 'Yakin ingin MENGHAPUS data booking atas nama {{ $b->buyer_name }}? Transaksi arus kas terkait akan dihapus dan unit akan dikembalikan menjadi tersedia.',
+                                            confirmText: 'Hapus Booking',
+                                            btnClass: 'px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5',
+                                            onConfirm: () => $wire.deleteBooking({{ $b->id }})
+                                        })" class="btn-action-delete" title="Hapus Data Booking">
                                             <svg class="w-3.5 h-3.5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                                             <span>Hapus</span>
                                         </button>

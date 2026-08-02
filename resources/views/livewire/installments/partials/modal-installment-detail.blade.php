@@ -88,10 +88,16 @@
                                 <div class="flex items-center justify-end gap-1.5">
                                     <span class="text-[10px] text-emerald-600 font-bold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 inline-block">TERBAYAR</span>
                                     @if(auth()->user()->isFounder())
-                                        <button onclick="confirm('Hapus pencatatan setoran cicilan ini?') || event.stopImmediatePropagation()" wire:click="deleteInstallmentPayment({{ $pay->id }})" class="btn-action-delete text-[10px] px-2 py-0.5" title="Hapus Setoran">
-                                            <span>Hapus</span>
-                                        </button>
-                                    @endif
+                                         <button type="button" @click="confirmModalAction({
+                                             title: 'Hapus Setoran Cicilan',
+                                             message: 'Hapus pencatatan setoran cicilan ini?',
+                                             confirmText: 'Hapus Setoran',
+                                             btnClass: 'px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5',
+                                             onConfirm: () => $wire.deleteInstallmentPayment({{ $pay->id }})
+                                         })" class="btn-action-delete text-[10px] px-2 py-0.5" title="Hapus Setoran">
+                                             <span>Hapus</span>
+                                         </button>
+                                     @endif
                                 </div>
                             </div>
                         </div>

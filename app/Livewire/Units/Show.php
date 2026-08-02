@@ -1291,7 +1291,7 @@ class Show extends Component
         $unit = Unit::findOrFail($this->unitId);
         $code = $unit->code;
 
-        DB::transaction(function () use ($unit) {
+        DB::transaction(function () use ($unit, $code) {
             WorkerAssignment::where('unit_id', $unit->id)->delete();
             WorkerUnitPayroll::where('unit_id', $unit->id)->delete();
             WeeklyMaterialPurchase::where('unit_id', $unit->id)->delete();

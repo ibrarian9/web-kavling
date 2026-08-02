@@ -67,7 +67,13 @@
             @endif
 
             @if(auth()->user()->isFounder())
-                <button wire:click="deleteUnit" wire:confirm="Yakin ingin menghapus unit {{ $unit->code }} dari sistem beserta seluruh histori terikatnya?" class="btn-action-delete px-3.5 py-2 text-xs rounded-xl shadow-2xs" title="Hapus Unit dari Sistem">
+                <button type="button" @click="confirmModalAction({
+                    title: 'Hapus Unit Kavling/Rumah',
+                    message: 'Yakin ingin menghapus unit {{ $unit->code }} dari sistem beserta seluruh histori terikatnya?',
+                    confirmText: 'Hapus Unit',
+                    btnClass: 'px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5',
+                    onConfirm: () => $wire.deleteUnit()
+                })" class="btn-action-delete px-3.5 py-2 text-xs rounded-xl shadow-2xs" title="Hapus Unit dari Sistem">
                     <svg class="w-4 h-4 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                     <span>Hapus Unit</span>
                 </button>
@@ -242,7 +248,13 @@
                                             <svg class="w-3.5 h-3.5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                                             <span>Edit</span>
                                         </button>
-                                        <button wire:click="deleteWorkerAssignment({{ $assign->id }})" wire:confirm="Yakin ingin menghapus penugasan pekerja ini?" class="btn-action-delete" title="Hapus Penugasan">
+                                        <button type="button" @click="confirmModalAction({
+                                            title: 'Hapus Penugasan Pekerja',
+                                            message: 'Yakin ingin menghapus penugasan pekerja ini?',
+                                            confirmText: 'Hapus Penugasan',
+                                            btnClass: 'px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5',
+                                            onConfirm: () => $wire.deleteWorkerAssignment({{ $assign->id }})
+                                        })" class="btn-action-delete" title="Hapus Penugasan">
                                             <svg class="w-3.5 h-3.5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                                             <span>Hapus</span>
                                         </button>
@@ -264,7 +276,13 @@
                                             <svg class="w-3.5 h-3.5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                                             <span>Edit</span>
                                         </button>
-                                        <button wire:click="deleteWorkerAssignment({{ $assign->id }})" wire:confirm="Yakin ingin menghapus penugasan pekerja ini?" class="btn-action-delete" title="Hapus Penugasan">
+                                        <button type="button" @click="confirmModalAction({
+                                            title: 'Hapus Penugasan Pekerja',
+                                            message: 'Yakin ingin menghapus penugasan pekerja ini?',
+                                            confirmText: 'Hapus Penugasan',
+                                            btnClass: 'px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5',
+                                            onConfirm: () => $wire.deleteWorkerAssignment({{ $assign->id }})
+                                        })" class="btn-action-delete" title="Hapus Penugasan">
                                             <svg class="w-3.5 h-3.5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                                             <span>Hapus</span>
                                         </button>
@@ -313,7 +331,13 @@
                                             <svg class="w-3.5 h-3.5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                                             <span>Edit</span>
                                         </button>
-                                        <button wire:click="deletePayrollSetup({{ $up->id }})" wire:confirm="Yakin ingin menghapus penetapan gaji unit ini beserta riwayat pembayarannya?" class="btn-action-delete" title="Hapus Penetapan Gaji">
+                                        <button type="button" @click="confirmModalAction({
+                                            title: 'Hapus Penetapan Gaji',
+                                            message: 'Yakin ingin menghapus penetapan gaji unit ini beserta riwayat pembayarannya?',
+                                            confirmText: 'Hapus Penetapan Gaji',
+                                            btnClass: 'px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5',
+                                            onConfirm: () => $wire.deletePayrollSetup({{ $up->id }})
+                                        })" class="btn-action-delete" title="Hapus Penetapan Gaji">
                                             <svg class="w-3.5 h-3.5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                                             <span>Hapus</span>
                                         </button>
@@ -478,11 +502,17 @@
                                         <svg class="w-3.5 h-3.5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
                                         <span>Batalkan & Ganti Cash</span>
                                     </button>
+                                    <button type="button" @click="confirmModalAction({
+                                        title: 'Hapus Skema Cicilan Pembeli',
+                                        message: 'Yakin ingin menghapus skema cicilan Unit {{ $unit->code }} beserta seluruh riwayat setoran terikatnya?',
+                                        confirmText: 'Hapus Skema',
+                                        btnClass: 'px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5',
+                                        onConfirm: () => $wire.deleteInstallmentScheme()
+                                    })" class="btn-action-delete text-xs px-3 py-1.5 flex items-center gap-1.5 shadow-2xs" title="Hapus Skema Cicilan Pembeli">
+                                        <svg class="w-3.5 h-3.5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                        <span>Hapus Skema</span>
+                                    </button>
                                 @endif
-                                <button onclick="confirm('Yakin ingin menghapus skema cicilan Unit {{ $unit->code }} beserta seluruh riwayat setoran terikatnya?') || event.stopImmediatePropagation()" wire:click="deleteInstallmentScheme" class="btn-action-delete text-xs px-3 py-1.5 flex items-center gap-1.5 shadow-2xs" title="Hapus Skema Cicilan Pembeli">
-                                    <svg class="w-3.5 h-3.5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                                    <span>Hapus Skema</span>
-                                </button>
                             </div>
                         @endif
                     </div>
@@ -534,7 +564,13 @@
                                             <svg class="w-3.5 h-3.5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                                             <span>Edit</span>
                                         </button>
-                                        <button wire:click="deleteInstallmentPayment({{ $pay->id }})" wire:confirm="Yakin ingin menghapus setoran cicilan pembeli ini?" class="btn-action-delete" title="Hapus Setoran">
+                                        <button type="button" @click="confirmModalAction({
+                                            title: 'Hapus Setoran Cicilan',
+                                            message: 'Yakin ingin menghapus setoran cicilan pembeli ini?',
+                                            confirmText: 'Hapus Setoran',
+                                            btnClass: 'px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5',
+                                            onConfirm: () => $wire.deleteInstallmentPayment({{ $pay->id }})
+                                        })" class="btn-action-delete" title="Hapus Setoran">
                                             <svg class="w-3.5 h-3.5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                                             <span>Hapus</span>
                                         </button>
@@ -658,7 +694,13 @@
                                                         <svg class="w-3.5 h-3.5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                                                         <span>Edit</span>
                                                     </button>
-                                                    <button wire:click="deleteMaterialPurchase({{ $exp->id }})" wire:confirm="Yakin ingin menghapus data belanja material ini?" class="btn-action-delete" title="Hapus Belanja Material">
+                                                    <button type="button" @click="confirmModalAction({
+                                                        title: 'Hapus Belanja Material',
+                                                        message: 'Yakin ingin menghapus data belanja material ini?',
+                                                        confirmText: 'Hapus Material',
+                                                        btnClass: 'px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5',
+                                                        onConfirm: () => $wire.deleteMaterialPurchase({{ $exp->id }})
+                                                    })" class="btn-action-delete" title="Hapus Belanja Material">
                                                         <svg class="w-3.5 h-3.5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                                                         <span>Hapus</span>
                                                     </button>
@@ -673,7 +715,13 @@
                                                         <svg class="w-3.5 h-3.5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                                                         <span>Edit</span>
                                                     </button>
-                                                    <button wire:click="deletePayrollPayment({{ $exp->id }})" wire:confirm="Yakin ingin menghapus pencatatan pembayaran gaji ini?" class="btn-action-delete" title="Hapus Pembayaran Gaji Worker">
+                                                    <button type="button" @click="confirmModalAction({
+                                                        title: 'Hapus Pembayaran Gaji',
+                                                        message: 'Yakin ingin menghapus pencatatan pembayaran gaji ini?',
+                                                        confirmText: 'Hapus Gaji',
+                                                        btnClass: 'px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5',
+                                                        onConfirm: () => $wire.deletePayrollPayment({{ $exp->id }})
+                                                    })" class="btn-action-delete" title="Hapus Pembayaran Gaji Worker">
                                                         <svg class="w-3.5 h-3.5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                                                         <span>Hapus</span>
                                                     </button>
@@ -688,7 +736,13 @@
                                                         <svg class="w-3.5 h-3.5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                                                         <span>Edit</span>
                                                     </button>
-                                                    <button wire:click="deletePayrollSetup({{ $exp->id }})" wire:confirm="Yakin ingin menghapus penetapan gaji unit ini beserta riwayat pembayarannya?" class="btn-action-delete" title="Hapus Kontrak Gaji Worker">
+                                                    <button type="button" @click="confirmModalAction({
+                                                        title: 'Hapus Kontrak Gaji',
+                                                        message: 'Yakin ingin menghapus penetapan gaji unit ini beserta riwayat pembayarannya?',
+                                                        confirmText: 'Hapus Kontrak Gaji',
+                                                        btnClass: 'px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5',
+                                                        onConfirm: () => $wire.deletePayrollSetup({{ $exp->id }})
+                                                    })" class="btn-action-delete" title="Hapus Kontrak Gaji Worker">
                                                         <svg class="w-3.5 h-3.5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                                                         <span>Hapus</span>
                                                     </button>

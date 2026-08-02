@@ -100,6 +100,28 @@ class Index extends Component
         $this->showModal = true;
     }
 
+    public function deleteProject($id)
+    {
+        $user = auth()->user();
+        if (!$user->isFounder()) {
+            session()->flash('error', 'Hanya Founder yang berhak menghapus proyek.');
+            return;
+        }
+
+        $project = Project::with(['units', 'assignments', 'cashflows', 'payments'])->findOrFail($id);
+        $projectName = $project->name;
+
+        $project->assignments()->delete();
+        $project->payments()->delete();
+        foreach ($project->units as $unit) {
+            $unit->delete();
+        }
+        $project->delete();
+
+        \App\Services\ActivityLogger::log('PROJECT_DELETE', "Founder menghapus proyek {$projectName} beserta seluruh data terikatnya.");
+        session()->flash('success', "Proyek {$projectName} berhasil dihapus dari sistem!");
+    }
+
     // Direct Pengawas Project Assignment (Founder Only)
     public function openWorkerModal($projectId)
     {

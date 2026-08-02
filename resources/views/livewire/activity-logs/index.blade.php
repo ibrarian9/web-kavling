@@ -14,12 +14,24 @@
 
         <div class="flex items-center gap-2">
             @if($activeTab === 'database')
-                <button onclick="confirm('Yakin ingin membersihkan seluruh data log aktivitas database?') || event.stopImmediatePropagation()" wire:click="clearDatabaseLogs" class="px-3.5 py-2 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 rounded-xl text-xs font-bold transition flex items-center gap-1.5">
+                <button type="button" @click="confirmModalAction({
+                    title: 'Bersihkan Database Logs',
+                    message: 'Yakin ingin membersihkan seluruh data log aktivitas database?',
+                    confirmText: 'Clear DB Logs',
+                    btnClass: 'px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5',
+                    onConfirm: () => $wire.clearDatabaseLogs()
+                })" class="px-3.5 py-2 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 rounded-xl text-xs font-bold transition flex items-center gap-1.5">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                     <span>Clear DB Logs</span>
                 </button>
             @else
-                <button onclick="confirm('Yakin ingin mengosongkan file storage/logs/laravel.log?') || event.stopImmediatePropagation()" wire:click="clearFileLog" class="px-3.5 py-2 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 rounded-xl text-xs font-bold transition flex items-center gap-1.5">
+                <button type="button" @click="confirmModalAction({
+                    title: 'Kosongkan File Log',
+                    message: 'Yakin ingin mengosongkan file storage/logs/laravel.log?',
+                    confirmText: 'Clear File Log',
+                    btnClass: 'px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5',
+                    onConfirm: () => $wire.clearFileLog()
+                })" class="px-3.5 py-2 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 rounded-xl text-xs font-bold transition flex items-center gap-1.5">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                     <span>Clear File Log</span>
                 </button>

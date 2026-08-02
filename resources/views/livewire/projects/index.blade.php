@@ -115,9 +115,15 @@
                                             <svg class="w-3.5 h-3.5 text-purple-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                                             <span>{{ $pa->user->name ?? 'Pengawas' }}</span>
                                             @if(auth()->user()->isFounder())
-                                                <button wire:click="removePengawasAssignment({{ $pa->id }})" wire:confirm="Yakin ingin mencopot Pengawas {{ $pa->user->name ?? 'ini' }} dari proyek {{ $p->name }}?" class="ml-1 text-purple-400 hover:text-rose-600 transition font-bold" title="Copot Pengawas dari Proyek ini">
-                                                    ✕
-                                                </button>
+                                                 <button type="button" @click="confirmModalAction({
+                                                     title: 'Copot Pengawas Proyek',
+                                                     message: 'Yakin ingin mencopot Pengawas {{ $pa->user->name ?? 'ini' }} dari proyek {{ $p->name }}?',
+                                                     confirmText: 'Copot Pengawas',
+                                                     btnClass: 'px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5',
+                                                     onConfirm: () => $wire.removePengawasAssignment({{ $pa->id }})
+                                                 })" class="ml-1 text-purple-400 hover:text-rose-600 transition font-bold" title="Copot Pengawas dari Proyek ini">
+                                                     ✕
+                                                 </button>
                                             @endif
                                         </span>
                                     @empty
@@ -152,7 +158,7 @@
                                     @if(auth()->user()->isFounder())
                                         <button wire:click="openWorkerModal({{ $p->id }})" class="btn-action-supervisor" title="Tugaskan Pengawas Project">
                                             <svg class="w-3.5 h-3.5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-                                            <span>Supervisor</span>
+                                            <span>Pengawas</span>
                                         </button>
                                     @endif
 
@@ -165,6 +171,19 @@
                                         <button wire:click="editProject({{ $p->id }})" class="btn-action-edit" title="Edit Data Proyek">
                                             <svg class="w-3.5 h-3.5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                                             <span>Edit</span>
+                                        </button>
+                                    @endif
+
+                                    @if(auth()->user()->isFounder())
+                                        <button type="button" @click="confirmModalAction({
+                                            title: 'Hapus Proyek Properti',
+                                            message: 'Yakin ingin menghapus proyek {{ $p->name }} beserta seluruh unit dan data terikatnya?',
+                                            confirmText: 'Hapus Proyek',
+                                            btnClass: 'px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5',
+                                            onConfirm: () => $wire.deleteProject({{ $p->id }})
+                                        })" class="btn-action-delete" title="Hapus Proyek">
+                                            <svg class="w-3.5 h-3.5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                            <span>Hapus</span>
                                         </button>
                                     @endif
                                 </div>
@@ -285,7 +304,13 @@
                                                 @endif
                                             @endforeach
                                         </select>
-                                        <button wire:click="removePengawasAssignment({{ $pa->id }})" wire:confirm="Yakin ingin mencopot {{ $pa->user->name ?? 'Pengawas ini' }} dari proyek ini?" class="btn-secondary text-[11px] px-2.5 py-1 text-rose-600 hover:bg-rose-50 hover:border-rose-200 font-semibold" title="Copot Pengawas">
+                                        <button type="button" @click="confirmModalAction({
+                                            title: 'Copot Pengawas Proyek',
+                                            message: 'Yakin ingin mencopot {{ $pa->user->name ?? 'Pengawas ini' }} dari proyek ini?',
+                                            confirmText: 'Copot Pengawas',
+                                            btnClass: 'px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5',
+                                            onConfirm: () => $wire.removePengawasAssignment({{ $pa->id }})
+                                        })" class="btn-secondary text-[11px] px-2.5 py-1 text-rose-600 hover:bg-rose-50 hover:border-rose-200 font-semibold" title="Copot Pengawas">
                                             Copot
                                         </button>
                                     </div>
