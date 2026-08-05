@@ -20,9 +20,9 @@
                     <div>
                         <label class="block font-semibold text-slate-700 mb-1 text-xs uppercase tracking-wider">Kategori Unit <span class="text-rose-500">*</span></label>
                         <select wire:model="edit_unit_category" class="select-clean w-full">
-                            <option value="kavling">🏡 Kavling Tanah</option>
-                            <option value="rumah">🏠 Rumah / Bangunan</option>
-                            <option value="infrastruktur">🏗️ Infrastruktur / Fasum</option>
+                            <option value="kavling">Kavling Tanah</option>
+                            <option value="rumah">Rumah / Bangunan</option>
+                            <option value="infrastruktur">Infrastruktur / Fasum</option>
                         </select>
                     </div>
                 </div>
@@ -62,11 +62,11 @@
                     <div>
                         <label class="block font-semibold text-slate-700 mb-1 text-xs uppercase tracking-wider">Status Unit <span class="text-rose-500">*</span></label>
                         <select wire:model="edit_unit_status" class="select-clean w-full">
-                            <option value="tersedia">🟢 Tersedia</option>
-                            <option value="booked">🟠 Booked</option>
-                            <option value="disetujui">🔵 Harga ACC</option>
-                            <option value="terjual">🟣 Terjual</option>
-                            <option value="infrastruktur">⚙️ Infrastruktur</option>
+                            <option value="tersedia">Tersedia</option>
+                            <option value="booked">Booked</option>
+                            <option value="disetujui">Harga ACC</option>
+                            <option value="terjual">Terjual</option>
+                            <option value="infrastruktur">Infrastruktur</option>
                         </select>
                     </div>
                 </div>

@@ -29,10 +29,10 @@
             <div class="w-full sm:w-36">
                 <select wire:model.live="statusFilter" class="select-clean w-full">
                     <option value="">Semua Status Unit</option>
-                    <option value="tersedia">🟢 Tersedia</option>
-                    <option value="menunggu_persetujuan">🟡 Menunggu Approval</option>
-                    <option value="disetujui">🔵 Disetujui / Terjual</option>
-                    <option value="booked">🟠 Booked</option>
+                    <option value="tersedia">Tersedia</option>
+                    <option value="menunggu_persetujuan">Menunggu Approval</option>
+                    <option value="disetujui">Disetujui / Terjual</option>
+                    <option value="booked">Booked</option>
                 </select>
             </div>
             <div class="w-full sm:w-32">
@@ -79,6 +79,12 @@
                             @endif
                         </div>
                         <div class="flex items-center gap-1.5">
+                            @if((auth()->user()->isFounder() || auth()->user()->isFinance()) && $u->status === 'tersedia' && $u->category !== 'infrastruktur')
+                                <a href="{{ route('units.show', $u->id) }}" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-bold transition shadow-xs" title="Pembelian Cash Direct">
+                                    <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 01-2 2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                                    <span>Pembelian Cash</span>
+                                </a>
+                            @endif
                             <a href="{{ route('units.show', $u->id) }}" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-teal-50 text-teal-800 hover:bg-teal-100 border border-teal-200 text-[11px] font-bold transition">
                                 <svg class="w-3.5 h-3.5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                                 <span>Detail</span>
@@ -295,6 +301,12 @@
 
                             <td class="px-3 py-3.5 text-center whitespace-nowrap">
                                 <div class="flex items-center justify-center gap-1.5">
+                                    @if((auth()->user()->isFounder() || auth()->user()->isFinance()) && $u->status === 'tersedia' && $u->category !== 'infrastruktur')
+                                        <a href="{{ route('units.show', $u->id) }}" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-bold transition shadow-xs" title="Pembelian Cash Direct">
+                                            <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 01-2 2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                                            <span>Pembelian Cash</span>
+                                        </a>
+                                    @endif
                                     <a href="{{ route('units.show', $u->id) }}" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-teal-50 text-teal-800 hover:bg-teal-100 border border-teal-200 text-[11px] font-bold transition">
                                         <svg class="w-3.5 h-3.5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                                         <span>Detail</span>

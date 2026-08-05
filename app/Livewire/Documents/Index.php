@@ -51,16 +51,25 @@ class Index extends Component
     public ?int $editingDocumentId = null;
     public ?int $selected_unit_id = null;
     public string $buyer_name = '';
+    public string $buyer_nik = '';
     public string $buyer_contact = '';
     public string $buyer_address = '';
+    public string $seller_name = '';
+    public string $seller_nik = '';
 
     public function openGenerateModal(): void
     {
         $this->editingDocumentId = null;
         $this->selected_unit_id = null;
         $this->buyer_name = '';
+        $this->buyer_nik = '';
         $this->buyer_contact = '';
         $this->buyer_address = '';
+
+        $founder = auth()->user()->isFounder() ? auth()->user() : User::where('role', 'founder')->first();
+        $this->seller_name = $founder?->name ?? 'Founder PT. Atlantik Perkasa Abadi';
+        $this->seller_nik = '1471012304850001';
+
         $this->showGenerateModal = true;
     }
 
@@ -76,8 +85,13 @@ class Index extends Component
         $this->editingDocumentId = $doc->id;
         $this->selected_unit_id = $doc->unit_id;
         $this->buyer_name = $doc->buyer_name;
+        $this->buyer_nik = $doc->buyer_nik ?? '';
         $this->buyer_contact = $doc->buyer_contact;
         $this->buyer_address = $doc->buyer_address;
+
+        $this->seller_name = $doc->seller_name ?? $doc->effective_seller_name;
+        $this->seller_nik = $doc->seller_nik ?? $doc->effective_seller_nik;
+
         $this->showGenerateModal = true;
     }
 
@@ -105,8 +119,11 @@ class Index extends Component
                 'unit_id' => $unit->id,
                 'price_proposal_id' => $proposal?->id ?? $doc->price_proposal_id,
                 'buyer_name' => $this->buyer_name,
+                'buyer_nik' => $this->buyer_nik ?: null,
                 'buyer_contact' => $this->buyer_contact,
                 'buyer_address' => $this->buyer_address ?: '-',
+                'seller_name' => $this->seller_name ?: null,
+                'seller_nik' => $this->seller_nik ?: null,
             ]);
 
             ActivityLogger::log('DOCUMENT_UPDATED', "Dokumen SPP {$doc->document_number} (ID #{$doc->id}) telah diperbarui oleh Founder.");
@@ -128,13 +145,38 @@ class Index extends Component
         $docNumber = 'SPP/' . strtoupper($unit->project->name) . '/' . date('Y/m') . '/' . str_pad(rand(1, 999), 3, '0', STR_PAD_LEFT);
         $proposal = $unit->proposals()->where('status', 'disetujui')->latest()->first();
 
+        if (!$proposal) {
+            $hppPrice = (float) $unit->hpp;
+            $proposedPrice = (float) $unit->final_selling_price;
+            $margin = $proposedPrice - $hppPrice;
+
+            $proposal = \App\Models\PriceProposal::create([
+                'unit_id' => $unit->id,
+                'hpp_price' => $hppPrice,
+                'proposed_price' => $proposedPrice,
+                'margin' => $margin,
+                'is_below_hpp' => $proposedPrice < $hppPrice,
+                'discount_reason' => 'Penerbitan Dokumen Resmi SPP',
+                'proposed_by' => auth()->id(),
+                'status' => 'disetujui',
+                'notes' => 'Persetujuan otomatis penerbitan SPP & SPJB PDF',
+            ]);
+        }
+
+        $unit->update([
+            'status' => 'terjual',
+        ]);
+
         $doc = OfficialDocument::create([
             'unit_id' => $unit->id,
-            'price_proposal_id' => $proposal?->id,
+            'price_proposal_id' => $proposal->id,
             'document_number' => $docNumber,
             'buyer_name' => $this->buyer_name,
+            'buyer_nik' => $this->buyer_nik ?: null,
             'buyer_contact' => $this->buyer_contact,
             'buyer_address' => $this->buyer_address ?: '-',
+            'seller_name' => $this->seller_name ?: null,
+            'seller_nik' => $this->seller_nik ?: null,
             'issued_by' => auth()->id(),
             'issued_at' => now(),
         ]);

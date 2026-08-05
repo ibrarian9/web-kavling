@@ -112,6 +112,36 @@ class Index extends Component
         session()->flash('success', 'Status akun ' . $user->name . ' berhasil diubah menjadi ' . ($user->is_active ? 'Aktif' : 'Nonaktif') . '!');
     }
 
+    public function deleteUser(int $id)
+    {
+        if (!auth()->user()->isFounder()) {
+            session()->flash('error', 'Hanya Founder yang berhak menghapus akun pengguna.');
+            return;
+        }
+
+        $user = User::findOrFail($id);
+        if ($user->id === auth()->id()) {
+            session()->flash('error', 'Anda tidak dapat menghapus akun Founder Anda sendiri.');
+            return;
+        }
+
+        $name = $user->name;
+        $email = $user->email;
+        $role = $user->role;
+
+        \Illuminate\Support\Facades\DB::transaction(function () use ($user) {
+            \App\Models\WorkerAssignment::where('user_id', $user->id)->delete();
+            $user->delete();
+        });
+
+        \App\Services\ActivityLogger::log(
+            'DELETE_USER',
+            "Founder menghapus akun user: {$name} ({$email} - Role: {$role})"
+        );
+
+        session()->flash('success', 'Akun user ' . $name . ' (' . $email . ') berhasil dihapus dari sistem!');
+    }
+
     public function render()
     {
         $query = User::query()->latest();

@@ -24,7 +24,7 @@
             @if ($view_mode === 'project' || $view_mode === 'unit')
                 <!-- Filter Proyek -->
                 <select wire:model.live="filter_project_id" class="select-clean text-xs">
-                    <option value="">🏗️ Semua Proyek</option>
+                    <option value="">Semua Proyek</option>
                     @foreach($projects as $p)
                         <option value="{{ $p->id }}">{{ $p->name }}</option>
                     @endforeach
@@ -34,7 +34,7 @@
             @if ($view_mode === 'unit' || ($view_mode === 'project' && $filter_project_id))
                 <!-- Filter Unit -->
                 <select wire:model.live="filter_unit_id" class="select-clean text-xs">
-                    <option value="">🏡 Pilih Unit</option>
+                    <option value="">Pilih Unit</option>
                     @foreach($availableUnits as $u)
                         <option value="{{ $u->id }}">Unit {{ $u->code }} ({{ $u->project->name }})</option>
                     @endforeach

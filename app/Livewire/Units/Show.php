@@ -93,6 +93,97 @@ class Show extends Component
     public $setup_installment_amount = 0;
     public string $setup_start_date = '';
 
+    // Modal Terbitkan SPP & SPJB PDF Direct (Founder / Admin)
+    public bool $showDirectSppModal = false;
+    public string $spp_buyer_name = '';
+    public string $spp_buyer_nik = '';
+    public string $spp_buyer_contact = '';
+    public string $spp_buyer_address = '';
+    public string $spp_seller_name = '';
+    public string $spp_seller_nik = '';
+    public $spp_cash_price = 0;
+
+    public function openDirectSppModal(): void
+    {
+        $unit = Unit::findOrFail($this->unitId);
+        $this->spp_buyer_name = $unit->booking?->buyer_name ?? '';
+        $this->spp_buyer_nik = '';
+        $this->spp_buyer_contact = $unit->booking?->buyer_phone ?? '';
+        $this->spp_buyer_address = '';
+
+        $founder = auth()->user()->isFounder() ? auth()->user() : User::where('role', 'founder')->first();
+        $this->spp_seller_name = $founder?->name ?? 'Founder PT. Atlantik Perkasa Abadi';
+        $this->spp_seller_nik = '1471012304850001';
+
+        $this->spp_cash_price = $unit->final_selling_price ?? 0;
+        $this->showDirectSppModal = true;
+    }
+
+    public function saveDirectSpp(): void
+    {
+        $user = auth()->user();
+        if (!$user->isFounder() && !$user->isFinance() && !$user->isAdmin()) {
+            session()->flash('error', 'Hanya Founder atau Admin yang berhak menerbitkan dokumen SPP.');
+            return;
+        }
+
+        $this->validate([
+            'spp_buyer_name' => 'required|string|max:255',
+            'spp_buyer_contact' => 'required|string|max:255',
+            'spp_cash_price' => 'required|numeric|min:0',
+        ]);
+
+        $unit = Unit::with('project', 'proposals')->findOrFail($this->unitId);
+
+        $docNumber = 'SPP/' . strtoupper($unit->project->name) . '/' . date('Y/m') . '/' . str_pad(rand(1, 999), 3, '0', STR_PAD_LEFT);
+        $proposal = $unit->proposals()->where('status', 'disetujui')->latest()->first();
+
+        $unit->update([
+            'status' => 'terjual',
+            'final_selling_price' => (float) ($this->spp_cash_price ?: $unit->final_selling_price),
+        ]);
+
+        if (!$proposal) {
+            $hppPrice = (float) $unit->hpp;
+            $proposedPrice = (float) ($this->spp_cash_price ?: $unit->final_selling_price);
+            $margin = $proposedPrice - $hppPrice;
+            $isBelowHpp = $proposedPrice < $hppPrice;
+
+            $proposal = \App\Models\PriceProposal::create([
+                'unit_id' => $unit->id,
+                'hpp_price' => $hppPrice,
+                'proposed_price' => $proposedPrice,
+                'margin' => $margin,
+                'is_below_hpp' => $isBelowHpp,
+                'discount_reason' => 'Penjualan Cash Langsung Founder',
+                'proposed_by' => auth()->id(),
+                'status' => 'disetujui',
+                'notes' => 'Persetujuan langsung pembelian Cash oleh Founder',
+            ]);
+        }
+
+        $doc = \App\Models\OfficialDocument::create([
+            'unit_id' => $unit->id,
+            'price_proposal_id' => $proposal->id,
+            'document_number' => $docNumber,
+            'buyer_name' => $this->spp_buyer_name,
+            'buyer_nik' => $this->spp_buyer_nik ?: null,
+            'buyer_contact' => $this->spp_buyer_contact,
+            'buyer_address' => $this->spp_buyer_address ?: '-',
+            'seller_name' => $this->spp_seller_name ?: null,
+            'seller_nik' => $this->spp_seller_nik ?: null,
+            'issued_by' => auth()->id(),
+            'issued_at' => now(),
+        ]);
+
+        \App\Services\ActivityLogger::log('DOCUMENT_GENERATED', "Dokumen SPP & SPJB PDF {$docNumber} diterbitkan langsung per unit {$unit->code} oleh Founder.");
+
+        $this->showDirectSppModal = false;
+        session()->flash('success', 'Dokumen SPP & SPJB PDF ' . $docNumber . ' berhasil diterbitkan!');
+
+        $this->openViewerModal('pdf', route('documents.stream', $doc->id), 'Pratinjau SPP & SPJB PDF - ' . $doc->document_number);
+    }
+
     // Viewer Modal (Jendela Melayang untuk Foto Struk, PDF Resi, & Barcode QR)
     public bool $showViewerModal = false;
     public string $viewerType = ''; // 'image', 'pdf', 'qr'

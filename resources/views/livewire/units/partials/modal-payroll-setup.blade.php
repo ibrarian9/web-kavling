@@ -34,10 +34,10 @@
                 <div>
                     <label class="block font-semibold text-slate-700 mb-1 text-xs uppercase tracking-wider">Skema Pembayaran <span class="text-rose-500">*</span></label>
                     <select wire:model="payroll_payment_frequency" class="select-clean w-full">
-                        <option value="fleksibel">⚡ Fleksibel (Sesuai Permintaan Mandor)</option>
-                        <option value="harian">📅 Harian</option>
-                        <option value="mingguan">📆 Mingguan (Per-Minggu)</option>
-                        <option value="bulanan">🗓️ Bulanan</option>
+                        <option value="fleksibel">Fleksibel (Sesuai Permintaan Mandor)</option>
+                        <option value="harian">Harian</option>
+                        <option value="mingguan">Mingguan (Per-Minggu)</option>
+                        <option value="bulanan">Bulanan</option>
                     </select>
                 </div>
 

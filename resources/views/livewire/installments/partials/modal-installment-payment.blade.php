@@ -38,9 +38,9 @@
                     <div>
                         <label class="block font-semibold text-slate-700 mb-1 text-xs uppercase tracking-wider">Metode Bayar <span class="text-rose-500">*</span></label>
                         <select wire:model="payment_method" class="select-clean w-full font-semibold">
-                            <option value="Transfer Bank">🏦 Transfer Bank</option>
-                            <option value="Tunai / Cash">💵 Tunai / Cash</option>
-                            <option value="Cek / Giro">📜 Cek / Giro</option>
+                            <option value="Transfer Bank">Transfer Bank</option>
+                            <option value="Tunai / Cash">Tunai / Cash</option>
+                            <option value="Cek / Giro">Cek / Giro</option>
                         </select>
                     </div>
                     <div>

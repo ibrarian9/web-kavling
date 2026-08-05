@@ -42,9 +42,9 @@
                 <div>
                     <label class="block font-semibold text-slate-700 mb-1 text-xs uppercase tracking-wider">Metode Pembayaran <span class="text-rose-500">*</span></label>
                     <select wire:model="installment_payment_method" class="select-clean w-full">
-                        <option value="Transfer Bank">🏦 Transfer Bank (BRK Syariah / Mandiri / BRI / BCA)</option>
-                        <option value="Tunai">💵 Tunai / Cash</option>
-                        <option value="Cek / Giro">📜 Cek / Giro</option>
+                        <option value="Transfer Bank">Transfer Bank (BRK Syariah / Mandiri / BRI / BCA)</option>
+                        <option value="Tunai">Tunai / Cash</option>
+                        <option value="Cek / Giro">Cek / Giro</option>
                     </select>
                     @error('installment_payment_method') <span class="text-rose-600 text-[10px] mt-1 block font-medium">{{ $message }}</span> @enderror
                 </div>

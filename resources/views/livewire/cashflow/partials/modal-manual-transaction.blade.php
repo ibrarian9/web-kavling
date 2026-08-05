@@ -12,7 +12,7 @@
                     <label class="block font-semibold text-slate-700 mb-1 text-xs uppercase tracking-wider">Pilih Proyek <span class="text-rose-500">*</span></label>
                     <select wire:model="project_id" class="select-clean w-full font-semibold">
                         @foreach($projects as $p)
-                            <option value="{{ $p->id }}">🏗️ {{ $p->name }}</option>
+                            <option value="{{ $p->id }}">{{ $p->name }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -21,8 +21,8 @@
                     <div>
                         <label class="block font-semibold text-slate-700 mb-1 text-xs uppercase tracking-wider">Tipe Arus Kas <span class="text-rose-500">*</span></label>
                         <select wire:model="type" class="select-clean w-full font-bold">
-                            <option value="masuk">📈 Pemasukan (Kas Masuk)</option>
-                            <option value="keluar">📉 Pengeluaran (Kas Keluar)</option>
+                            <option value="masuk">Pemasukan (Kas Masuk)</option>
+                            <option value="keluar">Pengeluaran (Kas Keluar)</option>
                         </select>
                     </div>
                     <div>

@@ -31,8 +31,8 @@
                     <div>
                         <label class="block font-semibold text-slate-700 mb-1 text-xs uppercase tracking-wider">Metode Pembayaran <span class="text-rose-500">*</span></label>
                         <select wire:model.live="payroll_payment_method" class="select-clean w-full">
-                            <option value="transfer_bank">🏦 Transfer Bank</option>
-                            <option value="tunai">💵 Tunai (Cash)</option>
+                            <option value="transfer_bank">Transfer Bank</option>
+                            <option value="tunai">Tunai (Cash)</option>
                         </select>
                     </div>
                 </div>

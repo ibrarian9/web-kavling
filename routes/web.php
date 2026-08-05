@@ -45,12 +45,16 @@ Route::get('/verify-unit-expenses/{id}', [\App\Http\Controllers\UnitExpensesRepo
 Route::get('/verify-field-expenses', [\App\Http\Controllers\FieldExpensesReportController::class, 'verify'])->name('verify.field-expenses');
 Route::get('/verify-project-land-payments/{id}', [\App\Http\Controllers\ProjectReportController::class, 'verifyLandPayments'])->name('verify.project-land-payments');
 Route::get('/verify-project-sales-profit/{id}', [\App\Http\Controllers\ProjectReportController::class, 'verifySalesProfit'])->name('verify.project-sales-profit');
+Route::get('/verify-spjb/{id}', [DocumentPdfController::class, 'verifySpjb'])->name('verify.spjb');
+Route::get('/verify-worker-spk/{id}', [\App\Http\Controllers\WorkerSpkController::class, 'verify'])->name('verify.worker-spk');
 
 // Authenticated Routes
 Route::middleware(['auth', \App\Http\Middleware\EnsureUserIsActive::class])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
     Route::get('/dashboard', Dashboard::class)->name('dashboard');
+    Route::get('/profile', \App\Livewire\Profile\Index::class)->name('profile.index');
+    Route::get('/tutorial', \App\Livewire\Tutorial\Index::class)->name('tutorial.index');
 
     // Master Data Proyek & Unit
     Route::get('/projects', ProjectsIndex::class)->name('projects.index');
@@ -62,6 +66,7 @@ Route::middleware(['auth', \App\Http\Middleware\EnsureUserIsActive::class])->gro
     Route::get('/units/legacy-sale', \App\Livewire\Units\LegacySale::class)->name('units.legacy-sale');
     Route::get('/units/{id}', UnitShow::class)->name('units.show');
     Route::get('/units/{id}/expenses-pdf', [\App\Http\Controllers\UnitExpensesReportController::class, 'exportPdf'])->name('units.expenses-pdf');
+    Route::get('/units/payroll/{id}/spk-pdf', [\App\Http\Controllers\WorkerSpkController::class, 'streamSpk'])->name('units.payroll.spk-pdf');
     Route::get('/installment-invoice/{uuid}', [\App\Http\Controllers\InstallmentInvoiceController::class, 'streamInvoice'])->name('installment.invoice');
     Route::get('/material-purchases/{id}/receipt', [\App\Http\Controllers\MaterialPurchaseReceiptController::class, 'streamReceipt'])->name('material-purchases.receipt');
 
@@ -77,6 +82,7 @@ Route::middleware(['auth', \App\Http\Middleware\EnsureUserIsActive::class])->gro
     Route::get('/proposals', ProposalsIndex::class)->name('proposals.index');
     Route::get('/documents', DocumentsIndex::class)->name('documents.index');
     Route::get('/documents/{id}/pdf', [DocumentPdfController::class, 'streamPdf'])->name('documents.stream');
+    Route::get('/documents/{id}/spjb-pdf', [DocumentPdfController::class, 'streamSpjbPdf'])->name('documents.spjb-pdf');
 
     // Keuangan & Pembayaran
     Route::get('/installments', InstallmentsIndex::class)->name('installments.index');

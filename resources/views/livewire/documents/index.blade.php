@@ -107,7 +107,11 @@
                                 <div class="flex items-center justify-center gap-1.5 flex-wrap">
                                     <button wire:click="openViewerModal('pdf', '{{ route('documents.stream', $doc->id) }}', 'Pratinjau Dokumen SPP - {{ $doc->document_number }}')" class="btn-action-pdf" title="Lihat Dokumen SPP PDF">
                                         <svg class="w-3.5 h-3.5 text-sky-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
-                                        <span>PDF</span>
+                                        <span>SPP PDF</span>
+                                    </button>
+                                    <button wire:click="openViewerModal('pdf', '{{ route('documents.spjb-pdf', $doc->id) }}', 'Pratinjau Surat Perjanjian Jual Beli (SPJB) - {{ $doc->unit->code }}')" class="btn-action-pdf" title="Cetak Surat Perjanjian Jual Beli (SPJB) PDF">
+                                        <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 01-2 2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                                        <span>SPJB PDF</span>
                                     </button>
                                 </div>
                             </td>
@@ -179,10 +183,18 @@
                         @error('selected_unit_id') <span class="text-rose-500 text-[10px] mt-1 block font-bold">{{ $message }}</span> @enderror
                     </div>
 
-                    <div>
-                        <label class="block font-bold text-slate-700 uppercase mb-1">Nama Lengkap Pembeli *</label>
-                        <input type="text" wire:model="buyer_name" required placeholder="Contoh: Bpk. H. Hendra Wijaya" class="input-clean w-full font-bold">
-                        @error('buyer_name') <span class="text-rose-500 text-[10px] mt-1 block font-bold">{{ $message }}</span> @enderror
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block font-bold text-slate-700 uppercase mb-1">Nama Lengkap Pembeli *</label>
+                            <input type="text" wire:model="buyer_name" required placeholder="Contoh: Bpk. H. Hendra Wijaya" class="input-clean w-full font-bold">
+                            @error('buyer_name') <span class="text-rose-500 text-[10px] mt-1 block font-bold">{{ $message }}</span> @enderror
+                        </div>
+
+                        <div>
+                            <label class="block font-bold text-slate-700 uppercase mb-1">NIK KTP Pembeli (16 Digit)</label>
+                            <input type="text" wire:model="buyer_nik" placeholder="3271234567890001" class="input-clean w-full font-mono">
+                            @error('buyer_nik') <span class="text-rose-500 text-[10px] mt-1 block font-bold">{{ $message }}</span> @enderror
+                        </div>
                     </div>
 
                     <div>
@@ -193,7 +205,25 @@
 
                     <div>
                         <label class="block font-bold text-slate-700 uppercase mb-1">Alamat Lengkap Pembeli</label>
-                        <input type="text" wire:model="buyer_address" placeholder="Jl. Sudirman No. 123, Pekanbaru" class="input-clean w-full">
+                        <textarea wire:model="buyer_address" rows="2" placeholder="Jl. Sudirman No. 123, Pekanbaru" class="input-clean w-full"></textarea>
+                    </div>
+
+                    <!-- Section Identitas Penjual / Founder -->
+                    <div class="p-3 bg-slate-50 border border-slate-200/80 rounded-2xl space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="font-extrabold text-slate-800 text-[11px] uppercase tracking-wider">Identitas Penjual (Founder)</span>
+                            <span class="text-[10px] text-slate-400">Otomatis Terisi & Bisa Diubah</span>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                            <div>
+                                <label class="block font-semibold text-slate-600 text-[10px] mb-0.5">Nama Founder / Penjual</label>
+                                <input type="text" wire:model="seller_name" class="input-clean w-full font-bold text-xs" required>
+                            </div>
+                            <div>
+                                <label class="block font-semibold text-slate-600 text-[10px] mb-0.5">NIK KTP Founder</label>
+                                <input type="text" wire:model="seller_nik" class="input-clean w-full font-mono text-xs" placeholder="1471012304850001">
+                            </div>
+                        </div>
                     </div>
 
                     <div class="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">

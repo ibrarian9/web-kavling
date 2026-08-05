@@ -21,7 +21,7 @@
                 <div>
                     <label class="block font-semibold text-slate-700 mb-1 text-xs uppercase tracking-wider">Pilih Unit Terjual <span class="text-rose-500">*</span></label>
                     <select wire:change="selectUnitForInstallment($event.target.value)" wire:model="unit_id" class="select-clean w-full font-semibold">
-                        <option value="">🏡 -- Pilih Unit Terjual --</option>
+                        <option value="">-- Pilih Unit Terjual --</option>
                         @foreach($eligibleUnits as $u)
                             <option value="{{ $u->id }}">Unit {{ $u->code }} ({{ $u->project->name }})</option>
                         @endforeach

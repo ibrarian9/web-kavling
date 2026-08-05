@@ -41,9 +41,9 @@
                     <div>
                         <label class="block font-semibold text-slate-700 mb-1 text-xs uppercase tracking-wider">Metode Pembayaran Cash <span class="text-rose-500">*</span></label>
                         <select wire:model="cash_payment_method" class="select-clean w-full">
-                            <option value="Transfer Bank">🏦 Transfer Bank</option>
-                            <option value="Tunai / Cash">💵 Tunai / Cash</option>
-                            <option value="Cek / Giro">📜 Cek / Giro</option>
+                            <option value="Transfer Bank">Transfer Bank</option>
+                            <option value="Tunai / Cash">Tunai / Cash</option>
+                            <option value="Cek / Giro">Cek / Giro</option>
                         </select>
                     </div>
                     <div>
