@@ -35,6 +35,7 @@ class Index extends Component
     public $editingUnitId = null;
 
     public $category_filter = '';
+    public $status_filter = '';
     public string $search = '';
     public string $viewMode = 'table'; // 'table' or 'siteplan'
 
@@ -54,7 +55,7 @@ class Index extends Component
     public $previewExcessCost = 0;
     public $previewRecommendedHpp = 0;
 
-    protected $queryString = ['project_id', 'category_filter', 'search'];
+    protected $queryString = ['project_id', 'category_filter', 'status_filter', 'search'];
 
     public function mount()
     {
@@ -65,6 +66,9 @@ class Index extends Component
 
     public function updated($propertyName)
     {
+        if (in_array($propertyName, ['search', 'status_filter', 'category_filter', 'project_id'])) {
+            $this->resetPage();
+        }
         if (in_array($propertyName, ['selected_project_id', 'land_width', 'land_length', 'land_area'])) {
             $this->calculateLandPreview();
         }
@@ -363,7 +367,26 @@ class Index extends Component
             $query->where('category', $this->category_filter);
         }
 
-        $units = $query->latest()->paginate(12);
+        if ($this->status_filter) {
+            if ($this->status_filter === 'terjual') {
+                $query->whereIn('status', ['terjual', 'disetujui', 'converted']);
+            } elseif ($this->status_filter === 'booked') {
+                $query->whereIn('status', ['booked', 'menunggu_persetujuan']);
+            } elseif ($this->status_filter === 'infrastruktur') {
+                $query->where(function ($q) {
+                    $q->where('category', 'infrastruktur')
+                      ->orWhere('status', 'infrastruktur');
+                });
+            } else {
+                $query->where('status', $this->status_filter);
+            }
+        }
+
+        if ($this->viewMode === 'siteplan') {
+            $units = $query->orderBy('code', 'asc')->get();
+        } else {
+            $units = $query->latest()->paginate(12);
+        }
 
         if ($user && $user->isPengawasProject()) {
             $assignedProjectIds = WorkerAssignment::where('user_id', $user->id)

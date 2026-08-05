@@ -1,82 +1,109 @@
 <div class="space-y-6">
 
-    <!-- Header & Single-row Toolbar Section -->
-    <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-4 sm:p-5 mb-6">
-        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-            
+    <!-- Header & Filter Toolbar Section -->
+    <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-4 sm:p-5 mb-6 space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-3.5">
             <!-- Judul & Deskripsi Halaman -->
             <div class="space-y-1">
                 <h2 class="text-lg sm:text-xl font-bold text-slate-900 tracking-tight">
                     Data Unit Kavling, Rumah & Infrastruktur
                 </h2>
-                <p class="text-xs text-slate-500 leading-relaxed max-w-2xl">
-                    Penetapan HPP, unit infrastruktur kawasan (parit, jalan, pos), penugasan mandor/tukang, dan booking unit.
+                <p class="text-xs text-slate-500 leading-relaxed">
+                    Kelola unit kavling, bangunan rumah, fasum kawasan, filter status ketersediaan, serta visualisasi site plan.
                 </p>
             </div>
 
-            <!-- Filter & Action Control Container -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:flex lg:items-center gap-2.5 w-full lg:w-auto">
-                
-                <!-- Input Pencarian Unit -->
-                <div class="relative w-full sm:col-span-2 lg:w-60">
-                    <input type="text" 
-                        wire:model.live.debounce.300ms="search" 
-                        placeholder="Cari unit, proyek, mandor..." 
-                        class="w-full h-10 pl-9 pr-3 text-xs font-medium text-slate-800 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all placeholder:text-slate-400">
-                    <svg class="w-4 h-4 text-slate-400 absolute left-3 top-3 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                    </svg>
-                </div>
-
-                <!-- Filter Kategori -->
-                <div class="w-full lg:w-auto">
-                    <select wire:model.live="category_filter" 
-                            class="w-full h-10 px-3 text-xs font-semibold text-slate-700 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all cursor-pointer">
-                        <option value="">Semua Kategori</option>
-                        <option value="kavling">Kavling Tanah</option>
-                        <option value="rumah">Bangunan Rumah</option>
-                        <option value="infrastruktur">Fasum & Infrastruktur</option>
-                    </select>
-                </div>
-
-                <!-- Filter Proyek -->
-                <div class="w-full lg:w-auto">
-                    <select wire:model.live="project_id" 
-                            class="w-full h-10 px-3 text-xs font-semibold text-slate-700 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all cursor-pointer">
-                        <option value="">Semua Proyek Properti</option>
-                        @foreach($projects as $p)
-                            <option value="{{ $p->id }}">{{ $p->name }}</option>
-                        @endforeach
-                    </select>
-                </div>
-
+            <!-- Tombol Tambah Unit & Mode View -->
+            <div class="flex items-center gap-2.5 shrink-0">
                 <!-- Toggle View Mode Button (Tabel ↔ Site Plan Visual) -->
                 <div class="flex items-center bg-slate-100 p-1 rounded-xl border border-slate-200 shrink-0">
-                    <button wire:click="$set('viewMode', 'table')" type="button" class="px-2.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 {{ $viewMode === 'table' ? 'bg-white text-emerald-700 shadow-sm' : 'text-slate-500 hover:text-slate-800' }}">
+                    <button wire:click="$set('viewMode', 'table')" type="button" class="px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 {{ $viewMode === 'table' ? 'bg-white text-emerald-700 shadow-sm' : 'text-slate-500 hover:text-slate-800' }}">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
                         <span>Tabel</span>
                     </button>
-                    <button wire:click="$set('viewMode', 'siteplan')" type="button" class="px-2.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 {{ $viewMode === 'siteplan' ? 'bg-white text-emerald-700 shadow-sm' : 'text-slate-500 hover:text-slate-800' }}">
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6z"/></svg>
+                    <button wire:click="$set('viewMode', 'siteplan')" type="button" class="px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 {{ $viewMode === 'siteplan' ? 'bg-white text-emerald-700 shadow-sm' : 'text-slate-500 hover:text-slate-800' }}">
+                        <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6z"/></svg>
                         <span>Site Plan Visual</span>
                     </button>
                 </div>
 
-                <!-- Tombol Tambah Unit -->
                 @if(auth()->user()->isFounder() || auth()->user()->isSupervisor())
-                    <button wire:click="openModal" 
-                            class="btn-primary h-10 text-xs font-bold whitespace-nowrap shadow-sm">
+                    <button wire:click="openModal" class="btn-primary h-9 text-xs font-bold whitespace-nowrap shadow-sm px-3.5 flex items-center gap-1.5">
                         <svg class="w-4 h-4 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
                         </svg>
                         <span>Tambah Unit Baru</span>
                     </button>
                 @endif
+            </div>
+        </div>
 
+        <!-- Filter Controls Container (Responsive Grid / Flex) -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2.5">
+            <!-- Search Bar -->
+            <div class="relative w-full sm:col-span-2 md:col-span-1">
+                <input type="text" 
+                    wire:model.live.debounce.300ms="search" 
+                    placeholder="Cari kode unit, mandor..." 
+                    class="w-full h-10 pl-9 pr-8 text-xs font-medium text-slate-800 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all placeholder:text-slate-400">
+                <svg class="w-4 h-4 text-slate-400 absolute left-3 top-3 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                </svg>
+                <div wire:loading wire:target="search, status_filter, category_filter, project_id, viewMode" class="absolute right-2.5 top-3">
+                    <svg class="w-4 h-4 text-emerald-600 animate-spin" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Filter Status Unit -->
+            <div class="w-full">
+                <select wire:model.live="status_filter" 
+                        class="w-full h-10 px-3 text-xs font-bold text-slate-700 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all cursor-pointer">
+                    <option value="">Semua Status Unit</option>
+                    <option value="tersedia">Unit Tersedia</option>
+                    <option value="booked">Unit Booked</option>
+                    <option value="terjual">Unit Terjual / ACC</option>
+                    <option value="infrastruktur">Infrastruktur Kawasan</option>
+                </select>
+            </div>
+
+            <!-- Filter Kategori -->
+            <div class="w-full">
+                <select wire:model.live="category_filter" 
+                        class="w-full h-10 px-3 text-xs font-semibold text-slate-700 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all cursor-pointer">
+                    <option value="">Semua Kategori</option>
+                    <option value="kavling">Kavling Tanah</option>
+                    <option value="rumah">Bangunan Rumah</option>
+                    <option value="infrastruktur">Fasum & Infrastruktur</option>
+                </select>
+            </div>
+
+            <!-- Filter Proyek -->
+            <div class="w-full">
+                <select wire:model.live="project_id" 
+                        class="w-full h-10 px-3 text-xs font-semibold text-slate-700 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all cursor-pointer">
+                    <option value="">Semua Proyek Properti</option>
+                    @foreach($projects as $p)
+                        <option value="{{ $p->id }}">{{ $p->name }}</option>
+                    @endforeach
+                </select>
             </div>
         </div>
     </div>
 
+    <!-- Livewire Loading State Banner -->
+    <div wire:loading wire:target="search, status_filter, category_filter, project_id, viewMode" class="w-full mb-4">
+        <div class="p-3 bg-emerald-50 border border-emerald-200/80 rounded-2xl text-emerald-900 text-xs font-bold flex items-center justify-center gap-2 animate-pulse shadow-xs">
+            <svg class="w-4 h-4 text-emerald-600 animate-spin shrink-0" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+            <span>Memperbarui data unit sesuai filter...</span>
+        </div>
+    </div>
+
+    <!-- Content Area Container with Loading Dimming -->
+    <div wire:loading.class="opacity-50 pointer-events-none transition-opacity duration-200" wire:target="search, status_filter, category_filter, project_id, viewMode">
+    
     <!-- Summary KPI Cards Grid -->
     <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
         <div class="kpi-card-blue">
@@ -86,7 +113,7 @@
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
                 </div>
             </div>
-            <p class="text-2xl font-extrabold text-slate-900 font-mono mt-1.5">{{ $units->total() }} Unit</p>
+            <p class="text-2xl font-extrabold text-slate-900 font-mono mt-1.5">{{ method_exists($units, 'total') ? $units->total() : $units->count() }} Unit</p>
             <p class="text-[10px] text-slate-400 mt-0.5">Total unit kavling & rumah</p>
         </div>
 
@@ -404,8 +431,11 @@
     </div>
     @endif
 
-    <div class="mt-4">
-        {{ $units->links() }}
+    @if($viewMode === 'table')
+        <div class="mt-4">
+            {{ $units->links() }}
+        </div>
+    @endif
     </div>
 
     <!-- Modal Form Unit -->
