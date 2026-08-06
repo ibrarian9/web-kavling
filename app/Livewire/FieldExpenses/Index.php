@@ -76,8 +76,17 @@ class Index extends Component
             });
         }
         if ($this->search) {
-            $salaryQuery->whereHas('payroll.worker', function ($q) {
-                $q->where('name', 'like', '%' . $this->search . '%');
+            $term = '%' . trim($this->search) . '%';
+            $salaryQuery->where(function ($q) use ($term) {
+                $q->whereHas('payroll.worker', function ($workerQ) use ($term) {
+                    $workerQ->where('name', 'like', $term);
+                })
+                ->orWhereHas('payroll.unit', function ($unitQ) use ($term) {
+                    $unitQ->where('code', 'like', $term);
+                })
+                ->orWhereHas('payroll.project', function ($projQ) use ($term) {
+                    $projQ->where('name', 'like', $term);
+                });
             });
         }
 
@@ -90,9 +99,19 @@ class Index extends Component
             $materialQuery->where('unit_id', $this->unit_id);
         }
         if ($this->search) {
-            $materialQuery->where(function ($q) {
-                $q->where('item_name', 'like', '%' . $this->search . '%')
-                  ->orWhere('notes', 'like', '%' . $this->search . '%');
+            $term = '%' . trim($this->search) . '%';
+            $materialQuery->where(function ($q) use ($term) {
+                $q->where('item_name', 'like', $term)
+                  ->orWhere('notes', 'like', $term)
+                  ->orWhereHas('unit', function ($unitQ) use ($term) {
+                      $unitQ->where('code', 'like', $term);
+                  })
+                  ->orWhereHas('project', function ($projQ) use ($term) {
+                      $projQ->where('name', 'like', $term);
+                  })
+                  ->orWhereHas('worker', function ($workerQ) use ($term) {
+                      $workerQ->where('name', 'like', $term);
+                  });
             });
         }
 

@@ -25,6 +25,11 @@ class LegacySale extends Component
     // State untuk Modal Form Catat Unit Masa Lalu
     public bool $showModal = false;
 
+    // Filter & Search Properties
+    public string $search = '';
+    public string $project_filter = '';
+    public string $category_filter = '';
+
     // Unit Properties
     public ?int $project_id = null;
     public string $code = '';
@@ -248,6 +253,21 @@ class LegacySale extends Component
         $this->showModal = false;
     }
 
+    public function updatedSearch(): void
+    {
+        $this->resetPage();
+    }
+
+    public function updatedProjectFilter(): void
+    {
+        $this->resetPage();
+    }
+
+    public function updatedCategoryFilter(): void
+    {
+        $this->resetPage();
+    }
+
     public function openViewerModal(string $type, string $url, string $title = ''): void
     {
         $this->viewerType = $type;
@@ -266,11 +286,31 @@ class LegacySale extends Component
 
     public function render()
     {
-        $legacyUnits = Unit::with(['project', 'officialDocument', 'installment'])
-            ->where('status', 'terjual')
-            ->latest('id')
-            ->paginate(10);
+        $query = Unit::with(['project', 'officialDocument', 'installment'])
+            ->where('status', 'terjual');
 
+        if (!empty($this->search)) {
+            $term = '%' . trim($this->search) . '%';
+            $query->where(function ($q) use ($term) {
+                $q->where('code', 'like', $term)
+                  ->orWhere('type', 'like', $term)
+                  ->orWhereHas('officialDocument', function ($docQ) use ($term) {
+                      $docQ->where('buyer_name', 'like', $term)
+                           ->orWhere('buyer_contact', 'like', $term)
+                           ->orWhere('document_number', 'like', $term);
+                  });
+            });
+        }
+
+        if (!empty($this->project_filter)) {
+            $query->where('project_id', $this->project_filter);
+        }
+
+        if (!empty($this->category_filter)) {
+            $query->where('category', $this->category_filter);
+        }
+
+        $legacyUnits = $query->latest('id')->paginate(10);
         $projects = Project::orderBy('name')->get();
 
         return view('livewire.units.legacy-sale', [

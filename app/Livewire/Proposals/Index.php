@@ -368,16 +368,62 @@ class Index extends Component
         $this->showDocModal = false;
     }
 
+    public $projectIdFilter = '';
+    public string $statusFilter = 'all';
+    public string $search = '';
+
+    public function updatedProjectIdFilter(): void
+    {
+        $this->resetPage();
+    }
+
+    public function updatedStatusFilter(): void
+    {
+        $this->resetPage();
+    }
+
+    public function updatedSearch(): void
+    {
+        $this->resetPage();
+    }
+
     public function render()
     {
-        $proposals = PriceProposal::with(['unit.project', 'proposer', 'approvals.approver'])
-            ->latest()
-            ->paginate(10);
+        $query = PriceProposal::with(['unit.project', 'proposer', 'approvals.approver']);
 
+        if ($this->projectIdFilter) {
+            $query->whereHas('unit', function ($q) {
+                $q->where('project_id', $this->projectIdFilter);
+            });
+        }
+
+        if ($this->statusFilter && $this->statusFilter !== 'all') {
+            $query->where('status', $this->statusFilter);
+        }
+
+        if ($this->search) {
+            $term = '%' . trim($this->search) . '%';
+            $query->where(function ($q) use ($term) {
+                $q->whereHas('unit', function ($unitQ) use ($term) {
+                    $unitQ->where('code', 'like', $term)
+                          ->orWhereHas('project', function ($projQ) use ($term) {
+                              $projQ->where('name', 'like', $term);
+                          });
+                })
+                ->orWhereHas('proposer', function ($propQ) use ($term) {
+                    $propQ->where('name', 'like', $term);
+                });
+            });
+        }
+
+        $proposals = $query->latest()->paginate(10);
+
+        $projects = \App\Models\Project::orderBy('name')->get();
         $availableUnits = Unit::where('status', 'tersedia')->where('category', '!=', 'infrastruktur')->get();
 
         return view('livewire.proposals.index', [
             'proposals' => $proposals,
+            'projects' => $projects,
             'availableUnits' => $availableUnits,
         ])->layout('components.layouts.app', ['title' => 'Pengajuan & Approval Harga Jual']);
     }

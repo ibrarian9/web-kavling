@@ -92,6 +92,10 @@ Route::middleware(['auth', \App\Http\Middleware\EnsureUserIsActive::class])->gro
     Route::get('/manual-invoices', \App\Livewire\ManualInvoices\Index::class)->name('manual-invoices.index');
     Route::get('/manual-invoices/{uuid}/pdf', [\App\Http\Controllers\ManualInvoiceController::class, 'streamPdf'])->name('manual-invoices.pdf');
 
+    // Penggajian Karyawan (Founder Only)
+    Route::get('/employee-salaries', \App\Livewire\EmployeeSalaries\Index::class)->name('employee-salaries.index');
+    Route::get('/employee-salary/{uuid}/slip-pdf', [\App\Http\Controllers\EmployeeSalarySlipController::class, 'streamPdf'])->name('employee-salary.slip-pdf');
+
     // Manajemen User & System Log (Founder Only)
     Route::get('/users', \App\Livewire\Users\Index::class)->name('users.index');
     Route::get('/activity-logs', \App\Livewire\ActivityLogs\Index::class)->name('activity-logs.index');
