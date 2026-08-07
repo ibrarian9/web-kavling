@@ -3,7 +3,7 @@
     <div class="space-y-1.5">
         <!-- Breadcrumbs -->
         <nav class="flex items-center gap-1.5 text-xs text-slate-500 flex-wrap">
-            <a href="{{ route('projects.show', $unit->project_id) }}" class="hover:text-emerald-700 font-semibold inline-flex items-center gap-1.5 transition-colors">
+            <a href="{{ route('projects.show', $unit->project_id) }}" wire:navigate.hover class="hover:text-emerald-700 font-semibold inline-flex items-center gap-1.5 transition-colors">
                 <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5m0 0h5m-5 0v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
                 <span>{{ $unit->project->name }}</span>
             </a>
@@ -95,7 +95,7 @@
 </div>
 
 <!-- Key Metrics Highlight Cards -->
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
     <!-- HPP Pokok (Founder & Finance Only) -->
     @if(auth()->user()->canViewHpp())
         <div class="kpi-card-blue transition-all duration-200 hover:-translate-y-0.5">
@@ -124,6 +124,30 @@
             {{ $unit->final_selling_price ? 'Rp ' . number_format($unit->final_selling_price, 0, ',', '.') : 'Belum Disetujui' }}
         </p>
         <p class="text-[11px] text-slate-400 mt-1">Status: {{ ucfirst($unit->status) }}</p>
+    </div>
+
+    <!-- Booking Fee / Tanda Jadi Unit (Financial Metric) -->
+    @php
+        $activeB = $unit->activeBooking ?? $unit->bookings->first();
+        $bookingFeeAmount = $activeB ? $activeB->booking_amount : 5000000;
+    @endphp
+    <div class="card-clean p-5 transition-all duration-200 hover:-translate-y-0.5 border-teal-200/80 bg-gradient-to-br from-white to-teal-50/30">
+        <div class="flex items-center justify-between">
+            <span class="text-[11px] font-bold text-teal-800 uppercase tracking-wider">Booking Fee / Tanda Jadi</span>
+            <div class="p-2.5 rounded-xl bg-teal-50 text-teal-600 border border-teal-100 shadow-2xs">
+                <svg class="w-5 h-5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5h14a2 2 0 012 2v3a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2zm0 8h14a2 2 0 012 2v3a2 2 0 01-2 2H5a2 2 0 01-2-2v-3a2 2 0 01-2-2z"/></svg>
+            </div>
+        </div>
+        <p class="text-2xl font-extrabold text-teal-800 font-mono mt-2">
+            Rp {{ number_format($bookingFeeAmount, 0, ',', '.') }}
+        </p>
+        <p class="text-[11px] text-slate-500 mt-1 truncate">
+            @if($activeB)
+                <span class="font-semibold text-teal-900">{{ $activeB->buyer_name }}</span> ({{ ucfirst($activeB->status) }})
+            @else
+                <span class="text-slate-400">Patokan Standar Unit</span>
+            @endif
+        </p>
     </div>
 
     <!-- Total Cash In (Financial Metric - Hidden from Pengawas) -->

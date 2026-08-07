@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
             OfficialDocumentSeeder::class,
             FinancialSeeder::class,
             WorkerSeeder::class,
+            EmployeeSalarySeeder::class,
         ]);
     }
 }

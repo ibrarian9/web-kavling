@@ -87,11 +87,17 @@ class Index extends Component
             'buyer_phone' => 'required|string|max:50',
             'booking_type' => 'required|in:project,unit',
             'booking_amount' => 'required|numeric|min:1000',
+            'dp_amount' => 'nullable|numeric|min:0',
             'booking_date' => 'required|date',
             'expiry_date' => 'nullable|date|after_or_equal:booking_date',
             'notes' => 'nullable|string|max:500',
-            'receipt_photo' => 'nullable|image|max:2048',
+            'receipt_photo' => 'nullable|file|mimes:jpg,jpeg,png,webp,heic,heif|max:10240',
         ];
+    }
+
+    public function updatedReceiptPhoto(): void
+    {
+        $this->validateOnly('receipt_photo');
     }
 
     public function create(): void
@@ -124,6 +130,7 @@ class Index extends Component
         $this->buyer_name = $booking->buyer_name;
         $this->buyer_phone = $booking->buyer_phone;
         $this->booking_amount = (float) $booking->booking_amount;
+        $this->dp_amount = (float) $booking->dp_amount;
         $this->booking_date = $booking->booking_date ? $booking->booking_date->format('Y-m-d') : null;
         $this->expiry_date = $booking->expiry_date ? $booking->expiry_date->format('Y-m-d') : null;
         $this->notes = $booking->notes ?? '';
@@ -135,6 +142,10 @@ class Index extends Component
     {
         $user = Auth::user();
 
+        if ($this->unit_id === '') {
+            $this->unit_id = null;
+        }
+
         if ($this->editingBookingId) {
             if (!$user->isFounder()) {
                 session()->flash('error', 'Hanya Founder yang berhak mengedit data booking.');
@@ -145,6 +156,8 @@ class Index extends Component
             $oldUnitId = $booking->unit_id;
 
             $validated = $this->validate();
+            $validated['dp_amount'] = (float)($this->dp_amount ?: 0);
+
             if ($this->receipt_photo) {
                 $validated['receipt_photo_path'] = $this->receipt_photo->store('receipts/bookings', 'public');
             }
@@ -193,7 +206,7 @@ class Index extends Component
         }
 
         $validated = $this->validate();
-        $validated['dp_amount'] = 0;
+        $validated['dp_amount'] = (float)($this->dp_amount ?: 0);
         $validated['status'] = 'active';
         $validated['created_by'] = Auth::id();
 
@@ -270,9 +283,7 @@ class Index extends Component
 
         $booking = Booking::with('unit')->findOrFail($bookingId);
 
-
-        
-        $totalDp = $booking->dp_amount > 0 ? $booking->dp_amount : $booking->booking_amount;
+        $totalDp = (float)($booking->dp_amount > 0 ? $booking->dp_amount : $booking->booking_amount);
 
         // 1. Record incoming Cashflow transaction
         CashflowTransaction::create([
@@ -290,6 +301,7 @@ class Index extends Component
         // 2. Update booking and unit statuses
         $booking->update([
             'status' => 'converted',
+            'dp_amount' => $totalDp,
             'notes' => ($booking->notes ? $booking->notes . ' | ' : '') . 'DP disetujui oleh ' . Auth::user()->name . ' pada ' . now()->format('d/m/Y H:i'),
         ]);
 
@@ -341,7 +353,7 @@ class Index extends Component
             return;
         }
 
-        $refundAmount = $booking->dp_amount > 0 ? $booking->dp_amount : $booking->booking_amount;
+        $refundAmount = (float)($booking->dp_amount > 0 ? $booking->dp_amount : $booking->booking_amount);
 
         // 1. Record Outgoing Cashflow transaction (Refund)
         if ($refundAmount > 0) {
@@ -395,7 +407,7 @@ class Index extends Component
         $units = $this->project_id ? Unit::where('project_id', $this->project_id)->orderBy('code')->get() : collect();
 
         $totalBookingAmount = Booking::whereIn('status', ['active', 'converted'])->sum('booking_amount');
-        $totalDpAmount = Booking::whereIn('status', ['active', 'converted'])->sum('dp_amount');
+        $totalDpAmount = Booking::where('status', 'converted')->sum('dp_amount');
 
         return view('livewire.bookings.index', [
             'bookings' => $bookings,

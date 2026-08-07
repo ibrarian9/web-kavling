@@ -1035,14 +1035,16 @@ class Show extends Component
     // Modal Setup & Edit Skema Cicilan
     public function openSetupInstallmentModal(): void
     {
-        $user = auth()->user();
-        if (!$user->isFinance() && !$user->isFounder()) {
-            session()->flash('error', 'Hanya tim Finance dan Founder yang berhak mengonfigurasi skema cicilan.');
+        if (!$this->canManageFinancial()) {
+            session()->flash('error', 'Akses ditolak. Hanya Founder dan Finance yang dapat mengonfigurasi skema cicilan.');
             return;
         }
 
-        $unit = Unit::with(['officialDocument', 'activeProposal', 'installment'])->findOrFail($this->unitId);
+        $unit = Unit::with(['installment', 'activeBooking'])->findOrFail($this->unitId);
         $this->resetValidation();
+
+        $booking = $unit->activeBooking;
+        $alreadyPaid = $booking ? max((float)$booking->dp_amount, (float)$booking->booking_amount) : 0;
 
         if ($unit->installment) {
             $this->setup_total_price = (float)$unit->installment->total_price;
@@ -1051,7 +1053,7 @@ class Show extends Component
             $this->setup_start_date = $unit->installment->start_date ? $unit->installment->start_date->format('Y-m-d') : now()->toDateString();
         } else {
             $this->setup_total_price = (float)($unit->final_selling_price ?: ($unit->activeProposal->proposed_price ?? 0));
-            $this->setup_down_payment = $this->setup_total_price * 0.20;
+            $this->setup_down_payment = $alreadyPaid > 0 ? $alreadyPaid : ($this->setup_total_price * 0.20);
             $this->setup_installment_count = 12;
             $this->setup_start_date = now()->toDateString();
         }
@@ -1081,7 +1083,7 @@ class Show extends Component
             'setup_start_date' => 'required|date',
         ]);
 
-        $unit = Unit::with(['officialDocument', 'installment.payments'])->findOrFail($this->unitId);
+        $unit = Unit::with(['officialDocument', 'installment.payments', 'activeBooking'])->findOrFail($this->unitId);
 
         DB::transaction(function () use ($unit) {
             if ($unit->installment) {
@@ -1122,14 +1124,18 @@ class Show extends Component
                     'status' => 'berjalan',
                 ]);
 
-                if ($this->setup_down_payment > 0) {
+                $booking = $unit->activeBooking;
+                $alreadyPaid = $booking ? max((float)$booking->dp_amount, (float)$booking->booking_amount) : 0;
+                $netDpCashflow = max(0, (float)$this->setup_down_payment - $alreadyPaid);
+
+                if ($netDpCashflow > 0) {
                     CashflowTransaction::create([
                         'project_id' => $unit->project_id,
                         'type' => 'masuk',
                         'category' => 'pembayaran_cicilan_pembeli',
-                        'amount' => $this->setup_down_payment,
+                        'amount' => $netDpCashflow,
                         'transaction_date' => $this->setup_start_date,
-                        'description' => 'Pembayaran Uang Muka (DP) Unit ' . $unit->code,
+                        'description' => 'Pembayaran Uang Muka (DP) Unit ' . $unit->code . ($alreadyPaid > 0 ? ' (Net Tambahan DP, memperhitungkan Booking Fee Rp ' . number_format($alreadyPaid, 0, ',', '.') . ' yang sudah tercatat)' : ''),
                         'reference_type' => UnitInstallment::class,
                         'reference_id' => $installment->id,
                         'created_by' => Auth::id(),
@@ -1257,6 +1263,8 @@ class Show extends Component
             'proposals.approvals.approver',
             'officialDocument.issuer',
             'installment.payments.creator',
+            'activeBooking.creator',
+            'bookings.creator',
         ])->findOrFail($this->unitId);
 
         $unitAssignments = WorkerAssignment::with('worker')

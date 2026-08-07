@@ -39,13 +39,14 @@
                         </div>
                     </div>
                     <div>
-                        <label class="block font-semibold text-slate-700 mb-1 text-xs uppercase tracking-wider">Uang Muka / DP <span class="text-rose-500">*</span></label>
+                        <label class="block font-semibold text-slate-700 mb-1 text-xs uppercase tracking-wider">Total Uang Muka / DP Kesepakatan <span class="text-rose-500">*</span></label>
                         <div class="flex rounded-xl shadow-xs">
                             <span class="bg-slate-100 border border-r-0 border-slate-200 px-3 py-2 text-slate-500 font-mono text-xs font-bold flex items-center rounded-l-xl">
                                 Rp
                             </span>
                             <x-currency-input model="down_payment" class="input-clean rounded-r-xl rounded-l-none font-bold text-xs sm:text-sm font-mono text-emerald-700 w-full" placeholder="0" />
                         </div>
+                        <p class="text-[10px] text-slate-400 mt-1">Total DP Keseluruhan (Termasuk Booking Fee yang sudah dibayar).</p>
                     </div>
                 </div>
 
@@ -59,6 +60,21 @@
                         <input type="date" wire:model="start_date" class="input-clean w-full font-mono text-xs sm:text-sm">
                     </div>
                 </div>
+
+                @if(($already_paid_booking ?? 0) > 0)
+                    <div class="p-3 bg-teal-50 border border-teal-200 rounded-xl text-teal-900 text-xs space-y-1">
+                        <div class="flex items-center justify-between font-bold">
+                            <span class="flex items-center gap-1.5 text-teal-800">
+                                <svg class="w-4 h-4 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                <span>Booking Fee / DP Terbayar:</span>
+                            </span>
+                            <span class="font-mono text-teal-700">Rp {{ number_format($already_paid_booking, 0, ',', '.') }}</span>
+                        </div>
+                        <p class="text-[11px] text-teal-700">
+                            Tercatat otomatis dari booking unit. Arus kas masuk DP hanya mencatat net tambahan DP sebesar <strong class="font-mono text-emerald-800 font-bold">Rp {{ number_format(max(0, $down_payment - $already_paid_booking), 0, ',', '.') }}</strong> agar tidak terjadi *double-counting*.
+                        </p>
+                    </div>
+                @endif
 
                 <!-- Highlight Box Kalkulasi Cicilan -->
                 <div class="bg-emerald-50/90 border border-emerald-200/80 rounded-xl p-3.5 space-y-1.5 text-emerald-950 shadow-2xs">

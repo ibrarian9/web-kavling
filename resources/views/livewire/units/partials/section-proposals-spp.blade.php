@@ -10,6 +10,52 @@
             </h3>
         </div>
 
+        <!-- Active Booking Fee Highlight Card -->
+        @php
+            $activeBooking = $unit->activeBooking ?? $unit->bookings->first();
+        @endphp
+        @if($activeBooking)
+            <div class="bg-teal-50/90 border border-teal-200 rounded-2xl p-4 space-y-3 text-xs shadow-2xs">
+                <div class="flex items-center justify-between border-b border-teal-200/80 pb-2.5">
+                    <div class="flex items-center gap-2">
+                        <span class="p-1 rounded bg-teal-200 text-teal-800">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5h14a2 2 0 012 2v3a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2zm0 8h14a2 2 0 012 2v3a2 2 0 01-2 2H5a2 2 0 01-2-2v-3a2 2 0 01-2-2z"/></svg>
+                        </span>
+                        <h4 class="font-extrabold text-teal-950 text-xs sm:text-sm">Rincian Booking Fee & Tanda Jadi Pembeli</h4>
+                    </div>
+                    <span class="px-2.5 py-0.5 rounded-lg text-[10px] font-extrabold shadow-2xs {{ $activeBooking->status === 'converted' ? 'bg-emerald-600 text-white' : 'bg-teal-700 text-white' }}">
+                        {{ $activeBooking->status === 'converted' ? 'DP ACC' : 'Booking Active' }}
+                    </span>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-slate-700">
+                    <div class="bg-white/90 p-2.5 rounded-xl border border-teal-100">
+                        <span class="text-slate-500 block text-[10px] uppercase font-bold">Nominal Booking Fee:</span>
+                        <span class="font-mono font-extrabold text-teal-800 text-sm">Rp {{ number_format($activeBooking->booking_amount, 0, ',', '.') }}</span>
+                    </div>
+                    <div class="bg-white/90 p-2.5 rounded-xl border border-teal-100">
+                        <span class="text-slate-500 block text-[10px] uppercase font-bold">Total DP / Uang Muka:</span>
+                        <span class="font-mono font-extrabold text-emerald-800 text-sm">Rp {{ number_format(max($activeBooking->dp_amount, $activeBooking->booking_amount), 0, ',', '.') }}</span>
+                    </div>
+                    <div class="bg-white/90 p-2.5 rounded-xl border border-teal-100">
+                        <span class="text-slate-500 block text-[10px] uppercase font-bold">Nama & Kontak Pembeli:</span>
+                        <span class="font-bold text-slate-900 block truncate">{{ $activeBooking->buyer_name }}</span>
+                        <span class="font-mono text-[10px] text-slate-500 block">{{ $activeBooking->buyer_phone }}</span>
+                    </div>
+                </div>
+
+                @if($activeBooking->receipt_photo_path)
+                    <div class="pt-1 flex items-center justify-between text-[11px]">
+                        <span class="text-slate-600">Bukti Struk Transfer / Resi Terlampir</span>
+                        <button wire:click="openViewerModal('image', '{{ asset('storage/' . $activeBooking->receipt_photo_path) }}', 'Foto Struk Resi Booking - {{ $activeBooking->buyer_name }}')" class="text-teal-700 hover:text-teal-900 font-bold underline flex items-center gap-1">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                            <span>Lihat Foto Resi Bukti Transfer</span>
+                        </button>
+                    </div>
+                @endif
+            </div>
+        @endif
+
         @if($unit->officialDocument)
             <div class="bg-emerald-50/90 border border-emerald-200 rounded-2xl p-4 space-y-3 text-xs shadow-2xs">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-emerald-900 border-b border-emerald-200/70 pb-2.5">

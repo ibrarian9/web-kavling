@@ -6,6 +6,14 @@
     <title>{{ $title ?? 'Dashboard' }} - SIM Proyek Properti & Keuangan</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
+    <style>
+        /* Top SPA Loading Progress Bar Style */
+        #nprogress .bar, .livewire-progress-bar {
+            background: #10b981 !important; /* emerald-500 */
+            height: 3px !important;
+            box-shadow: 0 0 10px #10b981, 0 0 5px #10b981;
+        }
+    </style>
 </head>
 <body x-data="{ mobileMenuOpen: false, sidebarOpen: true }" x-effect="document.body.classList.toggle('overflow-hidden', mobileMenuOpen)" @keydown.window.escape="mobileMenuOpen = false" class="bg-slate-50 font-sans text-slate-800 min-h-screen flex flex-col antialiased">
 

@@ -260,7 +260,7 @@
                                 {{ $trx->transaction_date->format('d/m/Y') }}
                             </td>
                             <td class="px-5 py-4 font-bold text-slate-800">
-                                {{ $trx->project->name }}
+                                {{ $trx->project->name ?? 'Global / Kantor Pusat' }}
                             </td>
                             <td class="px-5 py-4">
                                 @if($trx->type === 'masuk')

@@ -55,14 +55,21 @@
                     </div>
                 </div>
 
-                <div>
-                    <label class="block font-semibold text-slate-700 uppercase mb-1">Nominal Tanda Jadi / Booking Fee (Rp) *</label>
-                    <x-currency-input model="booking_amount" class="input-clean w-full font-mono font-bold text-teal-700 text-sm" />
-                    @error('booking_amount') <span class="text-[10px] text-rose-500 mt-1 block font-bold">{{ $message }}</span> @enderror
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-semibold text-slate-700 uppercase mb-1">Nominal Booking Fee (Rp) *</label>
+                        <x-currency-input model="booking_amount" class="input-clean w-full font-mono font-bold text-teal-700 text-sm" />
+                        @error('booking_amount') <span class="text-[10px] text-rose-500 mt-1 block font-bold">{{ $message }}</span> @enderror
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-slate-700 uppercase mb-1">Total Uang Muka / DP (Rp) <span class="text-slate-400 font-normal lowercase text-[10px]">(Opsional)</span></label>
+                        <x-currency-input model="dp_amount" class="input-clean w-full font-mono font-bold text-emerald-700 text-sm" />
+                        @error('dp_amount') <span class="text-[10px] text-rose-500 mt-1 block font-bold">{{ $message }}</span> @enderror
+                    </div>
                 </div>
 
                 <div>
-                    <label class="block font-semibold text-slate-700 uppercase mb-1">Foto Struk / Bukti Transfer <span class="text-amber-600 font-bold lowercase text-[10px] bg-amber-50 px-1.5 py-0.5 rounded border border-amber-200">(Opsional, Maks. 2MB)</span></label>
+                    <label class="block font-semibold text-slate-700 uppercase mb-1">Foto Struk / Bukti Transfer <span class="text-amber-600 font-bold lowercase text-[10px] bg-amber-50 px-1.5 py-0.5 rounded border border-amber-200">(Opsional, Maks. 10MB)</span></label>
                     <input type="file" wire:model="receipt_photo" accept="image/*,.heic,.heif,.pdf" class="w-full text-xs text-slate-600 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100 transition cursor-pointer">
                     <div wire:loading wire:target="receipt_photo" class="text-[11px] text-amber-600 font-semibold mt-1 flex items-center gap-1.5">
                         <svg class="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>

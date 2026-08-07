@@ -83,6 +83,16 @@ class Unit extends Model
         return $this->hasMany(WorkerAssignment::class)->where('status', 'active');
     }
 
+    public function bookings(): HasMany
+    {
+        return $this->hasMany(Booking::class);
+    }
+
+    public function activeBooking(): HasOne
+    {
+        return $this->hasOne(Booking::class)->whereIn('status', ['active', 'converted'])->latestOfMany();
+    }
+
 
     /**
      * Hitung otomatis kelebihan tanah dan rekomendasi HPP berbasis standar proyek

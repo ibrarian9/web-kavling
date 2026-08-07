@@ -22,6 +22,7 @@ class Index extends Component
     public $official_document_id = null;
     public $total_price = 0;
     public $down_payment = 0;
+    public $already_paid_booking = 0;
     public $installment_count = 12;
     public $installment_amount = 0;
     public $start_date = '';
@@ -57,11 +58,15 @@ class Index extends Component
     public function selectUnitForInstallment($unitId)
     {
         $this->unit_id = $unitId;
-        $unit = Unit::with(['officialDocument', 'activeProposal'])->find($unitId);
+        $unit = Unit::with(['officialDocument', 'activeProposal', 'activeBooking'])->find($unitId);
         if ($unit) {
             $this->total_price = $unit->final_selling_price ?: ($unit->activeProposal->proposed_price ?? 0);
             $this->official_document_id = $unit->officialDocument->id ?? null;
-            $this->down_payment = $this->total_price * 0.20; // Default DP 20%
+            
+            $booking = $unit->activeBooking;
+            $this->already_paid_booking = $booking ? max((float)$booking->dp_amount, (float)$booking->booking_amount) : 0;
+            
+            $this->down_payment = $this->already_paid_booking > 0 ? $this->already_paid_booking : ($this->total_price * 0.20);
             $this->calculateMonthlyInstallment();
         }
     }
@@ -95,16 +100,20 @@ class Index extends Component
             'status' => 'berjalan',
         ]);
 
-        // If DP > 0, auto record DP payment in cashflow!
-        if ($this->down_payment > 0) {
-            $unit = Unit::find($this->unit_id);
+        $unit = Unit::with('activeBooking')->find($this->unit_id);
+        $booking = $unit ? $unit->activeBooking : null;
+        $alreadyPaid = $booking ? max((float)$booking->dp_amount, (float)$booking->booking_amount) : 0;
+        $netDpCashflow = max(0, (float)$this->down_payment - $alreadyPaid);
+
+        // Record net DP addition to cashflow to prevent double counting booking fee
+        if ($netDpCashflow > 0) {
             CashflowTransaction::create([
                 'project_id' => $unit->project_id,
                 'type' => 'masuk',
                 'category' => 'pembayaran_cicilan_pembeli',
-                'amount' => $this->down_payment,
+                'amount' => $netDpCashflow,
                 'transaction_date' => $this->start_date,
-                'description' => 'Pembayaran Uang Muka (DP) Unit ' . $unit->code,
+                'description' => 'Pembayaran Uang Muka (DP) Unit ' . $unit->code . ($alreadyPaid > 0 ? ' (Net Tambahan DP, memperhitungkan Booking Fee Rp ' . number_format($alreadyPaid, 0, ',', '.') . ' yang sudah tercatat)' : ''),
                 'reference_type' => UnitInstallment::class,
                 'reference_id' => $installment->id,
                 'created_by' => auth()->id(),
