@@ -327,9 +327,50 @@ class Index extends Component
         $this->showManualModal = false;
     }
 
+    public string $search = '';
+    public string $typeFilter = '';
+    public string $categoryFilter = '';
+
+    public function updatingSearch(): void
+    {
+        $this->resetPage();
+    }
+
+    public function updatingTypeFilter(): void
+    {
+        $this->resetPage();
+    }
+
+    public function updatingCategoryFilter(): void
+    {
+        $this->resetPage();
+    }
+
     public function render()
     {
         $query = CashflowTransaction::with(['project', 'creator']);
+
+        if (trim($this->search) !== '') {
+            $s = '%' . trim($this->search) . '%';
+            $query->where(function ($q) use ($s) {
+                $q->where('description', 'like', $s)
+                    ->orWhere('category', 'like', $s)
+                    ->orWhereHas('project', function ($pq) use ($s) {
+                        $pq->where('name', 'like', $s);
+                    })
+                    ->orWhereHas('creator', function ($cq) use ($s) {
+                        $cq->where('name', 'like', $s);
+                    });
+            });
+        }
+
+        if ($this->typeFilter !== '') {
+            $query->where('type', $this->typeFilter);
+        }
+
+        if ($this->categoryFilter !== '') {
+            $query->where('category', $this->categoryFilter);
+        }
 
         if ($this->view_mode === 'project' && $this->filter_project_id) {
             $query->where('project_id', $this->filter_project_id);
@@ -448,6 +489,12 @@ class Index extends Component
                 $auditTrailInfo = $this->resolveAuditTrail($selectedTransaction);
             }
         }
+
+        $this->dispatch('cashflow-chart-updated', [
+            'labels' => $chartLabels,
+            'masuk' => $chartMasuk,
+            'keluar' => $chartKeluar,
+        ]);
 
         return view('livewire.cashflow.index', [
             'transactions' => $transactions,

@@ -346,11 +346,42 @@ class Index extends Component
         }
     }
 
+    public string $search = '';
+    public string $statusFilter = '';
+
+    public function updatingSearch(): void
+    {
+        $this->resetPage();
+    }
+
+    public function updatingStatusFilter(): void
+    {
+        $this->resetPage();
+    }
+
     public function render()
     {
-        $installments = UnitInstallment::with(['unit.project', 'officialDocument', 'payments'])
-            ->latest()
-            ->paginate(10);
+        $query = UnitInstallment::with(['unit.project', 'officialDocument', 'payments']);
+
+        if (trim($this->search) !== '') {
+            $s = '%' . trim($this->search) . '%';
+            $query->where(function ($q) use ($s) {
+                $q->whereHas('unit', function ($uq) use ($s) {
+                    $uq->where('code', 'like', $s)
+                        ->orWhereHas('project', function ($pq) use ($s) {
+                            $pq->where('name', 'like', $s);
+                        });
+                })->orWhereHas('officialDocument', function ($dq) use ($s) {
+                    $dq->where('buyer_name', 'like', $s);
+                });
+            });
+        }
+
+        if ($this->statusFilter !== '') {
+            $query->where('status', $this->statusFilter);
+        }
+
+        $installments = $query->latest()->paginate(10);
 
         $eligibleUnits = Unit::whereIn('status', ['terjual', 'disetujui'])
             ->doesntHave('installment')

@@ -148,44 +148,78 @@
                                     {{ $p->units_count }} Unit
                                 </span>
                             </td>
-                            <td class="p-3.5 text-right whitespace-nowrap">
-                                <div class="flex items-center justify-end gap-1.5 flex-wrap">
-                                    <a href="{{ route('projects.show', $p->id) }}" wire:navigate.hover class="btn-action-detail" title="Lihat Dashboard & Arus Kas Proyek">
-                                        <svg class="w-3.5 h-3.5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-                                        <span>Detail</span>
-                                    </a>
-
-                                    @if(auth()->user()->isFounder())
-                                        <button wire:click="openWorkerModal({{ $p->id }})" class="btn-action-supervisor" title="Tugaskan Pengawas Project">
-                                            <svg class="w-3.5 h-3.5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-                                            <span>Pengawas</span>
-                                        </button>
-                                    @endif
-
-                                    <a href="{{ route('units.index', ['project_id' => $p->id]) }}" wire:navigate.hover class="btn-action-unit" title="Lihat Daftar Unit Proyek">
-                                        <svg class="w-3.5 h-3.5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+                            <td class="p-3.5 text-right w-36 align-middle whitespace-nowrap">
+                                <div x-data="{ open: false }" class="relative inline-flex items-center justify-end gap-1">
+                                    <!-- Primary Action Button (Unit Button Outside) -->
+                                    <a href="{{ route('units.index', ['project_id' => $p->id]) }}" 
+                                       wire:navigate.hover 
+                                       class="h-8 w-20 bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200/80 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1 shrink-0" 
+                                       title="Lihat Daftar Unit Proyek">
+                                        <svg class="w-3.5 h-3.5 text-slate-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
                                         <span>Unit</span>
                                     </a>
 
-                                    @if(auth()->user()->isFounder() || auth()->user()->isSupervisor())
-                                        <button wire:click="editProject({{ $p->id }})" class="btn-action-edit" title="Edit Data Proyek">
-                                            <svg class="w-3.5 h-3.5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-                                            <span>Edit</span>
-                                        </button>
-                                    @endif
+                                    <!-- Dropdown Trigger Button (Kebab Icon) -->
+                                    <button @click="open = !open" 
+                                            @click.outside="open = false" 
+                                            class="h-8 w-8 flex items-center justify-center text-slate-500 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 border border-slate-200/80 rounded-xl transition focus:outline-none shrink-0" 
+                                            title="Menu Opsi Lainnya">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/></svg>
+                                    </button>
 
-                                    @if(auth()->user()->isFounder())
-                                        <button type="button" @click="confirmModalAction({
-                                            title: 'Hapus Proyek Properti',
-                                            message: 'Yakin ingin menghapus proyek {{ $p->name }} beserta seluruh unit dan data terikatnya?',
-                                            confirmText: 'Hapus Proyek',
-                                            btnClass: 'px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5',
-                                            onConfirm: () => $wire.deleteProject({{ $p->id }})
-                                        })" class="btn-action-delete" title="Hapus Proyek">
-                                            <svg class="w-3.5 h-3.5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                                            <span>Hapus</span>
-                                        </button>
-                                    @endif
+                                    <!-- Dropdown Popover Menu -->
+                                    <div x-show="open" 
+                                         x-transition:enter="transition ease-out duration-100" 
+                                         x-transition:enter-start="opacity-0 scale-95" 
+                                         x-transition:enter-end="opacity-100 scale-100" 
+                                         x-transition:leave="transition ease-in duration-75" 
+                                         x-transition:leave-start="opacity-100 scale-100" 
+                                         x-transition:leave-end="opacity-0 scale-95" 
+                                         x-cloak 
+                                         class="absolute right-0 top-full z-30 mt-1.5 w-52 rounded-2xl bg-white shadow-xl ring-1 ring-slate-900/10 p-1 text-xs text-left divide-y divide-slate-100">
+                                        
+                                        <!-- Tombol 1: Detail Dashboard Proyek -->
+                                        <a href="{{ route('projects.show', $p->id) }}" 
+                                           wire:navigate.hover 
+                                           class="w-full text-left h-9.5 px-3 text-slate-700 hover:bg-slate-100 hover:text-slate-900 font-semibold rounded-xl transition flex items-center gap-2.5 group">
+                                            <svg class="w-4 h-4 text-teal-600 group-hover:scale-110 shrink-0 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                                            <span>Detail Dashboard</span>
+                                        </a>
+
+                                        <!-- Tombol 2: Tugaskan Pengawas (Founder Only) -->
+                                        @if(auth()->user()->isFounder())
+                                            <button @click="open = false; $wire.openWorkerModal({{ $p->id }})" 
+                                                    class="w-full text-left h-9.5 px-3 text-purple-700 hover:bg-purple-50 font-semibold rounded-xl transition flex items-center gap-2.5 group">
+                                                <svg class="w-4 h-4 text-purple-600 group-hover:scale-110 shrink-0 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                                                <span>Tugaskan Pengawas</span>
+                                            </button>
+                                        @endif
+
+                                        <!-- Tombol 3: Edit Proyek (Founder / Supervisor) -->
+                                        @if(auth()->user()->isFounder() || auth()->user()->isSupervisor())
+                                            <button @click="open = false; $wire.editProject({{ $p->id }})" 
+                                                    class="w-full text-left h-9.5 px-3 text-amber-700 hover:bg-amber-50 font-semibold rounded-xl transition flex items-center gap-2.5 group">
+                                                <svg class="w-4 h-4 text-amber-600 group-hover:scale-110 shrink-0 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                                                <span>Edit Data Proyek</span>
+                                            </button>
+                                        @endif
+
+                                        <!-- Tombol 4: Hapus Proyek (Founder Only) -->
+                                        @if(auth()->user()->isFounder())
+                                            <button type="button" 
+                                                    @click="open = false; confirmModalAction({
+                                                        title: 'Hapus Proyek Properti',
+                                                        message: 'Yakin ingin menghapus proyek {{ $p->name }} beserta seluruh unit dan data terikatnya?',
+                                                        confirmText: 'Hapus Proyek',
+                                                        btnClass: 'px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5',
+                                                        onConfirm: () => $wire.deleteProject({{ $p->id }})
+                                                    })" 
+                                                    class="w-full text-left h-9.5 px-3 text-rose-600 hover:bg-rose-50 font-semibold rounded-xl transition flex items-center gap-2.5 group">
+                                                <svg class="w-4 h-4 text-rose-600 group-hover:scale-110 shrink-0 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                                <span>Hapus Proyek</span>
+                                            </button>
+                                        @endif
+                                    </div>
                                 </div>
                             </td>
                         </tr>
