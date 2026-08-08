@@ -10,19 +10,29 @@
             <p class="text-slate-500 text-xs mt-0.5">Pantau persentase pelunasan piutang, skema pembayaran berkala, sisa saldo, dan histori setoran konsumen.</p>
         </div>
 
-        @if(auth()->user()->isFounder() || auth()->user()->isFinance())
-            <button wire:click="openSetupModal" class="btn-header-setup">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                <span>Setup Skema Cicilan Baru</span>
+        <div class="flex items-center gap-2 flex-wrap">
+            <button type="button" 
+                    wire:click="openViewerModal('pdf', '{{ route('installments.unpaid-pdf', ['project_id' => $projectIdFilter, 'search' => $search]) }}', 'Pratinjau PDF Laporan Pembeli Belum Bayar Bulan Ini')" 
+                    class="btn-header-pdf text-xs font-bold px-3.5 py-2 flex items-center gap-1.5 shadow-2xs"
+                    title="Pratinjau & Cetak Laporan PDF Pembeli Menunggak Bulan Ini">
+                <svg class="w-4 h-4 text-rose-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+                <span>Cetak PDF Tunggakan</span>
             </button>
-        @endif
+
+            @if(auth()->user()->isFounder() || auth()->user()->isFinance())
+                <button type="button" wire:click="openSetupModal" class="btn-header-setup">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                    <span>Setup Skema Cicilan Baru</span>
+                </button>
+            @endif
+        </div>
     </div>
 
-    <!-- Summary KPI Cards Grid -->
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
+    <!-- Summary KPI Cards Grid (4 Responsive Columns) -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div class="kpi-card-blue">
             <div class="flex items-center justify-between">
-                <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Total Unit Berjalan Cicilan</span>
+                <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Total Unit Berjalan</span>
                 <div class="p-2.5 rounded-xl bg-purple-50 text-purple-600 border border-purple-100 shadow-2xs">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
                 </div>
@@ -31,17 +41,26 @@
             <p class="text-[11px] text-slate-400 mt-1">Skema kredit & cicilan terdaftar</p>
         </div>
 
-        <div class="kpi-card-emerald">
+        <div class="kpi-card-rose bg-rose-50/40 border-rose-200/60">
             <div class="flex items-center justify-between">
-                <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Total Terbayar Pembeli</span>
-                <div class="p-2.5 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100 shadow-2xs">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                <span class="text-[11px] font-bold uppercase tracking-wider text-rose-600">Belum Bayar ({{ $currentMonthName }})</span>
+                <div class="p-2.5 rounded-xl bg-rose-100 text-rose-700 border border-rose-200 shadow-2xs">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
                 </div>
             </div>
-            <p class="text-2xl font-extrabold text-emerald-700 font-mono mt-2">
-                Rp {{ number_format(\App\Models\UnitInstallment::all()->sum('total_paid'), 0, ',', '.') }}
-            </p>
-            <p class="text-[11px] text-slate-400 mt-1">Uang muka DP & setoran bulanan</p>
+            <p class="text-2xl font-extrabold text-rose-700 font-mono mt-2">{{ $unpaidThisMonthCount }} Pembeli</p>
+            <p class="text-[11px] text-rose-600 font-semibold mt-1">Rp {{ number_format($unpaidThisMonthAmount, 0, ',', '.') }} est. tagihan</p>
+        </div>
+
+        <div class="kpi-card-emerald">
+            <div class="flex items-center justify-between">
+                <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Sudah Masuk ({{ $currentMonthName }})</span>
+                <div class="p-2.5 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100 shadow-2xs">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </div>
+            </div>
+            <p class="text-2xl font-extrabold text-emerald-700 font-mono mt-2">Rp {{ number_format($paidThisMonthAmount, 0, ',', '.') }}</p>
+            <p class="text-[11px] text-slate-400 mt-1">{{ $paidThisMonthCount }} pembeli telah bayar</p>
         </div>
 
         <div class="kpi-card-amber">
@@ -54,44 +73,59 @@
             <p class="text-2xl font-extrabold text-amber-700 font-mono mt-2">
                 Rp {{ number_format(\App\Models\UnitInstallment::all()->sum(fn($i) => $i->remaining_balance), 0, ',', '.') }}
             </p>
-            <p class="text-[11px] text-slate-400 mt-1">Sisa tagihan pembeli belum lunas</p>
+            <p class="text-[11px] text-slate-400 mt-1">Sisa tagihan belum lunas</p>
         </div>
     </div>
 
-    <!-- Search & Filter Controls Bar -->
-    <div class="card-clean p-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+    <!-- Search & Dropdown Filter Controls Bar -->
+    <div class="card-clean p-4 space-y-3 sm:space-y-0 flex flex-col sm:flex-row items-center justify-between gap-3">
+        
+        <!-- Live Search Input -->
         <div class="relative w-full sm:w-80">
-            <svg class="w-4 h-4 text-slate-400 absolute left-3.5 top-3 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            <svg class="w-4 h-4 text-slate-400 absolute left-3.5 top-2.5 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
             <input type="text" 
                    wire:model.live.debounce.300ms="search" 
-                   placeholder="Cari kode unit (A-01), pembeli, atau proyek..." 
-                   class="w-full pl-9 pr-3.5 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 font-medium text-slate-800 placeholder-slate-400" />
+                   placeholder="Cari kode unit (A-01), pembeli..." 
+                   class="w-full pl-9 pr-8 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 font-medium text-slate-800 placeholder-slate-400 shadow-2xs" />
+            @if($search)
+                <button type="button" wire:click="$set('search', '')" class="absolute right-2.5 top-2.5 text-slate-400 hover:text-slate-600 font-bold text-xs">✕</button>
+            @endif
         </div>
 
-        <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
-            <label for="statusFilter" class="text-xs text-slate-500 font-medium whitespace-nowrap">Status:</label>
-            <select id="statusFilter" wire:model.live="statusFilter" class="py-2 px-3 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-emerald-500 text-slate-700 font-semibold">
-                <option value="">Semua Status</option>
-                <option value="berjalan">Berjalan</option>
-                <option value="lunas">LUNAS</option>
-                <option value="konversi_cash">LUNAS CASH</option>
-                <option value="menunggak">Menunggak</option>
+        <div class="flex items-center gap-2.5 w-full sm:w-auto justify-end flex-wrap">
+            <!-- Skema & Monthly Status Dropdown Filter -->
+            <select wire:model.live="monthlyFilter" class="py-2 px-3 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-emerald-500 text-slate-700 font-bold shadow-2xs">
+                <option value="all">Semua Skema Pembayaran</option>
+                <option value="unpaid_this_month">Belum Bayar Bulan Ini (Tunggakan {{ $unpaidThisMonthCount > 0 ? "[$unpaidThisMonthCount]" : '' }})</option>
+                <option value="paid_this_month">Sudah Bayar Bulan Ini</option>
+                <option value="lunas">Lunas / Konversi Cash</option>
+            </select>
+
+            <!-- Project Filter Dropdown -->
+            <select wire:model.live="projectIdFilter" class="py-2 px-3 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-emerald-500 text-slate-700 font-bold shadow-2xs">
+                <option value="">Semua Proyek Properti</option>
+                @foreach(($projects ?? \App\Models\Project::orderBy('name')->get()) as $p)
+                    <option value="{{ $p->id }}">{{ $p->name }}</option>
+                @endforeach
             </select>
         </div>
     </div>
 
-    <!-- Table Card -->
+    <!-- Table Card Container with Centered Loading Overlay -->
     <div class="card-clean overflow-hidden">
-        <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs text-slate-600">
+        <div class="overflow-x-auto relative min-h-[260px]">
+            <!-- Reusable System Centered Table Loading Component -->
+            <x-table-loading target="search, projectIdFilter, statusFilter, monthlyFilter, setMonthlyFilter, gotoPage, nextPage, previousPage" text="Memuat & Menyaring Data Skema Cicilan..." subtext="Mohon tunggu sebentar, sistem sedang memproses data piutang." />
+
+            <table class="w-full text-left text-xs text-slate-600" wire:loading.class="opacity-30 pointer-events-none transition-opacity duration-300" wire:target="search, projectIdFilter, statusFilter, monthlyFilter, setMonthlyFilter, gotoPage, nextPage, previousPage">
                 <thead class="bg-slate-50/80 text-slate-500 uppercase text-[10px] font-bold tracking-wider border-b border-slate-100">
                     <tr>
                         <th class="px-5 py-3.5">Unit & Pembeli</th>
                         <th class="px-5 py-3.5">Total Deal</th>
                         <th class="px-5 py-3.5">Progress Pelunasan</th>
-                        <th class="px-5 py-3.5">Total Terbayar</th>
+                        <th class="px-5 py-3.5">Status Bulan Ini</th>
                         <th class="px-5 py-3.5">Sisa Piutang</th>
-                        <th class="px-5 py-3.5">Status</th>
+                        <th class="px-5 py-3.5">Status Skema</th>
                         <th class="px-5 py-3.5 text-right">Aksi & Setoran</th>
                     </tr>
                 </thead>
@@ -99,6 +133,9 @@
                     @forelse($installments as $inst)
                         @php
                             $pctPaid = $inst->total_price > 0 ? min(100, round(($inst->total_paid / $inst->total_price) * 100, 1)) : 0;
+                            $curM = now()->month;
+                            $curY = now()->year;
+                            $paidThisM = $inst->payments->contains(fn($p) => $p->payment_date && $p->payment_date->month == $curM && $p->payment_date->year == $curY);
                         @endphp
                         <tr class="hover:bg-slate-50/60 transition duration-150">
                             <!-- Unit & Buyer Info -->
@@ -109,10 +146,11 @@
                                     </div>
                                     <div>
                                         <p class="font-extrabold text-slate-900 font-mono text-sm">Unit {{ $inst->unit->code }}</p>
-                                        <p class="text-slate-600 text-[11px] font-semibold flex items-center gap-1">
-                                            <span>👤 {{ $inst->officialDocument->buyer_name ?? 'Konsumen Pembeli' }}</span>
+                                        <p class="text-slate-600 text-[11px] font-semibold flex items-center gap-1.5 mt-0.5">
+                                            <svg class="w-3.5 h-3.5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                                            <span>{{ $inst->officialDocument->buyer_name ?? 'Konsumen Pembeli' }}</span>
                                         </p>
-                                        <p class="text-[10px] text-slate-400 font-mono">{{ $inst->unit->project->name ?? '-' }}</p>
+                                        <p class="text-[10px] text-slate-400 font-mono mt-0.5">{{ $inst->unit->project->name ?? '-' }}</p>
                                     </div>
                                 </div>
                             </td>
@@ -138,9 +176,24 @@
                                 </div>
                             </td>
 
-                            <!-- Total Paid -->
-                            <td class="px-5 py-4 font-mono font-bold text-emerald-700 text-xs">
-                                Rp {{ number_format($inst->total_paid, 0, ',', '.') }}
+                            <!-- Status Bulan Ini (Clean SVG Icon & Badge, No Emojis) -->
+                            <td class="px-5 py-4">
+                                @if(in_array($inst->status, ['lunas', 'konversi_cash']))
+                                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-100 text-slate-600 border border-slate-200 text-[10px] font-bold">
+                                        <svg class="w-3 h-3 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                        <span>Lunas Total</span>
+                                    </span>
+                                @elseif($paidThisM)
+                                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-bold shadow-2xs">
+                                        <svg class="w-3 h-3 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                        <span>Sudah Bayar Bulan Ini</span>
+                                    </span>
+                                @else
+                                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-rose-50 text-rose-700 border border-rose-200 text-[10px] font-bold shadow-2xs">
+                                        <svg class="w-3 h-3 text-rose-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                                        <span>Belum Bayar Bulan Ini</span>
+                                    </span>
+                                @endif
                             </td>
 
                             <!-- Remaining Balance -->
@@ -148,7 +201,7 @@
                                 Rp {{ number_format($inst->remaining_balance, 0, ',', '.') }}
                             </td>
 
-                            <!-- Status Badge -->
+                            <!-- Status Skema Badge -->
                             <td class="px-5 py-4">
                                 @if($inst->status === 'lunas')
                                     <span class="status-disetujui">LUNAS</span>
@@ -275,5 +328,30 @@
 
     <!-- Modal Detail Rincian Skema Cicilan & Riwayat Setoran -->
     @include('livewire.installments.partials.modal-installment-detail')
+
+    <!-- Modal Viewer PDF Laporan -->
+    @if($showViewerModal)
+        <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+            <div class="bg-white border border-slate-200 rounded-3xl max-w-5xl w-full p-6 shadow-2xl space-y-4 max-h-[92vh] flex flex-col">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                    <h3 class="font-extrabold text-slate-900 text-base flex items-center gap-2">
+                        <svg class="w-5 h-5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                        {{ $viewerTitle }}
+                    </h3>
+                    <button type="button" wire:click="closeViewerModal" class="p-1.5 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition">✕</button>
+                </div>
+                <div class="flex-1 overflow-hidden min-h-[500px]">
+                    <iframe src="{{ $viewerUrl }}" class="w-full h-full rounded-2xl border border-slate-200 min-h-[500px]"></iframe>
+                </div>
+                <div class="flex items-center justify-between border-t border-slate-100 pt-3 text-xs">
+                    <a href="{{ $viewerUrl }}" target="_blank" class="btn-secondary text-xs px-4 py-2 flex items-center gap-1.5">
+                        <svg class="w-4 h-4 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                        <span>Buka di Tab Baru / Cetak Direct</span>
+                    </a>
+                    <button type="button" wire:click="closeViewerModal" class="btn-primary bg-slate-800 hover:bg-slate-900 text-xs px-5 py-2">Tutup Pratinjau</button>
+                </div>
+            </div>
+        </div>
+    @endif
 
 </div>

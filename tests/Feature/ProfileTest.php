@@ -23,7 +23,7 @@ test('founder can access profile page and update NIK, position, and address', fu
 
     Livewire::actingAs($founder)
         ->test(\App\Livewire\Profile\Index::class)
-        ->assertSee('Profil Akun')
+        ->assertSee('Profil Founder')
         ->set('nik', '3271999900001111')
         ->set('position', 'Direktur Utama PT. Atlantik')
         ->set('address', 'Jl. Merdeka No. 99 Bandung')

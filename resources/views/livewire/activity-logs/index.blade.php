@@ -39,14 +39,6 @@
         </div>
     </div>
 
-    <!-- Alert Success -->
-    @if(session()->has('success'))
-        <div class="p-4 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-2xl text-xs font-semibold flex items-center gap-2">
-            <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-            <span>{{ session('success') }}</span>
-        </div>
-    @endif
-
     <!-- Control & Filter Bar -->
     <div class="card-clean p-4 space-y-4">
         <div class="flex flex-col md:flex-row items-center justify-between gap-4">

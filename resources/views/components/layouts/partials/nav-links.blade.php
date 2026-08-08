@@ -241,7 +241,7 @@
                     <div class="p-1.5 rounded-lg transition-colors {{ request()->routeIs('profile.*') ? 'bg-emerald-500/20 text-emerald-400' : 'bg-slate-800/60 text-slate-400 group-hover:text-slate-200 group-hover:bg-slate-700/60' }}">
                         <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                     </div>
-                    <span class="truncate">Profil & Legalitas</span>
+                    <span class="truncate">Profil</span>
                 </div>
                 @if(request()->routeIs('profile.*'))
                     <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-sm"></span>

@@ -14,20 +14,6 @@
     </button>
 </div>
 
-@if (session()->has('success'))
-    <div class="p-4 bg-emerald-50 border border-emerald-200/80 rounded-2xl text-emerald-800 text-xs font-semibold flex items-center gap-2">
-        <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-        <span>{{ session('success') }}</span>
-    </div>
-@endif
-
-@if (session()->has('error'))
-    <div class="p-4 bg-rose-50 border border-rose-200/80 rounded-2xl text-rose-800 text-xs font-semibold flex items-center gap-2">
-        <svg class="w-4 h-4 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-        <span>{{ session('error') }}</span>
-    </div>
-@endif
-
 <!-- Highlight Information Banner -->
 <div class="card-clean bg-amber-50/70 border border-amber-200/90 p-4 text-amber-900 text-xs flex items-start gap-3 shadow-2xs">
     <div class="p-2 bg-amber-100/80 rounded-xl text-amber-700 shrink-0">

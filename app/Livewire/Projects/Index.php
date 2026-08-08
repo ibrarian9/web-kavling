@@ -82,7 +82,9 @@ class Index extends Component
             ]
         );
 
-        session()->flash('success', 'Data proyek berhasil disimpan!');
+        $msg = 'Data proyek berhasil disimpan!';
+        session()->flash('success', $msg);
+        $this->dispatch('notify', ['type' => 'success', 'title' => 'Berhasil!', 'message' => $msg]);
         $this->closeModal();
     }
 
@@ -119,7 +121,9 @@ class Index extends Component
         $project->delete();
 
         \App\Services\ActivityLogger::log('PROJECT_DELETE', "Founder menghapus proyek {$projectName} beserta seluruh data terikatnya.");
-        session()->flash('success', "Proyek {$projectName} berhasil dihapus dari sistem!");
+        $msg = "Proyek {$projectName} berhasil dihapus dari sistem!";
+        session()->flash('success', $msg);
+        $this->dispatch('notify', ['type' => 'success', 'title' => 'Berhasil!', 'message' => $msg]);
     }
 
     // Direct Pengawas Project Assignment (Founder Only)

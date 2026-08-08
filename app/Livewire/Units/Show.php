@@ -261,7 +261,9 @@ class Show extends Component
     public function openEditUnitModal(): void
     {
         if (!$this->canManageFinancial()) {
-            session()->flash('error', 'Akses ditolak. Hanya Founder dan Finance yang dapat mengedit spesifikasi unit.');
+            $err = 'Akses ditolak. Hanya Founder dan Finance yang dapat mengedit spesifikasi unit.';
+            session()->flash('error', $err);
+            $this->dispatch('notify', ['type' => 'error', 'title' => 'Akses Ditolak', 'message' => $err]);
             return;
         }
         $unit = Unit::findOrFail($this->unitId);
@@ -1024,6 +1026,7 @@ class Show extends Component
             }
 
             $inst->update(['status' => 'konversi_cash']);
+            $unit->update(['status' => 'lunas']);
 
             \App\Services\ActivityLogger::log('CANCEL_INSTALLMENT_TO_CASH', "Founder/Accounting membatalkan skema cicilan Unit {$unit->code} dan menggantinya ke Pelunasan Cash Lunas sebesar Rp " . number_format($this->cash_payment_amount, 0, ',', '.'));
         });

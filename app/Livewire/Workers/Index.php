@@ -73,10 +73,14 @@ class Index extends Component
         if ($this->editingId) {
             $worker = Worker::findOrFail($this->editingId);
             $worker->update($validated);
-            session()->flash('success', 'Data pekerja berhasil diperbarui.');
+            $msg = 'Data pekerja berhasil diperbarui.';
+            session()->flash('success', $msg);
+            $this->dispatch('notify', ['type' => 'success', 'title' => 'Berhasil!', 'message' => $msg]);
         } else {
             Worker::create($validated);
-            session()->flash('success', 'Pekerja baru berhasil didaftarkan.');
+            $msg = 'Pekerja baru berhasil didaftarkan.';
+            session()->flash('success', $msg);
+            $this->dispatch('notify', ['type' => 'success', 'title' => 'Berhasil!', 'message' => $msg]);
         }
 
         $this->showModal = false;
@@ -94,7 +98,9 @@ class Index extends Component
     {
         $newStatus = $worker->status === 'active' ? 'inactive' : 'active';
         $worker->update(['status' => $newStatus]);
-        session()->flash('success', "Status {$worker->name} diubah menjadi {$newStatus}.");
+        $msg = "Status {$worker->name} diubah menjadi {$newStatus}.";
+        session()->flash('success', $msg);
+        $this->dispatch('notify', ['type' => 'success', 'title' => 'Berhasil!', 'message' => $msg]);
     }
 
     public function openAssignModal(Worker $worker): void
@@ -124,7 +130,9 @@ class Index extends Component
             'status' => 'active',
         ]);
 
-        session()->flash('success', 'Penugasan pekerja berhasil disimpan.');
+        $msg = 'Penugasan pekerja berhasil disimpan.';
+        session()->flash('success', $msg);
+        $this->dispatch('notify', ['type' => 'success', 'title' => 'Berhasil!', 'message' => $msg]);
         $this->showAssignModal = false;
     }
 

@@ -223,6 +223,7 @@ class Index extends Component
         $this->pay_bank_name = $sal->bank_name ?? 'BCA';
         $this->pay_account_number = $sal->bank_account_number ?? '';
         $this->payment_notes = 'Gaji bulan ' . $this->getIndonesianMonth($this->payroll_month) . ' ' . $this->payroll_year;
+        $this->payment_date = date('Y-m-d');
         $this->receipt_photo = null;
 
         $this->showPaymentModal = true;

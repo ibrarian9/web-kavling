@@ -24,8 +24,31 @@
             </button>
         </div>
 
-        <!-- Nav Menu -->
-        <nav class="p-3.5 text-sm overflow-y-auto max-h-[calc(100vh-210px)] custom-scrollbar">
+        <!-- Nav Menu with Scroll Preservation & Active Item Auto-Scroll -->
+        <nav x-data="{
+                 restoreScroll() {
+                     const nav = this.$el;
+                     const saved = sessionStorage.getItem('sidebar_scroll_desktop');
+                     if (saved !== null) {
+                         nav.scrollTop = parseInt(saved, 10);
+                     }
+                     const active = nav.querySelector('.border-l-4');
+                     if (active) {
+                         const navTop = nav.scrollTop;
+                         const navBottom = navTop + nav.clientHeight;
+                         const linkTop = active.offsetTop - nav.offsetTop;
+                         const linkBottom = linkTop + active.offsetHeight;
+                         if (linkTop < navTop || linkBottom > navBottom) {
+                             active.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+                         }
+                     }
+                     nav.addEventListener('scroll', () => {
+                         sessionStorage.setItem('sidebar_scroll_desktop', nav.scrollTop);
+                     }, { passive: true });
+                 }
+             }"
+             x-init="restoreScroll(); document.addEventListener('livewire:navigated', () => setTimeout(() => restoreScroll(), 50));"
+             class="p-3.5 text-sm overflow-y-auto max-h-[calc(100vh-210px)] custom-scrollbar">
             @include('components.layouts.partials.nav-links')
         </nav>
     </div>

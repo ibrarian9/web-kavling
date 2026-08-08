@@ -194,28 +194,34 @@ class Index extends Component
 
             ActivityLogger::log('BOOKING_UPDATED', "Data booking atas nama {$booking->buyer_name} (ID #{$booking->id}) telah diperbarui oleh Founder.");
 
-            session()->flash('success', 'Data booking atas nama ' . $booking->buyer_name . ' berhasil diperbarui oleh Founder.');
+            $msg = 'Data booking atas nama ' . $booking->buyer_name . ' berhasil diperbarui oleh Founder.';
+            session()->flash('success', $msg);
+            $this->dispatch('notify', ['type' => 'success', 'title' => 'Berhasil!', 'message' => $msg]);
             $this->showModal = false;
             $this->editingBookingId = null;
             return;
         }
 
         if (!$user->isMarketing() && !$user->isFinance() && !$user->isFounder()) {
-            session()->flash('error', 'Hanya Marketing, Finance, dan Founder yang berhak mencatat booking baru.');
+            $err = 'Hanya Marketing, Finance, dan Founder yang berhak mencatat booking baru.';
+            session()->flash('error', $err);
+            $this->dispatch('notify', ['type' => 'error', 'title' => 'Gagal!', 'message' => $err]);
             return;
         }
 
         $validated = $this->validate();
-        $validated['dp_amount'] = (float)($this->dp_amount ?: 0);
-        $validated['status'] = 'active';
-        $validated['created_by'] = Auth::id();
+        $bookingData = array_merge($validated, [
+            'unit_id' => $this->unit_id ? (int)$this->unit_id : null,
+            'dp_amount' => (float)($this->dp_amount ?: 0),
+            'status' => 'active',
+            'created_by' => Auth::id(),
+        ]);
 
         if ($this->receipt_photo) {
-            $validated['receipt_photo_path'] = $this->receipt_photo->store('receipts/bookings', 'public');
+            $bookingData['receipt_photo_path'] = $this->receipt_photo->store('receipts/bookings', 'public');
         }
-        unset($validated['receipt_photo']);
 
-        $booking = Booking::create($validated);
+        $booking = Booking::create($bookingData);
 
         if ($this->booking_amount > 0) {
             CashflowTransaction::create([
@@ -238,7 +244,9 @@ class Index extends Component
             }
         }
 
-        session()->flash('success', 'Tanda Jadi / Booking Fee berhasil dicatat dan arus kas diperbarui.');
+        $msg = 'Tanda Jadi / Booking Fee berhasil dicatat dan arus kas diperbarui.';
+        session()->flash('success', $msg);
+        $this->dispatch('notify', ['type' => 'success', 'title' => 'Berhasil!', 'message' => $msg]);
         $this->showModal = false;
     }
 
@@ -316,7 +324,9 @@ class Index extends Component
     {
         $user = Auth::user();
         if (!$user->isFinance() && !$user->isFounder()) {
-            session()->flash('error', 'Hanya Finance dan Founder yang berhak menolak Tanda Jadi booking.');
+            $err = 'Hanya Finance dan Founder yang berhak menolak Tanda Jadi booking.';
+            session()->flash('error', $err);
+            $this->dispatch('notify', ['type' => 'error', 'title' => 'Akses Ditolak', 'message' => $err]);
             return;
         }
 
@@ -329,20 +339,25 @@ class Index extends Component
         ]);
 
         // 2. Revert unit status back to tersedia
-        if ($booking->unit) {
-            $booking->unit->update(['status' => 'tersedia']);
+        $targetUnitId = $booking->unit_id ?: ($booking->unit->id ?? null);
+        if ($targetUnitId) {
+            Unit::where('id', $targetUnitId)->update(['status' => 'tersedia']);
         }
 
         \App\Services\ActivityLogger::log('BOOKING_REJECTED', "Booking atas nama {$booking->buyer_name} ditolak oleh {$user->name} ({$user->role}). Status unit dikembalikan menjadi tersedia.");
 
-        session()->flash('success', 'Booking atas nama ' . $booking->buyer_name . ' berhasil ditolak dan status unit dikembalikan menjadi tersedia.');
+        $msg = 'Booking atas nama ' . $booking->buyer_name . ' berhasil ditolak dan status unit dikembalikan menjadi tersedia.';
+        session()->flash('success', $msg);
+        $this->dispatch('notify', ['type' => 'success', 'title' => 'Berhasil!', 'message' => $msg]);
     }
 
     public function cancelApprovedDp(int $bookingId): void
     {
         $user = Auth::user();
         if (!$user->isFinance() && !$user->isFounder()) {
-            session()->flash('error', 'Hanya Finance dan Founder yang berhak membatalkan atau merefund DP yang telah disetujui.');
+            $err = 'Hanya Finance dan Founder yang berhak membatalkan atau merefund DP yang telah disetujui.';
+            session()->flash('error', $err);
+            $this->dispatch('notify', ['type' => 'error', 'title' => 'Akses Ditolak', 'message' => $err]);
             return;
         }
 
@@ -370,19 +385,23 @@ class Index extends Component
             ]);
         }
 
+        $targetUnitId = $booking->unit_id ?: ($booking->unit->id ?? null);
+
         // 2. Update booking and unit statuses
         $booking->update([
             'status' => 'refunded',
             'notes' => ($booking->notes ? $booking->notes . ' | ' : '') . 'DP dibatalkan/direfund oleh ' . $user->name . ' pada ' . now()->format('d/m/Y H:i'),
         ]);
 
-        if ($booking->unit) {
-            $booking->unit->update(['status' => 'tersedia']);
+        if ($targetUnitId) {
+            Unit::where('id', $targetUnitId)->update(['status' => 'tersedia']);
         }
 
         \App\Services\ActivityLogger::log('BOOKING_REFUNDED', "DP Booking atas nama {$booking->buyer_name} dibatalkan/direfund oleh {$user->name} ({$user->role}). Pengeluaran kas refund dicatat dan unit kembali tersedia.");
 
-        session()->flash('success', 'DP Booking atas nama ' . $booking->buyer_name . ' berhasil dibatalkan/direfund. Pengeluaran kas telah dicatat dan unit kembali tersedia.');
+        $msg = 'DP Booking atas nama ' . $booking->buyer_name . ' berhasil dibatalkan/direfund. Pengeluaran kas telah dicatat dan unit kembali tersedia.';
+        session()->flash('success', $msg);
+        $this->dispatch('notify', ['type' => 'success', 'title' => 'Berhasil!', 'message' => $msg]);
     }
 
     public function render()

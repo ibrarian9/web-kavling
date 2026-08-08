@@ -60,3 +60,17 @@ window.confirmModalAction = function(options = {}) {
         }
     }
 };
+
+/**
+ * Global Toast Notification Floating Card Bridge
+ */
+window.triggerToast = function(type = 'success', message = '', title = '') {
+    if (typeof window.showToast === 'function') {
+        window.showToast({ type, message, title });
+    } else {
+        window.dispatchEvent(new CustomEvent('notify', {
+            detail: { type, message, title }
+        }));
+    }
+};
+

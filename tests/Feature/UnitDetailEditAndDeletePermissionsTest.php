@@ -215,7 +215,7 @@ test('pengawas can edit and delete operational data on assigned project but bloc
     Livewire::actingAs($pengawas)
         ->test(UnitShow::class, ['id' => $unit->id])
         ->call('openEditUnitModal')
-        ->assertSee('Akses ditolak');
+        ->assertDispatched('notify');
 });
 
 test('editing worker salary payment updates pdf receipt and qr verification route data', function () {

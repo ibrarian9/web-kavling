@@ -61,7 +61,9 @@ class Index extends Component
 
         ActivityLogger::log('PROFILE_UPDATED', "Profil akun {$user->name} ({$user->role}) diperbarui (NIK: {$this->nik}).");
 
-        session()->flash('success', 'Profil dan data legalitas Founder berhasil diperbarui!');
+        $msg = 'Profil Founder berhasil diperbarui!';
+        session()->flash('success', $msg);
+        $this->dispatch('notify', ['type' => 'success', 'title' => 'Berhasil!', 'message' => $msg]);
     }
 
     public function updatePassword(): void
@@ -87,7 +89,9 @@ class Index extends Component
         $this->new_password = '';
         $this->new_password_confirmation = '';
 
-        session()->flash('password_success', 'Password berhasil diubah!');
+        $passMsg = 'Password berhasil diubah!';
+        session()->flash('password_success', $passMsg);
+        $this->dispatch('notify', ['type' => 'success', 'title' => 'Berhasil!', 'message' => $passMsg]);
     }
 
     public function render()

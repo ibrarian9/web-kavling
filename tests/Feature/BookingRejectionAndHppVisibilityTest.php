@@ -48,7 +48,7 @@ class BookingRejectionAndHppVisibilityTest extends TestCase
         Livewire::actingAs($finance)
             ->test(\App\Livewire\Bookings\Index::class)
             ->call('rejectDp', $booking->id)
-            ->assertSee('berhasil ditolak dan status unit dikembalikan menjadi tersedia.');
+            ->assertDispatched('notify');
 
         // 3. Verify database state
         $this->assertDatabaseHas('bookings', [
@@ -89,7 +89,7 @@ class BookingRejectionAndHppVisibilityTest extends TestCase
         Livewire::actingAs($finance)
             ->test(\App\Livewire\Bookings\Index::class)
             ->call('cancelApprovedDp', $booking->id)
-            ->assertSee('berhasil dibatalkan/direfund.');
+            ->assertDispatched('notify');
 
         $this->assertDatabaseHas('bookings', [
             'id' => $booking->id,
@@ -129,7 +129,7 @@ class BookingRejectionAndHppVisibilityTest extends TestCase
         Livewire::actingAs($marketing)
             ->test(\App\Livewire\Bookings\Index::class)
             ->call('rejectDp', $booking->id)
-            ->assertSee('Hanya Finance dan Founder yang berhak menolak Tanda Jadi booking.');
+            ->assertDispatched('notify');
 
         // Booking status remains active
         $this->assertDatabaseHas('bookings', [

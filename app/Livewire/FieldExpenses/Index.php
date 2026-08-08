@@ -270,7 +270,9 @@ class Index extends Component
                     ]);
             });
 
-            session()->flash('success', 'Data belanja material berhasil diperbarui!');
+            $msg = 'Data belanja material berhasil diperbarui!';
+            session()->flash('success', $msg);
+            $this->dispatch('notify', ['type' => 'success', 'title' => 'Berhasil!', 'message' => $msg]);
         } elseif ($this->editingType === 'salary') {
             $this->validate([
                 'edit_payment_date' => 'required|date',
@@ -310,7 +312,9 @@ class Index extends Component
                     ]);
             });
 
-            session()->flash('success', 'Data pembayaran gaji worker berhasil diperbarui!');
+            $msg = 'Data pembayaran gaji worker berhasil diperbarui!';
+            session()->flash('success', $msg);
+            $this->dispatch('notify', ['type' => 'success', 'title' => 'Berhasil!', 'message' => $msg]);
         }
 
         $this->closeEditModal();
@@ -320,7 +324,9 @@ class Index extends Component
     {
         $user = auth()->user();
         if (!$user || (!$user->isFounder() && !$user->isFinance() && !$user->isSupervisor() && !$user->isPengawasProject())) {
-            session()->flash('error', 'Akses ditolak.');
+            $err = 'Akses ditolak.';
+            session()->flash('error', $err);
+            $this->dispatch('notify', ['type' => 'error', 'title' => 'Gagal!', 'message' => $err]);
             return;
         }
 
@@ -333,7 +339,9 @@ class Index extends Component
                         ->delete();
                     $mat->delete();
                 });
-                session()->flash('success', 'Data belanja material berhasil dihapus!');
+                $msg = 'Data belanja material berhasil dihapus!';
+                session()->flash('success', $msg);
+                $this->dispatch('notify', ['type' => 'success', 'title' => 'Berhasil!', 'message' => $msg]);
             }
         } elseif ($type === 'salary') {
             $sp = WorkerSalaryPayment::with('payroll')->find($id);
@@ -356,7 +364,9 @@ class Index extends Component
                         ]);
                     }
                 });
-                session()->flash('success', 'Data pembayaran gaji worker berhasil dihapus!');
+                $msg = 'Data pembayaran gaji worker berhasil dihapus!';
+                session()->flash('success', $msg);
+                $this->dispatch('notify', ['type' => 'success', 'title' => 'Berhasil!', 'message' => $msg]);
             }
         }
     }

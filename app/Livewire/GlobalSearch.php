@@ -55,7 +55,7 @@ class GlobalSearch extends Component
             ['title' => 'Mandor & Tukang Lapangan', 'category' => 'Menu', 'url' => route('workers.index'), 'icon' => 'user-group'],
             ['title' => 'Laporan Belanja & Upah', 'category' => 'Menu', 'url' => route('field-expenses.index'), 'icon' => 'shopping-cart'],
             ['title' => 'Penggajian Karyawan & Slip Gaji', 'category' => 'Menu', 'url' => route('employee-salaries.index'), 'icon' => 'banknotes'],
-            ['title' => 'Profil Akun & Legalitas Perusahaan', 'category' => 'Menu', 'url' => route('profile.index'), 'icon' => 'user'],
+            ['title' => 'Profil', 'category' => 'Menu', 'url' => route('profile.index'), 'icon' => 'user'],
             ['title' => 'Tutorial & Panduan Sistem', 'category' => 'Menu', 'url' => route('tutorial.index'), 'icon' => 'academic-cap'],
         ];
 

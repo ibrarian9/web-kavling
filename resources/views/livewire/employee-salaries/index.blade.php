@@ -22,14 +22,6 @@
         </button>
     </div>
 
-    <!-- Alert Success Flash Messages -->
-    @if(session()->has('success'))
-        <div class="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl text-emerald-900 text-xs font-bold flex items-center gap-2 shadow-xs">
-            <svg class="w-5 h-5 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-            <span>{{ session('success') }}</span>
-        </div>
-    @endif
-
     <!-- KPI Metrics Grid -->
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div class="card-clean p-5 space-y-1 bg-white border border-slate-200/80">

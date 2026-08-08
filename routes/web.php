@@ -86,6 +86,8 @@ Route::middleware(['auth', \App\Http\Middleware\EnsureUserIsActive::class])->gro
 
     // Keuangan & Pembayaran
     Route::get('/installments', InstallmentsIndex::class)->name('installments.index');
+    Route::get('/installments/unpaid-pdf', [\App\Http\Controllers\UnpaidInstallmentReportController::class, 'exportPdf'])->name('installments.unpaid-pdf');
+    Route::get('/verify-unpaid-installments', [\App\Http\Controllers\UnpaidInstallmentReportController::class, 'verify'])->name('verify.unpaid-installments');
     Route::get('/cashflow', CashflowIndex::class)->name('cashflow.index');
     Route::get('/cashflow/export-pdf', [\App\Http\Controllers\CashflowReportController::class, 'exportPdf'])->name('cashflow.export-pdf');
     Route::get('/cashflow/export-excel', [\App\Http\Controllers\CashflowReportController::class, 'exportExcel'])->name('cashflow.export-excel');

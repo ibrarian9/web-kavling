@@ -17,6 +17,28 @@ class Index extends Component
     public $showSetupModal = false;
     public $showPaymentModal = false;
 
+    // Viewer Modal (PDF Viewer)
+    public bool $showViewerModal = false;
+    public string $viewerType = 'pdf';
+    public string $viewerUrl = '';
+    public string $viewerTitle = '';
+
+    public function openViewerModal(string $type, string $url, string $title = ''): void
+    {
+        $this->viewerType = $type;
+        $this->viewerUrl = $url;
+        $this->viewerTitle = $title ?: 'Pratinjau PDF Laporan';
+        $this->showViewerModal = true;
+    }
+
+    public function closeViewerModal(): void
+    {
+        $this->showViewerModal = false;
+        $this->viewerType = '';
+        $this->viewerUrl = '';
+        $this->viewerTitle = '';
+    }
+
     // Setup Skema Cicilan
     public $unit_id = '';
     public $official_document_id = null;
@@ -168,9 +190,13 @@ class Index extends Component
         // Check if fully paid
         if ($inst->remaining_balance <= 0) {
             $inst->update(['status' => 'lunas']);
-            session()->flash('success', 'Pembayaran diterima! Status cicilan Unit ' . $inst->unit->code . ' telah LUNAS!');
+            $msg = 'Pembayaran diterima! Status cicilan Unit ' . $inst->unit->code . ' telah LUNAS!';
+            session()->flash('success', $msg);
+            $this->dispatch('notify', ['type' => 'success', 'title' => 'Lunas!', 'message' => $msg]);
         } else {
-            session()->flash('success', 'Pembayaran cicilan Rp ' . number_format($this->payment_amount, 0, ',', '.') . ' berhasil dicatat di Arus Kas!');
+            $msg = 'Pembayaran cicilan Rp ' . number_format($this->payment_amount, 0, ',', '.') . ' berhasil dicatat di Arus Kas!';
+            session()->flash('success', $msg);
+            $this->dispatch('notify', ['type' => 'success', 'title' => 'Berhasil!', 'message' => $msg]);
         }
 
         $this->showPaymentModal = false;
@@ -189,7 +215,9 @@ class Index extends Component
     {
         $user = auth()->user();
         if (!$user->isFounder() && !$user->isFinance()) {
-            session()->flash('error', 'Hanya Founder dan Tim Accounting/Finance yang berhak membatalkan cicilan dan menggantinya ke Cash.');
+            $err = 'Hanya Founder dan Tim Accounting/Finance yang berhak membatalkan cicilan dan menggantinya ke Cash.';
+            session()->flash('error', $err);
+            $this->dispatch('notify', ['type' => 'error', 'title' => 'Gagal!', 'message' => $err]);
             return;
         }
 
@@ -206,7 +234,9 @@ class Index extends Component
     {
         $user = auth()->user();
         if (!$user->isFounder() && !$user->isFinance()) {
-            session()->flash('error', 'Hanya Founder dan Tim Accounting/Finance yang berhak membatalkan cicilan dan menggantinya ke Cash.');
+            $err = 'Hanya Founder dan Tim Accounting/Finance yang berhak membatalkan cicilan dan menggantinya ke Cash.';
+            session()->flash('error', $err);
+            $this->dispatch('notify', ['type' => 'error', 'title' => 'Gagal!', 'message' => $err]);
             return;
         }
 
@@ -247,7 +277,9 @@ class Index extends Component
             \App\Services\ActivityLogger::log('CANCEL_INSTALLMENT_TO_CASH', "Founder/Accounting membatalkan skema cicilan Unit {$inst->unit->code} dan menggantinya ke Pelunasan Cash Lunas sebesar Rp " . number_format($this->cash_payment_amount, 0, ',', '.'));
         });
 
-        session()->flash('success', 'Skema cicilan Unit ' . $inst->unit->code . ' berhasil dibatalkan dan dialihkan ke Pelunasan Cash Lunas!');
+        $msg = 'Skema cicilan Unit ' . $inst->unit->code . ' berhasil dibatalkan dan dialihkan ke Pelunasan Cash Lunas!';
+        session()->flash('success', $msg);
+        $this->dispatch('notify', ['type' => 'success', 'title' => 'Berhasil!', 'message' => $msg]);
         $this->showConvertToCashModal = false;
     }
 
@@ -348,6 +380,19 @@ class Index extends Component
 
     public string $search = '';
     public string $statusFilter = '';
+    public string $projectIdFilter = '';
+    public string $monthlyFilter = 'all'; // 'all', 'unpaid_this_month', 'paid_this_month', 'lunas'
+
+    public function setMonthlyFilter(string $filter): void
+    {
+        $this->monthlyFilter = $filter;
+        $this->resetPage();
+    }
+
+    public function updatingMonthlyFilter(): void
+    {
+        $this->resetPage();
+    }
 
     public function updatingSearch(): void
     {
@@ -355,6 +400,11 @@ class Index extends Component
     }
 
     public function updatingStatusFilter(): void
+    {
+        $this->resetPage();
+    }
+
+    public function updatingProjectIdFilter(): void
     {
         $this->resetPage();
     }
@@ -381,18 +431,78 @@ class Index extends Component
             $query->where('status', $this->statusFilter);
         }
 
+        if ($this->projectIdFilter !== '') {
+            $query->whereHas('unit', function ($uq) {
+                $uq->where('project_id', $this->projectIdFilter);
+            });
+        }
+
+        // Apply Monthly Filter
+        $currentMonth = now()->month;
+        $currentYear = now()->year;
+
+        if ($this->monthlyFilter === 'unpaid_this_month') {
+            $query->where('status', 'berjalan')
+                ->whereDoesntHave('payments', function ($pq) use ($currentMonth, $currentYear) {
+                    $pq->whereMonth('payment_date', $currentMonth)
+                       ->whereYear('payment_date', $currentYear);
+                });
+        } elseif ($this->monthlyFilter === 'paid_this_month') {
+            $query->whereHas('payments', function ($pq) use ($currentMonth, $currentYear) {
+                $pq->whereMonth('payment_date', $currentMonth)
+                   ->whereYear('payment_date', $currentYear);
+            });
+        } elseif ($this->monthlyFilter === 'lunas') {
+            $query->whereIn('status', ['lunas', 'konversi_cash']);
+        }
+
         $installments = $query->latest()->paginate(10);
+
+        $projects = \App\Models\Project::orderBy('name')->get();
 
         $eligibleUnits = Unit::whereIn('status', ['terjual', 'disetujui'])
             ->doesntHave('installment')
             ->get();
 
+        // Calculate Monthly Metrics for Cards
+        $activeInstallments = UnitInstallment::with(['payments'])->where('status', 'berjalan')->get();
+        $unpaidThisMonthCount = 0;
+        $unpaidThisMonthAmount = 0;
+        $paidThisMonthCount = 0;
+        $paidThisMonthAmount = 0;
+
+        foreach ($activeInstallments as $inst) {
+            $hasPaid = $inst->payments->contains(function ($p) use ($currentMonth, $currentYear) {
+                return $p->payment_date && $p->payment_date->month == $currentMonth && $p->payment_date->year == $currentYear;
+            });
+
+            if ($hasPaid) {
+                $paidThisMonthCount++;
+                $paidThisMonthAmount += $inst->payments->filter(function ($p) use ($currentMonth, $currentYear) {
+                    return $p->payment_date && $p->payment_date->month == $currentMonth && $p->payment_date->year == $currentYear;
+                })->sum('amount_paid');
+            } else {
+                $unpaidThisMonthCount++;
+                $unpaidThisMonthAmount += (float)$inst->installment_amount;
+            }
+        }
+
         return view('livewire.installments.index', [
             'installments' => $installments,
+            'projects' => $projects,
             'eligibleUnits' => $eligibleUnits,
             'showConvertToCashModal' => $this->showConvertToCashModal,
             'showDetailModal' => $this->showDetailModal,
             'selectedDetailInstallment' => $this->selectedDetailInstallment,
+            'unpaidThisMonthCount' => $unpaidThisMonthCount,
+            'unpaidThisMonthAmount' => $unpaidThisMonthAmount,
+            'paidThisMonthCount' => $paidThisMonthCount,
+            'paidThisMonthAmount' => $paidThisMonthAmount,
+            'currentMonthName' => now()->locale('id')->isoFormat('MMMM YYYY'),
+            'showViewerModal' => $this->showViewerModal,
+            'viewerType' => $this->viewerType,
+            'viewerUrl' => $this->viewerUrl,
+            'viewerTitle' => $this->viewerTitle,
         ])->layout('components.layouts.app', ['title' => 'Cicilan & Piutang Pembeli']);
     }
 }

@@ -136,11 +136,21 @@
         <!-- Alpine Component with Dynamic Event-driven ApexCharts rendering -->
         <div x-data="{
                  chart: null,
-                 renderChart(labels, masuk, keluar) {
+                 init() {
+                     this.$nextTick(() => {
+                         this.initOrUpdateChart(@js($chartLabels), @js($chartMasuk), @js($chartKeluar));
+                     });
+                 },
+                 initOrUpdateChart(labels, masuk, keluar) {
+                     if (typeof ApexCharts === 'undefined') {
+                         setTimeout(() => this.initOrUpdateChart(labels, masuk, keluar), 100);
+                         return;
+                     }
                      const chartEl = this.$refs.chartCanvas;
                      if (!chartEl) return;
                      if (this.chart) {
-                         this.chart.destroy();
+                         try { this.chart.destroy(); } catch(e) {}
+                         this.chart = null;
                      }
                      const options = {
                          series: [{
@@ -194,8 +204,7 @@
                      this.chart.render();
                  }
              }"
-             x-init="renderChart(@js($chartLabels), @js($chartMasuk), @js($chartKeluar));"
-             @cashflow-chart-updated.window="const payload = Array.isArray($event.detail) ? $event.detail[0] : $event.detail; renderChart(payload.labels, payload.masuk, payload.keluar);"
+             @cashflow-chart-updated.window="const payload = Array.isArray($event.detail) ? $event.detail[0] : $event.detail; initOrUpdateChart(payload.labels, payload.masuk, payload.keluar);"
              wire:ignore.self>
             <div x-ref="chartCanvas" class="w-full min-h-[280px]"></div>
         </div>
@@ -444,9 +453,6 @@
 
     <!-- Modal Detail Alur Keuangan & Audit Trail -->
     @include('livewire.cashflow.partials.modal-detail-transaction')
-
-    <!-- ApexCharts JS CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 
     <!-- Foto Struk Resi Viewer Modal -->
     @if($showImageModal ?? false)

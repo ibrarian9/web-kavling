@@ -7,7 +7,7 @@
             </div>
             <div>
                 <h1 class="text-xl font-extrabold tracking-tight flex items-center gap-2">
-                    <span>Profil Akun & Legalitas Founder</span>
+                    <span>Profil Founder</span>
                     <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-emerald-500/30 border border-emerald-400/40 text-emerald-200">
                         {{ auth()->user()->role }}
                     </span>
@@ -16,14 +16,6 @@
             </div>
         </div>
     </div>
-
-    <!-- Alert Success Flash Messages -->
-    @if(session()->has('success'))
-        <div class="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl text-emerald-900 text-xs font-bold flex items-center gap-2 shadow-xs">
-            <svg class="w-5 h-5 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-            <span>{{ session('success') }}</span>
-        </div>
-    @endif
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <!-- Form Update Data Profil & Legalitas Founder (2 Cols) -->
@@ -84,7 +76,7 @@
 
                     <div class="pt-3 border-t border-slate-100 flex items-center justify-end">
                         <button type="submit" class="btn-action-primary px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold shadow-md text-xs">
-                            Simpan Perubahan Profil & Legalitas
+                            Simpan Perubahan Profil
                         </button>
                     </div>
                 </form>
