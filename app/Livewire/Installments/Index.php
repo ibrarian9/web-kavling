@@ -411,7 +411,7 @@ class Index extends Component
 
     public function render()
     {
-        $query = UnitInstallment::with(['unit.project', 'officialDocument', 'payments']);
+        $query = UnitInstallment::with(['unit.project', 'unit.activeBooking', 'unit.bookings', 'officialDocument', 'payments']);
 
         if (trim($this->search) !== '') {
             $s = '%' . trim($this->search) . '%';
@@ -420,6 +420,9 @@ class Index extends Component
                     $uq->where('code', 'like', $s)
                         ->orWhereHas('project', function ($pq) use ($s) {
                             $pq->where('name', 'like', $s);
+                        })
+                        ->orWhereHas('bookings', function ($bq) use ($s) {
+                            $bq->where('buyer_name', 'like', $s);
                         });
                 })->orWhereHas('officialDocument', function ($dq) use ($s) {
                     $dq->where('buyer_name', 'like', $s);

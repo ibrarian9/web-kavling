@@ -53,4 +53,19 @@ class UnitInstallment extends Model
     {
         return max(0, $this->total_price - $this->total_paid);
     }
+
+    public function getBuyerNameAttribute(): string
+    {
+        return $this->officialDocument?->buyer_name 
+            ?? $this->unit?->activeBooking?->buyer_name 
+            ?? $this->unit?->bookings()?->latest()->first()?->buyer_name 
+            ?? 'Konsumen Pembeli';
+    }
+
+    public function getBuyerPhoneAttribute(): ?string
+    {
+        return $this->officialDocument?->buyer_contact 
+            ?? $this->unit?->activeBooking?->buyer_phone 
+            ?? $this->unit?->bookings()?->latest()->first()?->buyer_phone;
+    }
 }

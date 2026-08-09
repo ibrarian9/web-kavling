@@ -57,7 +57,7 @@
 
             <div class="bg-slate-800/40 p-4 rounded-xl border border-slate-700/50">
                 <span class="text-xs text-slate-400 font-medium uppercase tracking-wider block mb-1">Pembeli & Metode Bayar</span>
-                <p class="text-base font-bold text-white">{{ $installment->officialDocument->buyer_name ?? 'Pembeli Unit' }}</p>
+                <p class="text-base font-bold text-white">{{ $installment->buyer_name }}</p>
                 <p class="text-xs text-amber-400 font-semibold mt-0.5">
                     Metode: {{ $payment->payment_method }}
                 </p>

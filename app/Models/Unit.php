@@ -147,4 +147,19 @@ class Unit extends Model
     {
         return \App\Enums\UnitStatus::badgeClass($this->status);
     }
+
+    public function getBuyerNameAttribute(): string
+    {
+        return $this->officialDocument?->buyer_name 
+            ?? $this->activeBooking?->buyer_name 
+            ?? $this->bookings()?->latest()->first()?->buyer_name 
+            ?? 'Konsumen Pembeli';
+    }
+
+    public function getBuyerPhoneAttribute(): ?string
+    {
+        return $this->officialDocument?->buyer_contact 
+            ?? $this->activeBooking?->buyer_phone 
+            ?? $this->bookings()?->latest()->first()?->buyer_phone;
+    }
 }

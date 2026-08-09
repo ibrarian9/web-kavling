@@ -111,7 +111,7 @@
             <tr>
                 <td style="width: 20%; font-weight: bold; color: #475569;">Nama Pembeli:</td>
                 <td style="width: 30%; font-weight: bold; color: #0f172a;">
-                    {{ $officialDoc->buyer_name ?? ($installment->unit->booking->buyer_name ?? 'Pembeli Unit') }}
+                    {{ $installment->buyer_name }}
                 </td>
                 <td style="width: 20%; font-weight: bold; color: #475569;">Kode Unit & Tipe:</td>
                 <td style="width: 30%; font-weight: bold; color: #2563eb;">

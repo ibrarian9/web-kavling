@@ -10,7 +10,7 @@
                     </div>
                     <div>
                         <h3 class="font-extrabold text-slate-900 text-sm sm:text-base">Detail Skema Cicilan Unit {{ $selectedDetailInstallment->unit->code }}</h3>
-                        <p class="text-[11px] text-slate-500">Proyek: <strong class="text-slate-800">{{ $selectedDetailInstallment->unit->project->name ?? '-' }}</strong> | Pembeli: <strong class="text-slate-800">{{ $selectedDetailInstallment->officialDocument->buyer_name ?? 'Klien' }}</strong></p>
+                        <p class="text-[11px] text-slate-500">Proyek: <strong class="text-slate-800">{{ $selectedDetailInstallment->unit->project->name ?? '-' }}</strong> | Pembeli: <strong class="text-slate-800">{{ $selectedDetailInstallment->buyer_name }}</strong></p>
                     </div>
                 </div>
                 <button wire:click="closeDetailModal" class="text-slate-400 hover:text-slate-600 text-sm font-bold p-1">✕</button>

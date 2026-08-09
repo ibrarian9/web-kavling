@@ -5,7 +5,7 @@
             <div class="flex items-center justify-between border-b border-slate-100 pb-3 shrink-0">
                 <div>
                     <h3 class="font-extrabold text-slate-900 text-sm sm:text-base">Batalkan Skema Cicilan & Ganti Ke Pelunasan Cash</h3>
-                    <p class="text-slate-500 text-[11px]">Unit: <span class="font-bold text-slate-800 font-mono">{{ $unit->code }}</span> - {{ $unit->officialDocument->buyer_name ?? 'Pembeli' }}</p>
+                    <p class="text-slate-500 text-[11px]">Unit: <span class="font-bold text-slate-800 font-mono">{{ $unit->code }}</span> - {{ $unit->buyer_name }}</p>
                 </div>
                 <button wire:click="$set('showConvertToCashModal', false)" class="p-1 rounded-lg text-slate-400 hover:text-slate-600">✕</button>
             </div>

@@ -17,7 +17,7 @@ class UnpaidInstallmentReportController extends Controller
         $month = (int) $request->query('month', now()->month);
         $year = (int) $request->query('year', now()->year);
 
-        $query = UnitInstallment::with(['unit.project', 'officialDocument', 'payments'])
+        $query = UnitInstallment::with(['unit.project', 'unit.activeBooking', 'unit.bookings', 'officialDocument', 'payments'])
             ->where('status', 'berjalan')
             ->whereDoesntHave('payments', function ($pq) use ($month, $year) {
                 $pq->whereMonth('payment_date', $month)
@@ -37,6 +37,9 @@ class UnpaidInstallmentReportController extends Controller
                     $uq->where('code', 'like', $s)
                         ->orWhereHas('project', function ($pq) use ($s) {
                             $pq->where('name', 'like', $s);
+                        })
+                        ->orWhereHas('bookings', function ($bq) use ($s) {
+                            $bq->where('buyer_name', 'like', $s);
                         });
                 })->orWhereHas('officialDocument', function ($dq) use ($s) {
                     $dq->where('buyer_name', 'like', $s);

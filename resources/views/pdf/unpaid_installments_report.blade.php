@@ -186,9 +186,9 @@
                     <td class="text-center font-mono">{{ $index + 1 }}</td>
                     <td class="font-mono" style="color: #0f172a;">Unit {{ $inst->unit->code ?? '-' }}</td>
                     <td>
-                        <strong style="color: #0f172a;">{{ $inst->officialDocument->buyer_name ?? 'Konsumen Pembeli' }}</strong>
-                        @if($inst->officialDocument->buyer_contact ?? false)
-                            <div style="font-size: 7.5pt; color: #64748b; font-family: 'Courier', monospace;">{{ $inst->officialDocument->buyer_contact }}</div>
+                        <strong style="color: #0f172a;">{{ $inst->officialDocument->buyer_name ?? $inst->unit->activeBooking->buyer_name ?? $inst->unit->bookings->first()?->buyer_name ?? 'Konsumen Pembeli' }}</strong>
+                        @if($inst->officialDocument->buyer_contact ?? $inst->unit->activeBooking->buyer_phone ?? false)
+                            <div style="font-size: 7.5pt; color: #64748b; font-family: 'Courier', monospace;">{{ $inst->officialDocument->buyer_contact ?? $inst->unit->activeBooking->buyer_phone }}</div>
                         @endif
                     </td>
                     <td style="color: #334155;">{{ $inst->unit->project->name ?? '-' }}</td>

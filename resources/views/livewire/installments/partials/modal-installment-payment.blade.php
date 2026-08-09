@@ -6,7 +6,7 @@
             <div class="flex items-center justify-between border-b border-slate-100 pb-3 shrink-0">
                 <div>
                     <h3 class="font-bold text-slate-900 text-sm sm:text-base">Catat Setoran Cicilan</h3>
-                    <p class="text-slate-500 text-[11px]">Unit: <span class="font-bold text-slate-800 font-mono">{{ $activeInstallment->unit->code }}</span> (Pembeli: {{ $activeInstallment->officialDocument->buyer_name ?? '-' }})</p>
+                    <p class="text-slate-500 text-[11px]">Unit: <span class="font-bold text-slate-800 font-mono">{{ $activeInstallment->unit->code }}</span> (Pembeli: {{ $activeInstallment->buyer_name }})</p>
                 </div>
                 <button wire:click="$set('showPaymentModal', false)" class="text-slate-400 hover:text-slate-600 font-bold text-sm p-1">✕</button>
             </div>
