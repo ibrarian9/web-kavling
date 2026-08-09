@@ -139,14 +139,82 @@ class Index extends Component
         $description = $trx->description;
         $amount = number_format($trx->amount, 0, ',', '.');
 
+        // Cascade cleanup to underlying source payment record if exists
+        if ($trx->reference_type && $trx->reference_id) {
+            if ($trx->reference_type === \App\Models\InstallmentPayment::class) {
+                $payment = \App\Models\InstallmentPayment::find($trx->reference_id);
+                if ($payment) {
+                    $installment = $payment->unitInstallment;
+                    $payment->delete();
+
+                    if ($installment) {
+                        $totalPaid = $installment->payments()->sum('amount_paid') + (float)$installment->down_payment;
+                        $remainingBalance = max(0, (float)$installment->total_price - $totalPaid);
+                        $newStatus = ($remainingBalance <= 0) ? 'lunas' : 'berjalan';
+                        $installment->update([
+                            'total_paid' => $totalPaid,
+                            'remaining_balance' => $remainingBalance,
+                            'status' => $newStatus,
+                        ]);
+                    }
+                }
+            } elseif ($trx->reference_type === \App\Models\Booking::class) {
+                $booking = \App\Models\Booking::with('unit')->find($trx->reference_id);
+                if ($booking) {
+                    if ($booking->unit && \App\Enums\UnitStatus::isBooked($booking->unit->status)) {
+                        $booking->unit->update(['status' => \App\Enums\UnitStatus::TERSEDIA->value]);
+                    }
+                    if ($booking->receipt_photo_path) {
+                        \Illuminate\Support\Facades\Storage::disk('public')->delete($booking->receipt_photo_path);
+                    }
+                    $booking->delete();
+                }
+            } elseif ($trx->reference_type === \App\Models\WeeklyMaterialPurchase::class) {
+                $purchase = \App\Models\WeeklyMaterialPurchase::find($trx->reference_id);
+                if ($purchase) {
+                    if ($purchase->receipt_photo_path) {
+                        \Illuminate\Support\Facades\Storage::disk('public')->delete($purchase->receipt_photo_path);
+                    }
+                    $purchase->delete();
+                }
+            } elseif ($trx->reference_type === \App\Models\WorkerSalaryPayment::class) {
+                $sp = \App\Models\WorkerSalaryPayment::find($trx->reference_id);
+                if ($sp) {
+                    $sp->delete();
+                }
+            } elseif ($trx->reference_type === \App\Models\EmployeePayrollPayment::class) {
+                $ep = \App\Models\EmployeePayrollPayment::find($trx->reference_id);
+                if ($ep) {
+                    $ep->delete();
+                }
+            } elseif ($trx->reference_type === \App\Models\ProjectPayment::class) {
+                $pp = \App\Models\ProjectPayment::find($trx->reference_id);
+                if ($pp) {
+                    if ($pp->receipt_photo_path) {
+                        \Illuminate\Support\Facades\Storage::disk('public')->delete($pp->receipt_photo_path);
+                    }
+                    $pp->delete();
+                }
+            } elseif ($trx->reference_type === \App\Models\ManualInvoice::class) {
+                $mi = \App\Models\ManualInvoice::find($trx->reference_id);
+                if ($mi) {
+                    $mi->delete();
+                }
+            }
+        }
+
+        if ($trx->receipt_photo_path) {
+            \Illuminate\Support\Facades\Storage::disk('public')->delete($trx->receipt_photo_path);
+        }
+
         $trx->delete();
 
         \App\Services\ActivityLogger::log(
             'CASHFLOW_DELETED',
-            "Founder menghapus transaksi arus kas #TRX-{$trxId}: {$description} (Rp {$amount})"
+            "Founder menghapus transaksi arus kas #TRX-{$trxId}: {$description} (Rp {$amount}) beserta data sumbernya"
         );
 
-        session()->flash('success', "Transaksi mutasi kas #TRX-{$trxId} berhasil dihapus.");
+        session()->flash('success', "Transaksi mutasi kas #TRX-{$trxId} dan data sumber terikat berhasil dihapus.");
     }
 
     private function resolveAuditTrail(CashflowTransaction $t): array

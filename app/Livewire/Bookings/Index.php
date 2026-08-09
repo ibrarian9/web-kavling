@@ -261,8 +261,8 @@ class Index extends Component
         $booking = Booking::with('unit')->findOrFail((int) $id);
         $buyerName = $booking->buyer_name;
 
-        if ($booking->unit && $booking->unit->status === 'booked') {
-            $booking->unit->update(['status' => 'tersedia']);
+        if ($booking->unit && \App\Enums\UnitStatus::isBooked($booking->unit->status)) {
+            $booking->unit->update(['status' => \App\Enums\UnitStatus::TERSEDIA->value]);
         }
 
         CashflowTransaction::where('reference_type', Booking::class)

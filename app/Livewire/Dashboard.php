@@ -21,8 +21,8 @@ class Dashboard extends Component
         $totalProjects = Project::where('status', 'aktif')->count();
         $totalUnits = Unit::count();
         $availableUnits = Unit::where('status', 'tersedia')->count();
-        $bookedUnits = Unit::whereIn('status', ['booked', 'booking', 'menunggu_persetujuan'])->count();
-        $soldUnits = Unit::whereIn('status', ['terjual', 'disetujui'])->count();
+        $bookedUnits = Unit::whereIn('status', ['booked', 'booking', 'dibooking', 'menunggu_persetujuan'])->count();
+        $soldUnits = Unit::whereIn('status', ['terjual', 'disetujui', 'converted'])->count();
 
         $pendingProposalsCount = PriceProposal::where('status', 'menunggu')->count();
         $approvedProposalsCount = PriceProposal::where('status', 'disetujui')->count();

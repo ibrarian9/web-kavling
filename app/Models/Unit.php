@@ -122,4 +122,29 @@ class Unit extends Model
             $this->hpp = $project->base_price + $excessCost;
         }
     }
+
+    public function getIsSoldAttribute(): bool
+    {
+        return \App\Enums\UnitStatus::isSold($this->status);
+    }
+
+    public function getIsAvailableAttribute(): bool
+    {
+        return \App\Enums\UnitStatus::isAvailable($this->status);
+    }
+
+    public function getIsBookedAttribute(): bool
+    {
+        return \App\Enums\UnitStatus::isBooked($this->status);
+    }
+
+    public function getStatusLabelAttribute(): string
+    {
+        return \App\Enums\UnitStatus::label($this->status);
+    }
+
+    public function getStatusBadgeClassAttribute(): string
+    {
+        return \App\Enums\UnitStatus::badgeClass($this->status);
+    }
 }
