@@ -10,8 +10,7 @@
             </div>
             <h1 class="text-2xl font-extrabold tracking-tight text-white">Log Aktivitas & Audit Sistem</h1>
             <p class="text-xs text-slate-400">Pemantauan aktivitas pengguna, otentikasi, pergeseran peran, dan log transaksi real-time.</p>
-        </div>
-
+        </div>        
         <div class="flex items-center gap-2">
             @if($activeTab === 'database')
                 <button type="button" @click="confirmModalAction({
@@ -24,7 +23,7 @@
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                     <span>Clear DB Logs</span>
                 </button>
-            @else
+            @elseif($activeTab === 'file')
                 <button type="button" @click="confirmModalAction({
                     title: 'Kosongkan File Log',
                     message: 'Yakin ingin mengosongkan file storage/logs/laravel.log?',
@@ -34,6 +33,17 @@
                 })" class="px-3.5 py-2 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 rounded-xl text-xs font-bold transition flex items-center gap-1.5">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                     <span>Clear File Log</span>
+                </button>
+            @else
+                <button type="button" @click="confirmModalAction({
+                    title: 'Kosongkan Deprecation Log',
+                    message: 'Yakin ingin mengosongkan file log peringatan deprecations?',
+                    confirmText: 'Clear Deprecation Log',
+                    btnClass: 'px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5',
+                    onConfirm: () => $wire.clearDeprecationLog()
+                })" class="px-3.5 py-2 bg-purple-500/10 hover:bg-purple-500/20 text-purple-400 border border-purple-500/30 rounded-xl text-xs font-bold transition flex items-center gap-1.5">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                    <span>Clear Deprecation Log</span>
                 </button>
             @endif
         </div>
@@ -50,10 +60,14 @@
                     <span>Audit Log Database</span>
                 </button>
                 <button wire:click="$set('activeTab', 'file')" class="px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 {{ $activeTab === 'file' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-500 hover:text-slate-800' }}">
-                    <svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                    <svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 01-2-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                     <span>File Log (`laravel.log`)</span>
                 </button>
-            </div>
+                <button wire:click="$set('activeTab', 'deprecations')" class="px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 {{ $activeTab === 'deprecations' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-500 hover:text-slate-800' }}">
+                    <svg class="w-4 h-4 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                    <span>Log Depresiasi (Dev Warnings)</span>
+                </button>
+            </div>v>
 
             <!-- Search & Filters -->
             <div class="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
@@ -151,7 +165,7 @@
         </div>
 
     <!-- TAB 2: File Log (`laravel.log`) -->
-    @else
+    @elseif($activeTab === 'file')
         <div class="bg-slate-950 text-slate-200 rounded-3xl p-5 border border-slate-800 shadow-2xl font-mono text-xs space-y-3 overflow-hidden">
             <div class="flex items-center justify-between border-b border-slate-800 pb-3 text-slate-400 text-[11px]">
                 <div class="flex items-center gap-2">
@@ -177,6 +191,32 @@
                 @empty
                     <div class="py-12 text-center text-slate-500">
                         File `storage/logs/laravel.log` saat ini kosong atau tidak ditemukan entri matching.
+                    </div>
+                @endforelse
+            </div>
+        </div>
+
+    <!-- TAB 3: Deprecations Log (Dev & Code Maintenance Warnings) -->
+    @else
+        <div class="bg-slate-950 text-slate-200 rounded-3xl p-5 border border-slate-800 shadow-2xl font-mono text-xs space-y-3 overflow-hidden">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3 text-slate-400 text-[11px]">
+                <div class="flex items-center gap-2">
+                    <span class="w-3 h-3 rounded-full bg-amber-500"></span>
+                    <span class="font-bold text-amber-300 ml-2">Peringatan Depresiasi Kode & Vendor PHP (Dev Warnings)</span>
+                </div>
+                <div>Total Baris Peringatan: {{ count($deprecationLines) }}</div>
+            </div>
+
+            <div class="max-h-[550px] overflow-y-auto space-y-1 pr-2 font-mono leading-relaxed text-[11px]">
+                @forelse($deprecationLines as $line)
+                    <div class="p-2 rounded bg-amber-950/20 border border-amber-500/20 text-amber-300 hover:bg-amber-950/40 transition break-all">
+                        {{ $line }}
+                    </div>
+                @empty
+                    <div class="py-12 text-center text-slate-500">
+                        <svg class="w-10 h-10 mx-auto text-emerald-400/60 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <p class="font-bold text-slate-300">Tidak ada warning deprecation ditemukan!</p>
+                        <p class="text-[11px] text-slate-500 mt-1">Seluruh kode PHP, Laravel, dan library vendor berjalan secara bersih tanpa warning fitur usang.</p>
                     </div>
                 @endforelse
             </div>

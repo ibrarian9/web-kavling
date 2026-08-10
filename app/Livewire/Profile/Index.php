@@ -77,6 +77,7 @@ class Index extends Component
         $user = User::findOrFail(auth()->id());
 
         if (!Hash::check($this->current_password, $user->password)) {
+            ActivityLogger::log('PASSWORD_CHANGE_FAILED', "Percobaan ubah kata sandi gagal untuk akun {$user->name} (Password lama salah).");
             $this->addError('current_password', 'Password lama tidak cocok.');
             return;
         }
@@ -84,6 +85,8 @@ class Index extends Component
         $user->update([
             'password' => Hash::make($this->new_password),
         ]);
+
+        ActivityLogger::log('PASSWORD_CHANGED', "Kata sandi akun {$user->name} ({$user->role}) berhasil diperbarui.");
 
         $this->current_password = '';
         $this->new_password = '';

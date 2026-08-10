@@ -1,16 +1,16 @@
 # Graph Report - web-kavling  (2026-08-10)
 
 ## Corpus Check
-- 344 files · ~161,509 words
+- 344 files · ~161,563 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 1408 nodes · 2432 edges · 231 communities (149 shown, 82 thin omitted)
-- Extraction: 84% EXTRACTED · 16% INFERRED · 0% AMBIGUOUS · INFERRED: 382 edges (avg confidence: 0.8)
+- 1408 nodes · 2430 edges · 230 communities (149 shown, 81 thin omitted)
+- Extraction: 84% EXTRACTED · 16% INFERRED · 0% AMBIGUOUS · INFERRED: 380 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `acf2bea9`
+- Built from commit: `0dad4145`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -36,7 +36,7 @@
 - package.json
 - Worker
 - units/show.blade.php
-- Index
+- ActivityLogger
 - LegacySale
 - projects/show.blade.php
 - Index
@@ -45,7 +45,7 @@
 - cashflow/index.blade.php
 - Index
 - 2. Activity Diagrams (Diagram Aktivitas UML)
-- ActivityLogger
+- CashflowTransaction
 - 8. Rancangan Database (Skema Tabel Terbaru)
 - AppServiceProvider
 - employee-salaries/index.blade.php
@@ -69,7 +69,7 @@
 - header-actions.blade.php
 - users/index.blade.php
 - projects/index.blade.php
-- CashflowTransaction
+- MaterialPurchaseReceiptController
 - ContractorAndInstallmentCancellationTest
 - modal-payment.blade.php
 - tab-siteplan.blade.php
@@ -138,7 +138,6 @@
 - Illuminate\Database\Eloquent\Relations\BelongsTo
 - PriceProposal
 - Index
-- MaterialPurchaseReceiptController
 - .exportPdf
 - .exportPdf
 
@@ -169,7 +168,7 @@
 ## Import Cycles
 - None detected.
 
-## Communities (231 total, 82 thin omitted)
+## Communities (230 total, 81 thin omitted)
 
 ### Community 0 - "User.php"
 Cohesion: 0.05
@@ -350,16 +349,16 @@ Nodes (7): About Laravel, Agentic Development, Code of Conduct, Contributing, Le
 ## Knowledge Gaps
 - **343 isolated node(s):** `$schema`, `name`, `type`, `description`, `laravel` (+338 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **82 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **81 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `Unit` connect `Unit` to `User.php`, `Project`, `UniqueUnitCodeTest`, `Index`, `Show`, `WeeklyMaterialPurchase`, `WorkerSalaryPayment`, `Show`, `Index`, `User`, `Booking`, `Worker`, `LegacySale`, `Index`, `UnitDetailResponsivenessAndRoleTest`, `CashflowTransaction`, `ContractorAndInstallmentCancellationTest`, `CashflowSeparationAndExportTest`, `.render`, `Illuminate\Database\Eloquent\Relations\BelongsTo`, `PriceProposal`, `.exportPdf`, `.exportPdf`?**
+- **Why does `Unit` connect `Unit` to `User.php`, `Project`, `UniqueUnitCodeTest`, `Index`, `Show`, `WeeklyMaterialPurchase`, `WorkerSalaryPayment`, `Show`, `Index`, `User`, `Booking`, `Worker`, `LegacySale`, `Index`, `CashflowTransaction`, `UnitDetailResponsivenessAndRoleTest`, `ContractorAndInstallmentCancellationTest`, `CashflowSeparationAndExportTest`, `.render`, `Illuminate\Database\Eloquent\Relations\BelongsTo`, `PriceProposal`, `.exportPdf`, `.exportPdf`?**
   _High betweenness centrality (0.046) - this node is a cross-community bridge._
-- **Why does `User` connect `User` to `User.php`, `Controller`, `Project`, `UniqueUnitCodeTest`, `WeeklyMaterialPurchase`, `Booking`, `Worker`, `Index`, `Index`, `OfficialDocument`, `ActivityLogger`, `UnitDetailResponsivenessAndRoleTest`, `CashflowTransaction`, `ContractorAndInstallmentCancellationTest`, `CashflowSeparationAndExportTest`, `ActivityLogTest`, `InactiveAccountLoginTest`, `PriceProposal`, `Index`?**
+- **Why does `User` connect `User` to `User.php`, `Controller`, `PriceProposal`, `Index`, `Project`, `UniqueUnitCodeTest`, `WeeklyMaterialPurchase`, `UnitDetailResponsivenessAndRoleTest`, `Booking`, `Worker`, `CashflowSeparationAndExportTest`, `ActivityLogger`, `ContractorAndInstallmentCancellationTest`, `Index`, `OfficialDocument`, `ActivityLogTest`, `InactiveAccountLoginTest`, `CashflowTransaction`?**
   _High betweenness centrality (0.042) - this node is a cross-community bridge._
-- **Why does `Project` connect `Project` to `User.php`, `Controller`, `Show`, `WeeklyMaterialPurchase`, `WorkerSalaryPayment`, `Index`, `Unit`, `User`, `Booking`, `Index`, `LegacySale`, `UnitDetailResponsivenessAndRoleTest`, `CashflowTransaction`, `CashflowSeparationAndExportTest`, `.render`, `Illuminate\Database\Eloquent\Relations\BelongsTo`, `PriceProposal`, `.exportPdf`, `.exportPdf`?**
+- **Why does `Project` connect `Project` to `User.php`, `Controller`, `Show`, `WeeklyMaterialPurchase`, `WorkerSalaryPayment`, `Index`, `Unit`, `User`, `Booking`, `Index`, `LegacySale`, `CashflowTransaction`, `UnitDetailResponsivenessAndRoleTest`, `CashflowSeparationAndExportTest`, `.render`, `Illuminate\Database\Eloquent\Relations\BelongsTo`, `PriceProposal`, `.exportPdf`, `.exportPdf`?**
   _High betweenness centrality (0.036) - this node is a cross-community bridge._
 - **Are the 75 inferred relationships involving `Unit` (e.g. with `.exportExcel()` and `.exportPdf()`) actually correct?**
   _`Unit` has 75 INFERRED edges - model-reasoned connections that need verification._

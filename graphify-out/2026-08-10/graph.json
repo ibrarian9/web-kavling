@@ -765,7 +765,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_http_controllers_materialpurchasereceiptcontroller",
-      "community": 228,
+      "community": 54,
       "community_name": "MaterialPurchaseReceiptController",
       "norm_label": "materialpurchasereceiptcontroller.php"
     },
@@ -778,7 +778,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "app_http_controllers_materialpurchasereceiptcontroller_materialpurchasereceiptcontroller",
-      "community": 228,
+      "community": 54,
       "community_name": "MaterialPurchaseReceiptController",
       "norm_label": "materialpurchasereceiptcontroller"
     },
@@ -790,7 +790,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_http_controllers_materialpurchasereceiptcontroller_materialpurchasereceiptcontroller_streamreceipt",
-      "community": 228,
+      "community": 54,
       "community_name": "MaterialPurchaseReceiptController",
       "norm_label": ".streamreceipt()"
     },
@@ -802,7 +802,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_http_controllers_materialpurchasereceiptcontroller_materialpurchasereceiptcontroller_verify",
-      "community": 228,
+      "community": 54,
       "community_name": "MaterialPurchaseReceiptController",
       "norm_label": ".verify()"
     },
@@ -814,7 +814,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_http_controllers_materialpurchasereceiptcontroller_materialpurchasereceiptcontroller_generateqrbase64",
-      "community": 228,
+      "community": 54,
       "community_name": "MaterialPurchaseReceiptController",
       "norm_label": ".generateqrbase64()"
     },
@@ -826,7 +826,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_http_controllers_materialpurchasereceiptcontroller_materialpurchasereceiptcontroller_terbilang",
-      "community": 228,
+      "community": 54,
       "community_name": "MaterialPurchaseReceiptController",
       "norm_label": ".terbilang()"
     },
@@ -966,7 +966,7 @@
       "label": ".exportSalesProfitPdf()",
       "file_type": "code",
       "source_file": "app/Http/Controllers/ProjectReportController.php",
-      "source_location": "L54",
+      "source_location": "L55",
       "_callable": true,
       "_origin": "ast",
       "id": "app_http_controllers_projectreportcontroller_projectreportcontroller_exportsalesprofitpdf",
@@ -978,7 +978,7 @@
       "label": ".verifyLandPayments()",
       "file_type": "code",
       "source_file": "app/Http/Controllers/ProjectReportController.php",
-      "source_location": "L164",
+      "source_location": "L166",
       "_callable": true,
       "_origin": "ast",
       "id": "app_http_controllers_projectreportcontroller_projectreportcontroller_verifylandpayments",
@@ -990,7 +990,7 @@
       "label": ".verifySalesProfit()",
       "file_type": "code",
       "source_file": "app/Http/Controllers/ProjectReportController.php",
-      "source_location": "L176",
+      "source_location": "L178",
       "_callable": true,
       "_origin": "ast",
       "id": "app_http_controllers_projectreportcontroller_projectreportcontroller_verifysalesprofit",
@@ -1002,7 +1002,7 @@
       "label": ".generateQrBase64()",
       "file_type": "code",
       "source_file": "app/Http/Controllers/ProjectReportController.php",
-      "source_location": "L187",
+      "source_location": "L189",
       "_callable": true,
       "_origin": "ast",
       "id": "app_http_controllers_projectreportcontroller_projectreportcontroller_generateqrbase64",
@@ -1761,7 +1761,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_cashflow_index_index_resolveaudittrail",
-      "community": 54,
+      "community": 30,
       "community_name": "CashflowTransaction",
       "norm_label": ".resolveaudittrail()"
     },
@@ -1845,7 +1845,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_cashflow_index_index_render",
-      "community": 54,
+      "community": 30,
       "community_name": "CashflowTransaction",
       "norm_label": ".render()"
     },
@@ -2001,7 +2001,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_documents_index_index_deletedocument",
-      "community": 30,
+      "community": 21,
       "community_name": "ActivityLogger",
       "norm_label": ".deletedocument()"
     },
@@ -2577,7 +2577,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_installments_index_index_submitpayment",
-      "community": 54,
+      "community": 30,
       "community_name": "CashflowTransaction",
       "norm_label": ".submitpayment()"
     },
@@ -2601,7 +2601,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_installments_index_index_submitconverttocash",
-      "community": 54,
+      "community": 30,
       "community_name": "CashflowTransaction",
       "norm_label": ".submitconverttocash()"
     },
@@ -2649,7 +2649,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_installments_index_index_deleteinstallmentpayment",
-      "community": 54,
+      "community": 30,
       "community_name": "CashflowTransaction",
       "norm_label": ".deleteinstallmentpayment()"
     },
@@ -2926,7 +2926,7 @@
       "_origin": "ast",
       "id": "app_livewire_profile_index_index",
       "community": 21,
-      "community_name": "Index",
+      "community_name": "ActivityLogger",
       "norm_label": "index"
     },
     {
@@ -2938,7 +2938,7 @@
       "_origin": "ast",
       "id": "app_livewire_profile_index_index_mount",
       "community": 21,
-      "community_name": "Index",
+      "community_name": "ActivityLogger",
       "norm_label": ".mount()"
     },
     {
@@ -2950,7 +2950,7 @@
       "_origin": "ast",
       "id": "app_livewire_profile_index_index_updateprofile",
       "community": 21,
-      "community_name": "Index",
+      "community_name": "ActivityLogger",
       "norm_label": ".updateprofile()"
     },
     {
@@ -2962,19 +2962,19 @@
       "_origin": "ast",
       "id": "app_livewire_profile_index_index_updatepassword",
       "community": 21,
-      "community_name": "Index",
+      "community_name": "ActivityLogger",
       "norm_label": ".updatepassword()"
     },
     {
       "label": ".render()",
       "file_type": "code",
       "source_file": "app/Livewire/Profile/Index.php",
-      "source_location": "L97",
+      "source_location": "L100",
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_profile_index_index_render",
       "community": 21,
-      "community_name": "Index",
+      "community_name": "ActivityLogger",
       "norm_label": ".render()"
     },
     {
@@ -3321,7 +3321,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_projects_show_show_resolveaudittrail",
-      "community": 54,
+      "community": 30,
       "community_name": "CashflowTransaction",
       "norm_label": ".resolveaudittrail()"
     },
@@ -3417,8 +3417,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_projects_show_show_deletetransaction",
-      "community": 30,
-      "community_name": "ActivityLogger",
+      "community": 7,
+      "community_name": "Show",
       "norm_label": ".deletetransaction()"
     },
     {
@@ -3429,7 +3429,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_projects_show_show_render",
-      "community": 54,
+      "community": 30,
       "community_name": "CashflowTransaction",
       "norm_label": ".render()"
     },
@@ -3585,8 +3585,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_proposals_index_index_deleteproposal",
-      "community": 30,
-      "community_name": "ActivityLogger",
+      "community": 225,
+      "community_name": "PriceProposal",
       "norm_label": ".deleteproposal()"
     },
     {
@@ -3609,8 +3609,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_proposals_index_index_submitapproval",
-      "community": 30,
-      "community_name": "ActivityLogger",
+      "community": 225,
+      "community_name": "PriceProposal",
       "norm_label": ".submitapproval()"
     },
     {
@@ -3633,7 +3633,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_proposals_index_index_issuedocument",
-      "community": 30,
+      "community": 21,
       "community_name": "ActivityLogger",
       "norm_label": ".issuedocument()"
     },
@@ -4041,7 +4041,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_units_legacysale_legacysale_save",
-      "community": 54,
+      "community": 30,
       "community_name": "CashflowTransaction",
       "norm_label": ".save()"
     },
@@ -4497,7 +4497,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_units_show_show_deleteinstallmentpayment",
-      "community": 54,
+      "community": 30,
       "community_name": "CashflowTransaction",
       "norm_label": ".deleteinstallmentpayment()"
     },
@@ -4509,7 +4509,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_units_show_show_saveinstallmentpayment",
-      "community": 54,
+      "community": 30,
       "community_name": "CashflowTransaction",
       "norm_label": ".saveinstallmentpayment()"
     },
@@ -4533,7 +4533,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_units_show_show_saveconverttocash",
-      "community": 54,
+      "community": 30,
       "community_name": "CashflowTransaction",
       "norm_label": ".saveconverttocash()"
     },
@@ -4581,7 +4581,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_units_show_show_deleteinstallmentscheme",
-      "community": 54,
+      "community": 30,
       "community_name": "CashflowTransaction",
       "norm_label": ".deleteinstallmentscheme()"
     },
@@ -4629,7 +4629,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_units_show_show_deleteunit",
-      "community": 54,
+      "community": 30,
       "community_name": "CashflowTransaction",
       "norm_label": ".deleteunit()"
     },
@@ -4941,8 +4941,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "app_models_approval_approval",
-      "community": 30,
-      "community_name": "ActivityLogger",
+      "community": 225,
+      "community_name": "PriceProposal",
       "norm_label": "approval"
     },
     {
@@ -4953,8 +4953,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_models_approval_approval_proposal",
-      "community": 30,
-      "community_name": "ActivityLogger",
+      "community": 225,
+      "community_name": "PriceProposal",
       "norm_label": ".proposal()"
     },
     {
@@ -4965,8 +4965,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_models_approval_approval_approver",
-      "community": 30,
-      "community_name": "ActivityLogger",
+      "community": 225,
+      "community_name": "PriceProposal",
       "norm_label": ".approver()"
     },
     {
@@ -5013,8 +5013,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_models_booking_booking_unit",
-      "community": 224,
-      "community_name": "Illuminate\\Database\\Eloquent\\Relations\\BelongsTo",
+      "community": 16,
+      "community_name": "Booking",
       "norm_label": ".unit()"
     },
     {
@@ -5025,8 +5025,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_models_booking_booking_creator",
-      "community": 16,
-      "community_name": "Booking",
+      "community": 224,
+      "community_name": "Illuminate\\Database\\Eloquent\\Relations\\BelongsTo",
       "norm_label": ".creator()"
     },
     {
@@ -5049,7 +5049,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "app_models_cashflowtransaction_cashflowtransaction",
-      "community": 54,
+      "community": 30,
       "community_name": "CashflowTransaction",
       "norm_label": "cashflowtransaction"
     },
@@ -5085,7 +5085,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_models_cashflowtransaction_cashflowtransaction_getreceiptphotourlattribute",
-      "community": 54,
+      "community": 30,
       "community_name": "CashflowTransaction",
       "norm_label": ".getreceiptphotourlattribute()"
     },
@@ -5277,7 +5277,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "app_models_installmentpayment_installmentpayment",
-      "community": 54,
+      "community": 30,
       "community_name": "CashflowTransaction",
       "norm_label": "installmentpayment"
     },
@@ -6729,7 +6729,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "app_services_activitylogger_activitylogger",
-      "community": 30,
+      "community": 21,
       "community_name": "ActivityLogger",
       "norm_label": "activitylogger"
     },
@@ -6741,7 +6741,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_services_activitylogger_activitylogger_log",
-      "community": 30,
+      "community": 21,
       "community_name": "ActivityLogger",
       "norm_label": ".log()"
     },
@@ -9066,7 +9066,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "database_seeders_financialseeder_financialseeder_run",
-      "community": 54,
+      "community": 30,
       "community_name": "CashflowTransaction",
       "norm_label": ".run()"
     },
@@ -9138,8 +9138,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "database_seeders_priceproposalseeder_priceproposalseeder_run",
-      "community": 30,
-      "community_name": "ActivityLogger",
+      "community": 225,
+      "community_name": "PriceProposal",
       "norm_label": ".run()"
     },
     {
@@ -13318,8 +13318,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "tests_feature_activitylogtest_activitylogtest_test_activity_logger_service_creates_database_record_for_user",
-      "community": 30,
-      "community_name": "ActivityLogger",
+      "community": 220,
+      "community_name": "ActivityLogTest",
       "norm_label": ".test_activity_logger_service_creates_database_record_for_user()"
     },
     {
@@ -18282,7 +18282,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/ProjectReportController.php",
-      "source_location": "L54",
+      "source_location": "L55",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_http_controllers_projectreportcontroller_projectreportcontroller",
@@ -18293,7 +18293,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/ProjectReportController.php",
-      "source_location": "L187",
+      "source_location": "L189",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_http_controllers_projectreportcontroller_projectreportcontroller",
@@ -18304,7 +18304,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/ProjectReportController.php",
-      "source_location": "L164",
+      "source_location": "L166",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_http_controllers_projectreportcontroller_projectreportcontroller",
@@ -18315,7 +18315,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/ProjectReportController.php",
-      "source_location": "L176",
+      "source_location": "L178",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_http_controllers_projectreportcontroller_projectreportcontroller",
@@ -18351,7 +18351,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/ProjectReportController.php",
-      "source_location": "L139",
+      "source_location": "L140",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_http_controllers_projectreportcontroller_projectreportcontroller_exportsalesprofitpdf",
@@ -18364,7 +18364,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "app/Http/Controllers/ProjectReportController.php",
-      "source_location": "L94",
+      "source_location": "L95",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_http_controllers_projectreportcontroller_projectreportcontroller_exportsalesprofitpdf",
@@ -18376,7 +18376,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "app/Http/Controllers/ProjectReportController.php",
-      "source_location": "L56",
+      "source_location": "L57",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_http_controllers_projectreportcontroller_projectreportcontroller_exportsalesprofitpdf",
@@ -18388,7 +18388,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "app/Http/Controllers/ProjectReportController.php",
-      "source_location": "L57",
+      "source_location": "L58",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_http_controllers_projectreportcontroller_projectreportcontroller_exportsalesprofitpdf",
@@ -18400,7 +18400,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "app/Http/Controllers/ProjectReportController.php",
-      "source_location": "L166",
+      "source_location": "L168",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_http_controllers_projectreportcontroller_projectreportcontroller_verifylandpayments",
@@ -18412,7 +18412,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "app/Http/Controllers/ProjectReportController.php",
-      "source_location": "L178",
+      "source_location": "L180",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_http_controllers_projectreportcontroller_projectreportcontroller_verifysalesprofit",
@@ -22913,7 +22913,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "app/Livewire/Profile/Index.php",
-      "source_location": "L97",
+      "source_location": "L100",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_livewire_profile_index_index",
@@ -22988,6 +22988,18 @@
       "_origin": "ast",
       "source": "app_livewire_profile_index_index_updatepassword",
       "target": "app_models_user_user"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "app/Livewire/Profile/Index.php",
+      "source_location": "L80",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_livewire_profile_index_index_updatepassword",
+      "target": "app_services_activitylogger_activitylogger"
     },
     {
       "relation": "contains",
@@ -23999,18 +24011,6 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "app/Livewire/Projects/Show.php",
-      "source_location": "L555",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "app_livewire_projects_show_show_submitprojectpayment",
-      "target": "app_services_activitylogger_activitylogger"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "INFERRED",
-      "confidence_score": 0.8,
-      "source_file": "app/Livewire/Projects/Show.php",
       "source_location": "L529",
       "weight": 1.0,
       "_origin": "ast",
@@ -24044,18 +24044,6 @@
     {
       "relation": "calls",
       "context": "call",
-      "confidence": "INFERRED",
-      "confidence_score": 0.8,
-      "source_file": "app/Livewire/Projects/Show.php",
-      "source_location": "L608",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "app_livewire_projects_show_show_deleteprojectpayment",
-      "target": "app_services_activitylogger_activitylogger"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "app/Livewire/Projects/Show.php",
       "source_location": "L626",
@@ -24064,18 +24052,6 @@
       "source": "app_livewire_projects_show_show_deletetransaction",
       "target": "app_models_cashflowtransaction_cashflowtransaction",
       "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "INFERRED",
-      "confidence_score": 0.8,
-      "source_file": "app/Livewire/Projects/Show.php",
-      "source_location": "L629",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "app_livewire_projects_show_show_deletetransaction",
-      "target": "app_services_activitylogger_activitylogger"
     },
     {
       "relation": "calls",
@@ -44256,5 +44232,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "acf2bea9b37008b044de63033b6afd97b666682a"
+  "built_at_commit": "0dad4145e3525b9d7317e5a46e1b7a677a5d4b4b"
 }

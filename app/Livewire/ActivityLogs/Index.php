@@ -60,6 +60,18 @@ class Index extends Component
         }
     }
 
+    public function clearDeprecationLog()
+    {
+        if (!auth()->user()->isFounder()) return;
+
+        $depPath = storage_path('logs/php-deprecation-warnings.log');
+        if (File::exists($depPath)) {
+            File::put($depPath, '');
+            \App\Services\ActivityLogger::log('SYSTEM_CLEAR_DEP_LOG', 'Founder membersihkan isi file log deprecations.');
+            session()->flash('success', 'File storage/logs/php-deprecation-warnings.log berhasil dikosongkan.');
+        }
+    }
+
     public function render()
     {
         $logsQuery = ActivityLog::with('user')->latest();
@@ -96,11 +108,38 @@ class Index extends Component
             }
         }
 
+        // Parse Deprecations Log lines
+        $deprecationLines = [];
+        $depPath = storage_path('logs/php-deprecation-warnings.log');
+        if (File::exists($depPath)) {
+            $depContent = File::get($depPath);
+            $depLines = array_filter(explode("\n", $depContent));
+            $depLines = array_reverse(array_slice($depLines, -300));
+            foreach ($depLines as $line) {
+                if ($this->search && stripos($line, $this->search) === false) {
+                    continue;
+                }
+                $deprecationLines[] = $line;
+            }
+        }
+        
+        // Also include deprecation entries from laravel.log
+        if (File::exists($logPath)) {
+            foreach ($rawLogLines as $line) {
+                if (stripos($line, 'deprecated') !== false || stripos($line, 'deprecation') !== false) {
+                    if (!in_array($line, $deprecationLines)) {
+                        $deprecationLines[] = $line;
+                    }
+                }
+            }
+        }
+
         $availableActions = ActivityLog::select('action')->distinct()->pluck('action');
 
         return view('livewire.activity-logs.index', [
             'databaseLogs' => $databaseLogs,
             'rawLogLines' => $rawLogLines,
+            'deprecationLines' => $deprecationLines,
             'availableActions' => $availableActions,
         ])->layout('components.layouts.app', ['title' => 'System Log & Audit Trail - Founder']);
     }
