@@ -115,8 +115,8 @@
     "semantic_hash": ""
   },
   "app/Livewire/Cashflow/Index.php": {
-    "mtime": 1786333285.4761977,
-    "ast_hash": "e9afe68e5f21c2af68d9b790cfc7391a",
+    "mtime": 1786338871.2147992,
+    "ast_hash": "65b24ef5728d3010c5e84344e7f87e09",
     "semantic_hash": ""
   },
   "app/Livewire/Dashboard.php": {
@@ -150,8 +150,8 @@
     "semantic_hash": ""
   },
   "app/Livewire/ManualInvoices/Index.php": {
-    "mtime": 1786336990.2191768,
-    "ast_hash": "b067004e0a686fb1840ffedf88359da8",
+    "mtime": 1786338852.765798,
+    "ast_hash": "95b5bfabe11e4bac23dcae8df9558efd",
     "semantic_hash": ""
   },
   "app/Livewire/Profile/Index.php": {
@@ -740,8 +740,8 @@
     "semantic_hash": ""
   },
   "resources/views/livewire/activity-logs/index.blade.php": {
-    "mtime": 1786336442.52577,
-    "ast_hash": "55d1a55b2d77f749d7b7073a5370f717",
+    "mtime": 1786337113.0812562,
+    "ast_hash": "d84353f9a7a5322f751a4adb938cc9d1",
     "semantic_hash": ""
   },
   "resources/views/livewire/bookings/index.blade.php": {
@@ -970,9 +970,9 @@
     "semantic_hash": "0caee22cac83ac3bc8cf3bb4a615b642"
   },
   "resources/views/livewire/tutorial/partials/tutorial-faq-accordion.blade.php": {
-    "mtime": 1786073942.75641,
-    "ast_hash": "c659dc550012568c6989e5d8c0186d98",
-    "semantic_hash": "c659dc550012568c6989e5d8c0186d98"
+    "mtime": 1786338355.9239087,
+    "ast_hash": "172ef970e7b17ba92ff450402f6edacb",
+    "semantic_hash": ""
   },
   "resources/views/livewire/tutorial/partials/tutorial-flow-booking-cash.blade.php": {
     "mtime": 1786073927.0912833,
@@ -1085,8 +1085,8 @@
     "semantic_hash": "1a38b7d58d6297150b1aa8748d277bb4"
   },
   "resources/views/livewire/units/partials/section-installments.blade.php": {
-    "mtime": 1786337015.0318992,
-    "ast_hash": "2018f39fe2e81cd95d637cebe8bf96a6",
+    "mtime": 1786338431.4765027,
+    "ast_hash": "aa905cbea089b113f7268b24d249e28e",
     "semantic_hash": ""
   },
   "resources/views/livewire/units/partials/section-payroll-borongan.blade.php": {

@@ -93,6 +93,34 @@
                     Tombol transaksi hanya aktif jika status unit adalah <strong class="font-bold text-emerald-700">Tersedia</strong>. Apabila unit telah diproses menjadi <strong class="font-bold text-amber-700">Booked</strong> atau <strong class="font-bold text-rose-700">Terjual</strong> (karena diterbitkan SPP/SPJB), sistem secara otomatis mengunci dan menyembunyikan tombol transaksi untuk mencegah penjualan ganda.
                 </div>
             </div>
+
+            <!-- Question 7 -->
+            <div class="border border-slate-200 rounded-2xl overflow-hidden bg-white shadow-2xs">
+                <button @click="activeFaq = activeFaq === 'faq7' ? null : 'faq7'" class="w-full p-4 text-left font-extrabold text-slate-900 text-xs sm:text-sm flex items-center justify-between hover:bg-slate-50 transition">
+                    <span class="flex items-center gap-2">
+                        <span class="w-6 h-6 rounded-lg bg-emerald-100 text-emerald-800 text-xs flex items-center justify-center font-bold">Q7</span>
+                        <span>Bagaimana cara kerja Log Aktivitas & Audit Sistem di menu Audit Trail?</span>
+                    </span>
+                    <svg class="w-4 h-4 text-slate-400 transition-transform" :class="activeFaq === 'faq7' ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                </button>
+                <div x-show="activeFaq === 'faq7'" x-cloak class="px-4 pb-4 text-xs text-slate-600 leading-relaxed border-t border-slate-100 pt-3 bg-slate-50/50">
+                    Halaman Audit Log (<strong class="font-bold text-slate-900">`/activity-logs`</strong>) dilengkapi <strong class="font-bold text-emerald-700">3 Tab Utama</strong>: Audit Log Database, File Log (`laravel.log`), dan Log Dev Warnings. Tab Audit Log Database memperbarui data secara <strong class="font-bold text-emerald-700">otomatis setiap 5 detik di latar belakang</strong> tanpa perlu F5. Seluruh aksi pembuatan, pembaruan, penghapusan, ubah kata sandi, cetak PDF, dan mutasi kas tercatat lengkap secara otomatis.
+                </div>
+            </div>
+
+            <!-- Question 8 -->
+            <div class="border border-slate-200 rounded-2xl overflow-hidden bg-white shadow-2xs">
+                <button @click="activeFaq = activeFaq === 'faq8' ? null : 'faq8'" class="w-full p-4 text-left font-extrabold text-slate-900 text-xs sm:text-sm flex items-center justify-between hover:bg-slate-50 transition">
+                    <span class="flex items-center gap-2">
+                        <span class="w-6 h-6 rounded-lg bg-emerald-100 text-emerald-800 text-xs flex items-center justify-center font-bold">Q8</span>
+                        <span>Apakah Invoice Manual yang diterbitkan akan otomatis terhubung ke Proyek & Unit?</span>
+                    </span>
+                    <svg class="w-4 h-4 text-slate-400 transition-transform" :class="activeFaq === 'faq8' ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                </button>
+                <div x-show="activeFaq === 'faq8'" x-cloak class="px-4 pb-4 text-xs text-slate-600 leading-relaxed border-t border-slate-100 pt-3 bg-slate-50/50">
+                    <strong class="text-emerald-700 font-bold">Ya, 100% tersinkronisasi!</strong> Saat membuat invoice manual di menu <strong class="font-bold text-slate-900">Invoice Manual</strong> (`/manual-invoices`), Anda dapat memilih Proyek dan Unit terkait. Jika status diset ke <strong class="font-bold text-emerald-700">Lunas</strong>, nominal uang masuk akan otomatis dihitung di Detail Proyek & Detail Unit, serta memperbarui status unit menjadi <strong class="font-bold text-emerald-800">Terjual</strong> jika kategori transaksi adalah Penjualan Unit.
+                </div>
+            </div>
         </div>
     </div>
 @endif

@@ -159,7 +159,7 @@
                         <span class="font-mono font-extrabold text-sm {{ $inv->type === 'masuk' ? 'text-emerald-700' : 'text-rose-700' }}">
                             {{ $inv->type === 'masuk' ? '+' : '-' }} Rp {{ number_format($inv->amount, 0, ',', '.') }}
                         </span>
-                        <button wire:click="openViewerModal('pdf', '{{ route('manual-invoices.stream', $inv->uuid) }}', 'Pratinjau Invoice {{ $inv->invoice_number }}')" class="btn-action-pdf text-[11px]">
+                        <button wire:click="openViewerModal('pdf', '{{ route('manual-invoices.pdf', $inv->uuid) }}', 'Pratinjau Invoice {{ $inv->invoice_number }}')" class="btn-action-pdf text-[11px]">
                             <span>PDF</span>
                         </button>
                     </div>

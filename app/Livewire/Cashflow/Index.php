@@ -214,7 +214,9 @@ class Index extends Component
             "Founder menghapus transaksi arus kas #TRX-{$trxId}: {$description} (Rp {$amount}) beserta data sumbernya"
         );
 
-        session()->flash('success', "Transaksi mutasi kas #TRX-{$trxId} dan data sumber terikat berhasil dihapus.");
+        $msg = "Transaksi mutasi kas #TRX-{$trxId} dan data sumber terikat berhasil dihapus.";
+        session()->flash('success', $msg);
+        $this->dispatch('notify', ['type' => 'success', 'title' => 'Berhasil!', 'message' => $msg]);
     }
 
     private function resolveAuditTrail(CashflowTransaction $t): array
@@ -391,7 +393,9 @@ class Index extends Component
             'created_by' => auth()->id(),
         ]);
 
-        session()->flash('success', 'Transaksi Arus Kas berhasil dicatat!');
+        $msg = 'Transaksi Arus Kas berhasil dicatat!';
+        session()->flash('success', $msg);
+        $this->dispatch('notify', ['type' => 'success', 'title' => 'Berhasil!', 'message' => $msg]);
         $this->showManualModal = false;
     }
 

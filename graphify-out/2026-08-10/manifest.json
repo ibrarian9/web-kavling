@@ -150,8 +150,8 @@
     "semantic_hash": ""
   },
   "app/Livewire/ManualInvoices/Index.php": {
-    "mtime": 1786331802.520648,
-    "ast_hash": "f088f316dd1c07da757fb65a3394a08a",
+    "mtime": 1786336990.2191768,
+    "ast_hash": "b067004e0a686fb1840ffedf88359da8",
     "semantic_hash": ""
   },
   "app/Livewire/Profile/Index.php": {
@@ -165,8 +165,8 @@
     "semantic_hash": ""
   },
   "app/Livewire/Projects/Show.php": {
-    "mtime": 1786334796.5793722,
-    "ast_hash": "3efaaca034920e6cf71a022cf4515053",
+    "mtime": 1786336943.746401,
+    "ast_hash": "17eeb8f2f0d78d37ac0949a1bee34db9",
     "semantic_hash": ""
   },
   "app/Livewire/Proposals/Index.php": {
@@ -190,8 +190,8 @@
     "semantic_hash": "48e511f3cca85dad6426007d4e32a6f2"
   },
   "app/Livewire/Units/Show.php": {
-    "mtime": 1786331792.0667825,
-    "ast_hash": "bd0bc7001f8c7d45a62355c48bb9596b",
+    "mtime": 1786336977.9682336,
+    "ast_hash": "4449fe599503938a7d45123b2f66fa65",
     "semantic_hash": ""
   },
   "app/Livewire/Users/Index.php": {
@@ -740,8 +740,8 @@
     "semantic_hash": ""
   },
   "resources/views/livewire/activity-logs/index.blade.php": {
-    "mtime": 1786336278.4325042,
-    "ast_hash": "6878ca022d5bc6be3df2de7cb73da56a",
+    "mtime": 1786337113.0812562,
+    "ast_hash": "d84353f9a7a5322f751a4adb938cc9d1",
     "semantic_hash": ""
   },
   "resources/views/livewire/bookings/index.blade.php": {
@@ -970,9 +970,9 @@
     "semantic_hash": "0caee22cac83ac3bc8cf3bb4a615b642"
   },
   "resources/views/livewire/tutorial/partials/tutorial-faq-accordion.blade.php": {
-    "mtime": 1786073942.75641,
-    "ast_hash": "c659dc550012568c6989e5d8c0186d98",
-    "semantic_hash": "c659dc550012568c6989e5d8c0186d98"
+    "mtime": 1786338355.9239087,
+    "ast_hash": "172ef970e7b17ba92ff450402f6edacb",
+    "semantic_hash": ""
   },
   "resources/views/livewire/tutorial/partials/tutorial-flow-booking-cash.blade.php": {
     "mtime": 1786073927.0912833,
@@ -1085,9 +1085,9 @@
     "semantic_hash": "1a38b7d58d6297150b1aa8748d277bb4"
   },
   "resources/views/livewire/units/partials/section-installments.blade.php": {
-    "mtime": 1785988535.7692811,
-    "ast_hash": "451858ea1a16c0d735b9c5ab7073aa68",
-    "semantic_hash": "451858ea1a16c0d735b9c5ab7073aa68"
+    "mtime": 1786338431.4765027,
+    "ast_hash": "aa905cbea089b113f7268b24d249e28e",
+    "semantic_hash": ""
   },
   "resources/views/livewire/units/partials/section-payroll-borongan.blade.php": {
     "mtime": 1785988521.272516,

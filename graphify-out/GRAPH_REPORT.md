@@ -1,7 +1,7 @@
 # Graph Report - web-kavling  (2026-08-10)
 
 ## Corpus Check
-- 344 files · ~162,330 words
+- 344 files · ~162,709 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
@@ -10,7 +10,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `aaa0f3c4`
+- Built from commit: `56902e0d`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -185,7 +185,7 @@ Cohesion: 0.07
 Nodes (28): scripts, dev, octane, post-autoload-dump, post-create-project-cmd, post-root-package-install, post-update-cmd, pre-package-uninstall (+20 more)
 
 ### Community 10 - "WeeklyMaterialPurchase"
-Cohesion: 0.09
+Cohesion: 0.12
 Nodes (4): UnitExpensesReportController, Index, WeeklyMaterialPurchase, WorkerSalaryPayment
 
 ### Community 12 - "Index"
@@ -193,7 +193,7 @@ Cohesion: 0.11
 Nodes (3): ManualInvoiceController, Index, ManualInvoice
 
 ### Community 13 - "Illuminate\Database\Eloquent\Relations\BelongsTo"
-Cohesion: 0.11
+Cohesion: 0.10
 Nodes (3): WorkerSpkController, WorkerUnitPayroll, Illuminate\Database\Eloquent\Relations\BelongsTo
 
 ### Community 14 - "Unit"
