@@ -68,6 +68,8 @@ class Index extends Component
 
         $this->validate();
 
+        $isEdit = !empty($this->editingProjectId);
+
         Project::updateOrCreate(
             ['id' => $this->editingProjectId],
             [
@@ -81,6 +83,12 @@ class Index extends Component
                 'status' => 'aktif',
             ]
         );
+
+        if ($isEdit) {
+            \App\Services\ActivityLogger::log('PROJECT_UPDATED', "Data proyek {$this->name} diperbarui oleh " . auth()->user()->name);
+        } else {
+            \App\Services\ActivityLogger::log('PROJECT_CREATED', "Proyek baru {$this->name} (Lokasi: {$this->location}) berhasil ditambahkan ke sistem.");
+        }
 
         $msg = 'Data proyek berhasil disimpan!';
         session()->flash('success', $msg);

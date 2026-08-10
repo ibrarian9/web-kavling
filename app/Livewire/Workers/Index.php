@@ -112,6 +112,11 @@ class Index extends Component
         $this->showAssignModal = true;
     }
 
+    public function updatedAssignProjectId(): void
+    {
+        $this->assignUnitId = null;
+    }
+
     public function saveAssignment(): void
     {
         $this->validate([
@@ -121,6 +126,8 @@ class Index extends Component
             'assignedRole' => 'nullable|string|max:255',
         ]);
 
+        $worker = Worker::findOrFail($this->assignWorkerId);
+
         \App\Models\WorkerAssignment::create([
             'worker_id' => $this->assignWorkerId,
             'project_id' => $this->assignProjectId,
@@ -129,6 +136,8 @@ class Index extends Component
             'start_date' => now()->toDateString(),
             'status' => 'active',
         ]);
+
+        \App\Services\ActivityLogger::log('WORKER_ASSIGNED', "Pekerja {$worker->name} ({$worker->type}) ditugaskan sebagai {$this->assignedRole}.");
 
         $msg = 'Penugasan pekerja berhasil disimpan.';
         session()->flash('success', $msg);

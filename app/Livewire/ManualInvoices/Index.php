@@ -204,6 +204,12 @@ class Index extends Component
             }
         });
 
+        if ($this->editingInvoiceId) {
+            \App\Services\ActivityLogger::log('MANUAL_INVOICE_UPDATED', "Invoice manual #{$this->invoice_number} (Penerima: {$this->recipient_name}) diperbarui.");
+        } else {
+            \App\Services\ActivityLogger::log('MANUAL_INVOICE_CREATED', "Invoice manual baru #{$this->invoice_number} (Penerima: {$this->recipient_name}) diterbitkan sebesar Rp " . number_format($this->amount, 0, ',', '.'));
+        }
+
         session()->flash('success', 'Data Invoice Manual ' . ($this->editingInvoiceId ? 'berhasil diperbarui' : 'berhasil dibuat') . ' & disinkronkan ke Arus Keuangan!');
         $this->closeModal();
     }
@@ -217,6 +223,7 @@ class Index extends Component
         }
 
         $invoice = ManualInvoice::findOrFail($id);
+        $num = $invoice->invoice_number;
 
         DB::transaction(function () use ($invoice) {
             CashflowTransaction::where('reference_type', ManualInvoice::class)
@@ -226,6 +233,7 @@ class Index extends Component
             $invoice->delete();
         });
 
+        \App\Services\ActivityLogger::log('MANUAL_INVOICE_DELETED', "Invoice manual #{$num} dihapus dari sistem.");
         session()->flash('success', 'Invoice manual berhasil dihapus & mutasi arus kas terkait dibersihkan.');
     }
 

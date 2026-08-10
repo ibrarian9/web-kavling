@@ -143,6 +143,7 @@ class Index extends Component
         }
 
         session()->flash('success', 'Skema cicilan/piutang pembeli berhasil dikonfigurasi!');
+        \App\Services\ActivityLogger::log('INSTALLMENT_SCHEME_CREATED', "Skema cicilan Unit {$unit->code} dikonfigurasi sebesar Rp " . number_format($this->total_price, 0, ',', '.'));
         $this->showSetupModal = false;
     }
 
@@ -186,6 +187,8 @@ class Index extends Component
             'reference_id' => $inst->id,
             'created_by' => auth()->id(),
         ]);
+
+        \App\Services\ActivityLogger::log('INSTALLMENT_PAYMENT_RECORDED', "Setoran cicilan Unit {$inst->unit->code} dicatat sebesar Rp " . number_format($this->payment_amount, 0, ',', '.'));
 
         // Check if fully paid
         if ($inst->remaining_balance <= 0) {

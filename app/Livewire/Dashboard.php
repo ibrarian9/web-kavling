@@ -49,27 +49,29 @@ class Dashboard extends Component
             ->take(5)
             ->get();
 
-        // 5. Monthly Cashflow Trend Chart Data (Last 6 Months)
+        // 5. Monthly Cashflow Trend Chart Data (Last 6 Months) optimized in 1 batch query
+        $sixMonthsAgo = now()->subMonths(5)->startOfMonth()->toDateString();
+        $monthlySums = CashflowTransaction::where('transaction_date', '>=', $sixMonthsAgo)
+            ->selectRaw('YEAR(transaction_date) as year_num, MONTH(transaction_date) as month_num, type, SUM(amount) as total')
+            ->groupBy('year_num', 'month_num', 'type')
+            ->get();
+
         $chartLabels = [];
         $chartMasuk = [];
         $chartKeluar = [];
 
         for ($i = 5; $i >= 0; $i--) {
             $date = now()->subMonths($i);
-            $month = $date->month;
-            $year = $date->year;
+            $month = (int)$date->month;
+            $year = (int)$date->year;
 
             $chartLabels[] = $date->translatedFormat('M Y');
 
-            $chartMasuk[] = (float) CashflowTransaction::where('type', 'masuk')
-                ->whereMonth('transaction_date', $month)
-                ->whereYear('transaction_date', $year)
-                ->sum('amount');
+            $mMasuk = $monthlySums->first(fn($item) => (int)$item->year_num === $year && (int)$item->month_num === $month && $item->type === 'masuk')?->total ?? 0;
+            $mKeluar = $monthlySums->first(fn($item) => (int)$item->year_num === $year && (int)$item->month_num === $month && $item->type === 'keluar')?->total ?? 0;
 
-            $chartKeluar[] = (float) CashflowTransaction::where('type', 'keluar')
-                ->whereMonth('transaction_date', $month)
-                ->whereYear('transaction_date', $year)
-                ->sum('amount');
+            $chartMasuk[] = (float)$mMasuk;
+            $chartKeluar[] = (float)$mKeluar;
         }
 
         return view('livewire.dashboard', [

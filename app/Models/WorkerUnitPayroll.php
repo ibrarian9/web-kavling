@@ -53,6 +53,11 @@ class WorkerUnitPayroll extends Model
         return $this->hasMany(WorkerSalaryPayment::class);
     }
 
+    public function salaryPayments(): HasMany
+    {
+        return $this->hasMany(WorkerSalaryPayment::class);
+    }
+
     public function getRemainingSalaryAttribute(): float
     {
         return max(0, (float)$this->agreed_salary - (float)$this->paid_amount);

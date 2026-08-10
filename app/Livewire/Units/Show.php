@@ -530,6 +530,7 @@ class Show extends Component
                     'created_by' => Auth::id(),
                 ]);
             });
+            \App\Services\ActivityLogger::log('MATERIAL_PURCHASE_RECORDED', "Pembelian material Unit {$unit->code} ({$this->material_item_name}) dicatat sebesar Rp " . number_format($totalPrice, 0, ',', '.'));
             session()->flash('success', 'Pembelian barang/material unit ' . $unit->code . ' berhasil dicatat!');
         }
 
@@ -574,7 +575,7 @@ class Show extends Component
         }
         $up = WorkerUnitPayroll::findOrFail($id);
         DB::transaction(function () use ($up) {
-            foreach ($up->salaryPayments as $sp) {
+            foreach ($up->payments as $sp) {
                 CashflowTransaction::where('reference_type', WorkerSalaryPayment::class)
                     ->where('reference_id', $sp->id)
                     ->delete();

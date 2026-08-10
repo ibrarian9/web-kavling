@@ -181,6 +181,8 @@ class Index extends Component
             $unitStatus = $this->editingUnitId ? Unit::find($this->editingUnitId)->status : 'tersedia';
         }
 
+        $isEdit = !empty($this->editingUnitId);
+
         $unit = Unit::updateOrCreate(
             ['id' => $this->editingUnitId],
             [
@@ -201,6 +203,12 @@ class Index extends Component
                 'created_by' => auth()->id(),
             ]
         );
+
+        if ($isEdit) {
+            \App\Services\ActivityLogger::log('UNIT_UPDATED', "Data Unit {$unit->code} (Proyek: {$project->name}) diperbarui oleh " . auth()->user()->name);
+        } else {
+            \App\Services\ActivityLogger::log('UNIT_CREATED', "Unit baru {$unit->code} (Proyek: {$project->name}) berhasil ditambahkan ke sistem.");
+        }
 
         $label = $this->category === 'infrastruktur' ? 'Infrastruktur Kawasan (' . strtoupper($unitType) . ')' : ucfirst($unit->category);
         session()->flash('success', 'Data unit ' . $unit->code . ' (' . $label . ') berhasil disimpan!');
@@ -257,6 +265,7 @@ class Index extends Component
             $unit->delete();
         });
 
+        \App\Services\ActivityLogger::log('UNIT_DELETED', "Founder menghapus Unit {$code} dari sistem.");
         session()->flash('success', 'Unit ' . $code . ' berhasil dihapus dari sistem!');
     }
 
@@ -320,6 +329,8 @@ class Index extends Component
 
         $unit->update(['status' => 'booked']);
 
+        \App\Services\ActivityLogger::log('BOOKING_CREATED', "Booking fee unit {$unit->code} atas nama {$this->buyer_name} tercatat di sistem.");
+
         session()->flash('success', 'Booking unit ' . $unit->code . ' atas nama ' . $this->buyer_name . ' berhasil dicatat di sistem!');
         $this->showBookingModal = false;
     }
@@ -333,6 +344,8 @@ class Index extends Component
             'installment.payments',
             'officialDocument.proposal',
             'proposals',
+            'activeBooking',
+            'bookings',
         ]);
 
         if ($this->search) {
@@ -414,7 +427,7 @@ class Index extends Component
                 $dealPrice = (float)$prop->proposed_price;
             }
 
-            $booking = Booking::where('unit_id', $unit->id)->latest()->first();
+            $booking = $unit->activeBooking ?? $unit->bookings->first();
             if ($booking) {
                 if (!$unit->installment) {
                     if ($dealPrice <= 0) {

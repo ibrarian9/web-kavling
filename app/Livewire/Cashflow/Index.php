@@ -477,24 +477,28 @@ class Index extends Component
         $filteredKeluar = (clone $query)->where('type', 'keluar')->sum('amount');
         $filteredNet = $filteredMasuk - $filteredKeluar;
 
-        // Breakdown per project
+        // Breakdown per project optimized with 1 batch query
         $monthFilter = $this->filter_month;
+        $cashflowSumQuery = CashflowTransaction::query();
+        if ($monthFilter) {
+            $parts = explode('-', $monthFilter);
+            if (count($parts) === 2) {
+                $cashflowSumQuery->whereYear('transaction_date', $parts[0])->whereMonth('transaction_date', $parts[1]);
+            }
+        }
+
+        $sumsByProject = $cashflowSumQuery->selectRaw('project_id, type, SUM(amount) as total')
+            ->groupBy('project_id', 'type')
+            ->get()
+            ->groupBy('project_id');
+
         $projectBreakdown = Project::withCount('units')
             ->get()
-            ->map(function ($p) use ($monthFilter) {
-                $masukQ = CashflowTransaction::where('project_id', $p->id)->where('type', 'masuk');
-                $keluarQ = CashflowTransaction::where('project_id', $p->id)->where('type', 'keluar');
+            ->map(function ($p) use ($sumsByProject) {
+                $projectSums = $sumsByProject->get($p->id, collect());
+                $masuk = (float) ($projectSums->where('type', 'masuk')->first()?->total ?? 0);
+                $keluar = (float) ($projectSums->where('type', 'keluar')->first()?->total ?? 0);
 
-                if ($monthFilter) {
-                    $parts = explode('-', $monthFilter);
-                    if (count($parts) === 2) {
-                        $masukQ->whereYear('transaction_date', $parts[0])->whereMonth('transaction_date', $parts[1]);
-                        $keluarQ->whereYear('transaction_date', $parts[0])->whereMonth('transaction_date', $parts[1]);
-                    }
-                }
-
-                $masuk = $masukQ->sum('amount');
-                $keluar = $keluarQ->sum('amount');
                 return [
                     'id' => $p->id,
                     'name' => $p->name,
@@ -504,11 +508,21 @@ class Index extends Component
                 ];
             });
 
-        // 1. Historical Trend Data (6 Months Trend)
+        // 1. Historical Trend Data (6 Months Trend) optimized with 1 batch query
         $trendMonths = collect();
         for ($i = 5; $i >= 0; $i--) {
             $trendMonths->push(now()->subMonths($i)->format('Y-m'));
         }
+
+        $sixMonthsAgo = now()->subMonths(5)->startOfMonth()->toDateString();
+        $qM = CashflowTransaction::where('transaction_date', '>=', $sixMonthsAgo);
+        if ($this->view_mode === 'project' && $this->filter_project_id) {
+            $qM->where('project_id', $this->filter_project_id);
+        }
+
+        $monthlyTrendSums = $qM->selectRaw('YEAR(transaction_date) as year_num, MONTH(transaction_date) as month_num, type, SUM(amount) as total')
+            ->groupBy('year_num', 'month_num', 'type')
+            ->get();
 
         $chartLabels = [];
         $chartMasuk = [];
@@ -516,17 +530,11 @@ class Index extends Component
 
         foreach ($trendMonths as $m) {
             $parts = explode('-', $m);
-            $year = $parts[0];
-            $monthNum = $parts[1];
+            $year = (int)$parts[0];
+            $monthNum = (int)$parts[1];
 
-            $qM = CashflowTransaction::query();
-            if ($this->view_mode === 'project' && $this->filter_project_id) {
-                $qM->where('project_id', $this->filter_project_id);
-            }
-            $qM->whereYear('transaction_date', $year)->whereMonth('transaction_date', $monthNum);
-
-            $mMasuk = (clone $qM)->where('type', 'masuk')->sum('amount');
-            $mKeluar = (clone $qM)->where('type', 'keluar')->sum('amount');
+            $mMasuk = $monthlyTrendSums->first(fn($item) => (int)$item->year_num === $year && (int)$item->month_num === $monthNum && $item->type === 'masuk')?->total ?? 0;
+            $mKeluar = $monthlyTrendSums->first(fn($item) => (int)$item->year_num === $year && (int)$item->month_num === $monthNum && $item->type === 'keluar')?->total ?? 0;
 
             $chartLabels[] = \Carbon\Carbon::createFromFormat('Y-m', $m)->translatedFormat('M Y');
             $chartMasuk[] = (float)$mMasuk;

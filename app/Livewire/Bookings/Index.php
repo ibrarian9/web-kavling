@@ -244,6 +244,8 @@ class Index extends Component
             }
         }
 
+        ActivityLogger::log('BOOKING_CREATED', "Booking fee baru atas nama {$this->buyer_name} tercatat sebesar Rp " . number_format($this->booking_amount, 0, ',', '.'));
+
         $msg = 'Tanda Jadi / Booking Fee berhasil dicatat dan arus kas diperbarui.';
         session()->flash('success', $msg);
         $this->dispatch('notify', ['type' => 'success', 'title' => 'Berhasil!', 'message' => $msg]);

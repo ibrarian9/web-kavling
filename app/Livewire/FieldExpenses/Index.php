@@ -271,6 +271,7 @@ class Index extends Component
             });
 
             $msg = 'Data belanja material berhasil diperbarui!';
+            \App\Services\ActivityLogger::log('FIELD_EXPENSE_UPDATED', "Data belanja material {$mat->item_name} diperbarui oleh " . auth()->user()->name);
             session()->flash('success', $msg);
             $this->dispatch('notify', ['type' => 'success', 'title' => 'Berhasil!', 'message' => $msg]);
         } elseif ($this->editingType === 'salary') {
@@ -313,6 +314,7 @@ class Index extends Component
             });
 
             $msg = 'Data pembayaran gaji worker berhasil diperbarui!';
+            \App\Services\ActivityLogger::log('FIELD_EXPENSE_UPDATED', "Data setoran gaji worker (" . ($sp->payroll->worker->name ?? 'Worker') . ") diperbarui oleh " . auth()->user()->name);
             session()->flash('success', $msg);
             $this->dispatch('notify', ['type' => 'success', 'title' => 'Berhasil!', 'message' => $msg]);
         }
@@ -333,19 +335,22 @@ class Index extends Component
         if ($type === 'material') {
             $mat = WeeklyMaterialPurchase::find($id);
             if ($mat) {
+                $itemName = $mat->item_name;
                 \Illuminate\Support\Facades\DB::transaction(function () use ($mat) {
                     \App\Models\CashflowTransaction::where('reference_type', WeeklyMaterialPurchase::class)
                         ->where('reference_id', $mat->id)
                         ->delete();
                     $mat->delete();
                 });
+                \App\Services\ActivityLogger::log('FIELD_EXPENSE_DELETED', "Catatan belanja material {$itemName} dihapus oleh " . auth()->user()->name);
                 $msg = 'Data belanja material berhasil dihapus!';
                 session()->flash('success', $msg);
                 $this->dispatch('notify', ['type' => 'success', 'title' => 'Berhasil!', 'message' => $msg]);
             }
         } elseif ($type === 'salary') {
-            $sp = WorkerSalaryPayment::with('payroll')->find($id);
+            $sp = WorkerSalaryPayment::with('payroll.worker')->find($id);
             if ($sp) {
+                $workerName = $sp->payroll->worker->name ?? 'Worker';
                 $payroll = $sp->payroll;
                 \Illuminate\Support\Facades\DB::transaction(function () use ($sp, $payroll) {
                     \App\Models\CashflowTransaction::where('reference_type', WorkerSalaryPayment::class)
@@ -364,6 +369,7 @@ class Index extends Component
                         ]);
                     }
                 });
+                \App\Services\ActivityLogger::log('FIELD_EXPENSE_DELETED', "Catatan setoran gaji worker {$workerName} dihapus oleh " . auth()->user()->name);
                 $msg = 'Data pembayaran gaji worker berhasil dihapus!';
                 session()->flash('success', $msg);
                 $this->dispatch('notify', ['type' => 'success', 'title' => 'Berhasil!', 'message' => $msg]);
