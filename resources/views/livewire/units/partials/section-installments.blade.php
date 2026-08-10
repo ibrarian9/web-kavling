@@ -125,3 +125,46 @@
         </button>
     </div>
 @endif
+
+@if(!auth()->user()->isPengawasProject() && isset($manualInvoices) && $manualInvoices->count() > 0)
+    <div class="card-clean p-5 space-y-3">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+            <h3 class="font-extrabold text-slate-900 text-sm flex items-center gap-2">
+                <div class="p-1.5 rounded-lg bg-teal-50 text-teal-600">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 01-2-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                </div>
+                <span>Invoice Manual Terkait Unit ({{ $manualInvoices->count() }})</span>
+            </h3>
+            <span class="text-xs font-mono font-extrabold text-emerald-700">Total Kas Masuk: Rp {{ number_format($manualInvoices->where('status', 'lunas')->where('type', 'masuk')->sum('amount'), 0, ',', '.') }}</span>
+        </div>
+
+        <div class="space-y-2 text-xs">
+            @foreach($manualInvoices as $inv)
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between p-3 bg-white border border-slate-200/80 rounded-2xl gap-2 hover:bg-slate-50 transition">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="font-extrabold font-mono text-slate-900">{{ $inv->invoice_number }}</span>
+                            @if($inv->status === 'lunas')
+                                <span class="px-2 py-0.5 rounded text-[9px] font-bold bg-emerald-100 text-emerald-800">LUNAS</span>
+                            @else
+                                <span class="px-2 py-0.5 rounded text-[9px] font-bold bg-amber-100 text-amber-800">{{ strtoupper($inv->status) }}</span>
+                            @endif
+                        </div>
+                        <p class="text-slate-600 font-semibold mt-0.5">Penerima: {{ $inv->recipient_name }} | {{ str_replace('_', ' ', $inv->category) }}</p>
+                        @if($inv->description)
+                            <p class="text-slate-400 text-[10px] italic">{{ $inv->description }}</p>
+                        @endif
+                    </div>
+                    <div class="flex items-center gap-3 shrink-0">
+                        <span class="font-mono font-extrabold text-sm {{ $inv->type === 'masuk' ? 'text-emerald-700' : 'text-rose-700' }}">
+                            {{ $inv->type === 'masuk' ? '+' : '-' }} Rp {{ number_format($inv->amount, 0, ',', '.') }}
+                        </span>
+                        <button wire:click="openViewerModal('pdf', '{{ route('manual-invoices.stream', $inv->uuid) }}', 'Pratinjau Invoice {{ $inv->invoice_number }}')" class="btn-action-pdf text-[11px]">
+                            <span>PDF</span>
+                        </button>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+    </div>
+@endif

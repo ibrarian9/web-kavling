@@ -733,6 +733,13 @@ class Show extends Component
                 $buyerName = $unit->officialDocument->buyer_name;
             }
 
+            // Include Manual Invoice payments linked to unit
+            $manualInvoicePaid = \App\Models\ManualInvoice::where('unit_id', $unit->id)
+                ->where('status', 'lunas')
+                ->where('type', 'masuk')
+                ->sum('amount');
+            $paidAmount += (float) $manualInvoicePaid;
+
             $remainingAmount = max(0, $sellingPrice - $paidAmount);
             $profit = 0;
 

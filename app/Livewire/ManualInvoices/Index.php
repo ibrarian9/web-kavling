@@ -75,6 +75,11 @@ class Index extends Component
         $this->resetPage();
     }
 
+    public function updatedProjectId(): void
+    {
+        $this->unit_id = null;
+    }
+
     public function openCreateModal(): void
     {
         $this->resetValidation();
@@ -171,6 +176,23 @@ class Index extends Component
                 }
                 $invoiceData['created_by'] = Auth::id();
                 $invoice = ManualInvoice::create($invoiceData);
+            }
+
+            // If unit_id is linked and type is masuk and status is lunas for unit sale, sync unit status & selling price
+            if ($invoice->unit_id && $invoice->type === 'masuk' && $invoice->status === 'lunas' && $invoice->category === 'penjualan_unit') {
+                $unit = Unit::find($invoice->unit_id);
+                if ($unit) {
+                    $updateUnitData = [];
+                    if ($unit->status === 'tersedia') {
+                        $updateUnitData['status'] = 'terjual';
+                    }
+                    if (!$unit->final_selling_price || $unit->final_selling_price <= 0) {
+                        $updateUnitData['final_selling_price'] = $invoice->amount;
+                    }
+                    if (!empty($updateUnitData)) {
+                        $unit->update($updateUnitData);
+                    }
+                }
             }
 
             // Sync with Arus Keuangan (CashflowTransaction)

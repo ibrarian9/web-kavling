@@ -1281,10 +1281,20 @@ class Show extends Component
             })
             ->get();
 
-        $totalCashIn = 0;
+        $manualInvoices = \App\Models\ManualInvoice::with('creator')
+            ->where('unit_id', $unit->id)
+            ->latest('invoice_date')
+            ->get();
+
+        $manualInvoiceCashIn = $manualInvoices->where('status', 'lunas')->where('type', 'masuk')->sum('amount');
+        $totalCashIn = $manualInvoiceCashIn;
+
         if ($unit->installment) {
             $totalCashIn += $unit->installment->down_payment;
             $totalCashIn += $unit->installment->payments->sum('amount_paid');
+        } else {
+            $bookingPaid = $unit->bookings->where('status', '!=', 'cancelled')->sum(fn($b) => (float)$b->booking_amount + (float)$b->dp_amount);
+            $totalCashIn += $bookingPaid;
         }
 
         $unitPayrolls = WorkerUnitPayroll::with(['worker', 'payments'])
@@ -1366,6 +1376,7 @@ class Show extends Component
             'unit' => $unit,
             'unitAssignments' => $unitAssignments,
             'materialPurchases' => $materialPurchases,
+            'manualInvoices' => $manualInvoices,
             'totalCashIn' => $totalCashIn,
             'allWorkers' => $allWorkers,
             'unitPayrolls' => $unitPayrolls,
