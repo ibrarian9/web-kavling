@@ -73,11 +73,13 @@ class Index extends Component
         if ($this->editingId) {
             $worker = Worker::findOrFail($this->editingId);
             $worker->update($validated);
+            \App\Services\ActivityLogger::log('WORKER_UPDATED', "Data pekerja {$worker->name} ({$worker->type}) diperbarui.");
             $msg = 'Data pekerja berhasil diperbarui.';
             session()->flash('success', $msg);
             $this->dispatch('notify', ['type' => 'success', 'title' => 'Berhasil!', 'message' => $msg]);
         } else {
-            Worker::create($validated);
+            $worker = Worker::create($validated);
+            \App\Services\ActivityLogger::log('WORKER_CREATED', "Pekerja baru {$worker->name} ({$worker->type}) didaftarkan.");
             $msg = 'Pekerja baru berhasil didaftarkan.';
             session()->flash('success', $msg);
             $this->dispatch('notify', ['type' => 'success', 'title' => 'Berhasil!', 'message' => $msg]);
@@ -98,6 +100,7 @@ class Index extends Component
     {
         $newStatus = $worker->status === 'active' ? 'inactive' : 'active';
         $worker->update(['status' => $newStatus]);
+        \App\Services\ActivityLogger::log('WORKER_STATUS_TOGGLED', "Status pekerja {$worker->name} diubah menjadi {$newStatus}.");
         $msg = "Status {$worker->name} diubah menjadi {$newStatus}.";
         session()->flash('success', $msg);
         $this->dispatch('notify', ['type' => 'success', 'title' => 'Berhasil!', 'message' => $msg]);

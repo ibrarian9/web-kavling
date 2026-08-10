@@ -181,6 +181,8 @@ class Index extends Component
             'issued_at' => now(),
         ]);
 
+        ActivityLogger::log('DOCUMENT_CREATED', "Dokumen SPP {$docNumber} diterbitkan untuk pembeli {$this->buyer_name} (Unit {$unit->code}).");
+
         $this->showGenerateModal = false;
         session()->flash('success', 'Surat Pemesanan Properti (SPP PDF) ' . $docNumber . ' berhasil diterbitkan!');
 

@@ -91,6 +91,12 @@ class Index extends Component
 
         User::updateOrCreate(['id' => $this->editingUserId], $data);
 
+        if ($this->editingUserId) {
+            \App\Services\ActivityLogger::log('USER_UPDATED', "Akun user {$this->name} ({$this->email} - Role: {$this->role}) diperbarui oleh Founder.");
+        } else {
+            \App\Services\ActivityLogger::log('USER_CREATED', "Akun user baru {$this->name} ({$this->email} - Role: {$this->role}) dibuat oleh Founder.");
+        }
+
         $msg = 'Data akun user berhasil ' . ($this->editingUserId ? 'diperbarui' : 'ditambahkan') . '!';
         session()->flash('success', $msg);
         $this->dispatch('notify', ['type' => 'success', 'title' => 'Berhasil!', 'message' => $msg]);
@@ -115,6 +121,9 @@ class Index extends Component
         }
 
         $user->update(['is_active' => !$user->is_active]);
+        $statusStr = $user->is_active ? 'Aktif' : 'Nonaktif';
+        \App\Services\ActivityLogger::log('USER_STATUS_TOGGLED', "Status akun user {$user->name} diubah menjadi {$statusStr} oleh Founder.");
+
         $msg = 'Status akun ' . $user->name . ' berhasil diubah menjadi ' . ($user->is_active ? 'Aktif' : 'Nonaktif') . '!';
         session()->flash('success', $msg);
         $this->dispatch('notify', ['type' => 'success', 'title' => 'Berhasil!', 'message' => $msg]);

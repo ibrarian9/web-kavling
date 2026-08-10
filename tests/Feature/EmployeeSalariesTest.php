@@ -92,4 +92,26 @@ test('founder can access employee salaries page and manage salary standards', fu
     $this->actingAs($founder)
         ->get(route('employee-salary.slip-pdf', $payment->uuid))
         ->assertStatus(200);
+
+    // Test Deleting Payroll Payment Record -> EMPLOYEE_PAYROLL_DELETED log
+    Livewire::actingAs($founder)
+        ->test(\App\Livewire\EmployeeSalaries\Index::class)
+        ->call('deletePaymentRecord', $payment->id)
+        ->assertHasNoErrors();
+
+    $this->assertDatabaseHas('activity_logs', [
+        'user_id' => $founder->id,
+        'action' => 'EMPLOYEE_PAYROLL_DELETED',
+    ]);
+
+    // Test Deleting Salary Standard -> SALARY_STANDARD_DELETED log
+    Livewire::actingAs($founder)
+        ->test(\App\Livewire\EmployeeSalaries\Index::class)
+        ->call('deleteSalaryStandard', $salary->id)
+        ->assertHasNoErrors();
+
+    $this->assertDatabaseHas('activity_logs', [
+        'user_id' => $founder->id,
+        'action' => 'SALARY_STANDARD_DELETED',
+    ]);
 });

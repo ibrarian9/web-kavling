@@ -552,6 +552,7 @@ class Show extends Component
                     'description' => 'Pembayaran Lahan Proyek ' . $project->name . ' ke Penjual Tanah (' . $this->payment_method . ')',
                 ]);
 
+            \App\Services\ActivityLogger::log('PROJECT_PAYMENT_UPDATED', "Pembayaran lahan Proyek {$project->name} sebesar Rp " . number_format($this->payment_amount, 0, ',', '.') . " diperbarui.");
             session()->flash('success', 'Data pembayaran lahan berhasil diperbarui! Arus Kas otomatis disesuaikan.');
             $this->closePaymentModal();
             return;
@@ -581,6 +582,8 @@ class Show extends Component
             'created_by' => auth()->id(),
         ]);
 
+        \App\Services\ActivityLogger::log('PROJECT_PAYMENT_CREATED', "Pembayaran lahan Proyek {$project->name} sebesar Rp " . number_format($this->payment_amount, 0, ',', '.') . " dicatat di Arus Kas.");
+
         session()->flash('success', 'Pembayaran pembelian lahan sebesar Rp ' . number_format($this->payment_amount, 0, ',', '.') . ' ke penjual tanah berhasil dicatat di Arus Kas (Kas Keluar)!');
         $this->closePaymentModal();
     }
@@ -602,6 +605,8 @@ class Show extends Component
 
         $payment->delete();
 
+        \App\Services\ActivityLogger::log('PROJECT_PAYMENT_DELETED', "Catatan pembayaran lahan proyek (ID #{$paymentId}) dihapus.");
+
         session()->flash('success', 'Catatan pembayaran lahan proyek berhasil dihapus.');
     }
 
@@ -620,6 +625,8 @@ class Show extends Component
 
         $trx = CashflowTransaction::where('project_id', $this->projectId)->findOrFail($id);
         $trx->delete();
+
+        \App\Services\ActivityLogger::log('CASHFLOW_DELETED', "Transaksi mutasi kas proyek (ID #{$id}) dihapus.");
 
         session()->flash('success', 'Transaksi mutasi kas proyek berhasil dihapus.');
     }

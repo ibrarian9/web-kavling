@@ -115,24 +115,24 @@
     "semantic_hash": ""
   },
   "app/Livewire/Cashflow/Index.php": {
-    "mtime": 1786279412.9984283,
-    "ast_hash": "6f9248676c0b904967bbfb177fea8859",
+    "mtime": 1786333285.4761977,
+    "ast_hash": "e9afe68e5f21c2af68d9b790cfc7391a",
     "semantic_hash": ""
   },
   "app/Livewire/Dashboard.php": {
-    "mtime": 1786279394.2310836,
-    "ast_hash": "8c564e7496211073ffcf4fd63c1950e5",
+    "mtime": 1786333294.686526,
+    "ast_hash": "5925f839dcc1661e789d0db3d6de8eea",
     "semantic_hash": ""
   },
   "app/Livewire/Documents/Index.php": {
-    "mtime": 1785938626.9990227,
-    "ast_hash": "467f8d695f7a92b5fc3e5a6db6447e17",
-    "semantic_hash": "467f8d695f7a92b5fc3e5a6db6447e17"
+    "mtime": 1786334498.5360336,
+    "ast_hash": "6a603170f8b5294a89f34f1a6a94eac0",
+    "semantic_hash": ""
   },
   "app/Livewire/EmployeeSalaries/Index.php": {
-    "mtime": 1786189879.4583468,
-    "ast_hash": "499dd71573b2bb0f364b5f0f3613fa86",
-    "semantic_hash": "499dd71573b2bb0f364b5f0f3613fa86"
+    "mtime": 1786334164.0092041,
+    "ast_hash": "a435ace68b2b2d795e02d828d035df95",
+    "semantic_hash": ""
   },
   "app/Livewire/FieldExpenses/Index.php": {
     "mtime": 1786331811.458533,
@@ -165,14 +165,14 @@
     "semantic_hash": ""
   },
   "app/Livewire/Projects/Show.php": {
-    "mtime": 1785619436.098328,
-    "ast_hash": "abbf5a39194a6ba90b9ccf8c5654e6b5",
-    "semantic_hash": "abbf5a39194a6ba90b9ccf8c5654e6b5"
+    "mtime": 1786334488.8631713,
+    "ast_hash": "76d283848da1c5ed1dfb1bf7b0a1b0a6",
+    "semantic_hash": ""
   },
   "app/Livewire/Proposals/Index.php": {
-    "mtime": 1786009540.072733,
-    "ast_hash": "e6240abbc9fedcda92a04136a5504ff5",
-    "semantic_hash": "e6240abbc9fedcda92a04136a5504ff5"
+    "mtime": 1786334479.072312,
+    "ast_hash": "b3642764728460ea2a06f416af62bbe1",
+    "semantic_hash": ""
   },
   "app/Livewire/Tutorial/Index.php": {
     "mtime": 1785915925.9586997,
@@ -195,13 +195,13 @@
     "semantic_hash": ""
   },
   "app/Livewire/Users/Index.php": {
-    "mtime": 1786186008.549333,
-    "ast_hash": "1ea6547fe1e8e9e703cc3df411dd32fc",
-    "semantic_hash": "1ea6547fe1e8e9e703cc3df411dd32fc"
+    "mtime": 1786334671.9427807,
+    "ast_hash": "d4f64b602bcc0bbb0f305c566030ce89",
+    "semantic_hash": ""
   },
   "app/Livewire/Workers/Index.php": {
-    "mtime": 1786332542.4104507,
-    "ast_hash": "ee1c5b5b7b10f15669066978f66e1b7d",
+    "mtime": 1786334470.7884324,
+    "ast_hash": "6aca10b1fd5b4f61eed3b956fbf29860",
     "semantic_hash": ""
   },
   "app/Models/ActivityLog.php": {
@@ -800,9 +800,9 @@
     "semantic_hash": "b54910b5bfc3381ac261239f9361142b"
   },
   "resources/views/livewire/employee-salaries/index.blade.php": {
-    "mtime": 1786185435.5655982,
-    "ast_hash": "5fdcc88ae91724572ecc41b0f9a53fb1",
-    "semantic_hash": "5fdcc88ae91724572ecc41b0f9a53fb1"
+    "mtime": 1786333880.4888468,
+    "ast_hash": "460f45e2c27547f0a010bd4b7fcab21a",
+    "semantic_hash": ""
   },
   "resources/views/livewire/field-expenses/index.blade.php": {
     "mtime": 1786001138.720248,
@@ -1310,9 +1310,9 @@
     "semantic_hash": "e70d27c684ef42b083c42044ec2e9817"
   },
   "tests/Feature/EmployeeSalariesTest.php": {
-    "mtime": 1785987088.5548193,
-    "ast_hash": "36dd395f11b621854354e2bc63c316bd",
-    "semantic_hash": "36dd395f11b621854354e2bc63c316bd"
+    "mtime": 1786334173.3479726,
+    "ast_hash": "156c8fe4c83cd94fe0ab6ba5c9a45f0b",
+    "semantic_hash": ""
   },
   "tests/Feature/ExampleTest.php": {
     "mtime": 1784614358.3707674,
@@ -1685,13 +1685,43 @@
     "semantic_hash": ""
   },
   "tests/Feature/ComprehensiveActivityLoggerTest.php": {
-    "mtime": 1786331816.34647,
-    "ast_hash": "d48fb6358701451df2dced1453670c87",
+    "mtime": 1786334652.300218,
+    "ast_hash": "81d64be18edb0682f4a6a48a66258bfb",
     "semantic_hash": ""
   },
   "tests/Feature/WorkerMenuAssignmentTest.php": {
     "mtime": 1786332548.694001,
     "ast_hash": "3cbb2c41c3ffcc48c42903b55cb3bf2a",
+    "semantic_hash": ""
+  },
+  "resources/views/livewire/employee-salaries/partials/header-banner.blade.php": {
+    "mtime": 1786334149.6045716,
+    "ast_hash": "d6edc6da76108aa03828483b98196cb7",
+    "semantic_hash": ""
+  },
+  "resources/views/livewire/employee-salaries/partials/kpi-summary.blade.php": {
+    "mtime": 1786333848.656708,
+    "ast_hash": "09802138771056f183ff7b45bc09b8e3",
+    "semantic_hash": ""
+  },
+  "resources/views/livewire/employee-salaries/partials/modal-payment-process.blade.php": {
+    "mtime": 1786333874.9621563,
+    "ast_hash": "8d96459c76b882afc083399d7c3120e6",
+    "semantic_hash": ""
+  },
+  "resources/views/livewire/employee-salaries/partials/modal-salary-setup.blade.php": {
+    "mtime": 1786333868.7905085,
+    "ast_hash": "fba8871b98b6697b5d3a91b3eb76df97",
+    "semantic_hash": ""
+  },
+  "resources/views/livewire/employee-salaries/partials/tab-payments-table.blade.php": {
+    "mtime": 1786333862.394881,
+    "ast_hash": "c5f4618f5efe91241e58d0691f243be1",
+    "semantic_hash": ""
+  },
+  "resources/views/livewire/employee-salaries/partials/tab-salaries-table.blade.php": {
+    "mtime": 1786333855.4842925,
+    "ast_hash": "96dd2396ffffe875a566d00fce0c1490",
     "semantic_hash": ""
   }
 }

@@ -211,6 +211,8 @@ class Index extends Component
         // Update unit status to awaiting approval
         $unit->update(['status' => 'menunggu_persetujuan']);
 
+        ActivityLogger::log('PROPOSAL_CREATED', "Pengajuan harga unit {$unit->code} sebesar Rp " . number_format($proposed, 0, ',', '.') . " diajukan oleh " . auth()->user()->name);
+
         $msg = $isBelowHpp
             ? 'Pengajuan harga Penawaran (< HPP) unit ' . $unit->code . ' sebesar Rp ' . number_format($proposed, 0, ',', '.') . ' berhasil diajukan!'
             : 'Pengajuan harga unit ' . $unit->code . ' sebesar Rp ' . number_format($proposed, 0, ',', '.') . ' berhasil diajukan!';
@@ -262,7 +264,7 @@ class Index extends Component
             return;
         }
 
-        $proposal = PriceProposal::findOrFail($this->selectedProposalId);
+        $proposal = PriceProposal::with('unit')->findOrFail($this->selectedProposalId);
         $userRole = $user->role;
 
         // Record or update approval decision
@@ -277,6 +279,11 @@ class Index extends Component
                 'notes' => $this->approval_notes,
                 'decided_at' => now(),
             ]
+        );
+
+        ActivityLogger::log(
+            $this->approval_decision === 'ditolak' ? 'PROPOSAL_REJECTED' : 'PROPOSAL_APPROVED',
+            "Pengajuan harga unit " . ($proposal->unit->code ?? 'Unit') . " (" . ucfirst($this->approval_decision) . ") oleh " . ucfirst($userRole) . " (" . auth()->user()->name . ")."
         );
 
         // Re-evaluate proposal status
@@ -345,7 +352,6 @@ class Index extends Component
             'buyer_contact' => 'required|string|max:255',
         ]);
 
-
         $proposal = PriceProposal::with('unit.project')->findOrFail($this->doc_proposal_id);
 
         $docNumber = 'SPP/' . strtoupper($proposal->unit->project->name) . '/' . date('Y/m') . '/' . str_pad(rand(1, 999), 3, '0', STR_PAD_LEFT);
@@ -363,6 +369,8 @@ class Index extends Component
 
         // Update unit status to terjual
         $proposal->unit->update(['status' => 'terjual']);
+
+        ActivityLogger::log('OFFICIAL_DOCUMENT_ISSUED', "Surat Pemesanan Properti ({$docNumber}) diterbitkan untuk pembeli {$this->buyer_name} (Unit {$proposal->unit->code}).");
 
         session()->flash('success', 'Surat Pemesanan Properti (' . $docNumber . ') berhasil diterbitkan!');
         $this->showDocModal = false;

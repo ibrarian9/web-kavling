@@ -205,7 +205,10 @@ class Index extends Component
     {
         $sal = EmployeeSalary::findOrFail($id);
         $name = $sal->employee_name;
+        $pos = $sal->position ?? '-';
         $sal->delete();
+
+        ActivityLogger::log('SALARY_STANDARD_DELETED', "Standar gaji karyawan {$name} ({$pos}) dihapus dari sistem oleh Founder.");
 
         session()->flash('success', 'Standar gaji ' . $name . ' berhasil dihapus.');
     }
@@ -299,11 +302,16 @@ class Index extends Component
 
     public function deletePaymentRecord($id): void
     {
-        $payment = EmployeePayrollPayment::findOrFail($id);
+        $payment = EmployeePayrollPayment::with('employeeSalary')->findOrFail($id);
+        $empName = $payment->employeeSalary->employee_name ?? 'Karyawan';
+        $period = $this->getIndonesianMonth($payment->payroll_month) . ' ' . $payment->payroll_year;
+
         if ($payment->cashflowTransaction) {
             $payment->cashflowTransaction->delete();
         }
         $payment->delete();
+
+        ActivityLogger::log('EMPLOYEE_PAYROLL_DELETED', "Berkas histori penggajian karyawan {$empName} (Periode {$period}) dihapus dari sistem.");
 
         session()->flash('success', 'Histori penggajian berhasil dihapus.');
     }
