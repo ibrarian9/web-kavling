@@ -77,6 +77,7 @@ Route::middleware(['auth', \App\Http\Middleware\EnsureUserIsActive::class])->gro
     Route::get('/worker-payroll/{uuid}/receipt', [PayrollReceiptController::class, 'streamReceipt'])->name('payroll.receipt');
 
     // Penjualan, Booking & Approval
+    Route::get('/daily-activity-reports', \App\Livewire\DailyActivityReports\Index::class)->name('daily-activity-reports.index');
     Route::get('/bookings', BookingsIndex::class)->name('bookings.index');
     Route::get('/bookings/{id}/receipt', [BookingReceiptController::class, 'streamReceipt'])->name('bookings.receipt');
     Route::get('/proposals', ProposalsIndex::class)->name('proposals.index');

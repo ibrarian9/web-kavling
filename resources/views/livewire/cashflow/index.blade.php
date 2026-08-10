@@ -54,7 +54,7 @@
                 <div>
                     <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Pilih Proyek Properti:</label>
                     <select wire:model.live="filter_project_id" class="w-full py-2 px-3 text-xs bg-slate-50 border border-slate-200 rounded-xl font-semibold text-slate-800 focus:outline-none focus:border-emerald-500">
-                        <option value="">-- Semua Proyek --</option>
+                        <option value="">Semua Proyek</option>
                         @foreach ($projects as $p)
                             <option value="{{ $p->id }}">{{ $p->name }} ({{ $p->location }})</option>
                         @endforeach
@@ -66,7 +66,7 @@
                 <div>
                     <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Pilih Unit Kavling & Rumah:</label>
                     <select wire:model.live="filter_unit_id" class="w-full py-2 px-3 text-xs bg-slate-50 border border-slate-200 rounded-xl font-semibold text-slate-800 focus:outline-none focus:border-emerald-500">
-                        <option value="">-- Semua Unit --</option>
+                        <option value="">Semua Unit</option>
                         @foreach ($availableUnits as $u)
                             <option value="{{ $u->id }}">Unit {{ $u->code }} - Tipe {{ $u->type }}</option>
                         @endforeach

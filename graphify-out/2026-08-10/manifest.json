@@ -125,8 +125,8 @@
     "semantic_hash": ""
   },
   "app/Livewire/Documents/Index.php": {
-    "mtime": 1786343256.2348866,
-    "ast_hash": "d1b814664fb1fdd65587f04c15bc6934",
+    "mtime": 1786343551.0443854,
+    "ast_hash": "b23ffa2a0c5589f5d82bf41b61fb81e0",
     "semantic_hash": ""
   },
   "app/Livewire/EmployeeSalaries/Index.php": {
@@ -560,9 +560,9 @@
     "semantic_hash": "478d2bf1fac95a068ac5ab6be72d33a3"
   },
   "database/seeders/DatabaseSeeder.php": {
-    "mtime": 1786113593.8317344,
-    "ast_hash": "4c73181e190279458c375c9d20c13bbf",
-    "semantic_hash": "4c73181e190279458c375c9d20c13bbf"
+    "mtime": 1786350083.5584924,
+    "ast_hash": "99d366293402153ab7fbf5e7cbbb2880",
+    "semantic_hash": ""
   },
   "database/seeders/EmployeeSalarySeeder.php": {
     "mtime": 1786113609.4938495,
@@ -670,9 +670,9 @@
     "semantic_hash": "d645e4cba4cb1708ef03fb7a8e335800"
   },
   "resources/views/components/layouts/partials/nav-links.blade.php": {
-    "mtime": 1786179006.8640962,
-    "ast_hash": "d97bc7a42fe35d159dc0d4d0d25f2c0d",
-    "semantic_hash": "d97bc7a42fe35d159dc0d4d0d25f2c0d"
+    "mtime": 1786349911.4902098,
+    "ast_hash": "5ada4527a7385bc785e37cc26d0ae2fb",
+    "semantic_hash": ""
   },
   "resources/views/components/layouts/partials/sidebar-desktop.blade.php": {
     "mtime": 1786180553.0906503,
@@ -1250,9 +1250,9 @@
     "semantic_hash": "3c6ce2e6d16444282b24a9aa63885563"
   },
   "routes/web.php": {
-    "mtime": 1786197463.24287,
-    "ast_hash": "47d003a28c8349067f43cc56007dede8",
-    "semantic_hash": "47d003a28c8349067f43cc56007dede8"
+    "mtime": 1786349899.5011208,
+    "ast_hash": "b3f4334770fea273097c2889aec01fb3",
+    "semantic_hash": ""
   },
   "tests/Feature/ActivityLogTest.php": {
     "mtime": 1786192304.1972237,
@@ -1730,8 +1730,63 @@
     "semantic_hash": ""
   },
   "tests/Feature/SppDeletionAndStatusRollbackTest.php": {
-    "mtime": 1786343405.69301,
-    "ast_hash": "512f5d50e9ae7b90131398ba8a8c3d28",
+    "mtime": 1786343562.9944255,
+    "ast_hash": "24dc22fa6f40bdb2391715c4e96b4e8f",
+    "semantic_hash": ""
+  },
+  "app/Livewire/DailyActivityReports/Index.php": {
+    "mtime": 1786351356.3217094,
+    "ast_hash": "6128dd8fb678f040e03205d07e667054",
+    "semantic_hash": ""
+  },
+  "app/Models/DailyActivityReport.php": {
+    "mtime": 1786349866.2778745,
+    "ast_hash": "349fb3bdf7821ca59b5c5438b2f92edc",
+    "semantic_hash": ""
+  },
+  "database/migrations/2026_08_10_000001_create_daily_activity_reports_table.php": {
+    "mtime": 1786349853.4377794,
+    "ast_hash": "dbec78eb736ca2b8f673115c31abba11",
+    "semantic_hash": ""
+  },
+  "resources/views/livewire/daily-activity-reports/index.blade.php": {
+    "mtime": 1786351073.5959692,
+    "ast_hash": "29681aaab5badd0896eea54356e0789b",
+    "semantic_hash": ""
+  },
+  "tests/Feature/DailyActivityReportTest.php": {
+    "mtime": 1786349936.1143928,
+    "ast_hash": "11aad339f20031fa6c822ede45dd158d",
+    "semantic_hash": ""
+  },
+  "database/seeders/DailyActivityReportSeeder.php": {
+    "mtime": 1786350078.1834521,
+    "ast_hash": "df5e92e576fba60c5f8119d3c35c7dbb",
+    "semantic_hash": ""
+  },
+  "resources/views/livewire/daily-activity-reports/partials/filter-bar.blade.php": {
+    "mtime": 1786351377.921002,
+    "ast_hash": "3afb7646c8b7617b3f4c77655ca4ba00",
+    "semantic_hash": ""
+  },
+  "resources/views/livewire/daily-activity-reports/partials/header-banner.blade.php": {
+    "mtime": 1786351038.8637054,
+    "ast_hash": "9e93c5e3751483b1a1138d430ee53e91",
+    "semantic_hash": ""
+  },
+  "resources/views/livewire/daily-activity-reports/partials/modal-detail.blade.php": {
+    "mtime": 1786351068.0049267,
+    "ast_hash": "c1bd804c695cec75921519b5e40501b1",
+    "semantic_hash": ""
+  },
+  "resources/views/livewire/daily-activity-reports/partials/modal-form.blade.php": {
+    "mtime": 1786351092.540113,
+    "ast_hash": "ddf927007077e67616eba3feffd64155",
+    "semantic_hash": ""
+  },
+  "resources/views/livewire/daily-activity-reports/partials/table-list.blade.php": {
+    "mtime": 1786351366.7675593,
+    "ast_hash": "38cca1100491e31b3aafc4452ebacf78",
     "semantic_hash": ""
   }
 }

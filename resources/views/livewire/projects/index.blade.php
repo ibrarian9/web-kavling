@@ -324,7 +324,7 @@
                                     <div class="flex items-center gap-2">
                                         <!-- Dropdown Pindahkan Proyek -->
                                         <select onchange="if(this.value) @this.call('movePengawasAssignment', {{ $pa->id }}, this.value)" class="text-[11px] bg-white border border-purple-200 rounded-lg px-2 py-1 font-semibold text-purple-900 focus:ring-1 focus:ring-purple-500">
-                                            <option value="">-- Pindahkan Proyek --</option>
+                                            <option value="">Pindahkan Proyek</option>
                                             @foreach($allProjects as $otherProj)
                                                 @if($otherProj->id !== $selectedProjectForModal->id)
                                                     <option value="{{ $otherProj->id }}">Ke {{ $otherProj->name }}</option>

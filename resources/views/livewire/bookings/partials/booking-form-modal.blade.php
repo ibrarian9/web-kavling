@@ -14,7 +14,7 @@
                     <div>
                         <label class="block font-semibold text-slate-700 uppercase mb-1">Perumahan / Proyek *</label>
                         <select wire:model.live="project_id" required class="input-clean w-full">
-                            <option value="">-- Pilih Proyek --</option>
+                            <option value="">Pilih Proyek</option>
                             @foreach ($projects as $p)
                                 <option value="{{ $p->id }}">{{ $p->name }}</option>
                             @endforeach
@@ -34,7 +34,7 @@
                     <div>
                         <label class="block font-semibold text-slate-700 uppercase mb-1">Unit Spesifik *</label>
                         <select wire:model="unit_id" class="input-clean w-full font-semibold" {{ !$project_id ? 'disabled' : '' }}>
-                            <option value="">-- Pilih Unit --</option>
+                            <option value="">Pilih Unit</option>
                             @foreach ($availableUnits as $u)
                                 <option value="{{ $u->id }}">Unit Kode: {{ $u->code }} ({{ ucfirst($u->category) }} - {{ $u->status }})</option>
                             @endforeach

@@ -135,6 +135,19 @@
                 <span>Penjualan & Legalitas</span>
             </div>
 
+            <a href="{{ route('daily-activity-reports.index') }}" wire:navigate.hover @click="mobileMenuOpen = false" 
+               class="flex items-center justify-between px-3 py-2.5 rounded-xl text-xs sm:text-sm font-medium transition-all duration-150 group {{ request()->routeIs('daily-activity-reports.*') ? 'bg-gradient-to-r from-emerald-500/20 to-teal-500/10 text-emerald-400 font-bold border-l-4 border-emerald-500 shadow-2xs' : 'text-slate-400 hover:bg-slate-800/80 hover:text-slate-100 hover:translate-x-0.5' }}">
+                <div class="flex items-center gap-3 min-w-0">
+                    <div class="p-1.5 rounded-lg transition-colors {{ request()->routeIs('daily-activity-reports.*') ? 'bg-emerald-500/20 text-emerald-400' : 'bg-slate-800/60 text-slate-400 group-hover:text-slate-200 group-hover:bg-slate-700/60' }}">
+                        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                    </div>
+                    <span class="truncate">Daily Activity Report</span>
+                </div>
+                @if(request()->routeIs('daily-activity-reports.*'))
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-sm"></span>
+                @endif
+            </a>
+
             <a href="{{ route('bookings.index') }}" wire:navigate.hover @click="mobileMenuOpen = false" 
                class="flex items-center justify-between px-3 py-2.5 rounded-xl text-xs sm:text-sm font-medium transition-all duration-150 group {{ request()->routeIs('bookings.*') ? 'bg-gradient-to-r from-emerald-500/20 to-teal-500/10 text-emerald-400 font-bold border-l-4 border-emerald-500 shadow-2xs' : 'text-slate-400 hover:bg-slate-800/80 hover:text-slate-100 hover:translate-x-0.5' }}">
                 <div class="flex items-center gap-3 min-w-0">

@@ -168,7 +168,7 @@
                     <div>
                         <label class="block font-bold text-slate-700 uppercase mb-1">Pilih Unit Kavling / Rumah *</label>
                         <select wire:model="selected_unit_id" required class="input-clean w-full font-semibold">
-                            <option value="">-- Pilih Unit --</option>
+                            <option value="">Pilih Unit</option>
                             @foreach($allUnits as $u)
                                 <option value="{{ $u->id }}">{{ $u->code }} - {{ $u->project->name }} (Status: {{ ucfirst($u->status) }})</option>
                             @endforeach

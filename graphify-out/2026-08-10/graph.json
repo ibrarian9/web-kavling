@@ -81,7 +81,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_http_controllers_authcontroller",
-      "community": 229,
+      "community": 24,
       "community_name": "Illuminate\\Http\\Request",
       "norm_label": "authcontroller.php"
     },
@@ -94,7 +94,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "app_http_controllers_authcontroller_authcontroller",
-      "community": 229,
+      "community": 24,
       "community_name": "Illuminate\\Http\\Request",
       "norm_label": "authcontroller"
     },
@@ -106,7 +106,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_http_controllers_authcontroller_authcontroller_showlogin",
-      "community": 229,
+      "community": 24,
       "community_name": "Illuminate\\Http\\Request",
       "norm_label": ".showlogin()"
     },
@@ -118,7 +118,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_http_controllers_authcontroller_authcontroller_login",
-      "community": 229,
+      "community": 24,
       "community_name": "Illuminate\\Http\\Request",
       "norm_label": ".login()"
     },
@@ -130,7 +130,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_http_controllers_authcontroller_authcontroller_switchrole",
-      "community": 229,
+      "community": 24,
       "community_name": "Illuminate\\Http\\Request",
       "norm_label": ".switchrole()"
     },
@@ -142,7 +142,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_http_controllers_authcontroller_authcontroller_logout",
-      "community": 229,
+      "community": 24,
       "community_name": "Illuminate\\Http\\Request",
       "norm_label": ".logout()"
     },
@@ -153,8 +153,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_http_controllers_bookingreceiptcontroller",
-      "community": 220,
-      "community_name": "BookingReceiptController",
+      "community": 4,
+      "community_name": "web.php",
       "norm_label": "bookingreceiptcontroller.php"
     },
     {
@@ -166,7 +166,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "app_http_controllers_bookingreceiptcontroller_bookingreceiptcontroller",
-      "community": 220,
+      "community": 215,
       "community_name": "BookingReceiptController",
       "norm_label": "bookingreceiptcontroller"
     },
@@ -178,7 +178,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_http_controllers_bookingreceiptcontroller_bookingreceiptcontroller_streamreceipt",
-      "community": 220,
+      "community": 215,
       "community_name": "BookingReceiptController",
       "norm_label": ".streamreceipt()"
     },
@@ -190,7 +190,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_http_controllers_bookingreceiptcontroller_bookingreceiptcontroller_generateqrbase64",
-      "community": 220,
+      "community": 215,
       "community_name": "BookingReceiptController",
       "norm_label": ".generateqrbase64()"
     },
@@ -202,7 +202,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_http_controllers_bookingreceiptcontroller_bookingreceiptcontroller_terbilang",
-      "community": 220,
+      "community": 215,
       "community_name": "BookingReceiptController",
       "norm_label": ".terbilang()"
     },
@@ -226,8 +226,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "app_http_controllers_cashflowreportcontroller_cashflowreportcontroller",
-      "community": 30,
-      "community_name": "CashflowTransaction",
+      "community": 238,
+      "community_name": ".exportPdf",
       "norm_label": "cashflowreportcontroller"
     },
     {
@@ -238,8 +238,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_http_controllers_cashflowreportcontroller_cashflowreportcontroller_exportpdf",
-      "community": 30,
-      "community_name": "CashflowTransaction",
+      "community": 238,
+      "community_name": ".exportPdf",
       "norm_label": ".exportpdf()"
     },
     {
@@ -250,8 +250,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_http_controllers_cashflowreportcontroller_cashflowreportcontroller_generateqrbase64",
-      "community": 30,
-      "community_name": "CashflowTransaction",
+      "community": 238,
+      "community_name": ".exportPdf",
       "norm_label": ".generateqrbase64()"
     },
     {
@@ -262,8 +262,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_http_controllers_cashflowreportcontroller_cashflowreportcontroller_exportexcel",
-      "community": 30,
-      "community_name": "CashflowTransaction",
+      "community": 238,
+      "community_name": ".exportPdf",
       "norm_label": ".exportexcel()"
     },
     {
@@ -286,8 +286,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "app_http_controllers_cashflowverificationcontroller_cashflowverificationcontroller",
-      "community": 24,
-      "community_name": "Controller",
+      "community": 14,
+      "community_name": "Unit",
       "norm_label": "cashflowverificationcontroller"
     },
     {
@@ -298,8 +298,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_http_controllers_cashflowverificationcontroller_cashflowverificationcontroller_verify",
-      "community": 24,
-      "community_name": "Controller",
+      "community": 14,
+      "community_name": "Unit",
       "norm_label": ".verify()"
     },
     {
@@ -309,7 +309,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_http_controllers_controller",
-      "community": 24,
+      "community": 28,
       "community_name": "Controller",
       "norm_label": "controller.php"
     },
@@ -322,7 +322,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "app_http_controllers_controller_controller",
-      "community": 24,
+      "community": 28,
       "community_name": "Controller",
       "norm_label": "controller"
     },
@@ -346,7 +346,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "app_http_controllers_documentpdfcontroller_documentpdfcontroller",
-      "community": 28,
+      "community": 236,
       "community_name": "DocumentPdfController",
       "norm_label": "documentpdfcontroller"
     },
@@ -358,7 +358,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_http_controllers_documentpdfcontroller_documentpdfcontroller_streampdf",
-      "community": 28,
+      "community": 236,
       "community_name": "DocumentPdfController",
       "norm_label": ".streampdf()"
     },
@@ -370,7 +370,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_http_controllers_documentpdfcontroller_documentpdfcontroller_streamspjbpdf",
-      "community": 28,
+      "community": 236,
       "community_name": "DocumentPdfController",
       "norm_label": ".streamspjbpdf()"
     },
@@ -382,7 +382,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_http_controllers_documentpdfcontroller_documentpdfcontroller_verifyspjb",
-      "community": 28,
+      "community": 236,
       "community_name": "DocumentPdfController",
       "norm_label": ".verifyspjb()"
     },
@@ -394,7 +394,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_http_controllers_documentpdfcontroller_documentpdfcontroller_generateqrbase64",
-      "community": 28,
+      "community": 236,
       "community_name": "DocumentPdfController",
       "norm_label": ".generateqrbase64()"
     },
@@ -406,7 +406,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_http_controllers_documentpdfcontroller_documentpdfcontroller_terbilang",
-      "community": 28,
+      "community": 236,
       "community_name": "DocumentPdfController",
       "norm_label": ".terbilang()"
     },
@@ -417,8 +417,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_http_controllers_documentverificationcontroller",
-      "community": 4,
-      "community_name": "web.php",
+      "community": 28,
+      "community_name": "Controller",
       "norm_label": "documentverificationcontroller.php"
     },
     {
@@ -430,8 +430,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "app_http_controllers_documentverificationcontroller_documentverificationcontroller",
-      "community": 4,
-      "community_name": "web.php",
+      "community": 28,
+      "community_name": "Controller",
       "norm_label": "documentverificationcontroller"
     },
     {
@@ -442,8 +442,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_http_controllers_documentverificationcontroller_documentverificationcontroller_verify",
-      "community": 4,
-      "community_name": "web.php",
+      "community": 28,
+      "community_name": "Controller",
       "norm_label": ".verify()"
     },
     {
@@ -453,8 +453,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_http_controllers_employeesalaryslipcontroller",
-      "community": 19,
-      "community_name": "Index",
+      "community": 245,
+      "community_name": "EmployeePayrollPayment",
       "norm_label": "employeesalaryslipcontroller.php"
     },
     {
@@ -466,8 +466,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "app_http_controllers_employeesalaryslipcontroller_employeesalaryslipcontroller",
-      "community": 19,
-      "community_name": "Index",
+      "community": 245,
+      "community_name": "EmployeePayrollPayment",
       "norm_label": "employeesalaryslipcontroller"
     },
     {
@@ -478,8 +478,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_http_controllers_employeesalaryslipcontroller_employeesalaryslipcontroller_streampdf",
-      "community": 19,
-      "community_name": "Index",
+      "community": 245,
+      "community_name": "EmployeePayrollPayment",
       "norm_label": ".streampdf()"
     },
     {
@@ -502,8 +502,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "app_http_controllers_fieldexpensesreportcontroller_fieldexpensesreportcontroller",
-      "community": 10,
-      "community_name": "WeeklyMaterialPurchase",
+      "community": 55,
+      "community_name": ".exportPdf",
       "norm_label": "fieldexpensesreportcontroller"
     },
     {
@@ -514,8 +514,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_http_controllers_fieldexpensesreportcontroller_fieldexpensesreportcontroller_exportpdf",
-      "community": 10,
-      "community_name": "WeeklyMaterialPurchase",
+      "community": 55,
+      "community_name": ".exportPdf",
       "norm_label": ".exportpdf()"
     },
     {
@@ -526,8 +526,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_http_controllers_fieldexpensesreportcontroller_fieldexpensesreportcontroller_verify",
-      "community": 10,
-      "community_name": "WeeklyMaterialPurchase",
+      "community": 55,
+      "community_name": ".exportPdf",
       "norm_label": ".verify()"
     },
     {
@@ -538,8 +538,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_http_controllers_fieldexpensesreportcontroller_fieldexpensesreportcontroller_generateqrbase64",
-      "community": 10,
-      "community_name": "WeeklyMaterialPurchase",
+      "community": 55,
+      "community_name": ".exportPdf",
       "norm_label": ".generateqrbase64()"
     },
     {
@@ -765,7 +765,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_http_controllers_materialpurchasereceiptcontroller",
-      "community": 6,
+      "community": 225,
       "community_name": "MaterialPurchaseReceiptController",
       "norm_label": "materialpurchasereceiptcontroller.php"
     },
@@ -778,7 +778,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "app_http_controllers_materialpurchasereceiptcontroller_materialpurchasereceiptcontroller",
-      "community": 6,
+      "community": 225,
       "community_name": "MaterialPurchaseReceiptController",
       "norm_label": "materialpurchasereceiptcontroller"
     },
@@ -790,7 +790,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_http_controllers_materialpurchasereceiptcontroller_materialpurchasereceiptcontroller_streamreceipt",
-      "community": 6,
+      "community": 225,
       "community_name": "MaterialPurchaseReceiptController",
       "norm_label": ".streamreceipt()"
     },
@@ -802,7 +802,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_http_controllers_materialpurchasereceiptcontroller_materialpurchasereceiptcontroller_verify",
-      "community": 6,
+      "community": 225,
       "community_name": "MaterialPurchaseReceiptController",
       "norm_label": ".verify()"
     },
@@ -814,7 +814,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_http_controllers_materialpurchasereceiptcontroller_materialpurchasereceiptcontroller_generateqrbase64",
-      "community": 6,
+      "community": 225,
       "community_name": "MaterialPurchaseReceiptController",
       "norm_label": ".generateqrbase64()"
     },
@@ -826,7 +826,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_http_controllers_materialpurchasereceiptcontroller_materialpurchasereceiptcontroller_terbilang",
-      "community": 6,
+      "community": 225,
       "community_name": "MaterialPurchaseReceiptController",
       "norm_label": ".terbilang()"
     },
@@ -850,7 +850,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "app_http_controllers_payrollreceiptcontroller_payrollreceiptcontroller",
-      "community": 224,
+      "community": 242,
       "community_name": "PayrollReceiptController",
       "norm_label": "payrollreceiptcontroller"
     },
@@ -862,7 +862,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_http_controllers_payrollreceiptcontroller_payrollreceiptcontroller_streamreceipt",
-      "community": 224,
+      "community": 242,
       "community_name": "PayrollReceiptController",
       "norm_label": ".streamreceipt()"
     },
@@ -874,7 +874,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_http_controllers_payrollreceiptcontroller_payrollreceiptcontroller_generateqrbase64",
-      "community": 224,
+      "community": 242,
       "community_name": "PayrollReceiptController",
       "norm_label": ".generateqrbase64()"
     },
@@ -886,7 +886,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_http_controllers_payrollreceiptcontroller_payrollreceiptcontroller_terbilang",
-      "community": 224,
+      "community": 242,
       "community_name": "PayrollReceiptController",
       "norm_label": ".terbilang()"
     },
@@ -1017,8 +1017,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_http_controllers_receiptverificationcontroller",
-      "community": 24,
-      "community_name": "Controller",
+      "community": 4,
+      "community_name": "web.php",
       "norm_label": "receiptverificationcontroller.php"
     },
     {
@@ -1030,8 +1030,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "app_http_controllers_receiptverificationcontroller_receiptverificationcontroller",
-      "community": 24,
-      "community_name": "Controller",
+      "community": 4,
+      "community_name": "web.php",
       "norm_label": "receiptverificationcontroller"
     },
     {
@@ -1042,8 +1042,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_http_controllers_receiptverificationcontroller_receiptverificationcontroller_verify",
-      "community": 24,
-      "community_name": "Controller",
+      "community": 4,
+      "community_name": "web.php",
       "norm_label": ".verify()"
     },
     {
@@ -1066,7 +1066,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "app_http_controllers_unitexpensesreportcontroller_unitexpensesreportcontroller",
-      "community": 10,
+      "community": 6,
       "community_name": "WeeklyMaterialPurchase",
       "norm_label": "unitexpensesreportcontroller"
     },
@@ -1078,7 +1078,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_http_controllers_unitexpensesreportcontroller_unitexpensesreportcontroller_exportpdf",
-      "community": 10,
+      "community": 6,
       "community_name": "WeeklyMaterialPurchase",
       "norm_label": ".exportpdf()"
     },
@@ -1090,7 +1090,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_http_controllers_unitexpensesreportcontroller_unitexpensesreportcontroller_verify",
-      "community": 10,
+      "community": 6,
       "community_name": "WeeklyMaterialPurchase",
       "norm_label": ".verify()"
     },
@@ -1102,7 +1102,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_http_controllers_unitexpensesreportcontroller_unitexpensesreportcontroller_generateqrbase64",
-      "community": 10,
+      "community": 6,
       "community_name": "WeeklyMaterialPurchase",
       "norm_label": ".generateqrbase64()"
     },
@@ -1126,8 +1126,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "app_http_controllers_unpaidinstallmentreportcontroller_unpaidinstallmentreportcontroller",
-      "community": 227,
-      "community_name": "UnpaidInstallmentReportController",
+      "community": 28,
+      "community_name": "Controller",
       "norm_label": "unpaidinstallmentreportcontroller"
     },
     {
@@ -1138,8 +1138,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_http_controllers_unpaidinstallmentreportcontroller_unpaidinstallmentreportcontroller_exportpdf",
-      "community": 227,
-      "community_name": "UnpaidInstallmentReportController",
+      "community": 28,
+      "community_name": "Controller",
       "norm_label": ".exportpdf()"
     },
     {
@@ -1150,8 +1150,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_http_controllers_unpaidinstallmentreportcontroller_unpaidinstallmentreportcontroller_verify",
-      "community": 227,
-      "community_name": "UnpaidInstallmentReportController",
+      "community": 28,
+      "community_name": "Controller",
       "norm_label": ".verify()"
     },
     {
@@ -1162,8 +1162,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_http_controllers_unpaidinstallmentreportcontroller_unpaidinstallmentreportcontroller_generateqrbase64",
-      "community": 227,
-      "community_name": "UnpaidInstallmentReportController",
+      "community": 28,
+      "community_name": "Controller",
       "norm_label": ".generateqrbase64()"
     },
     {
@@ -1173,7 +1173,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_http_controllers_workerspkcontroller",
-      "community": 215,
+      "community": 13,
       "community_name": "WorkerSpkController",
       "norm_label": "workerspkcontroller.php"
     },
@@ -1186,7 +1186,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "app_http_controllers_workerspkcontroller_workerspkcontroller",
-      "community": 215,
+      "community": 13,
       "community_name": "WorkerSpkController",
       "norm_label": "workerspkcontroller"
     },
@@ -1198,7 +1198,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_http_controllers_workerspkcontroller_workerspkcontroller_streamspk",
-      "community": 215,
+      "community": 13,
       "community_name": "WorkerSpkController",
       "norm_label": ".streamspk()"
     },
@@ -1210,7 +1210,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_http_controllers_workerspkcontroller_workerspkcontroller_verify",
-      "community": 215,
+      "community": 13,
       "community_name": "WorkerSpkController",
       "norm_label": ".verify()"
     },
@@ -1222,7 +1222,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_http_controllers_workerspkcontroller_workerspkcontroller_generateqrbase64",
-      "community": 215,
+      "community": 13,
       "community_name": "WorkerSpkController",
       "norm_label": ".generateqrbase64()"
     },
@@ -1234,7 +1234,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_http_controllers_workerspkcontroller_workerspkcontroller_terbilang",
-      "community": 215,
+      "community": 13,
       "community_name": "WorkerSpkController",
       "norm_label": ".terbilang()"
     },
@@ -1245,7 +1245,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_http_middleware_ensureuserisactive",
-      "community": 229,
+      "community": 24,
       "community_name": "Illuminate\\Http\\Request",
       "norm_label": "ensureuserisactive.php"
     },
@@ -1258,7 +1258,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "app_http_middleware_ensureuserisactive_ensureuserisactive",
-      "community": 229,
+      "community": 24,
       "community_name": "Illuminate\\Http\\Request",
       "norm_label": "ensureuserisactive"
     },
@@ -1270,7 +1270,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_http_middleware_ensureuserisactive_ensureuserisactive_handle",
-      "community": 229,
+      "community": 24,
       "community_name": "Illuminate\\Http\\Request",
       "norm_label": ".handle()"
     },
@@ -1281,7 +1281,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "closure",
-      "community": 229,
+      "community": 24,
       "community_name": "Illuminate\\Http\\Request",
       "norm_label": "closure"
     },
@@ -1521,8 +1521,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_bookings_index_index_save",
-      "community": 16,
-      "community_name": "Booking",
+      "community": 241,
+      "community_name": "ActivityLogger",
       "norm_label": ".save()"
     },
     {
@@ -1533,7 +1533,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_bookings_index_index_deletebooking",
-      "community": 218,
+      "community": 241,
       "community_name": "ActivityLogger",
       "norm_label": ".deletebooking()"
     },
@@ -1773,8 +1773,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_cashflow_index_index_resolveaudittrail",
-      "community": 17,
-      "community_name": "Index",
+      "community": 30,
+      "community_name": "CashflowTransaction",
       "norm_label": ".resolveaudittrail()"
     },
     {
@@ -1857,8 +1857,164 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_cashflow_index_index_render",
-      "community": 17,
-      "community_name": "Index",
+      "community": 30,
+      "community_name": "CashflowTransaction",
+      "norm_label": ".render()"
+    },
+    {
+      "label": "DailyActivityReports/Index.php",
+      "file_type": "code",
+      "source_file": "app/Livewire/DailyActivityReports/Index.php",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "app_livewire_dailyactivityreports_index",
+      "community": 0,
+      "community_name": "User.php",
+      "norm_label": "dailyactivityreports/index.php"
+    },
+    {
+      "label": "Index",
+      "file_type": "code",
+      "source_file": "app/Livewire/DailyActivityReports/Index.php",
+      "source_location": "L13",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "id": "app_livewire_dailyactivityreports_index_index",
+      "community": 8,
+      "community_name": "DailyActivityReport",
+      "norm_label": "index"
+    },
+    {
+      "label": ".mount()",
+      "file_type": "code",
+      "source_file": "app/Livewire/DailyActivityReports/Index.php",
+      "source_location": "L54",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "app_livewire_dailyactivityreports_index_index_mount",
+      "community": 8,
+      "community_name": "DailyActivityReport",
+      "norm_label": ".mount()"
+    },
+    {
+      "label": ".updatingSearch()",
+      "file_type": "code",
+      "source_file": "app/Livewire/DailyActivityReports/Index.php",
+      "source_location": "L65",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "app_livewire_dailyactivityreports_index_index_updatingsearch",
+      "community": 8,
+      "community_name": "DailyActivityReport",
+      "norm_label": ".updatingsearch()"
+    },
+    {
+      "label": ".resetFilters()",
+      "file_type": "code",
+      "source_file": "app/Livewire/DailyActivityReports/Index.php",
+      "source_location": "L70",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "app_livewire_dailyactivityreports_index_index_resetfilters",
+      "community": 8,
+      "community_name": "DailyActivityReport",
+      "norm_label": ".resetfilters()"
+    },
+    {
+      "label": ".openCreateModal()",
+      "file_type": "code",
+      "source_file": "app/Livewire/DailyActivityReports/Index.php",
+      "source_location": "L82",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "app_livewire_dailyactivityreports_index_index_opencreatemodal",
+      "community": 8,
+      "community_name": "DailyActivityReport",
+      "norm_label": ".opencreatemodal()"
+    },
+    {
+      "label": ".resetReportForm()",
+      "file_type": "code",
+      "source_file": "app/Livewire/DailyActivityReports/Index.php",
+      "source_location": "L88",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "app_livewire_dailyactivityreports_index_index_resetreportform",
+      "community": 8,
+      "community_name": "DailyActivityReport",
+      "norm_label": ".resetreportform()"
+    },
+    {
+      "label": ".editReport()",
+      "file_type": "code",
+      "source_file": "app/Livewire/DailyActivityReports/Index.php",
+      "source_location": "L107",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "app_livewire_dailyactivityreports_index_index_editreport",
+      "community": 8,
+      "community_name": "DailyActivityReport",
+      "norm_label": ".editreport()"
+    },
+    {
+      "label": ".showReportDetail()",
+      "file_type": "code",
+      "source_file": "app/Livewire/DailyActivityReports/Index.php",
+      "source_location": "L138",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "app_livewire_dailyactivityreports_index_index_showreportdetail",
+      "community": 8,
+      "community_name": "DailyActivityReport",
+      "norm_label": ".showreportdetail()"
+    },
+    {
+      "label": ".closeDetailModal()",
+      "file_type": "code",
+      "source_file": "app/Livewire/DailyActivityReports/Index.php",
+      "source_location": "L144",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "app_livewire_dailyactivityreports_index_index_closedetailmodal",
+      "community": 8,
+      "community_name": "DailyActivityReport",
+      "norm_label": ".closedetailmodal()"
+    },
+    {
+      "label": ".saveReport()",
+      "file_type": "code",
+      "source_file": "app/Livewire/DailyActivityReports/Index.php",
+      "source_location": "L150",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "app_livewire_dailyactivityreports_index_index_savereport",
+      "community": 8,
+      "community_name": "DailyActivityReport",
+      "norm_label": ".savereport()"
+    },
+    {
+      "label": ".deleteReport()",
+      "file_type": "code",
+      "source_file": "app/Livewire/DailyActivityReports/Index.php",
+      "source_location": "L206",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "app_livewire_dailyactivityreports_index_index_deletereport",
+      "community": 8,
+      "community_name": "DailyActivityReport",
+      "norm_label": ".deletereport()"
+    },
+    {
+      "label": ".render()",
+      "file_type": "code",
+      "source_file": "app/Livewire/DailyActivityReports/Index.php",
+      "source_location": "L228",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "app_livewire_dailyactivityreports_index_index_render",
+      "community": 8,
+      "community_name": "DailyActivityReport",
       "norm_label": ".render()"
     },
     {
@@ -1893,8 +2049,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_dashboard_dashboard_render",
-      "community": 211,
-      "community_name": "PriceProposal",
+      "community": 16,
+      "community_name": "Booking",
       "norm_label": ".render()"
     },
     {
@@ -2021,7 +2177,7 @@
       "label": ".render()",
       "file_type": "code",
       "source_file": "app/Livewire/Documents/Index.php",
-      "source_location": "L225",
+      "source_location": "L228",
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_documents_index_index_render",
@@ -2157,8 +2313,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_employeesalaries_index_index_editsalarystandard",
-      "community": 19,
-      "community_name": "Index",
+      "community": 218,
+      "community_name": "EmployeeSalary",
       "norm_label": ".editsalarystandard()"
     },
     {
@@ -2169,8 +2325,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_employeesalaries_index_index_deletesalarystandard",
-      "community": 19,
-      "community_name": "Index",
+      "community": 218,
+      "community_name": "EmployeeSalary",
       "norm_label": ".deletesalarystandard()"
     },
     {
@@ -2229,8 +2385,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_employeesalaries_index_index_render",
-      "community": 19,
-      "community_name": "Index",
+      "community": 245,
+      "community_name": "EmployeePayrollPayment",
       "norm_label": ".render()"
     },
     {
@@ -2253,7 +2409,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "app_livewire_fieldexpenses_index_index",
-      "community": 10,
+      "community": 6,
       "community_name": "WeeklyMaterialPurchase",
       "norm_label": "index"
     },
@@ -2265,7 +2421,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_fieldexpenses_index_index_openviewer",
-      "community": 10,
+      "community": 6,
       "community_name": "WeeklyMaterialPurchase",
       "norm_label": ".openviewer()"
     },
@@ -2277,7 +2433,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_fieldexpenses_index_index_closeviewer",
-      "community": 10,
+      "community": 6,
       "community_name": "WeeklyMaterialPurchase",
       "norm_label": ".closeviewer()"
     },
@@ -2289,7 +2445,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_fieldexpenses_index_index_updatedprojectid",
-      "community": 10,
+      "community": 6,
       "community_name": "WeeklyMaterialPurchase",
       "norm_label": ".updatedprojectid()"
     },
@@ -2301,7 +2457,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_fieldexpenses_index_index_updatedunitid",
-      "community": 10,
+      "community": 6,
       "community_name": "WeeklyMaterialPurchase",
       "norm_label": ".updatedunitid()"
     },
@@ -2313,7 +2469,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_fieldexpenses_index_index_updatedcategoryfilter",
-      "community": 10,
+      "community": 6,
       "community_name": "WeeklyMaterialPurchase",
       "norm_label": ".updatedcategoryfilter()"
     },
@@ -2325,7 +2481,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_fieldexpenses_index_index_updatedsearch",
-      "community": 10,
+      "community": 6,
       "community_name": "WeeklyMaterialPurchase",
       "norm_label": ".updatedsearch()"
     },
@@ -2337,7 +2493,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_fieldexpenses_index_index_render",
-      "community": 10,
+      "community": 6,
       "community_name": "WeeklyMaterialPurchase",
       "norm_label": ".render()"
     },
@@ -2349,7 +2505,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_fieldexpenses_index_index_openeditmodal",
-      "community": 10,
+      "community": 6,
       "community_name": "WeeklyMaterialPurchase",
       "norm_label": ".openeditmodal()"
     },
@@ -2361,7 +2517,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_fieldexpenses_index_index_closeeditmodal",
-      "community": 10,
+      "community": 6,
       "community_name": "WeeklyMaterialPurchase",
       "norm_label": ".closeeditmodal()"
     },
@@ -2373,7 +2529,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_fieldexpenses_index_index_saveedit",
-      "community": 10,
+      "community": 6,
       "community_name": "WeeklyMaterialPurchase",
       "norm_label": ".saveedit()"
     },
@@ -2385,7 +2541,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_fieldexpenses_index_index_deleteexpense",
-      "community": 10,
+      "community": 6,
       "community_name": "WeeklyMaterialPurchase",
       "norm_label": ".deleteexpense()"
     },
@@ -2409,8 +2565,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "app_livewire_globalsearch_globalsearch",
-      "community": 16,
-      "community_name": "Booking",
+      "community": 229,
+      "community_name": ".render",
       "norm_label": "globalsearch"
     },
     {
@@ -2421,8 +2577,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_globalsearch_globalsearch_openmodal",
-      "community": 16,
-      "community_name": "Booking",
+      "community": 229,
+      "community_name": ".render",
       "norm_label": ".openmodal()"
     },
     {
@@ -2433,8 +2589,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_globalsearch_globalsearch_closemodal",
-      "community": 16,
-      "community_name": "Booking",
+      "community": 229,
+      "community_name": ".render",
       "norm_label": ".closemodal()"
     },
     {
@@ -2445,8 +2601,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_globalsearch_globalsearch_render",
-      "community": 16,
-      "community_name": "Booking",
+      "community": 229,
+      "community_name": ".render",
       "norm_label": ".render()"
     },
     {
@@ -2661,8 +2817,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_installments_index_index_deleteinstallmentpayment",
-      "community": 5,
-      "community_name": "Index",
+      "community": 30,
+      "community_name": "CashflowTransaction",
       "norm_label": ".deleteinstallmentpayment()"
     },
     {
@@ -2949,7 +3105,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "app_livewire_profile_index_index",
-      "community": 218,
+      "community": 241,
       "community_name": "ActivityLogger",
       "norm_label": "index"
     },
@@ -2961,7 +3117,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_profile_index_index_mount",
-      "community": 218,
+      "community": 241,
       "community_name": "ActivityLogger",
       "norm_label": ".mount()"
     },
@@ -2973,7 +3129,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_profile_index_index_updateprofile",
-      "community": 218,
+      "community": 241,
       "community_name": "ActivityLogger",
       "norm_label": ".updateprofile()"
     },
@@ -2985,7 +3141,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_profile_index_index_updatepassword",
-      "community": 218,
+      "community": 241,
       "community_name": "ActivityLogger",
       "norm_label": ".updatepassword()"
     },
@@ -2997,7 +3153,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_profile_index_index_render",
-      "community": 218,
+      "community": 241,
       "community_name": "ActivityLogger",
       "norm_label": ".render()"
     },
@@ -3105,8 +3261,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_projects_index_index_openworkermodal",
-      "community": 8,
-      "community_name": "WorkerAssignment",
+      "community": 21,
+      "community_name": "Project",
       "norm_label": ".openworkermodal()"
     },
     {
@@ -3129,8 +3285,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_projects_index_index_removepengawasassignment",
-      "community": 8,
-      "community_name": "WorkerAssignment",
+      "community": 21,
+      "community_name": "Project",
       "norm_label": ".removepengawasassignment()"
     },
     {
@@ -3345,8 +3501,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_projects_show_show_resolveaudittrail",
-      "community": 7,
-      "community_name": "Show",
+      "community": 30,
+      "community_name": "CashflowTransaction",
       "norm_label": ".resolveaudittrail()"
     },
     {
@@ -3453,8 +3609,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_projects_show_show_render",
-      "community": 7,
-      "community_name": "Show",
+      "community": 30,
+      "community_name": "CashflowTransaction",
       "norm_label": ".render()"
     },
     {
@@ -3477,7 +3633,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "app_livewire_proposals_index_index",
-      "community": 225,
+      "community": 220,
       "community_name": "Index",
       "norm_label": "index"
     },
@@ -3489,7 +3645,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_proposals_index_index_openviewermodal",
-      "community": 225,
+      "community": 220,
       "community_name": "Index",
       "norm_label": ".openviewermodal()"
     },
@@ -3501,7 +3657,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_proposals_index_index_closeviewermodal",
-      "community": 225,
+      "community": 220,
       "community_name": "Index",
       "norm_label": ".closeviewermodal()"
     },
@@ -3513,7 +3669,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_proposals_index_index_mount",
-      "community": 225,
+      "community": 220,
       "community_name": "Index",
       "norm_label": ".mount()"
     },
@@ -3525,7 +3681,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_proposals_index_index_selectunitforproposal",
-      "community": 225,
+      "community": 220,
       "community_name": "Index",
       "norm_label": ".selectunitforproposal()"
     },
@@ -3537,7 +3693,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_proposals_index_index_updatedproposedprice",
-      "community": 225,
+      "community": 220,
       "community_name": "Index",
       "norm_label": ".updatedproposedprice()"
     },
@@ -3549,7 +3705,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_proposals_index_index_calculatemargin",
-      "community": 225,
+      "community": 220,
       "community_name": "Index",
       "norm_label": ".calculatemargin()"
     },
@@ -3561,7 +3717,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_proposals_index_index_opencreatemodal",
-      "community": 225,
+      "community": 220,
       "community_name": "Index",
       "norm_label": ".opencreatemodal()"
     },
@@ -3573,7 +3729,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_proposals_index_index_resetproposalform",
-      "community": 225,
+      "community": 220,
       "community_name": "Index",
       "norm_label": ".resetproposalform()"
     },
@@ -3585,8 +3741,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_proposals_index_index_editproposal",
-      "community": 225,
-      "community_name": "Index",
+      "community": 211,
+      "community_name": "PriceProposal",
       "norm_label": ".editproposal()"
     },
     {
@@ -3597,7 +3753,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_proposals_index_index_submitproposal",
-      "community": 225,
+      "community": 220,
       "community_name": "Index",
       "norm_label": ".submitproposal()"
     },
@@ -3621,7 +3777,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_proposals_index_index_openapprovalmodal",
-      "community": 225,
+      "community": 220,
       "community_name": "Index",
       "norm_label": ".openapprovalmodal()"
     },
@@ -3657,7 +3813,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_proposals_index_index_issuedocument",
-      "community": 218,
+      "community": 241,
       "community_name": "ActivityLogger",
       "norm_label": ".issuedocument()"
     },
@@ -3669,7 +3825,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_proposals_index_index_updatedprojectidfilter",
-      "community": 225,
+      "community": 220,
       "community_name": "Index",
       "norm_label": ".updatedprojectidfilter()"
     },
@@ -3681,7 +3837,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_proposals_index_index_updatedstatusfilter",
-      "community": 225,
+      "community": 220,
       "community_name": "Index",
       "norm_label": ".updatedstatusfilter()"
     },
@@ -3693,7 +3849,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_proposals_index_index_updatedsearch",
-      "community": 225,
+      "community": 220,
       "community_name": "Index",
       "norm_label": ".updatedsearch()"
     },
@@ -3705,8 +3861,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_proposals_index_index_render",
-      "community": 225,
-      "community_name": "Index",
+      "community": 211,
+      "community_name": "PriceProposal",
       "norm_label": ".render()"
     },
     {
@@ -4065,8 +4221,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_units_legacysale_legacysale_save",
-      "community": 218,
-      "community_name": "ActivityLogger",
+      "community": 30,
+      "community_name": "CashflowTransaction",
       "norm_label": ".save()"
     },
     {
@@ -4173,8 +4329,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_units_show_show_opendirectsppmodal",
-      "community": 11,
-      "community_name": "Show",
+      "community": 15,
+      "community_name": "User",
       "norm_label": ".opendirectsppmodal()"
     },
     {
@@ -4221,8 +4377,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_units_show_show_savedirectproposal",
-      "community": 11,
-      "community_name": "Show",
+      "community": 14,
+      "community_name": "Unit",
       "norm_label": ".savedirectproposal()"
     },
     {
@@ -4257,8 +4413,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_units_show_show_mount",
-      "community": 8,
-      "community_name": "WorkerAssignment",
+      "community": 21,
+      "community_name": "Project",
       "norm_label": ".mount()"
     },
     {
@@ -4269,8 +4425,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_units_show_show_canmanageoperational",
-      "community": 8,
-      "community_name": "WorkerAssignment",
+      "community": 11,
+      "community_name": "Show",
       "norm_label": ".canmanageoperational()"
     },
     {
@@ -4317,8 +4473,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_units_show_show_openworkermodal",
-      "community": 11,
-      "community_name": "Show",
+      "community": 0,
+      "community_name": "User.php",
       "norm_label": ".openworkermodal()"
     },
     {
@@ -4329,8 +4485,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_units_show_show_editworkerassignment",
-      "community": 8,
-      "community_name": "WorkerAssignment",
+      "community": 11,
+      "community_name": "Show",
       "norm_label": ".editworkerassignment()"
     },
     {
@@ -4341,8 +4497,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_units_show_show_deleteworkerassignment",
-      "community": 8,
-      "community_name": "WorkerAssignment",
+      "community": 11,
+      "community_name": "Show",
       "norm_label": ".deleteworkerassignment()"
     },
     {
@@ -4353,8 +4509,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_units_show_show_saveworkerassignment",
-      "community": 8,
-      "community_name": "WorkerAssignment",
+      "community": 11,
+      "community_name": "Show",
       "norm_label": ".saveworkerassignment()"
     },
     {
@@ -4365,8 +4521,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_units_show_show_openmaterialmodal",
-      "community": 11,
-      "community_name": "Show",
+      "community": 0,
+      "community_name": "User.php",
       "norm_label": ".openmaterialmodal()"
     },
     {
@@ -4377,8 +4533,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_units_show_show_editmaterialpurchase",
-      "community": 10,
-      "community_name": "WeeklyMaterialPurchase",
+      "community": 11,
+      "community_name": "Show",
       "norm_label": ".editmaterialpurchase()"
     },
     {
@@ -4389,8 +4545,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_units_show_show_deletematerialpurchase",
-      "community": 10,
-      "community_name": "WeeklyMaterialPurchase",
+      "community": 11,
+      "community_name": "Show",
       "norm_label": ".deletematerialpurchase()"
     },
     {
@@ -4425,8 +4581,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_units_show_show_savematerialpurchase",
-      "community": 10,
-      "community_name": "WeeklyMaterialPurchase",
+      "community": 11,
+      "community_name": "Show",
       "norm_label": ".savematerialpurchase()"
     },
     {
@@ -4437,8 +4593,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_units_show_show_openpayrollsetupmodal",
-      "community": 11,
-      "community_name": "Show",
+      "community": 0,
+      "community_name": "User.php",
       "norm_label": ".openpayrollsetupmodal()"
     },
     {
@@ -4449,8 +4605,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_units_show_show_editpayrollsetup",
-      "community": 8,
-      "community_name": "WorkerAssignment",
+      "community": 11,
+      "community_name": "Show",
       "norm_label": ".editpayrollsetup()"
     },
     {
@@ -4461,8 +4617,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_units_show_show_deletepayrollsetup",
-      "community": 8,
-      "community_name": "WorkerAssignment",
+      "community": 11,
+      "community_name": "Show",
       "norm_label": ".deletepayrollsetup()"
     },
     {
@@ -4473,8 +4629,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_units_show_show_savepayrollsetup",
-      "community": 13,
-      "community_name": "Illuminate\\Database\\Eloquent\\Relations\\BelongsTo",
+      "community": 11,
+      "community_name": "Show",
       "norm_label": ".savepayrollsetup()"
     },
     {
@@ -4485,7 +4641,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_units_show_show_openpayrollpaymentmodal",
-      "community": 13,
+      "community": 10,
       "community_name": "Illuminate\\Database\\Eloquent\\Relations\\BelongsTo",
       "norm_label": ".openpayrollpaymentmodal()"
     },
@@ -4497,8 +4653,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_units_show_show_editpayrollpayment",
-      "community": 10,
-      "community_name": "WeeklyMaterialPurchase",
+      "community": 11,
+      "community_name": "Show",
       "norm_label": ".editpayrollpayment()"
     },
     {
@@ -4509,8 +4665,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_units_show_show_deletepayrollpayment",
-      "community": 8,
-      "community_name": "WorkerAssignment",
+      "community": 11,
+      "community_name": "Show",
       "norm_label": ".deletepayrollpayment()"
     },
     {
@@ -4521,8 +4677,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_units_show_show_savepayrollpayment",
-      "community": 10,
-      "community_name": "WeeklyMaterialPurchase",
+      "community": 11,
+      "community_name": "Show",
       "norm_label": ".savepayrollpayment()"
     },
     {
@@ -4533,8 +4689,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_units_show_show_openinstallmentpaymentmodal",
-      "community": 11,
-      "community_name": "Show",
+      "community": 14,
+      "community_name": "Unit",
       "norm_label": ".openinstallmentpaymentmodal()"
     },
     {
@@ -4557,8 +4713,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_units_show_show_deleteinstallmentpayment",
-      "community": 11,
-      "community_name": "Show",
+      "community": 30,
+      "community_name": "CashflowTransaction",
       "norm_label": ".deleteinstallmentpayment()"
     },
     {
@@ -4581,8 +4737,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_units_show_show_openconverttocashmodal",
-      "community": 11,
-      "community_name": "Show",
+      "community": 14,
+      "community_name": "Unit",
       "norm_label": ".openconverttocashmodal()"
     },
     {
@@ -4629,8 +4785,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_units_show_show_savesetupinstallment",
-      "community": 30,
-      "community_name": "CashflowTransaction",
+      "community": 5,
+      "community_name": "Index",
       "norm_label": ".savesetupinstallment()"
     },
     {
@@ -4677,7 +4833,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_units_show_show_render",
-      "community": 10,
+      "community": 6,
       "community_name": "WeeklyMaterialPurchase",
       "norm_label": ".render()"
     },
@@ -5121,8 +5277,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_models_cashflowtransaction_cashflowtransaction_project",
-      "community": 30,
-      "community_name": "CashflowTransaction",
+      "community": 10,
+      "community_name": "Illuminate\\Database\\Eloquent\\Relations\\BelongsTo",
       "norm_label": ".project()"
     },
     {
@@ -5133,8 +5289,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_models_cashflowtransaction_cashflowtransaction_creator",
-      "community": 30,
-      "community_name": "CashflowTransaction",
+      "community": 10,
+      "community_name": "Illuminate\\Database\\Eloquent\\Relations\\BelongsTo",
       "norm_label": ".creator()"
     },
     {
@@ -5148,6 +5304,150 @@
       "community": 30,
       "community_name": "CashflowTransaction",
       "norm_label": ".getreceiptphotourlattribute()"
+    },
+    {
+      "label": "DailyActivityReport.php",
+      "file_type": "code",
+      "source_file": "app/Models/DailyActivityReport.php",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "app_models_dailyactivityreport",
+      "community": 0,
+      "community_name": "User.php",
+      "norm_label": "dailyactivityreport.php"
+    },
+    {
+      "label": "DailyActivityReport",
+      "file_type": "code",
+      "source_file": "app/Models/DailyActivityReport.php",
+      "source_location": "L9",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "id": "app_models_dailyactivityreport_dailyactivityreport",
+      "community": 8,
+      "community_name": "DailyActivityReport",
+      "norm_label": "dailyactivityreport"
+    },
+    {
+      "label": ".user()",
+      "file_type": "code",
+      "source_file": "app/Models/DailyActivityReport.php",
+      "source_location": "L35",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "app_models_dailyactivityreport_dailyactivityreport_user",
+      "community": 8,
+      "community_name": "DailyActivityReport",
+      "norm_label": ".user()"
+    },
+    {
+      "label": ".project()",
+      "file_type": "code",
+      "source_file": "app/Models/DailyActivityReport.php",
+      "source_location": "L40",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "app_models_dailyactivityreport_dailyactivityreport_project",
+      "community": 8,
+      "community_name": "DailyActivityReport",
+      "norm_label": ".project()"
+    },
+    {
+      "label": ".unit()",
+      "file_type": "code",
+      "source_file": "app/Models/DailyActivityReport.php",
+      "source_location": "L45",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "app_models_dailyactivityreport_dailyactivityreport_unit",
+      "community": 8,
+      "community_name": "DailyActivityReport",
+      "norm_label": ".unit()"
+    },
+    {
+      "label": ".leadSources()",
+      "file_type": "code",
+      "source_file": "app/Models/DailyActivityReport.php",
+      "source_location": "L50",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "app_models_dailyactivityreport_dailyactivityreport_leadsources",
+      "community": 8,
+      "community_name": "DailyActivityReport",
+      "norm_label": ".leadsources()"
+    },
+    {
+      "label": ".interactionTypes()",
+      "file_type": "code",
+      "source_file": "app/Models/DailyActivityReport.php",
+      "source_location": "L65",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "app_models_dailyactivityreport_dailyactivityreport_interactiontypes",
+      "community": 8,
+      "community_name": "DailyActivityReport",
+      "norm_label": ".interactiontypes()"
+    },
+    {
+      "label": ".leadStages()",
+      "file_type": "code",
+      "source_file": "app/Models/DailyActivityReport.php",
+      "source_location": "L77",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "app_models_dailyactivityreport_dailyactivityreport_leadstages",
+      "community": 8,
+      "community_name": "DailyActivityReport",
+      "norm_label": ".leadstages()"
+    },
+    {
+      "label": ".getLeadSourceLabelAttribute()",
+      "file_type": "code",
+      "source_file": "app/Models/DailyActivityReport.php",
+      "source_location": "L89",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "app_models_dailyactivityreport_dailyactivityreport_getleadsourcelabelattribute",
+      "community": 8,
+      "community_name": "DailyActivityReport",
+      "norm_label": ".getleadsourcelabelattribute()"
+    },
+    {
+      "label": ".getInteractionTypeLabelAttribute()",
+      "file_type": "code",
+      "source_file": "app/Models/DailyActivityReport.php",
+      "source_location": "L94",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "app_models_dailyactivityreport_dailyactivityreport_getinteractiontypelabelattribute",
+      "community": 8,
+      "community_name": "DailyActivityReport",
+      "norm_label": ".getinteractiontypelabelattribute()"
+    },
+    {
+      "label": ".getLeadStageLabelAttribute()",
+      "file_type": "code",
+      "source_file": "app/Models/DailyActivityReport.php",
+      "source_location": "L99",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "app_models_dailyactivityreport_dailyactivityreport_getleadstagelabelattribute",
+      "community": 8,
+      "community_name": "DailyActivityReport",
+      "norm_label": ".getleadstagelabelattribute()"
+    },
+    {
+      "label": ".getStageBadgeClassAttribute()",
+      "file_type": "code",
+      "source_file": "app/Models/DailyActivityReport.php",
+      "source_location": "L104",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "app_models_dailyactivityreport_dailyactivityreport_getstagebadgeclassattribute",
+      "community": 8,
+      "community_name": "DailyActivityReport",
+      "norm_label": ".getstagebadgeclassattribute()"
     },
     {
       "label": "EmployeePayrollPayment.php",
@@ -5169,8 +5469,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "app_models_employeepayrollpayment_employeepayrollpayment",
-      "community": 19,
-      "community_name": "Index",
+      "community": 245,
+      "community_name": "EmployeePayrollPayment",
       "norm_label": "employeepayrollpayment"
     },
     {
@@ -5181,7 +5481,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_models_employeepayrollpayment_employeepayrollpayment_boot",
-      "community": 19,
+      "community": 12,
       "community_name": "Index",
       "norm_label": ".boot()"
     },
@@ -5193,8 +5493,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_models_employeepayrollpayment_employeepayrollpayment_employeesalary",
-      "community": 19,
-      "community_name": "Index",
+      "community": 245,
+      "community_name": "EmployeePayrollPayment",
       "norm_label": ".employeesalary()"
     },
     {
@@ -5205,8 +5505,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_models_employeepayrollpayment_employeepayrollpayment_cashflowtransaction",
-      "community": 19,
-      "community_name": "Index",
+      "community": 245,
+      "community_name": "EmployeePayrollPayment",
       "norm_label": ".cashflowtransaction()"
     },
     {
@@ -5217,8 +5517,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_models_employeepayrollpayment_employeepayrollpayment_creator",
-      "community": 19,
-      "community_name": "Index",
+      "community": 245,
+      "community_name": "EmployeePayrollPayment",
       "norm_label": ".creator()"
     },
     {
@@ -5241,8 +5541,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "app_models_employeesalary_employeesalary",
-      "community": 19,
-      "community_name": "Index",
+      "community": 218,
+      "community_name": "EmployeeSalary",
       "norm_label": "employeesalary"
     },
     {
@@ -5253,7 +5553,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_models_employeesalary_employeesalary_boot",
-      "community": 19,
+      "community": 12,
       "community_name": "Index",
       "norm_label": ".boot()"
     },
@@ -5265,8 +5565,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_models_employeesalary_employeesalary_getindonesianmonth",
-      "community": 19,
-      "community_name": "Index",
+      "community": 218,
+      "community_name": "EmployeeSalary",
       "norm_label": ".getindonesianmonth()"
     },
     {
@@ -5277,8 +5577,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_models_employeesalary_employeesalary_user",
-      "community": 19,
-      "community_name": "Index",
+      "community": 218,
+      "community_name": "EmployeeSalary",
       "norm_label": ".user()"
     },
     {
@@ -5289,8 +5589,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_models_employeesalary_employeesalary_worker",
-      "community": 19,
-      "community_name": "Index",
+      "community": 218,
+      "community_name": "EmployeeSalary",
       "norm_label": ".worker()"
     },
     {
@@ -5301,8 +5601,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_models_employeesalary_employeesalary_creator",
-      "community": 19,
-      "community_name": "Index",
+      "community": 218,
+      "community_name": "EmployeeSalary",
       "norm_label": ".creator()"
     },
     {
@@ -5313,8 +5613,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_models_employeesalary_employeesalary_payrollpayments",
-      "community": 19,
-      "community_name": "Index",
+      "community": 218,
+      "community_name": "EmployeeSalary",
       "norm_label": ".payrollpayments()"
     },
     {
@@ -5349,7 +5649,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_models_installmentpayment_installmentpayment_booted",
-      "community": 19,
+      "community": 12,
       "community_name": "Index",
       "norm_label": ".booted()"
     },
@@ -5361,7 +5661,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_models_installmentpayment_installmentpayment_installment",
-      "community": 13,
+      "community": 10,
       "community_name": "Illuminate\\Database\\Eloquent\\Relations\\BelongsTo",
       "norm_label": ".installment()"
     },
@@ -5373,7 +5673,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_models_installmentpayment_installmentpayment_creator",
-      "community": 13,
+      "community": 10,
       "community_name": "Illuminate\\Database\\Eloquent\\Relations\\BelongsTo",
       "norm_label": ".creator()"
     },
@@ -5409,7 +5709,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_models_manualinvoice_manualinvoice_booted",
-      "community": 19,
+      "community": 12,
       "community_name": "Index",
       "norm_label": ".booted()"
     },
@@ -5685,7 +5985,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_models_project_project_creator",
-      "community": 13,
+      "community": 10,
       "community_name": "Illuminate\\Database\\Eloquent\\Relations\\BelongsTo",
       "norm_label": ".creator()"
     },
@@ -5697,8 +5997,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_models_project_project_assignments",
-      "community": 21,
-      "community_name": "Project",
+      "community": 221,
+      "community_name": "Illuminate\\Database\\Eloquent\\Relations\\HasMany",
       "norm_label": ".assignments()"
     },
     {
@@ -5709,8 +6009,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_models_project_project_units",
-      "community": 21,
-      "community_name": "Project",
+      "community": 221,
+      "community_name": "Illuminate\\Database\\Eloquent\\Relations\\HasMany",
       "norm_label": ".units()"
     },
     {
@@ -5721,8 +6021,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_models_project_project_cashflows",
-      "community": 21,
-      "community_name": "Project",
+      "community": 221,
+      "community_name": "Illuminate\\Database\\Eloquent\\Relations\\HasMany",
       "norm_label": ".cashflows()"
     },
     {
@@ -5805,7 +6105,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_models_projectpayment_projectpayment_booted",
-      "community": 19,
+      "community": 12,
       "community_name": "Index",
       "norm_label": ".booted()"
     },
@@ -5889,7 +6189,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_models_unit_unit_project",
-      "community": 13,
+      "community": 10,
       "community_name": "Illuminate\\Database\\Eloquent\\Relations\\BelongsTo",
       "norm_label": ".project()"
     },
@@ -5901,7 +6201,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_models_unit_unit_creator",
-      "community": 13,
+      "community": 10,
       "community_name": "Illuminate\\Database\\Eloquent\\Relations\\BelongsTo",
       "norm_label": ".creator()"
     },
@@ -5913,8 +6213,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_models_unit_unit_proposals",
-      "community": 21,
-      "community_name": "Project",
+      "community": 221,
+      "community_name": "Illuminate\\Database\\Eloquent\\Relations\\HasMany",
       "norm_label": ".proposals()"
     },
     {
@@ -5961,8 +6261,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_models_unit_unit_assignments",
-      "community": 21,
-      "community_name": "Project",
+      "community": 221,
+      "community_name": "Illuminate\\Database\\Eloquent\\Relations\\HasMany",
       "norm_label": ".assignments()"
     },
     {
@@ -5973,8 +6273,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_models_unit_unit_activeassignments",
-      "community": 21,
-      "community_name": "Project",
+      "community": 221,
+      "community_name": "Illuminate\\Database\\Eloquent\\Relations\\HasMany",
       "norm_label": ".activeassignments()"
     },
     {
@@ -6129,8 +6429,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_models_unitinstallment_unitinstallment_unit",
-      "community": 13,
-      "community_name": "Illuminate\\Database\\Eloquent\\Relations\\BelongsTo",
+      "community": 5,
+      "community_name": "Index",
       "norm_label": ".unit()"
     },
     {
@@ -6345,7 +6645,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "app_models_weeklymaterialpurchase_weeklymaterialpurchase",
-      "community": 10,
+      "community": 6,
       "community_name": "WeeklyMaterialPurchase",
       "norm_label": "weeklymaterialpurchase"
     },
@@ -6357,7 +6657,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_models_weeklymaterialpurchase_weeklymaterialpurchase_project",
-      "community": 10,
+      "community": 6,
       "community_name": "WeeklyMaterialPurchase",
       "norm_label": ".project()"
     },
@@ -6369,8 +6669,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_models_weeklymaterialpurchase_weeklymaterialpurchase_unit",
-      "community": 13,
-      "community_name": "Illuminate\\Database\\Eloquent\\Relations\\BelongsTo",
+      "community": 6,
+      "community_name": "WeeklyMaterialPurchase",
       "norm_label": ".unit()"
     },
     {
@@ -6381,7 +6681,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_models_weeklymaterialpurchase_weeklymaterialpurchase_worker",
-      "community": 10,
+      "community": 6,
       "community_name": "WeeklyMaterialPurchase",
       "norm_label": ".worker()"
     },
@@ -6393,7 +6693,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_models_weeklymaterialpurchase_weeklymaterialpurchase_pengawas",
-      "community": 10,
+      "community": 6,
       "community_name": "WeeklyMaterialPurchase",
       "norm_label": ".pengawas()"
     },
@@ -6429,8 +6729,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_models_worker_worker_assignments",
-      "community": 21,
-      "community_name": "Project",
+      "community": 221,
+      "community_name": "Illuminate\\Database\\Eloquent\\Relations\\HasMany",
       "norm_label": ".assignments()"
     },
     {
@@ -6441,8 +6741,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_models_worker_worker_activeassignments",
-      "community": 21,
-      "community_name": "Project",
+      "community": 221,
+      "community_name": "Illuminate\\Database\\Eloquent\\Relations\\HasMany",
       "norm_label": ".activeassignments()"
     },
     {
@@ -6453,8 +6753,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_models_worker_worker_weeklypurchases",
-      "community": 21,
-      "community_name": "Project",
+      "community": 221,
+      "community_name": "Illuminate\\Database\\Eloquent\\Relations\\HasMany",
       "norm_label": ".weeklypurchases()"
     },
     {
@@ -6465,8 +6765,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_models_worker_worker_unitpayrolls",
-      "community": 21,
-      "community_name": "Project",
+      "community": 221,
+      "community_name": "Illuminate\\Database\\Eloquent\\Relations\\HasMany",
       "norm_label": ".unitpayrolls()"
     },
     {
@@ -6489,8 +6789,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "app_models_workerassignment_workerassignment",
-      "community": 8,
-      "community_name": "WorkerAssignment",
+      "community": 21,
+      "community_name": "Project",
       "norm_label": "workerassignment"
     },
     {
@@ -6501,8 +6801,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_models_workerassignment_workerassignment_worker",
-      "community": 8,
-      "community_name": "WorkerAssignment",
+      "community": 21,
+      "community_name": "Project",
       "norm_label": ".worker()"
     },
     {
@@ -6513,8 +6813,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_models_workerassignment_workerassignment_user",
-      "community": 8,
-      "community_name": "WorkerAssignment",
+      "community": 21,
+      "community_name": "Project",
       "norm_label": ".user()"
     },
     {
@@ -6525,8 +6825,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_models_workerassignment_workerassignment_project",
-      "community": 8,
-      "community_name": "WorkerAssignment",
+      "community": 21,
+      "community_name": "Project",
       "norm_label": ".project()"
     },
     {
@@ -6537,8 +6837,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_models_workerassignment_workerassignment_unit",
-      "community": 8,
-      "community_name": "WorkerAssignment",
+      "community": 21,
+      "community_name": "Project",
       "norm_label": ".unit()"
     },
     {
@@ -6561,7 +6861,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "app_models_workersalarypayment_workersalarypayment",
-      "community": 10,
+      "community": 6,
       "community_name": "WeeklyMaterialPurchase",
       "norm_label": "workersalarypayment"
     },
@@ -6573,7 +6873,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_models_workersalarypayment_workersalarypayment_boot",
-      "community": 19,
+      "community": 12,
       "community_name": "Index",
       "norm_label": ".boot()"
     },
@@ -6585,7 +6885,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_models_workersalarypayment_workersalarypayment_payroll",
-      "community": 10,
+      "community": 6,
       "community_name": "WeeklyMaterialPurchase",
       "norm_label": ".payroll()"
     },
@@ -6597,7 +6897,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_models_workersalarypayment_workersalarypayment_creator",
-      "community": 10,
+      "community": 6,
       "community_name": "WeeklyMaterialPurchase",
       "norm_label": ".creator()"
     },
@@ -6608,8 +6908,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_models_workerunitpayroll",
-      "community": 21,
-      "community_name": "Project",
+      "community": 10,
+      "community_name": "Illuminate\\Database\\Eloquent\\Relations\\BelongsTo",
       "norm_label": "workerunitpayroll.php"
     },
     {
@@ -6621,7 +6921,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "app_models_workerunitpayroll_workerunitpayroll",
-      "community": 13,
+      "community": 10,
       "community_name": "Illuminate\\Database\\Eloquent\\Relations\\BelongsTo",
       "norm_label": "workerunitpayroll"
     },
@@ -6633,7 +6933,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_models_workerunitpayroll_workerunitpayroll_worker",
-      "community": 13,
+      "community": 10,
       "community_name": "Illuminate\\Database\\Eloquent\\Relations\\BelongsTo",
       "norm_label": ".worker()"
     },
@@ -6645,7 +6945,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_models_workerunitpayroll_workerunitpayroll_project",
-      "community": 13,
+      "community": 10,
       "community_name": "Illuminate\\Database\\Eloquent\\Relations\\BelongsTo",
       "norm_label": ".project()"
     },
@@ -6657,7 +6957,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_models_workerunitpayroll_workerunitpayroll_unit",
-      "community": 13,
+      "community": 10,
       "community_name": "Illuminate\\Database\\Eloquent\\Relations\\BelongsTo",
       "norm_label": ".unit()"
     },
@@ -6669,7 +6969,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_models_workerunitpayroll_workerunitpayroll_creator",
-      "community": 13,
+      "community": 10,
       "community_name": "Illuminate\\Database\\Eloquent\\Relations\\BelongsTo",
       "norm_label": ".creator()"
     },
@@ -6681,8 +6981,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_models_workerunitpayroll_workerunitpayroll_payments",
-      "community": 13,
-      "community_name": "Illuminate\\Database\\Eloquent\\Relations\\BelongsTo",
+      "community": 221,
+      "community_name": "Illuminate\\Database\\Eloquent\\Relations\\HasMany",
       "norm_label": ".payments()"
     },
     {
@@ -6693,8 +6993,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_models_workerunitpayroll_workerunitpayroll_salarypayments",
-      "community": 21,
-      "community_name": "Project",
+      "community": 10,
+      "community_name": "Illuminate\\Database\\Eloquent\\Relations\\BelongsTo",
       "norm_label": ".salarypayments()"
     },
     {
@@ -6705,7 +7005,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_models_workerunitpayroll_workerunitpayroll_getremainingsalaryattribute",
-      "community": 13,
+      "community": 10,
       "community_name": "Illuminate\\Database\\Eloquent\\Relations\\BelongsTo",
       "norm_label": ".getremainingsalaryattribute()"
     },
@@ -6717,7 +7017,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_models_workerunitpayroll_workerunitpayroll_getprogresspercentageattribute",
-      "community": 13,
+      "community": 10,
       "community_name": "Illuminate\\Database\\Eloquent\\Relations\\BelongsTo",
       "norm_label": ".getprogresspercentageattribute()"
     },
@@ -6789,7 +7089,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "app_services_activitylogger_activitylogger",
-      "community": 218,
+      "community": 241,
       "community_name": "ActivityLogger",
       "norm_label": "activitylogger"
     },
@@ -7860,7 +8160,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "database_factories_userfactory",
-      "community": 19,
+      "community": 12,
       "community_name": "Index",
       "norm_label": "userfactory.php"
     },
@@ -7873,7 +8173,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "database_factories_userfactory_userfactory",
-      "community": 19,
+      "community": 12,
       "community_name": "Index",
       "norm_label": "userfactory"
     },
@@ -7885,7 +8185,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "database_factories_userfactory_userfactory_definition",
-      "community": 19,
+      "community": 12,
       "community_name": "Index",
       "norm_label": ".definition()"
     },
@@ -7897,7 +8197,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "database_factories_userfactory_userfactory_unverified",
-      "community": 19,
+      "community": 12,
       "community_name": "Index",
       "norm_label": ".unverified()"
     },
@@ -7908,7 +8208,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "static",
-      "community": 19,
+      "community": 12,
       "community_name": "Index",
       "norm_label": "static"
     },
@@ -8963,6 +9263,41 @@
       "norm_label": "down()"
     },
     {
+      "label": "2026_08_10_000001_create_daily_activity_reports_table.php",
+      "file_type": "code",
+      "source_file": "database/migrations/2026_08_10_000001_create_daily_activity_reports_table.php",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "database_migrations_2026_08_10_000001_create_daily_activity_reports_table",
+      "community": 231,
+      "community_name": "2026_08_10_000001_create_daily_activity_reports_table.php",
+      "norm_label": "2026_08_10_000001_create_daily_activity_reports_table.php"
+    },
+    {
+      "label": "up()",
+      "file_type": "code",
+      "source_file": "database/migrations/2026_08_10_000001_create_daily_activity_reports_table.php",
+      "source_location": "L12",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "database_migrations_2026_08_10_000001_create_daily_activity_reports_table_up",
+      "community": 231,
+      "community_name": "2026_08_10_000001_create_daily_activity_reports_table.php",
+      "norm_label": "up()"
+    },
+    {
+      "label": "down()",
+      "file_type": "code",
+      "source_file": "database/migrations/2026_08_10_000001_create_daily_activity_reports_table.php",
+      "source_location": "L36",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "database_migrations_2026_08_10_000001_create_daily_activity_reports_table_down",
+      "community": 231,
+      "community_name": "2026_08_10_000001_create_daily_activity_reports_table.php",
+      "norm_label": "down()"
+    },
+    {
       "label": "BookingSeeder.php",
       "file_type": "code",
       "source_file": "database/seeders/BookingSeeder.php",
@@ -9011,13 +9346,49 @@
       "norm_label": "me_date()"
     },
     {
+      "label": "DailyActivityReportSeeder.php",
+      "file_type": "code",
+      "source_file": "database/seeders/DailyActivityReportSeeder.php",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "database_seeders_dailyactivityreportseeder",
+      "community": 0,
+      "community_name": "User.php",
+      "norm_label": "dailyactivityreportseeder.php"
+    },
+    {
+      "label": "DailyActivityReportSeeder",
+      "file_type": "code",
+      "source_file": "database/seeders/DailyActivityReportSeeder.php",
+      "source_location": "L11",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "id": "database_seeders_dailyactivityreportseeder_dailyactivityreportseeder",
+      "community": 25,
+      "community_name": "Illuminate\\Database\\Seeder",
+      "norm_label": "dailyactivityreportseeder"
+    },
+    {
+      "label": ".run()",
+      "file_type": "code",
+      "source_file": "database/seeders/DailyActivityReportSeeder.php",
+      "source_location": "L13",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "database_seeders_dailyactivityreportseeder_dailyactivityreportseeder_run",
+      "community": 25,
+      "community_name": "Illuminate\\Database\\Seeder",
+      "norm_label": ".run()"
+    },
+    {
       "label": "DatabaseSeeder.php",
       "file_type": "code",
       "source_file": "database/seeders/DatabaseSeeder.php",
       "source_location": "L1",
       "_origin": "ast",
       "id": "database_seeders_databaseseeder",
-      "community": 221,
+      "community": 227,
       "community_name": "Illuminate\\Foundation\\Testing\\RefreshDatabase",
       "norm_label": "databaseseeder.php"
     },
@@ -9030,8 +9401,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "database_seeders_databaseseeder_databaseseeder",
-      "community": 25,
-      "community_name": "Illuminate\\Database\\Seeder",
+      "community": 227,
+      "community_name": "Illuminate\\Foundation\\Testing\\RefreshDatabase",
       "norm_label": "databaseseeder"
     },
     {
@@ -9042,8 +9413,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "database_seeders_databaseseeder_databaseseeder_run",
-      "community": 25,
-      "community_name": "Illuminate\\Database\\Seeder",
+      "community": 227,
+      "community_name": "Illuminate\\Foundation\\Testing\\RefreshDatabase",
       "norm_label": ".run()"
     },
     {
@@ -9066,8 +9437,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "database_seeders_employeesalaryseeder_employeesalaryseeder",
-      "community": 19,
-      "community_name": "Index",
+      "community": 245,
+      "community_name": "EmployeePayrollPayment",
       "norm_label": "employeesalaryseeder"
     },
     {
@@ -9078,8 +9449,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "database_seeders_employeesalaryseeder_employeesalaryseeder_run",
-      "community": 19,
-      "community_name": "Index",
+      "community": 245,
+      "community_name": "EmployeePayrollPayment",
       "norm_label": ".run()"
     },
     {
@@ -9090,8 +9461,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "database_seeders_employeesalaryseeder_employeesalaryseeder_getmonthname",
-      "community": 19,
-      "community_name": "Index",
+      "community": 245,
+      "community_name": "EmployeePayrollPayment",
       "norm_label": ".getmonthname()"
     },
     {
@@ -9126,8 +9497,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "database_seeders_financialseeder_financialseeder_run",
-      "community": 25,
-      "community_name": "Illuminate\\Database\\Seeder",
+      "community": 30,
+      "community_name": "CashflowTransaction",
       "norm_label": ".run()"
     },
     {
@@ -9366,8 +9737,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "database_seeders_workerseeder_workerseeder",
-      "community": 8,
-      "community_name": "WorkerAssignment",
+      "community": 21,
+      "community_name": "Project",
       "norm_label": "workerseeder"
     },
     {
@@ -9378,8 +9749,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "database_seeders_workerseeder_workerseeder_run",
-      "community": 8,
-      "community_name": "WorkerAssignment",
+      "community": 21,
+      "community_name": "Project",
       "norm_label": ".run()"
     },
     {
@@ -10340,6 +10711,215 @@
       "norm_label": "$set("
     },
     {
+      "label": "daily-activity-reports/index.blade.php",
+      "file_type": "code",
+      "source_file": "resources/views/livewire/daily-activity-reports/index.blade.php",
+      "source_location": null,
+      "_origin": "ast",
+      "id": "resources_views_livewire_daily_activity_reports_index_blade",
+      "community": 237,
+      "community_name": "daily-activity-reports/index.blade.php",
+      "norm_label": "daily-activity-reports/index.blade.php"
+    },
+    {
+      "label": "livewire.daily-activity-reports.partials.header-banner",
+      "file_type": "code",
+      "source_file": "resources/views/livewire/daily-activity-reports/index.blade.php",
+      "source_location": null,
+      "_origin": "ast",
+      "id": "livewire_daily_activity_reports_partials_header_banner",
+      "community": 237,
+      "community_name": "daily-activity-reports/index.blade.php",
+      "norm_label": "livewire.daily-activity-reports.partials.header-banner"
+    },
+    {
+      "label": "livewire.daily-activity-reports.partials.filter-bar",
+      "file_type": "code",
+      "source_file": "resources/views/livewire/daily-activity-reports/index.blade.php",
+      "source_location": null,
+      "_origin": "ast",
+      "id": "livewire_daily_activity_reports_partials_filter_bar",
+      "community": 237,
+      "community_name": "daily-activity-reports/index.blade.php",
+      "norm_label": "livewire.daily-activity-reports.partials.filter-bar"
+    },
+    {
+      "label": "livewire.daily-activity-reports.partials.table-list",
+      "file_type": "code",
+      "source_file": "resources/views/livewire/daily-activity-reports/index.blade.php",
+      "source_location": null,
+      "_origin": "ast",
+      "id": "livewire_daily_activity_reports_partials_table_list",
+      "community": 237,
+      "community_name": "daily-activity-reports/index.blade.php",
+      "norm_label": "livewire.daily-activity-reports.partials.table-list"
+    },
+    {
+      "label": "livewire.daily-activity-reports.partials.modal-form",
+      "file_type": "code",
+      "source_file": "resources/views/livewire/daily-activity-reports/index.blade.php",
+      "source_location": null,
+      "_origin": "ast",
+      "id": "livewire_daily_activity_reports_partials_modal_form",
+      "community": 237,
+      "community_name": "daily-activity-reports/index.blade.php",
+      "norm_label": "livewire.daily-activity-reports.partials.modal-form"
+    },
+    {
+      "label": "livewire.daily-activity-reports.partials.modal-detail",
+      "file_type": "code",
+      "source_file": "resources/views/livewire/daily-activity-reports/index.blade.php",
+      "source_location": null,
+      "_origin": "ast",
+      "id": "livewire_daily_activity_reports_partials_modal_detail",
+      "community": 237,
+      "community_name": "daily-activity-reports/index.blade.php",
+      "norm_label": "livewire.daily-activity-reports.partials.modal-detail"
+    },
+    {
+      "label": "filter-bar.blade.php",
+      "file_type": "code",
+      "source_file": "resources/views/livewire/daily-activity-reports/partials/filter-bar.blade.php",
+      "source_location": null,
+      "_origin": "ast",
+      "id": "resources_views_livewire_daily_activity_reports_partials_filter_bar_blade",
+      "community": 249,
+      "community_name": "filter-bar.blade.php",
+      "norm_label": "filter-bar.blade.php"
+    },
+    {
+      "label": "resetFilters",
+      "file_type": "code",
+      "source_file": "resources/views/livewire/daily-activity-reports/partials/filter-bar.blade.php",
+      "source_location": null,
+      "_origin": "ast",
+      "id": "resetfilters",
+      "community": 249,
+      "community_name": "filter-bar.blade.php",
+      "norm_label": "resetfilters"
+    },
+    {
+      "label": "$set(",
+      "file_type": "code",
+      "source_file": "resources/views/livewire/daily-activity-reports/partials/filter-bar.blade.php",
+      "source_location": null,
+      "_origin": "ast",
+      "id": "resources_views_livewire_daily_activity_reports_partials_filter_bar_blade_php_set",
+      "community": 249,
+      "community_name": "filter-bar.blade.php",
+      "norm_label": "$set("
+    },
+    {
+      "label": "daily-activity-reports/partials/header-banner.blade.php",
+      "file_type": "code",
+      "source_file": "resources/views/livewire/daily-activity-reports/partials/header-banner.blade.php",
+      "source_location": null,
+      "_origin": "ast",
+      "id": "resources_views_livewire_daily_activity_reports_partials_header_banner_blade",
+      "community": 246,
+      "community_name": "daily-activity-reports/partials/header-banner.blade.php",
+      "norm_label": "daily-activity-reports/partials/header-banner.blade.php"
+    },
+    {
+      "label": "openCreateModal",
+      "file_type": "code",
+      "source_file": "resources/views/livewire/daily-activity-reports/partials/header-banner.blade.php",
+      "source_location": null,
+      "_origin": "ast",
+      "id": "resources_views_livewire_daily_activity_reports_partials_header_banner_blade_php_opencreatemodal",
+      "community": 246,
+      "community_name": "daily-activity-reports/partials/header-banner.blade.php",
+      "norm_label": "opencreatemodal"
+    },
+    {
+      "label": "modal-detail.blade.php",
+      "file_type": "code",
+      "source_file": "resources/views/livewire/daily-activity-reports/partials/modal-detail.blade.php",
+      "source_location": null,
+      "_origin": "ast",
+      "id": "resources_views_livewire_daily_activity_reports_partials_modal_detail_blade",
+      "community": 247,
+      "community_name": "modal-detail.blade.php",
+      "norm_label": "modal-detail.blade.php"
+    },
+    {
+      "label": "closeDetailModal",
+      "file_type": "code",
+      "source_file": "resources/views/livewire/daily-activity-reports/partials/modal-detail.blade.php",
+      "source_location": null,
+      "_origin": "ast",
+      "id": "resources_views_livewire_daily_activity_reports_partials_modal_detail_blade_php_closedetailmodal",
+      "community": 247,
+      "community_name": "modal-detail.blade.php",
+      "norm_label": "closedetailmodal"
+    },
+    {
+      "label": "modal-form.blade.php",
+      "file_type": "code",
+      "source_file": "resources/views/livewire/daily-activity-reports/partials/modal-form.blade.php",
+      "source_location": null,
+      "_origin": "ast",
+      "id": "resources_views_livewire_daily_activity_reports_partials_modal_form_blade",
+      "community": 248,
+      "community_name": "modal-form.blade.php",
+      "norm_label": "modal-form.blade.php"
+    },
+    {
+      "label": "$set(",
+      "file_type": "code",
+      "source_file": "resources/views/livewire/daily-activity-reports/partials/modal-form.blade.php",
+      "source_location": null,
+      "_origin": "ast",
+      "id": "resources_views_livewire_daily_activity_reports_partials_modal_form_blade_php_set",
+      "community": 248,
+      "community_name": "modal-form.blade.php",
+      "norm_label": "$set("
+    },
+    {
+      "label": "table-list.blade.php",
+      "file_type": "code",
+      "source_file": "resources/views/livewire/daily-activity-reports/partials/table-list.blade.php",
+      "source_location": null,
+      "_origin": "ast",
+      "id": "resources_views_livewire_daily_activity_reports_partials_table_list_blade",
+      "community": 228,
+      "community_name": "table-list.blade.php",
+      "norm_label": "table-list.blade.php"
+    },
+    {
+      "label": "showReportDetail({{ $rep->id }})",
+      "file_type": "code",
+      "source_file": "resources/views/livewire/daily-activity-reports/partials/table-list.blade.php",
+      "source_location": null,
+      "_origin": "ast",
+      "id": "showreportdetail_rep_id",
+      "community": 228,
+      "community_name": "table-list.blade.php",
+      "norm_label": "showreportdetail({{ $rep->id }})"
+    },
+    {
+      "label": "editReport({{ $rep->id }})",
+      "file_type": "code",
+      "source_file": "resources/views/livewire/daily-activity-reports/partials/table-list.blade.php",
+      "source_location": null,
+      "_origin": "ast",
+      "id": "editreport_rep_id",
+      "community": 228,
+      "community_name": "table-list.blade.php",
+      "norm_label": "editreport({{ $rep->id }})"
+    },
+    {
+      "label": "deleteReport({{ $rep->id }})",
+      "file_type": "code",
+      "source_file": "resources/views/livewire/daily-activity-reports/partials/table-list.blade.php",
+      "source_location": null,
+      "_origin": "ast",
+      "id": "deletereport_rep_id",
+      "community": 228,
+      "community_name": "table-list.blade.php",
+      "norm_label": "deletereport({{ $rep->id }})"
+    },
+    {
       "label": "dashboard.blade.php",
       "file_type": "code",
       "source_file": "resources/views/livewire/dashboard.blade.php",
@@ -10505,7 +11085,7 @@
       "norm_label": "$set("
     },
     {
-      "label": "header-banner.blade.php",
+      "label": "employee-salaries/partials/header-banner.blade.php",
       "file_type": "code",
       "source_file": "resources/views/livewire/employee-salaries/partials/header-banner.blade.php",
       "source_location": null,
@@ -10513,7 +11093,7 @@
       "id": "resources_views_livewire_employee_salaries_partials_header_banner_blade",
       "community": 212,
       "community_name": "openSalaryModal",
-      "norm_label": "header-banner.blade.php"
+      "norm_label": "employee-salaries/partials/header-banner.blade.php"
     },
     {
       "label": "openSalaryModal",
@@ -13527,7 +14107,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "tests_feature_allpagestest",
-      "community": 221,
+      "community": 227,
       "community_name": "Illuminate\\Foundation\\Testing\\RefreshDatabase",
       "norm_label": "allpagestest.php"
     },
@@ -13540,8 +14120,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "tests_feature_allpagestest_allpagestest",
-      "community": 221,
-      "community_name": "Illuminate\\Foundation\\Testing\\RefreshDatabase",
+      "community": 21,
+      "community_name": "Project",
       "norm_label": "allpagestest"
     },
     {
@@ -13552,8 +14132,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "tests_feature_allpagestest_allpagestest_setup",
-      "community": 221,
-      "community_name": "Illuminate\\Foundation\\Testing\\RefreshDatabase",
+      "community": 21,
+      "community_name": "Project",
       "norm_label": ".setup()"
     },
     {
@@ -13564,8 +14144,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "tests_feature_allpagestest_allpagestest_test_login_page_is_accessible",
-      "community": 221,
-      "community_name": "Illuminate\\Foundation\\Testing\\RefreshDatabase",
+      "community": 21,
+      "community_name": "Project",
       "norm_label": ".test_login_page_is_accessible()"
     },
     {
@@ -13576,8 +14156,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "tests_feature_allpagestest_allpagestest_test_founder_can_access_all_main_pages",
-      "community": 221,
-      "community_name": "Illuminate\\Foundation\\Testing\\RefreshDatabase",
+      "community": 21,
+      "community_name": "Project",
       "norm_label": ".test_founder_can_access_all_main_pages()"
     },
     {
@@ -13588,8 +14168,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "tests_feature_allpagestest_allpagestest_test_pengawas_can_access_assigned_projects_and_units",
-      "community": 221,
-      "community_name": "Illuminate\\Foundation\\Testing\\RefreshDatabase",
+      "community": 21,
+      "community_name": "Project",
       "norm_label": ".test_pengawas_can_access_assigned_projects_and_units()"
     },
     {
@@ -13610,8 +14190,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "tests_feature_bookingrejectionandhppvisibilitytest",
-      "community": 221,
-      "community_name": "Illuminate\\Foundation\\Testing\\RefreshDatabase",
+      "community": 54,
+      "community_name": "BookingRejectionAndHppVisibilityTest.php",
       "norm_label": "bookingrejectionandhppvisibilitytest.php"
     },
     {
@@ -13623,8 +14203,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "tests_feature_bookingrejectionandhppvisibilitytest_bookingrejectionandhppvisibilitytest",
-      "community": 15,
-      "community_name": "User",
+      "community": 54,
+      "community_name": "BookingRejectionAndHppVisibilityTest.php",
       "norm_label": "bookingrejectionandhppvisibilitytest"
     },
     {
@@ -13635,8 +14215,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "tests_feature_bookingrejectionandhppvisibilitytest_bookingrejectionandhppvisibilitytest_setup",
-      "community": 15,
-      "community_name": "User",
+      "community": 54,
+      "community_name": "BookingRejectionAndHppVisibilityTest.php",
       "norm_label": ".setup()"
     },
     {
@@ -13647,8 +14227,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "tests_feature_bookingrejectionandhppvisibilitytest_bookingrejectionandhppvisibilitytest_test_finance_and_founder_can_reject_booking_and_unit_reverts_to_available",
-      "community": 15,
-      "community_name": "User",
+      "community": 54,
+      "community_name": "BookingRejectionAndHppVisibilityTest.php",
       "norm_label": ".test_finance_and_founder_can_reject_booking_and_unit_reverts_to_available()"
     },
     {
@@ -13659,8 +14239,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "tests_feature_bookingrejectionandhppvisibilitytest_bookingrejectionandhppvisibilitytest_test_finance_and_founder_can_cancel_or_refund_approved_dp",
-      "community": 15,
-      "community_name": "User",
+      "community": 54,
+      "community_name": "BookingRejectionAndHppVisibilityTest.php",
       "norm_label": ".test_finance_and_founder_can_cancel_or_refund_approved_dp()"
     },
     {
@@ -13671,8 +14251,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "tests_feature_bookingrejectionandhppvisibilitytest_bookingrejectionandhppvisibilitytest_test_marketing_and_pengawas_cannot_approve_or_reject_booking",
-      "community": 15,
-      "community_name": "User",
+      "community": 54,
+      "community_name": "BookingRejectionAndHppVisibilityTest.php",
       "norm_label": ".test_marketing_and_pengawas_cannot_approve_or_reject_booking()"
     },
     {
@@ -13683,8 +14263,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "tests_feature_bookingrejectionandhppvisibilitytest_bookingrejectionandhppvisibilitytest_test_hpp_is_visible_only_to_founder_and_finance",
-      "community": 15,
-      "community_name": "User",
+      "community": 54,
+      "community_name": "BookingRejectionAndHppVisibilityTest.php",
       "norm_label": ".test_hpp_is_visible_only_to_founder_and_finance()"
     },
     {
@@ -13738,7 +14318,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "tests_feature_cashflowseparationandexporttest",
-      "community": 54,
+      "community": 224,
       "community_name": "CashflowSeparationAndExportTest.php",
       "norm_label": "cashflowseparationandexporttest.php"
     },
@@ -13751,7 +14331,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "tests_feature_cashflowseparationandexporttest_cashflowseparationandexporttest",
-      "community": 54,
+      "community": 224,
       "community_name": "CashflowSeparationAndExportTest.php",
       "norm_label": "cashflowseparationandexporttest"
     },
@@ -13763,7 +14343,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "tests_feature_cashflowseparationandexporttest_cashflowseparationandexporttest_setup",
-      "community": 54,
+      "community": 224,
       "community_name": "CashflowSeparationAndExportTest.php",
       "norm_label": ".setup()"
     },
@@ -13775,7 +14355,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "tests_feature_cashflowseparationandexporttest_cashflowseparationandexporttest_test_can_filter_cashflow_by_global_project_unit_and_month",
-      "community": 54,
+      "community": 224,
       "community_name": "CashflowSeparationAndExportTest.php",
       "norm_label": ".test_can_filter_cashflow_by_global_project_unit_and_month()"
     },
@@ -13787,7 +14367,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "tests_feature_cashflowseparationandexporttest_cashflowseparationandexporttest_test_can_export_cashflow_pdf",
-      "community": 54,
+      "community": 224,
       "community_name": "CashflowSeparationAndExportTest.php",
       "norm_label": ".test_can_export_cashflow_pdf()"
     },
@@ -13799,7 +14379,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "tests_feature_cashflowseparationandexporttest_cashflowseparationandexporttest_test_can_export_cashflow_excel_csv",
-      "community": 54,
+      "community": 224,
       "community_name": "CashflowSeparationAndExportTest.php",
       "norm_label": ".test_can_export_cashflow_excel_csv()"
     },
@@ -13832,8 +14412,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "tests_feature_contractorandinstallmentcancellationtest",
-      "community": 0,
-      "community_name": "User.php",
+      "community": 227,
+      "community_name": "Illuminate\\Foundation\\Testing\\RefreshDatabase",
       "norm_label": "contractorandinstallmentcancellationtest.php"
     },
     {
@@ -13845,8 +14425,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "tests_feature_contractorandinstallmentcancellationtest_contractorandinstallmentcancellationtest",
-      "community": 55,
-      "community_name": "UnitDetailResponsivenessAndRoleTest.php",
+      "community": 227,
+      "community_name": "Illuminate\\Foundation\\Testing\\RefreshDatabase",
       "norm_label": "contractorandinstallmentcancellationtest"
     },
     {
@@ -13857,8 +14437,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "tests_feature_contractorandinstallmentcancellationtest_contractorandinstallmentcancellationtest_setup",
-      "community": 55,
-      "community_name": "UnitDetailResponsivenessAndRoleTest.php",
+      "community": 227,
+      "community_name": "Illuminate\\Foundation\\Testing\\RefreshDatabase",
       "norm_label": ".setup()"
     },
     {
@@ -13869,8 +14449,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "tests_feature_contractorandinstallmentcancellationtest_contractorandinstallmentcancellationtest_test_can_register_and_filter_kontraktor_worker",
-      "community": 55,
-      "community_name": "UnitDetailResponsivenessAndRoleTest.php",
+      "community": 227,
+      "community_name": "Illuminate\\Foundation\\Testing\\RefreshDatabase",
       "norm_label": ".test_can_register_and_filter_kontraktor_worker()"
     },
     {
@@ -13881,9 +14461,20 @@
       "_callable": true,
       "_origin": "ast",
       "id": "tests_feature_contractorandinstallmentcancellationtest_contractorandinstallmentcancellationtest_test_founder_and_finance_can_cancel_installment_and_convert_to_cash",
-      "community": 55,
-      "community_name": "UnitDetailResponsivenessAndRoleTest.php",
+      "community": 227,
+      "community_name": "Illuminate\\Foundation\\Testing\\RefreshDatabase",
       "norm_label": ".test_founder_and_finance_can_cancel_installment_and_convert_to_cash()"
+    },
+    {
+      "label": "DailyActivityReportTest.php",
+      "file_type": "code",
+      "source_file": "tests/Feature/DailyActivityReportTest.php",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "tests_feature_dailyactivityreporttest",
+      "community": 0,
+      "community_name": "User.php",
+      "norm_label": "dailyactivityreporttest.php"
     },
     {
       "label": "DeletePayrollSetupTest.php",
@@ -13969,7 +14560,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "tests_feature_globalsearchtest",
-      "community": 221,
+      "community": 227,
       "community_name": "Illuminate\\Foundation\\Testing\\RefreshDatabase",
       "norm_label": "globalsearchtest.php"
     },
@@ -13982,7 +14573,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "tests_feature_globalsearchtest_globalsearchtest",
-      "community": 221,
+      "community": 227,
       "community_name": "Illuminate\\Foundation\\Testing\\RefreshDatabase",
       "norm_label": "globalsearchtest"
     },
@@ -13994,7 +14585,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "tests_feature_globalsearchtest_globalsearchtest_setup",
-      "community": 221,
+      "community": 227,
       "community_name": "Illuminate\\Foundation\\Testing\\RefreshDatabase",
       "norm_label": ".setup()"
     },
@@ -14006,7 +14597,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "tests_feature_globalsearchtest_globalsearchtest_test_can_search_globally_without_sql_errors",
-      "community": 221,
+      "community": 227,
       "community_name": "Illuminate\\Foundation\\Testing\\RefreshDatabase",
       "norm_label": ".test_can_search_globally_without_sql_errors()"
     },
@@ -14017,7 +14608,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "tests_feature_inactiveaccountlogintest",
-      "community": 221,
+      "community": 227,
       "community_name": "Illuminate\\Foundation\\Testing\\RefreshDatabase",
       "norm_label": "inactiveaccountlogintest.php"
     },
@@ -14030,7 +14621,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "tests_feature_inactiveaccountlogintest_inactiveaccountlogintest",
-      "community": 221,
+      "community": 227,
       "community_name": "Illuminate\\Foundation\\Testing\\RefreshDatabase",
       "norm_label": "inactiveaccountlogintest"
     },
@@ -14042,7 +14633,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "tests_feature_inactiveaccountlogintest_inactiveaccountlogintest_setup",
-      "community": 221,
+      "community": 227,
       "community_name": "Illuminate\\Foundation\\Testing\\RefreshDatabase",
       "norm_label": ".setup()"
     },
@@ -14054,7 +14645,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "tests_feature_inactiveaccountlogintest_inactiveaccountlogintest_test_inactive_user_cannot_login",
-      "community": 221,
+      "community": 227,
       "community_name": "Illuminate\\Foundation\\Testing\\RefreshDatabase",
       "norm_label": ".test_inactive_user_cannot_login()"
     },
@@ -14066,7 +14657,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "tests_feature_inactiveaccountlogintest_inactiveaccountlogintest_test_inactive_user_is_logged_out_by_middleware",
-      "community": 221,
+      "community": 227,
       "community_name": "Illuminate\\Foundation\\Testing\\RefreshDatabase",
       "norm_label": ".test_inactive_user_is_logged_out_by_middleware()"
     },
@@ -14255,7 +14846,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "tests_feature_officialdocumentsearchfiltertest_officialdocumentsearchfiltertest",
-      "community": 221,
+      "community": 227,
       "community_name": "Illuminate\\Foundation\\Testing\\RefreshDatabase",
       "norm_label": "officialdocumentsearchfiltertest"
     },
@@ -14267,8 +14858,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "tests_feature_officialdocumentsearchfiltertest_officialdocumentsearchfiltertest_test_document_index_filters_by_project_and_search_keyword",
-      "community": 1,
-      "community_name": "OfficialDocument",
+      "community": 211,
+      "community_name": "PriceProposal",
       "norm_label": ".test_document_index_filters_by_project_and_search_keyword()"
     },
     {
@@ -14278,7 +14869,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "tests_feature_pengawasmanagementtest",
-      "community": 221,
+      "community": 227,
       "community_name": "Illuminate\\Foundation\\Testing\\RefreshDatabase",
       "norm_label": "pengawasmanagementtest.php"
     },
@@ -14291,8 +14882,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "tests_feature_pengawasmanagementtest_pengawasmanagementtest",
-      "community": 221,
-      "community_name": "Illuminate\\Foundation\\Testing\\RefreshDatabase",
+      "community": 21,
+      "community_name": "Project",
       "norm_label": "pengawasmanagementtest"
     },
     {
@@ -14303,8 +14894,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "tests_feature_pengawasmanagementtest_pengawasmanagementtest_setup",
-      "community": 221,
-      "community_name": "Illuminate\\Foundation\\Testing\\RefreshDatabase",
+      "community": 21,
+      "community_name": "Project",
       "norm_label": ".setup()"
     },
     {
@@ -14315,8 +14906,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "tests_feature_pengawasmanagementtest_pengawasmanagementtest_test_founder_can_assign_remove_and_move_pengawas_project",
-      "community": 221,
-      "community_name": "Illuminate\\Foundation\\Testing\\RefreshDatabase",
+      "community": 21,
+      "community_name": "Project",
       "norm_label": ".test_founder_can_assign_remove_and_move_pengawas_project()"
     },
     {
@@ -14327,8 +14918,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "tests_feature_pengawasmanagementtest_pengawasmanagementtest_test_pengawas_only_sees_assigned_projects_and_hpp_hidden",
-      "community": 221,
-      "community_name": "Illuminate\\Foundation\\Testing\\RefreshDatabase",
+      "community": 21,
+      "community_name": "Project",
       "norm_label": ".test_pengawas_only_sees_assigned_projects_and_hpp_hidden()"
     },
     {
@@ -14338,7 +14929,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "tests_feature_profiletest",
-      "community": 221,
+      "community": 227,
       "community_name": "Illuminate\\Foundation\\Testing\\RefreshDatabase",
       "norm_label": "profiletest.php"
     },
@@ -14415,7 +15006,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "tests_feature_toastnotificationtest",
-      "community": 221,
+      "community": 227,
       "community_name": "Illuminate\\Foundation\\Testing\\RefreshDatabase",
       "norm_label": "toastnotificationtest.php"
     },
@@ -14437,7 +15028,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "tests_feature_tutorialpagetest",
-      "community": 221,
+      "community": 227,
       "community_name": "Illuminate\\Foundation\\Testing\\RefreshDatabase",
       "norm_label": "tutorialpagetest.php"
     },
@@ -14448,7 +15039,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "tests_feature_uniqueunitcodetest",
-      "community": 221,
+      "community": 227,
       "community_name": "Illuminate\\Foundation\\Testing\\RefreshDatabase",
       "norm_label": "uniqueunitcodetest.php"
     },
@@ -14461,7 +15052,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "tests_feature_uniqueunitcodetest_uniqueunitcodetest",
-      "community": 221,
+      "community": 227,
       "community_name": "Illuminate\\Foundation\\Testing\\RefreshDatabase",
       "norm_label": "uniqueunitcodetest"
     },
@@ -14473,7 +15064,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "tests_feature_uniqueunitcodetest_uniqueunitcodetest_setup",
-      "community": 221,
+      "community": 227,
       "community_name": "Illuminate\\Foundation\\Testing\\RefreshDatabase",
       "norm_label": ".setup()"
     },
@@ -14485,7 +15076,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "tests_feature_uniqueunitcodetest_uniqueunitcodetest_test_cannot_create_duplicate_unit_code_in_units_index",
-      "community": 221,
+      "community": 227,
       "community_name": "Illuminate\\Foundation\\Testing\\RefreshDatabase",
       "norm_label": ".test_cannot_create_duplicate_unit_code_in_units_index()"
     },
@@ -14497,7 +15088,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "tests_feature_uniqueunitcodetest_uniqueunitcodetest_test_cannot_create_duplicate_unit_code_in_legacy_sale",
-      "community": 221,
+      "community": 227,
       "community_name": "Illuminate\\Foundation\\Testing\\RefreshDatabase",
       "norm_label": ".test_cannot_create_duplicate_unit_code_in_legacy_sale()"
     },
@@ -14509,7 +15100,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "tests_feature_uniqueunitcodetest_uniqueunitcodetest_test_cannot_create_duplicate_unit_code_in_project_detail",
-      "community": 221,
+      "community": 227,
       "community_name": "Illuminate\\Foundation\\Testing\\RefreshDatabase",
       "norm_label": ".test_cannot_create_duplicate_unit_code_in_project_detail()"
     },
@@ -14531,7 +15122,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "tests_feature_unitdetailresponsivenessandroletest",
-      "community": 55,
+      "community": 230,
       "community_name": "UnitDetailResponsivenessAndRoleTest.php",
       "norm_label": "unitdetailresponsivenessandroletest.php"
     },
@@ -14544,7 +15135,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "tests_feature_unitdetailresponsivenessandroletest_unitdetailresponsivenessandroletest",
-      "community": 55,
+      "community": 230,
       "community_name": "UnitDetailResponsivenessAndRoleTest.php",
       "norm_label": "unitdetailresponsivenessandroletest"
     },
@@ -14556,7 +15147,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "tests_feature_unitdetailresponsivenessandroletest_unitdetailresponsivenessandroletest_setup",
-      "community": 55,
+      "community": 230,
       "community_name": "UnitDetailResponsivenessAndRoleTest.php",
       "norm_label": ".setup()"
     },
@@ -14568,7 +15159,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "tests_feature_unitdetailresponsivenessandroletest_unitdetailresponsivenessandroletest_test_marketing_finance_and_founder_can_see_spp_and_proposals_on_unit_detail",
-      "community": 55,
+      "community": 230,
       "community_name": "UnitDetailResponsivenessAndRoleTest.php",
       "norm_label": ".test_marketing_finance_and_founder_can_see_spp_and_proposals_on_unit_detail()"
     },
@@ -14580,7 +15171,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "tests_feature_unitdetailresponsivenessandroletest_unitdetailresponsivenessandroletest_test_pengawas_project_cannot_see_spp_proposals_or_installments_on_unit_detail",
-      "community": 55,
+      "community": 230,
       "community_name": "UnitDetailResponsivenessAndRoleTest.php",
       "norm_label": ".test_pengawas_project_cannot_see_spp_proposals_or_installments_on_unit_detail()"
     },
@@ -14592,7 +15183,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "tests_feature_unitdetailresponsivenessandroletest_unitdetailresponsivenessandroletest_test_all_main_application_routes_return_200_ok",
-      "community": 55,
+      "community": 230,
       "community_name": "UnitDetailResponsivenessAndRoleTest.php",
       "norm_label": ".test_all_main_application_routes_return_200_ok()"
     },
@@ -14647,7 +15238,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "tests_feature_userdeletetest",
-      "community": 221,
+      "community": 227,
       "community_name": "Illuminate\\Foundation\\Testing\\RefreshDatabase",
       "norm_label": "userdeletetest.php"
     },
@@ -14680,7 +15271,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "tests_pest",
-      "community": 221,
+      "community": 227,
       "community_name": "Illuminate\\Foundation\\Testing\\RefreshDatabase",
       "norm_label": "pest.php"
     },
@@ -14692,7 +15283,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "tests_pest_something",
-      "community": 221,
+      "community": 227,
       "community_name": "Illuminate\\Foundation\\Testing\\RefreshDatabase",
       "norm_label": "something()"
     },
@@ -14703,7 +15294,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "tests_testcase",
-      "community": 221,
+      "community": 227,
       "community_name": "Illuminate\\Foundation\\Testing\\RefreshDatabase",
       "norm_label": "testcase.php"
     },
@@ -14716,7 +15307,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "tests_testcase_testcase",
-      "community": 221,
+      "community": 227,
       "community_name": "Illuminate\\Foundation\\Testing\\RefreshDatabase",
       "norm_label": "testcase"
     },
@@ -16146,7 +16737,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "illuminate_http_request",
-      "community": 229,
+      "community": 24,
       "community_name": "Illuminate\\Http\\Request",
       "norm_label": "illuminate\\http\\request"
     },
@@ -16157,8 +16748,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "symfony_component_httpfoundation_streamedresponse",
-      "community": 30,
-      "community_name": "CashflowTransaction",
+      "community": 238,
+      "community_name": ".exportPdf",
       "norm_label": "symfony\\component\\httpfoundation\\streamedresponse"
     },
     {
@@ -16168,8 +16759,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "illuminate_http_response",
-      "community": 19,
-      "community_name": "Index",
+      "community": 245,
+      "community_name": "EmployeePayrollPayment",
       "norm_label": "illuminate\\http\\response"
     },
     {
@@ -16179,7 +16770,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "symfony_component_httpfoundation_response",
-      "community": 229,
+      "community": 24,
       "community_name": "Illuminate\\Http\\Request",
       "norm_label": "symfony\\component\\httpfoundation\\response"
     },
@@ -16245,7 +16836,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "illuminate_database_eloquent_relations_belongsto",
-      "community": 13,
+      "community": 10,
       "community_name": "Illuminate\\Database\\Eloquent\\Relations\\BelongsTo",
       "norm_label": "illuminate\\database\\eloquent\\relations\\belongsto"
     },
@@ -16256,8 +16847,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "illuminate_database_eloquent_relations_hasmany",
-      "community": 21,
-      "community_name": "Project",
+      "community": 221,
+      "community_name": "Illuminate\\Database\\Eloquent\\Relations\\HasMany",
       "norm_label": "illuminate\\database\\eloquent\\relations\\hasmany"
     },
     {
@@ -16322,7 +16913,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "illuminate_database_eloquent_factories_factory",
-      "community": 19,
+      "community": 12,
       "community_name": "Index",
       "norm_label": "illuminate\\database\\eloquent\\factories\\factory"
     },
@@ -16344,7 +16935,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "illuminate_foundation_testing_refreshdatabase",
-      "community": 221,
+      "community": 227,
       "community_name": "Illuminate\\Foundation\\Testing\\RefreshDatabase",
       "norm_label": "illuminate\\foundation\\testing\\refreshdatabase"
     },
@@ -16355,7 +16946,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "illuminate_foundation_testing_testcase",
-      "community": 221,
+      "community": 227,
       "community_name": "Illuminate\\Foundation\\Testing\\RefreshDatabase",
       "norm_label": "illuminate\\foundation\\testing\\testcase"
     }
@@ -20310,6 +20901,400 @@
       "target": "app_models_unit_unit"
     },
     {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Livewire/DailyActivityReports/Index.php",
+      "source_location": "L9",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_livewire_dailyactivityreports_index",
+      "target": "app_services_activitylogger",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Livewire/DailyActivityReports/Index.php",
+      "source_location": "L13",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_livewire_dailyactivityreports_index",
+      "target": "app_livewire_dailyactivityreports_index_index",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Livewire/DailyActivityReports/Index.php",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_livewire_dailyactivityreports_index",
+      "target": "app_models_dailyactivityreport_dailyactivityreport",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Livewire/DailyActivityReports/Index.php",
+      "source_location": "L10",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_livewire_dailyactivityreports_index",
+      "target": "livewire_component",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Livewire/DailyActivityReports/Index.php",
+      "source_location": "L11",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_livewire_dailyactivityreports_index",
+      "target": "livewire_withpagination",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Livewire/DailyActivityReports/Index.php",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_livewire_dailyactivityreports_index",
+      "target": "app_models_project",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Livewire/DailyActivityReports/Index.php",
+      "source_location": "L7",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_livewire_dailyactivityreports_index",
+      "target": "app_models_unit",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Livewire/DailyActivityReports/Index.php",
+      "source_location": "L8",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_livewire_dailyactivityreports_index",
+      "target": "app_models_user",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Livewire/DailyActivityReports/Index.php",
+      "source_location": "L144",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_livewire_dailyactivityreports_index_index",
+      "target": "app_livewire_dailyactivityreports_index_index_closedetailmodal",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Livewire/DailyActivityReports/Index.php",
+      "source_location": "L206",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_livewire_dailyactivityreports_index_index",
+      "target": "app_livewire_dailyactivityreports_index_index_deletereport",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Livewire/DailyActivityReports/Index.php",
+      "source_location": "L107",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_livewire_dailyactivityreports_index_index",
+      "target": "app_livewire_dailyactivityreports_index_index_editreport",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Livewire/DailyActivityReports/Index.php",
+      "source_location": "L54",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_livewire_dailyactivityreports_index_index",
+      "target": "app_livewire_dailyactivityreports_index_index_mount",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Livewire/DailyActivityReports/Index.php",
+      "source_location": "L82",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_livewire_dailyactivityreports_index_index",
+      "target": "app_livewire_dailyactivityreports_index_index_opencreatemodal",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Livewire/DailyActivityReports/Index.php",
+      "source_location": "L228",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_livewire_dailyactivityreports_index_index",
+      "target": "app_livewire_dailyactivityreports_index_index_render",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Livewire/DailyActivityReports/Index.php",
+      "source_location": "L70",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_livewire_dailyactivityreports_index_index",
+      "target": "app_livewire_dailyactivityreports_index_index_resetfilters",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Livewire/DailyActivityReports/Index.php",
+      "source_location": "L88",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_livewire_dailyactivityreports_index_index",
+      "target": "app_livewire_dailyactivityreports_index_index_resetreportform",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Livewire/DailyActivityReports/Index.php",
+      "source_location": "L150",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_livewire_dailyactivityreports_index_index",
+      "target": "app_livewire_dailyactivityreports_index_index_savereport",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Livewire/DailyActivityReports/Index.php",
+      "source_location": "L138",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_livewire_dailyactivityreports_index_index",
+      "target": "app_livewire_dailyactivityreports_index_index_showreportdetail",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Livewire/DailyActivityReports/Index.php",
+      "source_location": "L65",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_livewire_dailyactivityreports_index_index",
+      "target": "app_livewire_dailyactivityreports_index_index_updatingsearch",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Livewire/DailyActivityReports/Index.php",
+      "source_location": "L29",
+      "weight": 1.0,
+      "context": "field",
+      "_origin": "ast",
+      "source": "app_livewire_dailyactivityreports_index_index",
+      "target": "app_models_dailyactivityreport_dailyactivityreport",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Livewire/DailyActivityReports/Index.php",
+      "source_location": "L13",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_livewire_dailyactivityreports_index_index",
+      "target": "livewire_component",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "mixes_in",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Livewire/DailyActivityReports/Index.php",
+      "source_location": "L15",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_livewire_dailyactivityreports_index_index",
+      "target": "livewire_withpagination",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Livewire/DailyActivityReports/Index.php",
+      "source_location": "L84",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_livewire_dailyactivityreports_index_index_opencreatemodal",
+      "target": "app_livewire_dailyactivityreports_index_index_resetreportform",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Livewire/DailyActivityReports/Index.php",
+      "source_location": "L203",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_livewire_dailyactivityreports_index_index_savereport",
+      "target": "app_livewire_dailyactivityreports_index_index_resetreportform",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Livewire/DailyActivityReports/Index.php",
+      "source_location": "L109",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_livewire_dailyactivityreports_index_index_editreport",
+      "target": "app_models_dailyactivityreport_dailyactivityreport",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Livewire/DailyActivityReports/Index.php",
+      "source_location": "L140",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_livewire_dailyactivityreports_index_index_showreportdetail",
+      "target": "app_models_dailyactivityreport_dailyactivityreport",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Livewire/DailyActivityReports/Index.php",
+      "source_location": "L184",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_livewire_dailyactivityreports_index_index_savereport",
+      "target": "app_models_dailyactivityreport_dailyactivityreport",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "app/Livewire/DailyActivityReports/Index.php",
+      "source_location": "L192",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_livewire_dailyactivityreports_index_index_savereport",
+      "target": "app_services_activitylogger_activitylogger"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Livewire/DailyActivityReports/Index.php",
+      "source_location": "L209",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_livewire_dailyactivityreports_index_index_deletereport",
+      "target": "app_models_dailyactivityreport_dailyactivityreport",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "app/Livewire/DailyActivityReports/Index.php",
+      "source_location": "L221",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_livewire_dailyactivityreports_index_index_deletereport",
+      "target": "app_services_activitylogger_activitylogger"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Livewire/DailyActivityReports/Index.php",
+      "source_location": "L231",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_livewire_dailyactivityreports_index_index_render",
+      "target": "app_models_dailyactivityreport_dailyactivityreport",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "app/Livewire/DailyActivityReports/Index.php",
+      "source_location": "L289",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_livewire_dailyactivityreports_index_index_render",
+      "target": "app_models_project_project"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "app/Livewire/DailyActivityReports/Index.php",
+      "source_location": "L294",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_livewire_dailyactivityreports_index_index_render",
+      "target": "app_models_unit_unit"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "app/Livewire/DailyActivityReports/Index.php",
+      "source_location": "L290",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_livewire_dailyactivityreports_index_index_render",
+      "target": "app_models_user_user"
+    },
+    {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "app/Livewire/Dashboard.php",
@@ -20651,7 +21636,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "app/Livewire/Documents/Index.php",
-      "source_location": "L225",
+      "source_location": "L228",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_livewire_documents_index_index",
@@ -20780,7 +21765,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "app/Livewire/Documents/Index.php",
-      "source_location": "L220",
+      "source_location": "L223",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_livewire_documents_index_index_deletedocument",
@@ -20792,7 +21777,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "app/Livewire/Documents/Index.php",
-      "source_location": "L227",
+      "source_location": "L230",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_livewire_documents_index_index_render",
@@ -29319,6 +30304,257 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "app/Models/DailyActivityReport.php",
+      "source_location": "L9",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_models_dailyactivityreport",
+      "target": "app_models_dailyactivityreport_dailyactivityreport",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Models/DailyActivityReport.php",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_models_dailyactivityreport",
+      "target": "illuminate_database_eloquent_factories_hasfactory",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Models/DailyActivityReport.php",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_models_dailyactivityreport",
+      "target": "illuminate_database_eloquent_model",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Models/DailyActivityReport.php",
+      "source_location": "L7",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_models_dailyactivityreport",
+      "target": "illuminate_database_eloquent_relations_belongsto",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Models/DailyActivityReport.php",
+      "source_location": "L94",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_models_dailyactivityreport_dailyactivityreport",
+      "target": "app_models_dailyactivityreport_dailyactivityreport_getinteractiontypelabelattribute",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Models/DailyActivityReport.php",
+      "source_location": "L89",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_models_dailyactivityreport_dailyactivityreport",
+      "target": "app_models_dailyactivityreport_dailyactivityreport_getleadsourcelabelattribute",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Models/DailyActivityReport.php",
+      "source_location": "L99",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_models_dailyactivityreport_dailyactivityreport",
+      "target": "app_models_dailyactivityreport_dailyactivityreport_getleadstagelabelattribute",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Models/DailyActivityReport.php",
+      "source_location": "L104",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_models_dailyactivityreport_dailyactivityreport",
+      "target": "app_models_dailyactivityreport_dailyactivityreport_getstagebadgeclassattribute",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Models/DailyActivityReport.php",
+      "source_location": "L65",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_models_dailyactivityreport_dailyactivityreport",
+      "target": "app_models_dailyactivityreport_dailyactivityreport_interactiontypes",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Models/DailyActivityReport.php",
+      "source_location": "L50",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_models_dailyactivityreport_dailyactivityreport",
+      "target": "app_models_dailyactivityreport_dailyactivityreport_leadsources",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Models/DailyActivityReport.php",
+      "source_location": "L77",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_models_dailyactivityreport_dailyactivityreport",
+      "target": "app_models_dailyactivityreport_dailyactivityreport_leadstages",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Models/DailyActivityReport.php",
+      "source_location": "L40",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_models_dailyactivityreport_dailyactivityreport",
+      "target": "app_models_dailyactivityreport_dailyactivityreport_project",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Models/DailyActivityReport.php",
+      "source_location": "L45",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_models_dailyactivityreport_dailyactivityreport",
+      "target": "app_models_dailyactivityreport_dailyactivityreport_unit",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Models/DailyActivityReport.php",
+      "source_location": "L35",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_models_dailyactivityreport_dailyactivityreport",
+      "target": "app_models_dailyactivityreport_dailyactivityreport_user",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "mixes_in",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Models/DailyActivityReport.php",
+      "source_location": "L11",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_models_dailyactivityreport_dailyactivityreport",
+      "target": "illuminate_database_eloquent_factories_hasfactory",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Models/DailyActivityReport.php",
+      "source_location": "L9",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_models_dailyactivityreport_dailyactivityreport",
+      "target": "illuminate_database_eloquent_model",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "database/seeders/DailyActivityReportSeeder.php",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "database_seeders_dailyactivityreportseeder",
+      "target": "app_models_dailyactivityreport_dailyactivityreport",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "database/seeders/DailyActivityReportSeeder.php",
+      "source_location": "L120",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "database_seeders_dailyactivityreportseeder_dailyactivityreportseeder_run",
+      "target": "app_models_dailyactivityreport_dailyactivityreport"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/Feature/DailyActivityReportTest.php",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "tests_feature_dailyactivityreporttest",
+      "target": "app_models_dailyactivityreport_dailyactivityreport",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Models/DailyActivityReport.php",
+      "source_location": "L35",
+      "weight": 1.0,
+      "context": "return_type",
+      "_origin": "ast",
+      "source": "app_models_dailyactivityreport_dailyactivityreport_user",
+      "target": "illuminate_database_eloquent_relations_belongsto",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Models/DailyActivityReport.php",
+      "source_location": "L40",
+      "weight": 1.0,
+      "context": "return_type",
+      "_origin": "ast",
+      "source": "app_models_dailyactivityreport_dailyactivityreport_project",
+      "target": "illuminate_database_eloquent_relations_belongsto",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Models/DailyActivityReport.php",
+      "source_location": "L45",
+      "weight": 1.0,
+      "context": "return_type",
+      "_origin": "ast",
+      "source": "app_models_dailyactivityreport_dailyactivityreport_unit",
+      "target": "illuminate_database_eloquent_relations_belongsto",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "app/Models/EmployeePayrollPayment.php",
       "source_location": "L10",
       "weight": 1.0,
@@ -31142,6 +32378,18 @@
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
+      "source_file": "database/seeders/DailyActivityReportSeeder.php",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "database_seeders_dailyactivityreportseeder",
+      "target": "app_models_project",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
       "source_file": "database/seeders/ProjectSeeder.php",
       "source_location": "L5",
       "weight": 1.0,
@@ -31303,6 +32551,18 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "tests_feature_contractorandinstallmentcancellationtest",
+      "target": "app_models_project",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/Feature/DailyActivityReportTest.php",
+      "source_location": "L4",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "tests_feature_dailyactivityreporttest",
       "target": "app_models_project",
       "confidence_score": 1.0
     },
@@ -31997,6 +33257,18 @@
       "context": "call",
       "confidence": "INFERRED",
       "confidence_score": 0.8,
+      "source_file": "database/seeders/DailyActivityReportSeeder.php",
+      "source_location": "L21",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "database_seeders_dailyactivityreportseeder_dailyactivityreportseeder_run",
+      "target": "app_models_project_project"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
       "source_file": "database/seeders/ProjectSeeder.php",
       "source_location": "L70",
       "weight": 1.0,
@@ -32491,6 +33763,18 @@
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
+      "source_file": "database/seeders/DailyActivityReportSeeder.php",
+      "source_location": "L7",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "database_seeders_dailyactivityreportseeder",
+      "target": "app_models_unit",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
       "source_file": "database/seeders/UnitSeeder.php",
       "source_location": "L6",
       "weight": 1.0,
@@ -32604,6 +33888,18 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "tests_feature_contractorandinstallmentcancellationtest",
+      "target": "app_models_unit",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/Feature/DailyActivityReportTest.php",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "tests_feature_dailyactivityreporttest",
       "target": "app_models_unit",
       "confidence_score": 1.0
     },
@@ -33329,6 +34625,18 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "database_seeders_bookingseeder_bookingseeder_run",
+      "target": "app_models_unit_unit"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "database/seeders/DailyActivityReportSeeder.php",
+      "source_location": "L22",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "database_seeders_dailyactivityreportseeder_dailyactivityreportseeder_run",
       "target": "app_models_unit_unit"
     },
     {
@@ -34176,6 +35484,18 @@
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
+      "source_file": "database/seeders/DailyActivityReportSeeder.php",
+      "source_location": "L8",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "database_seeders_dailyactivityreportseeder",
+      "target": "app_models_user",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
       "source_file": "database/seeders/EmployeeSalarySeeder.php",
       "source_location": "L8",
       "weight": 1.0,
@@ -34409,6 +35729,18 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "tests_feature_contractorandinstallmentcancellationtest",
+      "target": "app_models_user",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/Feature/DailyActivityReportTest.php",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "tests_feature_dailyactivityreporttest",
       "target": "app_models_user",
       "confidence_score": 1.0
     },
@@ -35262,6 +36594,18 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "database_seeders_bookingseeder_bookingseeder_run",
+      "target": "app_models_user_user"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "database/seeders/DailyActivityReportSeeder.php",
+      "source_location": "L15",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "database_seeders_dailyactivityreportseeder_dailyactivityreportseeder_run",
       "target": "app_models_user_user"
     },
     {
@@ -39024,6 +40368,28 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "database/migrations/2026_08_10_000001_create_daily_activity_reports_table.php",
+      "source_location": "L36",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "database_migrations_2026_08_10_000001_create_daily_activity_reports_table",
+      "target": "database_migrations_2026_08_10_000001_create_daily_activity_reports_table_down",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "database/migrations/2026_08_10_000001_create_daily_activity_reports_table.php",
+      "source_location": "L12",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "database_migrations_2026_08_10_000001_create_daily_activity_reports_table",
+      "target": "database_migrations_2026_08_10_000001_create_daily_activity_reports_table_up",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "database/seeders/BookingSeeder.php",
       "source_location": "L11",
       "weight": 1.0,
@@ -39087,6 +40453,51 @@
       "_origin": "ast",
       "source": "database_seeders_bookingseeder_bookingseeder_run",
       "target": "database_seeders_bookingseeder_me_date",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "database/seeders/DailyActivityReportSeeder.php",
+      "source_location": "L11",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "database_seeders_dailyactivityreportseeder",
+      "target": "database_seeders_dailyactivityreportseeder_dailyactivityreportseeder",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "database/seeders/DailyActivityReportSeeder.php",
+      "source_location": "L9",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "database_seeders_dailyactivityreportseeder",
+      "target": "illuminate_database_seeder",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "database/seeders/DailyActivityReportSeeder.php",
+      "source_location": "L13",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "database_seeders_dailyactivityreportseeder_dailyactivityreportseeder",
+      "target": "database_seeders_dailyactivityreportseeder_dailyactivityreportseeder_run",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "database/seeders/DailyActivityReportSeeder.php",
+      "source_location": "L11",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "database_seeders_dailyactivityreportseeder_dailyactivityreportseeder",
+      "target": "illuminate_database_seeder",
       "confidence_score": 1.0
     },
     {
@@ -40248,6 +41659,149 @@
       "_origin": "ast",
       "source": "resources_views_livewire_cashflow_partials_modal_manual_transaction_blade",
       "target": "resources_views_livewire_cashflow_partials_modal_manual_transaction_blade_php_set"
+    },
+    {
+      "relation": "includes",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "resources/views/livewire/daily-activity-reports/index.blade.php",
+      "source_location": null,
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "resources_views_livewire_daily_activity_reports_index_blade",
+      "target": "livewire_daily_activity_reports_partials_filter_bar"
+    },
+    {
+      "relation": "includes",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "resources/views/livewire/daily-activity-reports/index.blade.php",
+      "source_location": null,
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "resources_views_livewire_daily_activity_reports_index_blade",
+      "target": "livewire_daily_activity_reports_partials_header_banner"
+    },
+    {
+      "relation": "includes",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "resources/views/livewire/daily-activity-reports/index.blade.php",
+      "source_location": null,
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "resources_views_livewire_daily_activity_reports_index_blade",
+      "target": "livewire_daily_activity_reports_partials_modal_detail"
+    },
+    {
+      "relation": "includes",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "resources/views/livewire/daily-activity-reports/index.blade.php",
+      "source_location": null,
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "resources_views_livewire_daily_activity_reports_index_blade",
+      "target": "livewire_daily_activity_reports_partials_modal_form"
+    },
+    {
+      "relation": "includes",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "resources/views/livewire/daily-activity-reports/index.blade.php",
+      "source_location": null,
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "resources_views_livewire_daily_activity_reports_index_blade",
+      "target": "livewire_daily_activity_reports_partials_table_list"
+    },
+    {
+      "relation": "binds_method",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "resources/views/livewire/daily-activity-reports/partials/filter-bar.blade.php",
+      "source_location": null,
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "resources_views_livewire_daily_activity_reports_partials_filter_bar_blade",
+      "target": "resetfilters"
+    },
+    {
+      "relation": "binds_method",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "resources/views/livewire/daily-activity-reports/partials/filter-bar.blade.php",
+      "source_location": null,
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "resources_views_livewire_daily_activity_reports_partials_filter_bar_blade",
+      "target": "resources_views_livewire_daily_activity_reports_partials_filter_bar_blade_php_set"
+    },
+    {
+      "relation": "binds_method",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "resources/views/livewire/daily-activity-reports/partials/header-banner.blade.php",
+      "source_location": null,
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "resources_views_livewire_daily_activity_reports_partials_header_banner_blade",
+      "target": "resources_views_livewire_daily_activity_reports_partials_header_banner_blade_php_opencreatemodal"
+    },
+    {
+      "relation": "binds_method",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "resources/views/livewire/daily-activity-reports/partials/modal-detail.blade.php",
+      "source_location": null,
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "resources_views_livewire_daily_activity_reports_partials_modal_detail_blade",
+      "target": "resources_views_livewire_daily_activity_reports_partials_modal_detail_blade_php_closedetailmodal"
+    },
+    {
+      "relation": "binds_method",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "resources/views/livewire/daily-activity-reports/partials/modal-form.blade.php",
+      "source_location": null,
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "resources_views_livewire_daily_activity_reports_partials_modal_form_blade",
+      "target": "resources_views_livewire_daily_activity_reports_partials_modal_form_blade_php_set"
+    },
+    {
+      "relation": "binds_method",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "resources/views/livewire/daily-activity-reports/partials/table-list.blade.php",
+      "source_location": null,
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "resources_views_livewire_daily_activity_reports_partials_table_list_blade",
+      "target": "deletereport_rep_id"
+    },
+    {
+      "relation": "binds_method",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "resources/views/livewire/daily-activity-reports/partials/table-list.blade.php",
+      "source_location": null,
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "resources_views_livewire_daily_activity_reports_partials_table_list_blade",
+      "target": "editreport_rep_id"
+    },
+    {
+      "relation": "binds_method",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "resources/views/livewire/daily-activity-reports/partials/table-list.blade.php",
+      "source_location": null,
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "resources_views_livewire_daily_activity_reports_partials_table_list_blade",
+      "target": "showreportdetail_rep_id"
     },
     {
       "relation": "binds_method",
@@ -42772,6 +44326,18 @@
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
+      "source_file": "tests/Feature/DailyActivityReportTest.php",
+      "source_location": "L7",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "tests_feature_dailyactivityreporttest",
+      "target": "illuminate_foundation_testing_refreshdatabase",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
       "source_file": "tests/Feature/DirectCashSppTest.php",
       "source_location": "L6",
       "weight": 1.0,
@@ -44599,5 +46165,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "65fce0e6ac37ff1f0f94daf436245957ae00fc8a"
+  "built_at_commit": "56d2994657215dcfeb54aeb7989d1e25d2349973"
 }

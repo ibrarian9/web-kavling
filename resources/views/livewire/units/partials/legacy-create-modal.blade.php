@@ -19,7 +19,7 @@
                     <div>
                         <label class="block font-bold text-slate-700 uppercase mb-1">Perumahan / Proyek *</label>
                         <select wire:model="project_id" required class="input-clean w-full font-bold">
-                            <option value="">-- Pilih Proyek --</option>
+                            <option value="">Pilih Proyek</option>
                             @foreach ($projects as $p)
                                 <option value="{{ $p->id }}">{{ $p->name }}</option>
                             @endforeach

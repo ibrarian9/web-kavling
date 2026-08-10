@@ -560,9 +560,9 @@
     "semantic_hash": "478d2bf1fac95a068ac5ab6be72d33a3"
   },
   "database/seeders/DatabaseSeeder.php": {
-    "mtime": 1786113593.8317344,
-    "ast_hash": "4c73181e190279458c375c9d20c13bbf",
-    "semantic_hash": "4c73181e190279458c375c9d20c13bbf"
+    "mtime": 1786350083.5584924,
+    "ast_hash": "99d366293402153ab7fbf5e7cbbb2880",
+    "semantic_hash": ""
   },
   "database/seeders/EmployeeSalarySeeder.php": {
     "mtime": 1786113609.4938495,
@@ -670,9 +670,9 @@
     "semantic_hash": "d645e4cba4cb1708ef03fb7a8e335800"
   },
   "resources/views/components/layouts/partials/nav-links.blade.php": {
-    "mtime": 1786179006.8640962,
-    "ast_hash": "d97bc7a42fe35d159dc0d4d0d25f2c0d",
-    "semantic_hash": "d97bc7a42fe35d159dc0d4d0d25f2c0d"
+    "mtime": 1786349911.4902098,
+    "ast_hash": "5ada4527a7385bc785e37cc26d0ae2fb",
+    "semantic_hash": ""
   },
   "resources/views/components/layouts/partials/sidebar-desktop.blade.php": {
     "mtime": 1786180553.0906503,
@@ -750,9 +750,9 @@
     "semantic_hash": "5870786690302ce61aea366f5bd4d070"
   },
   "resources/views/livewire/bookings/partials/booking-form-modal.blade.php": {
-    "mtime": 1786074754.4571853,
-    "ast_hash": "390b7093ba97feb7af8102938986d495",
-    "semantic_hash": "390b7093ba97feb7af8102938986d495"
+    "mtime": 1786352593.3607738,
+    "ast_hash": "9528a0c7e98b91e29192175c8e4f1264",
+    "semantic_hash": ""
   },
   "resources/views/livewire/bookings/partials/booking-header.blade.php": {
     "mtime": 1786279517.4483445,
@@ -775,9 +775,9 @@
     "semantic_hash": "9e133545279485a50744ac6cd82842df"
   },
   "resources/views/livewire/cashflow/index.blade.php": {
-    "mtime": 1786198540.882694,
-    "ast_hash": "9ce2d67c65eb7830fc5dde7a98852695",
-    "semantic_hash": "9ce2d67c65eb7830fc5dde7a98852695"
+    "mtime": 1786352672.3091025,
+    "ast_hash": "8c7198afa07be698a6ab244dae6c0b32",
+    "semantic_hash": ""
   },
   "resources/views/livewire/cashflow/partials/modal-detail-transaction.blade.php": {
     "mtime": 1785591925.5843065,
@@ -795,9 +795,9 @@
     "semantic_hash": "4fb6d91dfc40902bd89b575a9cff751d"
   },
   "resources/views/livewire/documents/index.blade.php": {
-    "mtime": 1786185398.5321581,
-    "ast_hash": "b54910b5bfc3381ac261239f9361142b",
-    "semantic_hash": "b54910b5bfc3381ac261239f9361142b"
+    "mtime": 1786352617.224567,
+    "ast_hash": "18e21737dd58bf879bc4b45362ddc1f8",
+    "semantic_hash": ""
   },
   "resources/views/livewire/employee-salaries/index.blade.php": {
     "mtime": 1786333880.4888468,
@@ -860,9 +860,9 @@
     "semantic_hash": ""
   },
   "resources/views/livewire/installments/partials/modal-setup-installment.blade.php": {
-    "mtime": 1786076511.398445,
-    "ast_hash": "19d4d46da54a0984bc544755f23dfe8f",
-    "semantic_hash": "19d4d46da54a0984bc544755f23dfe8f"
+    "mtime": 1786352635.4007947,
+    "ast_hash": "34cec7eb41cbba7ab81acfbc3a2b35d0",
+    "semantic_hash": ""
   },
   "resources/views/livewire/manual-invoices/index.blade.php": {
     "mtime": 1786185408.103272,
@@ -875,9 +875,9 @@
     "semantic_hash": "666ace2764589afa10217438d58bf476"
   },
   "resources/views/livewire/projects/index.blade.php": {
-    "mtime": 1786185364.7787566,
-    "ast_hash": "c3bf44d48349b11108d92c6e45495494",
-    "semantic_hash": "c3bf44d48349b11108d92c6e45495494"
+    "mtime": 1786352662.0692925,
+    "ast_hash": "9f624c37a196a57668c4d0c53c322895",
+    "semantic_hash": ""
   },
   "resources/views/livewire/projects/partials/header.blade.php": {
     "mtime": 1785583869.8286412,
@@ -945,9 +945,9 @@
     "semantic_hash": "d32f88ccbf0902aef59228b2c5e8ed47"
   },
   "resources/views/livewire/proposals/partials/proposal-form-modal.blade.php": {
-    "mtime": 1786009371.5646884,
-    "ast_hash": "97f9965b97a40fe7cc163028ac99b4ac",
-    "semantic_hash": "97f9965b97a40fe7cc163028ac99b4ac"
+    "mtime": 1786352604.6536963,
+    "ast_hash": "724d053c6e54f64a6e9d121e2508eb9d",
+    "semantic_hash": ""
   },
   "resources/views/livewire/proposals/partials/proposal-header.blade.php": {
     "mtime": 1786009351.4068508,
@@ -1010,9 +1010,9 @@
     "semantic_hash": "522b49d4e69ae26299d478d3dcf77190"
   },
   "resources/views/livewire/units/partials/legacy-create-modal.blade.php": {
-    "mtime": 1785993088.6684875,
-    "ast_hash": "22ef2a56f1e017452f60754ab1805cf2",
-    "semantic_hash": "22ef2a56f1e017452f60754ab1805cf2"
+    "mtime": 1786352650.6777134,
+    "ast_hash": "b923f0f4bee01b596a6c119959e1652f",
+    "semantic_hash": ""
   },
   "resources/views/livewire/units/partials/legacy-header-info.blade.php": {
     "mtime": 1786185383.137975,
@@ -1125,9 +1125,9 @@
     "semantic_hash": "937723f4ca914de1cb6e2fe10878bd50"
   },
   "resources/views/livewire/workers/partials/worker-assign-modal.blade.php": {
-    "mtime": 1785999237.969502,
-    "ast_hash": "ec7988065c5ce88aa9fae80a5a63852a",
-    "semantic_hash": "ec7988065c5ce88aa9fae80a5a63852a"
+    "mtime": 1786352687.7554486,
+    "ast_hash": "0c3807268f779ffdbcc70373f925064b",
+    "semantic_hash": ""
   },
   "resources/views/livewire/workers/partials/worker-form-modal.blade.php": {
     "mtime": 1785999230.0784185,
@@ -1250,9 +1250,9 @@
     "semantic_hash": "3c6ce2e6d16444282b24a9aa63885563"
   },
   "routes/web.php": {
-    "mtime": 1786197463.24287,
-    "ast_hash": "47d003a28c8349067f43cc56007dede8",
-    "semantic_hash": "47d003a28c8349067f43cc56007dede8"
+    "mtime": 1786349899.5011208,
+    "ast_hash": "b3f4334770fea273097c2889aec01fb3",
+    "semantic_hash": ""
   },
   "tests/Feature/ActivityLogTest.php": {
     "mtime": 1786192304.1972237,
@@ -1732,6 +1732,66 @@
   "tests/Feature/SppDeletionAndStatusRollbackTest.php": {
     "mtime": 1786343562.9944255,
     "ast_hash": "24dc22fa6f40bdb2391715c4e96b4e8f",
+    "semantic_hash": ""
+  },
+  "app/Livewire/DailyActivityReports/Index.php": {
+    "mtime": 1786351356.3217094,
+    "ast_hash": "6128dd8fb678f040e03205d07e667054",
+    "semantic_hash": ""
+  },
+  "app/Models/DailyActivityReport.php": {
+    "mtime": 1786349866.2778745,
+    "ast_hash": "349fb3bdf7821ca59b5c5438b2f92edc",
+    "semantic_hash": ""
+  },
+  "database/migrations/2026_08_10_000001_create_daily_activity_reports_table.php": {
+    "mtime": 1786349853.4377794,
+    "ast_hash": "dbec78eb736ca2b8f673115c31abba11",
+    "semantic_hash": ""
+  },
+  "resources/views/livewire/daily-activity-reports/index.blade.php": {
+    "mtime": 1786351073.5959692,
+    "ast_hash": "29681aaab5badd0896eea54356e0789b",
+    "semantic_hash": ""
+  },
+  "tests/Feature/DailyActivityReportTest.php": {
+    "mtime": 1786349936.1143928,
+    "ast_hash": "11aad339f20031fa6c822ede45dd158d",
+    "semantic_hash": ""
+  },
+  "database/seeders/DailyActivityReportSeeder.php": {
+    "mtime": 1786350078.1834521,
+    "ast_hash": "df5e92e576fba60c5f8119d3c35c7dbb",
+    "semantic_hash": ""
+  },
+  "resources/views/livewire/daily-activity-reports/partials/filter-bar.blade.php": {
+    "mtime": 1786352568.1810458,
+    "ast_hash": "cb0ff59e3ebfa16f50ae5ad231880590",
+    "semantic_hash": ""
+  },
+  "resources/views/livewire/daily-activity-reports/partials/header-banner.blade.php": {
+    "mtime": 1786352424.4853842,
+    "ast_hash": "22fd8c4f10b570025bfba12959f5779d",
+    "semantic_hash": ""
+  },
+  "resources/views/livewire/daily-activity-reports/partials/modal-detail.blade.php": {
+    "mtime": 1786351068.0049267,
+    "ast_hash": "c1bd804c695cec75921519b5e40501b1",
+    "semantic_hash": ""
+  },
+  "resources/views/livewire/daily-activity-reports/partials/modal-form.blade.php": {
+    "mtime": 1786352574.8675528,
+    "ast_hash": "4ede27e6a26f280d69445fd54f35649a",
+    "semantic_hash": ""
+  },
+  "resources/views/livewire/daily-activity-reports/partials/table-list.blade.php": {
+    "mtime": 1786352029.7086163,
+    "ast_hash": "56d503f69ffdf2da758da47e7bb3684f",
+    "semantic_hash": ""
+  },
+  "tests/Feature/DailyActivityReportComprehensiveTest.php": {
+    "mtime": 1786351783.4420645,
+    "ast_hash": "2542b7c29b1cb1c6537e095f901e0503",
     "semantic_hash": ""
   }
 }

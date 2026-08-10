@@ -13,7 +13,7 @@
                 <div>
                     <label class="block font-bold text-slate-700 uppercase mb-1">Perumahan / Proyek Properti *</label>
                     <select wire:model.live="assignProjectId" required class="input-clean w-full font-semibold">
-                        <option value="">-- Pilih Proyek --</option>
+                        <option value="">Pilih Proyek</option>
                         @foreach ($projects as $p)
                             <option value="{{ $p->id }}">{{ $p->name }}</option>
                         @endforeach
@@ -23,7 +23,7 @@
                 <div>
                     <label class="block font-bold text-slate-700 uppercase mb-1">Unit Spesifik (Opsional)</label>
                     <select wire:model="assignUnitId" class="input-clean w-full font-semibold" {{ !$assignProjectId ? 'disabled' : '' }}>
-                        <option value="">-- Semua Unit / General Proyek --</option>
+                        <option value="">Semua Unit / General Proyek</option>
                         @foreach ($availableUnits as $u)
                             <option value="{{ $u->id }}">Unit Kode: {{ $u->code }} ({{ ucfirst($u->category) }})</option>
                         @endforeach

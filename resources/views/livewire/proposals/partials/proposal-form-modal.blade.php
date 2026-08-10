@@ -11,7 +11,7 @@
                 <div>
                     <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider">Pilih Unit Kavling / Rumah *</label>
                     <select wire:change="selectUnitForProposal($event.target.value)" wire:model="unit_id" required class="input-clean w-full font-bold">
-                        <option value="">-- Pilih Unit Tersedia --</option>
+                        <option value="">Pilih Unit Tersedia</option>
                         @foreach($availableUnits as $u)
                             <option value="{{ $u->id }}">{{ $u->code }} - {{ $u->project->name }} @if(auth()->user()->canViewHpp())(HPP: Rp {{ number_format($u->hpp, 0, ',', '.') }})@endif</option>
                         @endforeach
