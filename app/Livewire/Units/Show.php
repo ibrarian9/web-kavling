@@ -105,7 +105,7 @@ class Show extends Component
 
     public function openDirectSppModal(): void
     {
-        $unit = Unit::findOrFail($this->unitId);
+        $unit = Unit::with(['installment', 'booking', 'officialDocument'])->findOrFail($this->unitId);
         $this->spp_buyer_name = $unit->booking?->buyer_name ?? '';
         $this->spp_buyer_nik = '';
         $this->spp_buyer_contact = $unit->booking?->buyer_phone ?? '';
@@ -115,7 +115,14 @@ class Show extends Component
         $this->spp_seller_name = $founder?->name ?? 'Founder PT. Atlantik Perkasa Abadi';
         $this->spp_seller_nik = '1471012304850001';
 
-        $this->spp_cash_price = $unit->final_selling_price ?? 0;
+        if ($unit->installment && (float)$unit->installment->total_price > 0) {
+            $this->spp_cash_price = (float)$unit->installment->total_price;
+        } elseif ($unit->final_selling_price && (float)$unit->final_selling_price > 0) {
+            $this->spp_cash_price = (float)$unit->final_selling_price;
+        } else {
+            $this->spp_cash_price = '';
+        }
+
         $this->showDirectSppModal = true;
     }
 

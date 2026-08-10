@@ -190,8 +190,8 @@
     "semantic_hash": "48e511f3cca85dad6426007d4e32a6f2"
   },
   "app/Livewire/Units/Show.php": {
-    "mtime": 1786341727.6567578,
-    "ast_hash": "1faae5a6feba2c83d875e07a17dd2b93",
+    "mtime": 1786342548.8846943,
+    "ast_hash": "0ade1ff0e79b50c078afb91ec3f3ade3",
     "semantic_hash": ""
   },
   "app/Livewire/Users/Index.php": {

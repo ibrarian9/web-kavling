@@ -170,8 +170,8 @@
     "semantic_hash": ""
   },
   "app/Livewire/Proposals/Index.php": {
-    "mtime": 1786334479.072312,
-    "ast_hash": "b3642764728460ea2a06f416af62bbe1",
+    "mtime": 1786341717.4915044,
+    "ast_hash": "1eb9cd27456dc3bda3ca1f1b1f0bf06c",
     "semantic_hash": ""
   },
   "app/Livewire/Tutorial/Index.php": {
@@ -190,8 +190,8 @@
     "semantic_hash": "48e511f3cca85dad6426007d4e32a6f2"
   },
   "app/Livewire/Units/Show.php": {
-    "mtime": 1786339612.1187563,
-    "ast_hash": "92bd4fad9fe491599d76d590c8df4333",
+    "mtime": 1786341727.6567578,
+    "ast_hash": "1faae5a6feba2c83d875e07a17dd2b93",
     "semantic_hash": ""
   },
   "app/Livewire/Users/Index.php": {
@@ -250,9 +250,9 @@
     "semantic_hash": "00a267f1dae9e1c56a1d0c6ee20c4b4d"
   },
   "app/Models/PriceProposal.php": {
-    "mtime": 1784614185.9200091,
-    "ast_hash": "053636e253e61ec996b8e2b6c76b4c29",
-    "semantic_hash": "053636e253e61ec996b8e2b6c76b4c29"
+    "mtime": 1786341707.010243,
+    "ast_hash": "1b7aeb85df4b7550e28e2c4ec57a1879",
+    "semantic_hash": ""
   },
   "app/Models/Project.php": {
     "mtime": 1785128332.3145437,
@@ -1095,9 +1095,9 @@
     "semantic_hash": "6d6e8c07e505f226e9e51725cf1b32f6"
   },
   "resources/views/livewire/units/partials/section-proposals-spp.blade.php": {
-    "mtime": 1786075337.6577215,
-    "ast_hash": "51b95e1b9a2c49d66cfa7bc1b3a2879d",
-    "semantic_hash": "51b95e1b9a2c49d66cfa7bc1b3a2879d"
+    "mtime": 1786341243.210567,
+    "ast_hash": "324fd67178b9f83867e95811bd1471e5",
+    "semantic_hash": ""
   },
   "resources/views/livewire/units/partials/section-specifications.blade.php": {
     "mtime": 1785988506.3987377,
@@ -1110,9 +1110,9 @@
     "semantic_hash": "e8cbc7ac4f4e2522c80e999d10fb65ae"
   },
   "resources/views/livewire/units/show.blade.php": {
-    "mtime": 1786185374.30687,
-    "ast_hash": "fb0a127c1c4b88048597e554840128f4",
-    "semantic_hash": "fb0a127c1c4b88048597e554840128f4"
+    "mtime": 1786341272.424311,
+    "ast_hash": "a897b4af36b80b6e5a3dbdbe8ca47207",
+    "semantic_hash": ""
   },
   "resources/views/livewire/users/index.blade.php": {
     "mtime": 1786185443.7226954,
@@ -1722,6 +1722,11 @@
   "resources/views/livewire/employee-salaries/partials/tab-salaries-table.blade.php": {
     "mtime": 1786333855.4842925,
     "ast_hash": "96dd2396ffffe875a566d00fce0c1490",
+    "semantic_hash": ""
+  },
+  "resources/views/livewire/units/partials/modal-direct-proposal.blade.php": {
+    "mtime": 1786341255.5508814,
+    "ast_hash": "8b4eb2f9f32cf3f8da2613153f40774d",
     "semantic_hash": ""
   }
 }
