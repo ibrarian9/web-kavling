@@ -12,7 +12,18 @@
 
             <form wire:submit.prevent="saveSetupInstallment" class="space-y-4 text-xs sm:text-sm flex-1 overflow-y-auto pr-1">
                 <div>
-                    <label class="block font-semibold text-slate-700 mb-1 text-xs uppercase tracking-wider">Total Harga Deal Unit <span class="text-rose-500">*</span></label>
+                    <div class="flex items-center justify-between mb-1">
+                        <label class="block font-semibold text-slate-700 text-xs uppercase tracking-wider">Total Harga Deal Unit <span class="text-rose-500">*</span></label>
+                        @php
+                            $approvedProposal = $unit->proposals->where('status', 'disetujui')->first();
+                            $approvedPrice = $unit->officialDocument->proposal->proposed_price ?? ($approvedProposal->proposed_price ?? null);
+                        @endphp
+                        @if($approvedPrice && (float)$approvedPrice !== (float)$setup_total_price)
+                            <button type="button" wire:click="$set('setup_total_price', {{ (float)$approvedPrice }})" class="text-[10px] font-extrabold text-teal-700 hover:text-teal-900 bg-teal-50 border border-teal-200 px-2 py-0.5 rounded-lg transition" title="Gunakan Harga dari Proposal / SPP yang telah disetujui">
+                                ⚡ Use Approved Price (Rp {{ number_format($approvedPrice, 0, ',', '.') }})
+                            </button>
+                        @endif
+                    </div>
                     <div class="flex rounded-xl shadow-xs">
                         <span class="bg-slate-100 border border-r-0 border-slate-200 px-3 py-2 text-slate-500 font-mono text-xs font-bold flex items-center rounded-l-xl">
                             Rp

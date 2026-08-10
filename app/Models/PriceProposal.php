@@ -46,14 +46,14 @@ class PriceProposal extends Model
     }
 
     /**
-     * Cek apakah pengajuan sudah disetujui paralel oleh Founder DAN Supervisor
+     * Cek apakah pengajuan sudah disetujui penuh (Persetujuan Founder cukup untuk langsung mengesahkan SPP)
      */
     public function isFullyApproved(): bool
     {
         $founderApproved = $this->approvals()->where('approver_role', 'founder')->where('decision', 'disetujui')->exists();
         $supervisorApproved = $this->approvals()->where('approver_role', 'supervisor')->where('decision', 'disetujui')->exists();
 
-        return $founderApproved && $supervisorApproved;
+        return $founderApproved || ($founderApproved && $supervisorApproved);
     }
 
     /**

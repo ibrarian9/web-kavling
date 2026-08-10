@@ -292,7 +292,7 @@ class Index extends Component
             $proposal->unit->update(['status' => 'ditolak']);
             session()->flash('error', 'Pengajuan harga ditolak oleh ' . ucfirst($userRole) . '. Unit kembali ke status ditolak.');
         } else {
-            if ($proposal->isFullyApproved()) {
+            if ($user->isFounder() || $proposal->isFullyApproved()) {
                 $proposal->update(['status' => 'disetujui']);
                 $proposal->unit->update([
                     'status' => 'disetujui',
@@ -315,9 +315,9 @@ class Index extends Component
                     ]);
                 }
 
-                session()->flash('success', 'Pengajuan harga disetujui penuh! Surat Persetujuan PDF kini langsung tersedia untuk diunduh oleh Marketing.');
+                session()->flash('success', 'Pengajuan harga disetujui penuh oleh Founder! Dokumen SPP PDF kini langsung tersedia untuk diunduh oleh Marketing.');
             } else {
-                session()->flash('success', 'Keputusan ' . ucfirst($userRole) . ' disetujui. Menunggu persetujuan dari pengesah lainnya.');
+                session()->flash('success', 'Keputusan ' . ucfirst($userRole) . ' disetujui. Menunggu persetujuan Founder.');
             }
         }
 

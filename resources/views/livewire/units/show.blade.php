@@ -43,4 +43,5 @@
     @include('livewire.units.partials.modal-convert-to-cash')
     @include('livewire.units.partials.modal-edit-unit')
     @include('livewire.units.partials.modal-direct-spp')
+    @include('livewire.units.partials.modal-direct-proposal')
 </div>

@@ -51,11 +51,19 @@
         @php
             $paidSoFar = (float)$unit->installment->down_payment + (float)$unit->installment->payments->sum('amount_paid');
             $unpaidBalance = max(0, (float)$unit->installment->total_price - $paidSoFar);
+            $hasApprovedPrice = $unit->officialDocument || $unit->proposals->where('status', 'disetujui')->count() > 0;
         @endphp
 
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs bg-slate-50/90 p-4 rounded-2xl border border-slate-200/80">
             <div class="bg-white p-2.5 rounded-xl border border-slate-100">
-                <span class="text-slate-500 block text-[10px] uppercase font-bold tracking-wider">Total Harga Deal:</span>
+                <div class="flex items-center justify-between gap-1 mb-0.5">
+                    <span class="text-slate-500 block text-[10px] uppercase font-bold tracking-wider">Total Harga Deal:</span>
+                    @if($hasApprovedPrice)
+                        <span class="text-[9px] font-extrabold text-emerald-800 bg-emerald-100 px-1.5 py-0.5 rounded border border-emerald-200">ACC</span>
+                    @else
+                        <span class="text-[9px] font-extrabold text-amber-800 bg-amber-100 px-1.5 py-0.5 rounded border border-amber-200">Belum ACC</span>
+                    @endif
+                </div>
                 <span class="font-extrabold text-slate-900 font-mono text-xs sm:text-sm">Rp {{ number_format($unit->installment->total_price, 0, ',', '.') }}</span>
             </div>
             <div class="bg-white p-2.5 rounded-xl border border-slate-100">

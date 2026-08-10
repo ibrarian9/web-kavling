@@ -179,9 +179,167 @@ class Show extends Component
         \App\Services\ActivityLogger::log('DOCUMENT_GENERATED', "Dokumen SPP & SPJB PDF {$docNumber} diterbitkan langsung per unit {$unit->code} oleh Founder.");
 
         $this->showDirectSppModal = false;
-        session()->flash('success', 'Dokumen SPP & SPJB PDF ' . $docNumber . ' berhasil diterbitkan!');
+        $msg = 'Dokumen SPP & SPJB PDF ' . $docNumber . ' berhasil diterbitkan!';
+        session()->flash('success', $msg);
+        $this->dispatch('notify', ['type' => 'success', 'title' => 'SPP Terbit!', 'message' => $msg]);
 
         $this->openViewerModal('pdf', route('documents.stream', $doc->id), 'Pratinjau SPP & SPJB PDF - ' . $doc->document_number);
+    }
+
+    // Modal Direct Proposal State
+    public bool $showDirectProposalModal = false;
+    public $prop_hpp_price = 0;
+    public $prop_proposed_price = 0;
+    public string $prop_notes = '';
+
+    public function approveProposal(int $proposalId, string $decision): void
+    {
+        $user = auth()->user();
+        if (!$user || (!$user->isFounder() && !$user->isSupervisor())) {
+            $err = 'Hanya Founder dan Supervisor yang berhak mengesahkan approval harga.';
+            session()->flash('error', $err);
+            $this->dispatch('notify', ['type' => 'error', 'title' => 'Gagal!', 'message' => $err]);
+            return;
+        }
+
+        $proposal = \App\Models\PriceProposal::with('unit.project')->findOrFail($proposalId);
+        $userRole = $user->role;
+
+        \App\Models\Approval::updateOrCreate(
+            [
+                'price_proposal_id' => $proposal->id,
+                'approver_role' => $userRole,
+            ],
+            [
+                'approver_id' => $user->id,
+                'decision' => $decision,
+                'notes' => 'Approval langsung dari Detail Unit ' . $proposal->unit->code,
+                'decided_at' => now(),
+            ]
+        );
+
+        \App\Services\ActivityLogger::log(
+            $decision === 'ditolak' ? 'PROPOSAL_REJECTED' : 'PROPOSAL_APPROVED',
+            "Pengajuan harga unit {$proposal->unit->code} ({$decision}) oleh " . ucfirst($userRole) . " ({$user->name}) via Detail Unit."
+        );
+
+        if ($decision === 'ditolak') {
+            $proposal->update(['status' => 'ditolak']);
+            $proposal->unit->update(['status' => 'ditolak']);
+            $msg = 'Pengajuan harga ditolak. Status unit kembali ke Ditolak.';
+            session()->flash('error', $msg);
+            $this->dispatch('notify', ['type' => 'error', 'title' => 'Ditolak!', 'message' => $msg]);
+        } else {
+            if ($user->isFounder() || $proposal->isFullyApproved()) {
+                $proposal->update(['status' => 'disetujui']);
+                $proposal->unit->update([
+                    'status' => 'disetujui',
+                    'final_selling_price' => $proposal->proposed_price,
+                ]);
+
+                $existingDoc = \App\Models\OfficialDocument::where('price_proposal_id', $proposal->id)->first();
+                if (!$existingDoc) {
+                    $docNumber = 'SPP/' . strtoupper($proposal->unit->project->name ?? 'PROYEK') . '/' . date('Y/m') . '/' . str_pad(rand(1, 999), 3, '0', STR_PAD_LEFT);
+                    \App\Models\OfficialDocument::create([
+                        'unit_id' => $proposal->unit_id,
+                        'price_proposal_id' => $proposal->id,
+                        'document_number' => $docNumber,
+                        'buyer_name' => 'Pembeli Unit ' . $proposal->unit->code,
+                        'buyer_contact' => '-',
+                        'buyer_address' => '-',
+                        'issued_by' => auth()->id(),
+                        'issued_at' => now(),
+                    ]);
+                }
+
+                $msg = 'Pengajuan harga disetujui penuh oleh Founder! Dokumen SPP PDF otomatis diterbitkan!';
+                session()->flash('success', $msg);
+                $this->dispatch('notify', ['type' => 'success', 'title' => 'ACC Berhasil!', 'message' => $msg]);
+            } else {
+                $msg = 'Keputusan Disetujui dicatat. Menunggu persetujuan Founder.';
+                session()->flash('success', $msg);
+                $this->dispatch('notify', ['type' => 'info', 'title' => 'Dicatat', 'message' => $msg]);
+            }
+        }
+    }
+
+    public function openDirectProposalModal(): void
+    {
+        $unit = Unit::findOrFail($this->unitId);
+        $this->resetValidation();
+        $this->prop_hpp_price = (float)$unit->hpp;
+        $this->prop_proposed_price = (float)($unit->final_selling_price ?: ($unit->price ?: $unit->hpp * 1.3));
+        $this->prop_notes = '';
+        $this->showDirectProposalModal = true;
+    }
+
+    public function saveDirectProposal(): void
+    {
+        $user = auth()->user();
+        if (!$user->isMarketing() && !$user->isFounder()) {
+            $err = 'Hanya Marketing dan Founder yang berhak membuat pengajuan harga.';
+            session()->flash('error', $err);
+            $this->dispatch('notify', ['type' => 'error', 'title' => 'Gagal!', 'message' => $err]);
+            return;
+        }
+
+        $this->validate([
+            'prop_proposed_price' => 'required|numeric|min:1000',
+        ]);
+
+        $unit = Unit::with('project')->findOrFail($this->unitId);
+        $hpp = (float)$unit->hpp;
+        $proposed = (float)$this->prop_proposed_price;
+        $margin = $proposed - $hpp;
+        $isBelowHpp = $proposed < $hpp;
+
+        $status = $user->isFounder() ? 'disetujui' : 'menunggu';
+
+        $proposal = \App\Models\PriceProposal::create([
+            'unit_id' => $unit->id,
+            'hpp_price' => $hpp,
+            'proposed_price' => $proposed,
+            'margin' => $margin,
+            'is_below_hpp' => $isBelowHpp,
+            'proposed_by' => auth()->id(),
+            'status' => $status,
+            'notes' => $this->prop_notes ?: 'Pengajuan harga langsung dari Detail Unit',
+        ]);
+
+        if ($user->isFounder()) {
+            \App\Models\Approval::create([
+                'price_proposal_id' => $proposal->id,
+                'approver_id' => auth()->id(),
+                'approver_role' => 'founder',
+                'decision' => 'disetujui',
+                'notes' => 'Persetujuan langsung oleh Founder di Detail Unit',
+                'decided_at' => now(),
+            ]);
+
+            $unit->update([
+                'status' => 'disetujui',
+                'final_selling_price' => $proposed,
+            ]);
+
+            $docNumber = 'SPP/' . strtoupper($unit->project->name ?? 'PROYEK') . '/' . date('Y/m') . '/' . str_pad(rand(1, 999), 3, '0', STR_PAD_LEFT);
+            \App\Models\OfficialDocument::create([
+                'unit_id' => $unit->id,
+                'price_proposal_id' => $proposal->id,
+                'document_number' => $docNumber,
+                'buyer_name' => 'Pembeli Unit ' . $unit->code,
+                'buyer_contact' => '-',
+                'buyer_address' => '-',
+                'issued_by' => auth()->id(),
+                'issued_at' => now(),
+            ]);
+        }
+
+        \App\Services\ActivityLogger::log('PROPOSAL_CREATED', "Proposal harga Rp " . number_format($proposed, 0, ',', '.') . " diajukan untuk Unit {$unit->code} via Detail Unit.");
+
+        $msg = 'Proposal harga berhasil diajukan' . ($user->isFounder() ? ' & langsung disetujui!' : '!');
+        session()->flash('success', $msg);
+        $this->dispatch('notify', ['type' => 'success', 'title' => 'Berhasil!', 'message' => $msg]);
+        $this->showDirectProposalModal = false;
     }
 
     // Viewer Modal (Jendela Melayang untuk Foto Struk, PDF Resi, & Barcode QR)
@@ -1056,7 +1214,9 @@ class Show extends Component
             $this->setup_installment_count = (int)$unit->installment->installment_count;
             $this->setup_start_date = $unit->installment->start_date ? $unit->installment->start_date->format('Y-m-d') : now()->toDateString();
         } else {
-            $this->setup_total_price = (float)($unit->final_selling_price ?: ($unit->activeProposal->proposed_price ?? 0));
+            $approvedProp = $unit->proposals->where('status', 'disetujui')->first();
+            $defaultPrice = $unit->final_selling_price ?: ($unit->officialDocument->proposal->proposed_price ?? ($approvedProp->proposed_price ?? ($unit->proposals->first()?->proposed_price ?? 0)));
+            $this->setup_total_price = (float)$defaultPrice;
             $this->setup_down_payment = $alreadyPaid > 0 ? $alreadyPaid : ($this->setup_total_price * 0.20);
             $this->setup_installment_count = 12;
             $this->setup_start_date = now()->toDateString();
@@ -1390,6 +1550,8 @@ class Show extends Component
             'showConvertToCashModal' => $this->showConvertToCashModal,
             'showMaterialModal' => $this->materialModal ?? $this->showMaterialModal,
             'showViewerModal' => $this->showViewerModal,
+            'showDirectSppModal' => $this->showDirectSppModal,
+            'showDirectProposalModal' => $this->showDirectProposalModal,
             'editingSalaryPaymentId' => $this->editingSalaryPaymentId,
         ])->layout('components.layouts.app', ['title' => 'Detail Unit ' . $unit->code . ' - ' . $unit->project->name]);
     }
