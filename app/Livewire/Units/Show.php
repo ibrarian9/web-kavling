@@ -105,10 +105,10 @@ class Show extends Component
 
     public function openDirectSppModal(): void
     {
-        $unit = Unit::with(['installment', 'booking', 'officialDocument'])->findOrFail($this->unitId);
-        $this->spp_buyer_name = $unit->booking?->buyer_name ?? '';
+        $unit = Unit::with(['installment', 'activeBooking', 'officialDocument'])->findOrFail($this->unitId);
+        $this->spp_buyer_name = $unit->activeBooking?->buyer_name ?? '';
         $this->spp_buyer_nik = '';
-        $this->spp_buyer_contact = $unit->booking?->buyer_phone ?? '';
+        $this->spp_buyer_contact = $unit->activeBooking?->buyer_phone ?? '';
         $this->spp_buyer_address = '';
 
         $founder = auth()->user()->isFounder() ? auth()->user() : User::where('role', 'founder')->first();
