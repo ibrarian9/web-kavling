@@ -197,13 +197,32 @@ class Index extends Component
             return;
         }
 
-        $doc = OfficialDocument::findOrFail((int) $id);
+        $doc = OfficialDocument::with(['unit.activeBooking', 'unit.proposals', 'unit.installment'])->findOrFail((int) $id);
         $docNumber = $doc->document_number;
+        $unit = $doc->unit;
+
         $doc->delete();
 
-        ActivityLogger::log('DOCUMENT_DELETED', "Dokumen SPP {$docNumber} (ID #{$id}) telah dihapus oleh Founder.");
+        $statusMsg = '';
+        if ($unit) {
+            if ($unit->installment && $unit->installment->status === 'berjalan') {
+                $unit->update(['status' => 'disetujui']);
+                $statusMsg = "Status unit {$unit->code} otomatis dikembalikan ke 'Disetujui' (skema cicilan berjalan).";
+            } elseif ($unit->activeBooking) {
+                $unit->update(['status' => 'booked']);
+                $statusMsg = "Status unit {$unit->code} otomatis dikembalikan ke 'Booked'.";
+            } elseif ($unit->proposals()->where('status', 'disetujui')->exists()) {
+                $unit->update(['status' => 'disetujui']);
+                $statusMsg = "Status unit {$unit->code} otomatis dikembalikan ke 'Disetujui'.";
+            } else {
+                $unit->update(['status' => 'tersedia']);
+                $statusMsg = "Status unit {$unit->code} otomatis dikembalikan ke 'Tersedia'.";
+            }
+        }
 
-        session()->flash('success', 'Dokumen SPP ' . $docNumber . ' berhasil dihapus oleh Founder.');
+        ActivityLogger::log('DOCUMENT_DELETED', "Dokumen SPP {$docNumber} (ID #{$id}) telah dihapus oleh Founder. {$statusMsg}");
+
+        session()->flash('success', 'Dokumen SPP ' . $docNumber . ' berhasil dihapus. ' . $statusMsg);
     }
 
     public function render()
