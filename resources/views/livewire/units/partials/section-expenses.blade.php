@@ -24,7 +24,7 @@
                 </button>
             @endif
 
-            @if(auth()->user()->isFounder() || auth()->user()->isPengawasProject() || auth()->user()->isSupervisor())
+            @if(auth()->user()->isAdminOrFounder() || auth()->user()->isPengawasProject() || auth()->user()->isSupervisor())
                 <button wire:click="openMaterialModal" class="px-3.5 py-2 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 rounded-xl text-xs font-extrabold inline-flex items-center gap-1.5 transition shadow-2xs active:scale-[0.98]">
                     <svg class="w-4 h-4 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                     <span>Catat Belanja Material</span>
@@ -93,7 +93,7 @@
                         </td>
                         <td class="px-3.5 py-3 text-center whitespace-nowrap">
                             @if(isset($exp->source_type) && $exp->source_type === 'material')
-                                @if(auth()->user()->isFounder())
+                                @if(auth()->user()->isAdminOrFounder())
                                     <div class="flex items-center justify-center gap-1.5">
                                         <button wire:click="editMaterialPurchase({{ $exp->id }})" class="btn-action-edit text-[11px]" title="Edit Belanja Material">
                                             <svg class="w-3.5 h-3.5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
@@ -114,7 +114,7 @@
                                     <span class="text-slate-400 text-[10px]">-</span>
                                 @endif
                             @elseif(isset($exp->source_type) && $exp->source_type === 'salary_payment')
-                                @if(auth()->user()->isFounder())
+                                @if(auth()->user()->isAdminOrFounder())
                                     <div class="flex items-center justify-center gap-1.5">
                                         <button wire:click="editPayrollPayment({{ $exp->id }})" class="btn-action-edit text-[11px]" title="Edit Pembayaran Gaji Worker">
                                             <svg class="w-3.5 h-3.5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
@@ -140,7 +140,7 @@
                                         <svg class="w-3.5 h-3.5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
                                         <span>SPK PDF</span>
                                     </button>
-                                    @if(auth()->user()->isFounder())
+                                    @if(auth()->user()->isAdminOrFounder())
                                         <button wire:click="editPayrollSetup({{ $exp->id }})" class="btn-action-edit text-[11px]" title="Edit Kontrak Gaji Worker">
                                             <svg class="w-3.5 h-3.5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                                             <span>Edit</span>

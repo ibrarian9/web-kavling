@@ -93,7 +93,7 @@
                             <span>Detail</span>
                         </button>
 
-                        @if(auth()->user()->isFounder() || auth()->user()->isFinance())
+                        @if(auth()->user()->isAdminOrFounder() || auth()->user()->isFinance())
                             <button type="button" @click="confirmModalAction({
                                 title: 'Hapus Mutasi Kas',
                                 message: 'Yakin ingin menghapus catatan transaksi mutasi kas ini?',
@@ -158,7 +158,7 @@
                                         <span>Detail</span>
                                     </button>
 
-                                    @if(auth()->user()->isFounder() || auth()->user()->isFinance())
+                                    @if(auth()->user()->isAdminOrFounder() || auth()->user()->isFinance())
                                          <button type="button" @click="confirmModalAction({
                                              title: 'Hapus Mutasi Kas',
                                              message: 'Yakin ingin menghapus catatan transaksi mutasi kas ini?',

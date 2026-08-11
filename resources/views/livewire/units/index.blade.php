@@ -27,7 +27,7 @@
                     </button>
                 </div>
 
-                @if(auth()->user()->isFounder() || auth()->user()->isSupervisor())
+                @if(auth()->user()->isAdminOrFounder() || auth()->user()->isSupervisor())
                     <button wire:click="openModal" class="btn-primary h-9 text-xs font-bold whitespace-nowrap shadow-sm px-3.5 flex items-center gap-1.5">
                         <svg class="w-4 h-4 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
@@ -378,7 +378,7 @@
                             <svg class="w-3.5 h-3.5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                             <span>Detail</span>
                         </a>
-                        @if(auth()->user()->isFounder() || auth()->user()->isSupervisor())
+                        @if(auth()->user()->isAdminOrFounder() || auth()->user()->isSupervisor())
                             <button wire:click="editUnit({{ $unit->id }})" class="btn-action-edit">
                                 <svg class="w-3.5 h-3.5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                                 <span>Edit</span>
@@ -399,7 +399,7 @@
                     </div>
 
                     <div class="flex items-center gap-1.5">
-                        @if((auth()->user()->isFounder() || auth()->user()->isFinance()) && $unit->category !== 'infrastruktur' && $unit->status === 'tersedia')
+                        @if((auth()->user()->isAdminOrFounder() || auth()->user()->isFinance()) && $unit->category !== 'infrastruktur' && $unit->status === 'tersedia')
                             <a href="{{ route('units.show', $unit->id) }}" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs px-2.5 py-1.5 rounded-lg transition shadow-sm flex items-center gap-1" title="Pembelian Cash Direct">
                                 <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 01-2 2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                                 <span>Pembelian Cash</span>

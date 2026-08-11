@@ -16,7 +16,7 @@
                 @endif
             </h3>
 
-            @if(auth()->user()->isFounder())
+            @if(auth()->user()->isAdminOrFounder())
                 <div class="flex items-center gap-2 flex-wrap">
                     @if(!in_array($unit->installment->status, ['lunas', 'konversi_cash']))
                         <button wire:click="openInstallmentPaymentModal" class="btn-action-payment text-xs px-3 py-1.5 flex items-center gap-1.5 shadow-2xs font-extrabold" title="Input Setoran Cicilan Pembeli">
@@ -92,7 +92,7 @@
                     </div>
                     <div class="flex items-center gap-2 shrink-0 self-start sm:self-center">
                         <span class="font-mono text-slate-500 text-[11px] font-semibold">{{ $pay->payment_date ? (is_string($pay->payment_date) ? $pay->payment_date : $pay->payment_date->format('d/m/Y')) : '-' }}</span>
-                        @if(auth()->user()->isFounder())
+                        @if(auth()->user()->isAdminOrFounder())
                             @if($pay->uuid)
                                 <button wire:click="openViewerModal('pdf', '{{ route('installment.invoice', $pay->uuid) }}', 'Pratinjau Invoice Setoran Unit {{ $unit->code }}')" class="btn-action-pdf text-[11px]" title="Pratinjau Invoice / Kuitansi PDF (QR Verification)">
                                     <svg class="w-3.5 h-3.5 text-sky-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
@@ -121,7 +121,7 @@
             @endforelse
         </div>
     </div>
-@elseif(!auth()->user()->isPengawasProject() && auth()->user()->isFounder() && in_array($unit->status, ['booked', 'disetujui', 'terjual', 'converted']))
+@elseif(!auth()->user()->isPengawasProject() && auth()->user()->isAdminOrFounder() && in_array($unit->status, ['booked', 'disetujui', 'terjual', 'converted']))
     <div class="card-clean p-5 flex flex-col sm:flex-row sm:items-center justify-between bg-blue-50/50 border border-blue-100 gap-3">
         <div>
             <h4 class="font-extrabold text-slate-900 text-xs sm:text-sm">Skema Cicilan Pembeli Belum Dikonfigurasi</h4>

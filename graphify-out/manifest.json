@@ -775,8 +775,8 @@
     "semantic_hash": "9e133545279485a50744ac6cd82842df"
   },
   "resources/views/livewire/cashflow/index.blade.php": {
-    "mtime": 1786352672.3091025,
-    "ast_hash": "8c7198afa07be698a6ab244dae6c0b32",
+    "mtime": 1786436813.4832308,
+    "ast_hash": "fc505fa15fbf8814b208d9a6e7df2e7b",
     "semantic_hash": ""
   },
   "resources/views/livewire/cashflow/partials/modal-detail-transaction.blade.php": {
@@ -790,13 +790,13 @@
     "semantic_hash": "f7a22ebe9c18e391119ad31c8aed9f2c"
   },
   "resources/views/livewire/dashboard.blade.php": {
-    "mtime": 1786124164.1233082,
-    "ast_hash": "4fb6d91dfc40902bd89b575a9cff751d",
-    "semantic_hash": "4fb6d91dfc40902bd89b575a9cff751d"
+    "mtime": 1786436933.3455837,
+    "ast_hash": "9e4cf179b9fb5e8a95adf73d0d5c25d2",
+    "semantic_hash": ""
   },
   "resources/views/livewire/documents/index.blade.php": {
-    "mtime": 1786352617.224567,
-    "ast_hash": "18e21737dd58bf879bc4b45362ddc1f8",
+    "mtime": 1786436820.1744196,
+    "ast_hash": "54d6a6ccf1ff2ac85551c9c7ec6912bd",
     "semantic_hash": ""
   },
   "resources/views/livewire/employee-salaries/index.blade.php": {
@@ -875,14 +875,14 @@
     "semantic_hash": "666ace2764589afa10217438d58bf476"
   },
   "resources/views/livewire/projects/index.blade.php": {
-    "mtime": 1786352662.0692925,
-    "ast_hash": "9f624c37a196a57668c4d0c53c322895",
+    "mtime": 1786436725.6007326,
+    "ast_hash": "c0c83749a49e240d7413006ef4cc9040",
     "semantic_hash": ""
   },
   "resources/views/livewire/projects/partials/header.blade.php": {
-    "mtime": 1785583869.8286412,
-    "ast_hash": "38cf72a2ebbc254ca2af6abb74c35f30",
-    "semantic_hash": "38cf72a2ebbc254ca2af6abb74c35f30"
+    "mtime": 1786436741.4591863,
+    "ast_hash": "8554299cabddf60dd5be97bad3491c81",
+    "semantic_hash": ""
   },
   "resources/views/livewire/projects/partials/kpi-dashboard.blade.php": {
     "mtime": 1785519599.9317503,
@@ -890,9 +890,9 @@
     "semantic_hash": "c9869e24634c1688903bfbfefd81bf27"
   },
   "resources/views/livewire/projects/partials/land-purchase-card.blade.php": {
-    "mtime": 1785519593.5886903,
-    "ast_hash": "47f6394febb0cbbd740ad0d0b82557c9",
-    "semantic_hash": "47f6394febb0cbbd740ad0d0b82557c9"
+    "mtime": 1786436748.1983786,
+    "ast_hash": "3d035c35a6a949337f8787313eeec65b",
+    "semantic_hash": ""
   },
   "resources/views/livewire/projects/partials/modal-legacy-sale.blade.php": {
     "mtime": 1785519637.0590985,
@@ -910,14 +910,14 @@
     "semantic_hash": "799a858c6fab10ef008ffbf8df00f300"
   },
   "resources/views/livewire/projects/partials/tab-cashflow.blade.php": {
-    "mtime": 1785672959.8806424,
-    "ast_hash": "ab20d57a041e38c19d1395235cc383eb",
-    "semantic_hash": "ab20d57a041e38c19d1395235cc383eb"
+    "mtime": 1786436772.1480606,
+    "ast_hash": "b031ab9b8a550969bd3753a96e1d2b0c",
+    "semantic_hash": ""
   },
   "resources/views/livewire/projects/partials/tab-payments.blade.php": {
-    "mtime": 1785672987.4417999,
-    "ast_hash": "8ce6544cceb53e4109eafcc2b8d6d14c",
-    "semantic_hash": "8ce6544cceb53e4109eafcc2b8d6d14c"
+    "mtime": 1786436766.4828994,
+    "ast_hash": "89a308ad9955e83a78db51673366c623",
+    "semantic_hash": ""
   },
   "resources/views/livewire/projects/partials/tab-siteplan.blade.php": {
     "mtime": 1785619444.8054526,
@@ -925,9 +925,9 @@
     "semantic_hash": "a2e5c6fe83e4d21181808499ff1f5451"
   },
   "resources/views/livewire/projects/partials/tab-units.blade.php": {
-    "mtime": 1786082169.9312642,
-    "ast_hash": "38e56f3d6a631726e67bf3eb887cf404",
-    "semantic_hash": "38e56f3d6a631726e67bf3eb887cf404"
+    "mtime": 1786436756.5616171,
+    "ast_hash": "a8b27a1eb6c95833cd475951fde470bc",
+    "semantic_hash": ""
   },
   "resources/views/livewire/projects/show.blade.php": {
     "mtime": 1785619458.1036434,
@@ -950,9 +950,9 @@
     "semantic_hash": ""
   },
   "resources/views/livewire/proposals/partials/proposal-header.blade.php": {
-    "mtime": 1786009351.4068508,
-    "ast_hash": "d750189f160763dbab7a78aa7dd6b87d",
-    "semantic_hash": "d750189f160763dbab7a78aa7dd6b87d"
+    "mtime": 1786436799.8318453,
+    "ast_hash": "bac19d298ab7b8436f700d900263c551",
+    "semantic_hash": ""
   },
   "resources/views/livewire/proposals/partials/proposal-kpi-summary.blade.php": {
     "mtime": 1786009357.4051,
@@ -960,9 +960,9 @@
     "semantic_hash": "ce2016f1486a94481c0b9183d6f5b3d1"
   },
   "resources/views/livewire/proposals/partials/proposal-table-list.blade.php": {
-    "mtime": 1786009547.4410424,
-    "ast_hash": "a5b5bcbdf7e3c1eda5580acf1a95f9ec",
-    "semantic_hash": "a5b5bcbdf7e3c1eda5580acf1a95f9ec"
+    "mtime": 1786436805.3970025,
+    "ast_hash": "85f072c2b65140642930199fb1975eaf",
+    "semantic_hash": ""
   },
   "resources/views/livewire/tutorial/index.blade.php": {
     "mtime": 1786073948.1814525,
@@ -995,9 +995,9 @@
     "semantic_hash": "1e5d55765a6c8ab30e38a92221d91c35"
   },
   "resources/views/livewire/units/index.blade.php": {
-    "mtime": 1786080223.7799187,
-    "ast_hash": "79a78bdf51dbf34d7d67849639c21a4e",
-    "semantic_hash": "79a78bdf51dbf34d7d67849639c21a4e"
+    "mtime": 1786436735.2590091,
+    "ast_hash": "426707b11d70db4ea58af794cf845a1f",
+    "semantic_hash": ""
   },
   "resources/views/livewire/units/legacy-sale.blade.php": {
     "mtime": 1785992331.453786,
@@ -1080,13 +1080,13 @@
     "semantic_hash": "fdb124dcb8dd6affebb14f81c19b5536"
   },
   "resources/views/livewire/units/partials/section-expenses.blade.php": {
-    "mtime": 1785989110.663255,
-    "ast_hash": "1a38b7d58d6297150b1aa8748d277bb4",
-    "semantic_hash": "1a38b7d58d6297150b1aa8748d277bb4"
+    "mtime": 1786436781.463325,
+    "ast_hash": "2d87abec52333cdd723630369d53e873",
+    "semantic_hash": ""
   },
   "resources/views/livewire/units/partials/section-installments.blade.php": {
-    "mtime": 1786339619.87501,
-    "ast_hash": "89c3422f6d1f65ef262fb07d19f5bd8e",
+    "mtime": 1786436793.8356755,
+    "ast_hash": "11c64abdc770938d6aee1faf3d134acf",
     "semantic_hash": ""
   },
   "resources/views/livewire/units/partials/section-payroll-borongan.blade.php": {

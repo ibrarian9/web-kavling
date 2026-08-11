@@ -35,7 +35,7 @@
             </div>
         </div>
 
-        @if(auth()->user()->isFounder())
+        @if(auth()->user()->isAdminOrFounder() || auth()->user()->isFinance())
             <div class="shrink-0">
                 <button wire:click="openPaymentModal" class="w-full sm:w-auto bg-emerald-500 hover:bg-emerald-400 text-white font-extrabold text-xs px-4 py-3 rounded-xl shadow-lg transition inline-flex items-center justify-center gap-2">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>

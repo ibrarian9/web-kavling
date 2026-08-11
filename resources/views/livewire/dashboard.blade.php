@@ -39,14 +39,14 @@
 
             <!-- Quick Action Shortcut Buttons inside Header Banner -->
             <div class="flex flex-wrap items-center gap-2.5 shrink-0">
-                @if($user->isFounder() || $user->isFinance())
+                @if($user->isAdminOrFounder() || $user->isFinance())
                     <a href="{{ route('cashflow.index') }}" wire:navigate.hover class="px-4 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded-xl text-xs shadow-lg shadow-emerald-900/40 transition flex items-center gap-2">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                         <span>Arus Kas</span>
                     </a>
                 @endif
 
-                @if($user->isFounder() || $user->isMarketing() || $user->isFinance())
+                @if($user->isAdminOrFounder() || $user->isMarketing() || $user->isFinance())
                     <a href="{{ route('bookings.index') }}" wire:navigate.hover class="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-100 font-bold border border-slate-700 rounded-xl text-xs transition flex items-center gap-2">
                         <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                         <span>Booking Unit</span>
@@ -62,7 +62,7 @@
     </div>
 
     <!-- Alert Pending Approval untuk Founder & Supervisor -->
-    @if(($user->isFounder() || $user->isSupervisor()) && $pendingProposalsCount > 0)
+    @if(($user->isAdminOrFounder() || $user->isSupervisor()) && $pendingProposalsCount > 0)
         <div class="bg-amber-50 border border-amber-200/80 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-amber-900 shadow-sm animate-pulse">
             <div class="flex items-center gap-3">
                 <div class="p-2.5 bg-amber-500 text-white rounded-xl shadow-xs">
