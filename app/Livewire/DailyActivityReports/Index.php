@@ -29,6 +29,71 @@ class Index extends Component
     public ?DailyActivityReport $selectedReport = null;
     public ?int $editingReportId = null;
 
+    // Export PDF & Viewer State
+    public bool $showExportPdfModal = false;
+    public bool $showViewerModal = false;
+    public string $viewerUrl = '';
+    public string $viewerTitle = '';
+
+    public string $export_period = 'month'; // 'day', 'week', 'month', 'all'
+    public string $export_date = '';
+    public string $export_week_start = '';
+    public string $export_week_end = '';
+    public string $export_month = '';
+    public ?int $export_user_id = null;
+    public ?int $export_project_id = null;
+
+    public function openExportPdfModal(): void
+    {
+        $this->export_period = 'month';
+        $this->export_date = now()->toDateString();
+        $this->export_week_start = now()->startOfWeek()->toDateString();
+        $this->export_week_end = now()->endOfWeek()->toDateString();
+        $this->export_month = now()->format('Y-m');
+        $this->export_user_id = $this->filter_user_id;
+        $this->export_project_id = $this->filter_project_id;
+        $this->showExportPdfModal = true;
+    }
+
+    public function closeExportPdfModal(): void
+    {
+        $this->showExportPdfModal = false;
+    }
+
+    public function openViewerModal(string $url, string $title = ''): void
+    {
+        $this->viewerUrl = $url;
+        $this->viewerTitle = $title ?: 'Pratinjau PDF Laporan Aktivitas Harian';
+        $this->showViewerModal = true;
+    }
+
+    public function closeViewerModal(): void
+    {
+        $this->showViewerModal = false;
+        $this->viewerUrl = '';
+        $this->viewerTitle = '';
+    }
+
+    public function getExportPdfUrlProperty(): string
+    {
+        $params = [
+            'period' => $this->export_period,
+            'date' => $this->export_date,
+            'week_start' => $this->export_week_start,
+            'week_end' => $this->export_week_end,
+            'month' => $this->export_month,
+            'user_id' => $this->export_user_id,
+            'project_id' => $this->export_project_id,
+            'search' => $this->search,
+            'lead_stage' => $this->filter_lead_stage,
+            'lead_source' => $this->filter_lead_source,
+            'filter_start_date' => $this->filter_start_date,
+            'filter_end_date' => $this->filter_end_date,
+        ];
+
+        return route('daily-activity-reports.export-pdf', array_filter($params, fn($v) => !is_null($v) && $v !== ''));
+    }
+
     public ?int $user_id = null;
     public ?int $project_id = null;
     public ?int $unit_id = null;

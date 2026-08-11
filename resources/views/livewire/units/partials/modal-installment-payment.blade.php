@@ -54,6 +54,21 @@
                     <textarea wire:model="installment_payment_notes" rows="2" class="input-clean w-full text-xs sm:text-sm" placeholder="Setoran cicilan bulan ke-X..."></textarea>
                 </div>
 
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1 text-xs uppercase tracking-wider">Foto Resi Struk / Bukti Transfer Bank</label>
+                    <input type="file" wire:model="installment_payment_receipt_photo" accept="image/*,.pdf" class="input-clean w-full text-xs">
+                    <div wire:loading wire:target="installment_payment_receipt_photo" class="text-xs text-blue-600 font-semibold mt-1 flex items-center gap-1">
+                        <svg class="animate-spin h-3.5 w-3.5 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                        <span>Mengunggah resi transfer...</span>
+                    </div>
+                    @error('installment_payment_receipt_photo') <span class="text-rose-600 text-[10px] mt-1 block font-medium">{{ $message }}</span> @enderror
+                    @if ($installment_payment_receipt_photo)
+                        <div class="mt-2 text-xs text-emerald-600 font-semibold flex items-center gap-1">
+                            <span>✓ File resi terpilih: {{ $installment_payment_receipt_photo->getClientOriginalName() }}</span>
+                        </div>
+                    @endif
+                </div>
+
                 <div class="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2 sm:gap-3 pt-3 border-t border-slate-100 shrink-0">
                     <button type="button" wire:click="$set('showInstallmentPaymentModal', false)" class="btn-secondary">Batal</button>
                     <button type="submit" class="btn-primary bg-blue-600 hover:bg-blue-700">Simpan Setoran</button>

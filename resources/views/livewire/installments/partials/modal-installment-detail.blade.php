@@ -85,9 +85,14 @@
                             </div>
                             <div class="text-right shrink-0 space-y-1">
                                 <span class="font-mono text-slate-600 font-semibold block text-[11px]">{{ $pay->payment_date ? \Carbon\Carbon::parse($pay->payment_date)->locale('id')->isoFormat('D MMM YYYY') : '-' }}</span>
-                                <div class="flex items-center justify-end gap-1.5">
+                                <div class="flex items-center justify-end gap-1.5 flex-wrap">
+                                    @if($pay->receipt_photo_path)
+                                        <button wire:click="openViewerModal('image', '{{ asset('storage/' . $pay->receipt_photo_path) }}', 'Foto Resi Transfer Bank - Setoran Unit {{ $selectedDetailInstallment->unit->code }}')" class="btn-action-pdf text-[10px] px-2 py-0.5 bg-amber-50 text-amber-800 border-amber-200 hover:bg-amber-100" title="Buka Foto Struk / Resi Transfer">
+                                            <span>Struk TF</span>
+                                        </button>
+                                    @endif
                                     <span class="text-[10px] text-emerald-600 font-bold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 inline-block">TERBAYAR</span>
-                                    @if(auth()->user()->isFounder())
+                                    @if(auth()->user()->isAdminOrFounder() || auth()->user()->isFinance())
                                          <button type="button" @click="confirmModalAction({
                                              title: 'Hapus Setoran Cicilan',
                                              message: 'Hapus pencatatan setoran cicilan ini?',

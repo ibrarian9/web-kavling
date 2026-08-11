@@ -13,10 +13,16 @@
             </p>
         </div>
 
-        <button wire:click="openCreateModal" class="px-4 py-2.5 bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-600 hover:to-emerald-700 text-white font-bold rounded-xl shadow-lg shadow-teal-900/40 text-xs sm:text-sm transition flex items-center justify-center gap-2 shrink-0">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-            <span>Catat Laporan Harian</span>
-        </button>
+        <div class="flex items-center gap-2 flex-wrap shrink-0">
+            <button wire:click="openExportPdfModal" class="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-teal-300 border border-teal-500/40 font-bold rounded-xl text-xs sm:text-sm transition flex items-center justify-center gap-2 shadow-md" title="Tarik Laporan PDF Per Hari, Per Minggu, atau Per Bulan">
+                <svg class="w-4 h-4 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                <span>Export PDF Laporan</span>
+            </button>
+            <button wire:click="openCreateModal" class="px-4 py-2.5 bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-600 hover:to-emerald-700 text-white font-bold rounded-xl shadow-lg shadow-teal-900/40 text-xs sm:text-sm transition flex items-center justify-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                <span>Catat Laporan Harian</span>
+            </button>
+        </div>
     </div>
 
     <!-- Stat Cards Grid -->

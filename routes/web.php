@@ -78,6 +78,7 @@ Route::middleware(['auth', \App\Http\Middleware\EnsureUserIsActive::class])->gro
 
     // Penjualan, Booking & Approval
     Route::get('/daily-activity-reports', \App\Livewire\DailyActivityReports\Index::class)->name('daily-activity-reports.index');
+    Route::get('/daily-activity-reports/export-pdf', [\App\Http\Controllers\DailyActivityReportPdfController::class, 'exportPdf'])->name('daily-activity-reports.export-pdf');
     Route::get('/bookings', BookingsIndex::class)->name('bookings.index');
     Route::get('/bookings/{id}/receipt', [BookingReceiptController::class, 'streamReceipt'])->name('bookings.receipt');
     Route::get('/proposals', ProposalsIndex::class)->name('proposals.index');

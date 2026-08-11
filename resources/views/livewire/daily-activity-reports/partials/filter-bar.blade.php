@@ -47,7 +47,7 @@
                 <select wire:model.live="filter_user_id" class="w-full px-3 py-2 bg-slate-50/80 border rounded-xl text-xs font-medium transition focus:outline-hidden focus:bg-white focus:border-teal-500 {{ $filter_user_id ? 'border-teal-500 bg-teal-50/40 font-bold text-teal-900' : 'border-slate-200 text-slate-700' }}">
                     <option value="">Semua Tim Sales</option>
                     @foreach($allMarketingUsers as $mUser)
-                        <option value="{{ $mUser->id }}">{{ $mUser->name }} ({{ ucfirst($mUser->role) }})</option>
+                        <option value="{{ $mUser->id }}">{{ $mUser->name }}</option>
                     @endforeach
                 </select>
             </div>

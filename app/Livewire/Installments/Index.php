@@ -8,11 +8,13 @@ use App\Models\OfficialDocument;
 use App\Models\Unit;
 use App\Models\UnitInstallment;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 use Livewire\WithPagination;
 
 class Index extends Component
 {
     use WithPagination;
+    use WithFileUploads;
 
     public $showSetupModal = false;
     public $showPaymentModal = false;
@@ -56,6 +58,7 @@ class Index extends Component
     public $payment_date = '';
     public $payment_method = 'Transfer Bank';
     public $payment_notes = '';
+    public $payment_receipt_photo = null;
 
     public function mount()
     {
@@ -154,6 +157,7 @@ class Index extends Component
         $this->payment_amount = $this->activeInstallment->installment_amount;
         $this->payment_date = date('Y-m-d');
         $this->payment_notes = '';
+        $this->payment_receipt_photo = null;
         $this->showPaymentModal = true;
     }
 
@@ -162,16 +166,23 @@ class Index extends Component
         $this->validate([
             'payment_amount' => 'required|numeric|min:1000',
             'payment_date' => 'required|date',
+            'payment_receipt_photo' => 'nullable|file|mimes:jpg,jpeg,png,webp,heic,heif,pdf|max:2048',
         ]);
 
         $inst = UnitInstallment::with('unit')->findOrFail($this->selectedInstallmentId);
 
-        InstallmentPayment::create([
+        $receiptPhotoPath = null;
+        if ($this->payment_receipt_photo) {
+            $receiptPhotoPath = \App\Services\ImageCompressor::compressAndStore($this->payment_receipt_photo, 'installment-receipts');
+        }
+
+        $payment = InstallmentPayment::create([
             'unit_installment_id' => $inst->id,
             'payment_date' => $this->payment_date,
             'amount_paid' => $this->payment_amount,
             'payment_method' => $this->payment_method,
             'notes' => $this->payment_notes,
+            'receipt_photo_path' => $receiptPhotoPath,
             'created_by' => auth()->id(),
         ]);
 
@@ -183,8 +194,9 @@ class Index extends Component
             'amount' => $this->payment_amount,
             'transaction_date' => $this->payment_date,
             'description' => 'Setoran Cicilan Pembeli Unit ' . $inst->unit->code . ' (' . $this->payment_method . ')',
-            'reference_type' => UnitInstallment::class,
-            'reference_id' => $inst->id,
+            'reference_type' => InstallmentPayment::class,
+            'reference_id' => $payment->id,
+            'receipt_photo_path' => $receiptPhotoPath,
             'created_by' => auth()->id(),
         ]);
 
@@ -203,6 +215,7 @@ class Index extends Component
         }
 
         $this->showPaymentModal = false;
+        $this->payment_receipt_photo = null;
     }
 
     // Modal Batalkan Skema Cicilan & Dialihkan ke Cash (Founder & Finance Only)

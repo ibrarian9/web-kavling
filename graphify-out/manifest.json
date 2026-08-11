@@ -145,8 +145,8 @@
     "semantic_hash": "c1da44f5bfa665459ff895f1535e7526"
   },
   "app/Livewire/Installments/Index.php": {
-    "mtime": 1786331750.5013165,
-    "ast_hash": "ed0a785d2c59bf2251131c45bbecd48f",
+    "mtime": 1786437557.611427,
+    "ast_hash": "b419f118336ec919c7e5a858eb7bf60a",
     "semantic_hash": ""
   },
   "app/Livewire/ManualInvoices/Index.php": {
@@ -190,8 +190,8 @@
     "semantic_hash": ""
   },
   "app/Livewire/Units/Show.php": {
-    "mtime": 1786435757.3878117,
-    "ast_hash": "ab481b4e0b5524231cbe2a9a4f959555",
+    "mtime": 1786437519.5054176,
+    "ast_hash": "8df27f5d8bdbea35b57a8ea020f3f913",
     "semantic_hash": ""
   },
   "app/Livewire/Users/Index.php": {
@@ -235,9 +235,9 @@
     "semantic_hash": "9525c4ce2c70136a9a59580c6f10de84"
   },
   "app/Models/InstallmentPayment.php": {
-    "mtime": 1785317956.6426437,
-    "ast_hash": "24cee5674f43c76299597b6aed06a177",
-    "semantic_hash": "24cee5674f43c76299597b6aed06a177"
+    "mtime": 1786437500.4489121,
+    "ast_hash": "3ac96072eae933ba5d09908180e90419",
+    "semantic_hash": ""
   },
   "app/Models/ManualInvoice.php": {
     "mtime": 1785320829.2970183,
@@ -850,13 +850,13 @@
     "semantic_hash": ""
   },
   "resources/views/livewire/installments/partials/modal-installment-detail.blade.php": {
-    "mtime": 1786280523.467599,
-    "ast_hash": "925434328439cffd09f8c89f4fd9fe49",
+    "mtime": 1786437575.400898,
+    "ast_hash": "69a5fab4646c62d516c8dc23a2fab79a",
     "semantic_hash": ""
   },
   "resources/views/livewire/installments/partials/modal-installment-payment.blade.php": {
-    "mtime": 1786280545.9314418,
-    "ast_hash": "a0acd2bde8e3a2863b6c38b98bd1374a",
+    "mtime": 1786437563.9615953,
+    "ast_hash": "5c901f59fe12227c52d8cde268e0281a",
     "semantic_hash": ""
   },
   "resources/views/livewire/installments/partials/modal-setup-installment.blade.php": {
@@ -1045,9 +1045,9 @@
     "semantic_hash": "ace6f6f5447aa76ac53d6f646d7f9e0a"
   },
   "resources/views/livewire/units/partials/modal-installment-payment.blade.php": {
-    "mtime": 1785861982.4236958,
-    "ast_hash": "c3490c78bc2d6a71ffc96343280dc94f",
-    "semantic_hash": "c3490c78bc2d6a71ffc96343280dc94f"
+    "mtime": 1786437526.2205956,
+    "ast_hash": "1ebb469ad31156e7caa92230d8f6e440",
+    "semantic_hash": ""
   },
   "resources/views/livewire/units/partials/modal-material-purchase.blade.php": {
     "mtime": 1785616871.8950047,
@@ -1085,8 +1085,8 @@
     "semantic_hash": ""
   },
   "resources/views/livewire/units/partials/section-installments.blade.php": {
-    "mtime": 1786436793.8356755,
-    "ast_hash": "11c64abdc770938d6aee1faf3d134acf",
+    "mtime": 1786437536.542869,
+    "ast_hash": "bcbd313c64f4cf75cb94aedacf70aecd",
     "semantic_hash": ""
   },
   "resources/views/livewire/units/partials/section-payroll-borongan.blade.php": {
@@ -1250,8 +1250,8 @@
     "semantic_hash": "3c6ce2e6d16444282b24a9aa63885563"
   },
   "routes/web.php": {
-    "mtime": 1786349899.5011208,
-    "ast_hash": "b3f4334770fea273097c2889aec01fb3",
+    "mtime": 1786439442.2641518,
+    "ast_hash": "e36e75665dd2642564fdb1d1304f4167",
     "semantic_hash": ""
   },
   "tests/Feature/ActivityLogTest.php": {
@@ -1735,8 +1735,8 @@
     "semantic_hash": ""
   },
   "app/Livewire/DailyActivityReports/Index.php": {
-    "mtime": 1786430131.417234,
-    "ast_hash": "c65a68a375589da258d178afaf463fd5",
+    "mtime": 1786439461.0076776,
+    "ast_hash": "cbbd91588324523a4b983336396d8e33",
     "semantic_hash": ""
   },
   "app/Models/DailyActivityReport.php": {
@@ -1750,8 +1750,8 @@
     "semantic_hash": ""
   },
   "resources/views/livewire/daily-activity-reports/index.blade.php": {
-    "mtime": 1786351073.5959692,
-    "ast_hash": "29681aaab5badd0896eea54356e0789b",
+    "mtime": 1786439494.469882,
+    "ast_hash": "1c9fb26347b05d80d3a0fa182df564ba",
     "semantic_hash": ""
   },
   "tests/Feature/DailyActivityReportTest.php": {
@@ -1770,8 +1770,8 @@
     "semantic_hash": ""
   },
   "resources/views/livewire/daily-activity-reports/partials/header-banner.blade.php": {
-    "mtime": 1786352424.4853842,
-    "ast_hash": "22fd8c4f10b570025bfba12959f5779d",
+    "mtime": 1786439470.7374396,
+    "ast_hash": "876135516581b86389d7e66feb830197",
     "semantic_hash": ""
   },
   "resources/views/livewire/daily-activity-reports/partials/modal-detail.blade.php": {
@@ -1785,7 +1785,7 @@
     "semantic_hash": ""
   },
   "resources/views/livewire/daily-activity-reports/partials/table-list.blade.php": {
-    "mtime": 1786352029.7086163,
+    "mtime": 1786440110.7370632,
     "ast_hash": "56d503f69ffdf2da758da47e7bb3684f",
     "semantic_hash": ""
   },
@@ -1802,6 +1802,41 @@
   "tests/Feature/AdminRolePermissionsTest.php": {
     "mtime": 1786435765.9161847,
     "ast_hash": "408b33115362bb188eeed337be82b3e1",
+    "semantic_hash": ""
+  },
+  "database/migrations/2026_08_11_000002_add_receipt_photo_path_to_installment_payments_table.php": {
+    "mtime": 1786437491.8066828,
+    "ast_hash": "5abcb657f53556b2edb4e5499e487104",
+    "semantic_hash": ""
+  },
+  "tests/Feature/InstallmentPaymentReceiptTest.php": {
+    "mtime": 1786437644.4627225,
+    "ast_hash": "e84fd917af30cb953eb80b1385c04032",
+    "semantic_hash": ""
+  },
+  "app/Http/Controllers/DailyActivityReportPdfController.php": {
+    "mtime": 1786439435.2153356,
+    "ast_hash": "5ed1315e5a6a87e367ef38efd3f615f6",
+    "semantic_hash": ""
+  },
+  "resources/views/daily_activity_reports/pdf_report.blade.php": {
+    "mtime": 1786440119.0830374,
+    "ast_hash": "3b8a6f96f831ef616dd670658a28ebbf",
+    "semantic_hash": ""
+  },
+  "resources/views/livewire/daily-activity-reports/partials/modal-export-pdf.blade.php": {
+    "mtime": 1786439478.9762425,
+    "ast_hash": "0ebffc29c33355ea9be5bd00baf56b66",
+    "semantic_hash": ""
+  },
+  "resources/views/livewire/daily-activity-reports/partials/modal-viewer.blade.php": {
+    "mtime": 1786439485.4770896,
+    "ast_hash": "47f68c48f8195885e526b8c911b6c606",
+    "semantic_hash": ""
+  },
+  "tests/Feature/DailyActivityReportPdfExportTest.php": {
+    "mtime": 1786439510.776517,
+    "ast_hash": "2eb85b5ee66381a86acd9d71d0cb8bfc",
     "semantic_hash": ""
   }
 }

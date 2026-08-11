@@ -17,8 +17,14 @@ class InstallmentPayment extends Model
         'amount_paid',
         'payment_method',
         'notes',
+        'receipt_photo_path',
         'created_by',
     ];
+
+    public function getReceiptPhotoUrlAttribute(): ?string
+    {
+        return $this->receipt_photo_path ? asset('storage/' . $this->receipt_photo_path) : null;
+    }
 
     protected static function booted()
     {

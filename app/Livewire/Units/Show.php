@@ -84,6 +84,7 @@ class Show extends Component
     public string $installment_payment_date = '';
     public string $installment_payment_method = 'Transfer Bank';
     public string $installment_payment_notes = '';
+    public $installment_payment_receipt_photo = null;
 
     // Modal Setup Skema Cicilan Baru (Konfigurasi oleh Finance / Founder)
     public bool $showSetupInstallmentModal = false;
@@ -986,6 +987,7 @@ class Show extends Component
         $this->installment_payment_date = now()->toDateString();
         $this->installment_payment_method = 'Transfer Bank';
         $this->installment_payment_notes = '';
+        $this->installment_payment_receipt_photo = null;
         $this->showInstallmentPaymentModal = true;
     }
 
@@ -1002,6 +1004,7 @@ class Show extends Component
         $this->installment_payment_date = $pay->payment_date ? $pay->payment_date->format('Y-m-d') : date('Y-m-d');
         $this->installment_payment_method = $pay->payment_method;
         $this->installment_payment_notes = $pay->notes ?? '';
+        $this->installment_payment_receipt_photo = null;
         $this->showInstallmentPaymentModal = true;
     }
 
@@ -1033,7 +1036,7 @@ class Show extends Component
     public function saveInstallmentPayment(): void
     {
         $user = auth()->user();
-        if (!$user->isFinance() && !$user->isFounder()) {
+        if (!$user->isFinance() && !$user->isAdminOrFounder()) {
             session()->flash('error', 'Hanya tim Finance dan Founder yang berhak mencatat setoran cicilan pembeli.');
             return;
         }
@@ -1043,6 +1046,7 @@ class Show extends Component
             'installment_payment_date' => 'required|date',
             'installment_payment_method' => 'required|string',
             'installment_payment_notes' => 'nullable|string',
+            'installment_payment_receipt_photo' => 'nullable|file|mimes:jpg,jpeg,png,webp,heic,heif,pdf|max:2048',
         ]);
 
         $unit = Unit::with('installment')->findOrFail($this->unitId);
@@ -1053,26 +1057,41 @@ class Show extends Component
             return;
         }
 
+        $receiptPhotoPath = null;
+        if ($this->installment_payment_receipt_photo) {
+            $receiptPhotoPath = \App\Services\ImageCompressor::compressAndStore($this->installment_payment_receipt_photo, 'installment-receipts');
+        }
+
         if ($this->editingInstallmentPaymentId) {
             $pay = InstallmentPayment::findOrFail($this->editingInstallmentPaymentId);
-            DB::transaction(function () use ($unit, $inst, $pay) {
-                $pay->update([
+            DB::transaction(function () use ($unit, $inst, $pay, $receiptPhotoPath) {
+                $payData = [
                     'payment_date' => $this->installment_payment_date,
                     'amount_paid' => $this->installment_payment_amount,
                     'payment_method' => $this->installment_payment_method,
                     'notes' => $this->installment_payment_notes,
-                ]);
+                ];
+
+                if ($receiptPhotoPath) {
+                    $payData['receipt_photo_path'] = $receiptPhotoPath;
+                }
+
+                $pay->update($payData);
 
                 $cashflow = CashflowTransaction::where('reference_type', InstallmentPayment::class)
                     ->where('reference_id', $pay->id)
                     ->first();
 
                 if ($cashflow) {
-                    $cashflow->update([
+                    $cashData = [
                         'amount' => $this->installment_payment_amount,
                         'transaction_date' => $this->installment_payment_date,
                         'description' => 'Setoran Cicilan Pembeli Unit ' . $unit->code . ' (' . $this->installment_payment_method . ')',
-                    ]);
+                    ];
+                    if ($receiptPhotoPath) {
+                        $cashData['receipt_photo_path'] = $receiptPhotoPath;
+                    }
+                    $cashflow->update($cashData);
                 }
 
                 $totalPaid = $inst->down_payment + $inst->payments()->sum('amount_paid');
@@ -1081,13 +1100,14 @@ class Show extends Component
             });
             session()->flash('success', 'Setoran cicilan pembeli berhasil diperbarui!');
         } else {
-            DB::transaction(function () use ($unit, $inst) {
+            DB::transaction(function () use ($unit, $inst, $receiptPhotoPath) {
                 $payment = InstallmentPayment::create([
                     'unit_installment_id' => $inst->id,
                     'payment_date' => $this->installment_payment_date,
                     'amount_paid' => $this->installment_payment_amount,
                     'payment_method' => $this->installment_payment_method,
                     'notes' => $this->installment_payment_notes,
+                    'receipt_photo_path' => $receiptPhotoPath,
                     'created_by' => Auth::id(),
                 ]);
 
@@ -1100,6 +1120,7 @@ class Show extends Component
                     'description' => 'Setoran Cicilan Pembeli Unit ' . $unit->code . ' (' . $this->installment_payment_method . ')',
                     'reference_type' => InstallmentPayment::class,
                     'reference_id' => $payment->id,
+                    'receipt_photo_path' => $receiptPhotoPath,
                     'created_by' => Auth::id(),
                 ]);
 
@@ -1113,6 +1134,7 @@ class Show extends Component
 
         $this->showInstallmentPaymentModal = false;
         $this->editingInstallmentPaymentId = null;
+        $this->installment_payment_receipt_photo = null;
     }
 
     // Modal Batalkan Skema Cicilan & Dialihkan ke Cash (Khusus Founder & Finance)

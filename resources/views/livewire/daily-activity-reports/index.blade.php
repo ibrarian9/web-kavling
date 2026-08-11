@@ -13,4 +13,10 @@
 
     <!-- Modal Detail Popup -->
     @include('livewire.daily-activity-reports.partials.modal-detail')
+
+    <!-- Modal Export PDF Popup -->
+    @include('livewire.daily-activity-reports.partials.modal-export-pdf')
+
+    <!-- PDF Viewer Modal -->
+    @include('livewire.daily-activity-reports.partials.modal-viewer')
 </div>
