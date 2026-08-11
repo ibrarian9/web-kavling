@@ -195,8 +195,8 @@
     "semantic_hash": ""
   },
   "app/Livewire/Users/Index.php": {
-    "mtime": 1786431050.401723,
-    "ast_hash": "336067352ca1e28b40cb20ef68e73672",
+    "mtime": 1786436187.0811806,
+    "ast_hash": "98d2696f03ccb31092fef2fe189460f1",
     "semantic_hash": ""
   },
   "app/Livewire/Workers/Index.php": {
@@ -665,9 +665,9 @@
     "semantic_hash": "bbdb383f250171e85117d58cd1c917b2"
   },
   "resources/views/components/layouts/partials/header.blade.php": {
-    "mtime": 1786114803.5564811,
-    "ast_hash": "d645e4cba4cb1708ef03fb7a8e335800",
-    "semantic_hash": "d645e4cba4cb1708ef03fb7a8e335800"
+    "mtime": 1786436168.9355667,
+    "ast_hash": "01f7afec18c3f4756ccdf7f631bc620b",
+    "semantic_hash": ""
   },
   "resources/views/components/layouts/partials/nav-links.blade.php": {
     "mtime": 1786431038.725554,
@@ -675,14 +675,14 @@
     "semantic_hash": ""
   },
   "resources/views/components/layouts/partials/sidebar-desktop.blade.php": {
-    "mtime": 1786180553.0906503,
-    "ast_hash": "5ce33c68d7f995197b0470fa8c02a9a7",
-    "semantic_hash": "5ce33c68d7f995197b0470fa8c02a9a7"
+    "mtime": 1786436174.5857584,
+    "ast_hash": "167320796b9d9926b04c0e000256b330",
+    "semantic_hash": ""
   },
   "resources/views/components/layouts/partials/sidebar-mobile.blade.php": {
-    "mtime": 1786180559.1777174,
-    "ast_hash": "429250345f80a3364727c252c2146e72",
-    "semantic_hash": "429250345f80a3364727c252c2146e72"
+    "mtime": 1786436178.617895,
+    "ast_hash": "c48438ff9a699adef00e418adbd83e06",
+    "semantic_hash": ""
   },
   "resources/views/components/layouts/partials/toast-notifications.blade.php": {
     "mtime": 1786187769.044324,

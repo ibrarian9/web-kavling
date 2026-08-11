@@ -76,6 +76,8 @@
         @php $role = auth()->user()->role ?? 'guest'; @endphp
         @if($role === 'founder')
             <span class="badge-role-founder">Founder</span>
+        @elseif($role === 'admin')
+            <span class="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-purple-50 text-purple-800 border border-purple-200 uppercase">Admin</span>
         @elseif($role === 'supervisor')
             <span class="badge-role-supervisor">Supervisor</span>
         @elseif($role === 'finance')

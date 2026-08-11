@@ -105,8 +105,8 @@
     "semantic_hash": "64fff41decae1a2b919b8ae968785412"
   },
   "app/Livewire/ActivityLogs/Index.php": {
-    "mtime": 1786336250.557757,
-    "ast_hash": "d8f1e6a72abe873c4c3fc8b68d4dd4e5",
+    "mtime": 1786430081.510583,
+    "ast_hash": "f29349e236c46f7ce9d38914c08cd804",
     "semantic_hash": ""
   },
   "app/Livewire/Bookings/Index.php": {
@@ -125,12 +125,12 @@
     "semantic_hash": ""
   },
   "app/Livewire/Documents/Index.php": {
-    "mtime": 1786343551.0443854,
-    "ast_hash": "b23ffa2a0c5589f5d82bf41b61fb81e0",
+    "mtime": 1786430107.2824357,
+    "ast_hash": "5bb4cbbee754c8442c488003e846146a",
     "semantic_hash": ""
   },
   "app/Livewire/EmployeeSalaries/Index.php": {
-    "mtime": 1786334164.0092041,
+    "mtime": 1786431059.5166337,
     "ast_hash": "a435ace68b2b2d795e02d828d035df95",
     "semantic_hash": ""
   },
@@ -160,18 +160,18 @@
     "semantic_hash": ""
   },
   "app/Livewire/Projects/Index.php": {
-    "mtime": 1786331761.0581808,
-    "ast_hash": "1535f058cb967aea527f92aef55d1ae3",
+    "mtime": 1786435727.0754642,
+    "ast_hash": "de024dd4969a621866a917e2d865b3de",
     "semantic_hash": ""
   },
   "app/Livewire/Projects/Show.php": {
-    "mtime": 1786336943.746401,
-    "ast_hash": "17eeb8f2f0d78d37ac0949a1bee34db9",
+    "mtime": 1786435739.9300396,
+    "ast_hash": "d25ceb98782d932fc24306a170a688e8",
     "semantic_hash": ""
   },
   "app/Livewire/Proposals/Index.php": {
-    "mtime": 1786341717.4915044,
-    "ast_hash": "1eb9cd27456dc3bda3ca1f1b1f0bf06c",
+    "mtime": 1786430100.6872175,
+    "ast_hash": "0b7196370b4bcffe0a6b4085c19e4263",
     "semantic_hash": ""
   },
   "app/Livewire/Tutorial/Index.php": {
@@ -185,18 +185,18 @@
     "semantic_hash": ""
   },
   "app/Livewire/Units/LegacySale.php": {
-    "mtime": 1785992545.6056364,
-    "ast_hash": "48e511f3cca85dad6426007d4e32a6f2",
-    "semantic_hash": "48e511f3cca85dad6426007d4e32a6f2"
+    "mtime": 1786430114.4106715,
+    "ast_hash": "f85d8a19308ff2b67f7dd6e43fe1e8c7",
+    "semantic_hash": ""
   },
   "app/Livewire/Units/Show.php": {
-    "mtime": 1786342930.7200148,
-    "ast_hash": "7959c0f6e13a8563c1f055f9e24bc228",
+    "mtime": 1786435757.3878117,
+    "ast_hash": "ab481b4e0b5524231cbe2a9a4f959555",
     "semantic_hash": ""
   },
   "app/Livewire/Users/Index.php": {
-    "mtime": 1786334671.9427807,
-    "ast_hash": "d4f64b602bcc0bbb0f305c566030ce89",
+    "mtime": 1786431050.401723,
+    "ast_hash": "336067352ca1e28b40cb20ef68e73672",
     "semantic_hash": ""
   },
   "app/Livewire/Workers/Index.php": {
@@ -250,8 +250,8 @@
     "semantic_hash": "00a267f1dae9e1c56a1d0c6ee20c4b4d"
   },
   "app/Models/PriceProposal.php": {
-    "mtime": 1786341707.010243,
-    "ast_hash": "1b7aeb85df4b7550e28e2c4ec57a1879",
+    "mtime": 1786430353.1805615,
+    "ast_hash": "c2f3f66cb6abd857cae1a32c936acf89",
     "semantic_hash": ""
   },
   "app/Models/Project.php": {
@@ -275,9 +275,9 @@
     "semantic_hash": ""
   },
   "app/Models/User.php": {
-    "mtime": 1785939336.0412083,
-    "ast_hash": "6d5358f894d756180908ffb066b616a6",
-    "semantic_hash": "6d5358f894d756180908ffb066b616a6"
+    "mtime": 1786430043.6103284,
+    "ast_hash": "46f1f6abe8823a74fb901156be7f4c7d",
+    "semantic_hash": ""
   },
   "app/Models/WeeklyMaterialPurchase.php": {
     "mtime": 1785065798.6527517,
@@ -425,9 +425,9 @@
     "semantic_hash": "d0ce4624021f5b3121a91c406a5f79f2"
   },
   "database/migrations/2026_07_19_191000_add_role_and_is_active_to_users_table.php": {
-    "mtime": 1784614124.0813432,
-    "ast_hash": "4590b881ddb480b4b82dd1358771f1ba",
-    "semantic_hash": "4590b881ddb480b4b82dd1358771f1ba"
+    "mtime": 1786430158.301123,
+    "ast_hash": "1a20343f781a1b7bf2e52f31f89e6999",
+    "semantic_hash": ""
   },
   "database/migrations/2026_07_19_191100_create_projects_table.php": {
     "mtime": 1784487883.4474735,
@@ -440,9 +440,9 @@
     "semantic_hash": "a5f96117d46403865ef3f1dccb31b374"
   },
   "database/migrations/2026_07_19_191300_create_proposals_and_approvals_tables.php": {
-    "mtime": 1784614135.5972862,
-    "ast_hash": "9bc0b167d752b5837b291c9ef1fc2518",
-    "semantic_hash": "9bc0b167d752b5837b291c9ef1fc2518"
+    "mtime": 1786430163.3672905,
+    "ast_hash": "3c9cc766bfd72f0864294dc33087fa75",
+    "semantic_hash": ""
   },
   "database/migrations/2026_07_19_191400_create_financial_and_cashflow_tables.php": {
     "mtime": 1785065011.3840914,
@@ -600,9 +600,9 @@
     "semantic_hash": "6c2fb31bcc02f7255534a40e5c445798"
   },
   "database/seeders/UserSeeder.php": {
-    "mtime": 1785145948.7214036,
-    "ast_hash": "06c3673a4008dc6ca97edd47d67993ed",
-    "semantic_hash": "06c3673a4008dc6ca97edd47d67993ed"
+    "mtime": 1786430051.21158,
+    "ast_hash": "7f7690d23bb66ce565d607f099ef2097",
+    "semantic_hash": ""
   },
   "database/seeders/WorkerSeeder.php": {
     "mtime": 1785065082.4126513,
@@ -670,8 +670,8 @@
     "semantic_hash": "d645e4cba4cb1708ef03fb7a8e335800"
   },
   "resources/views/components/layouts/partials/nav-links.blade.php": {
-    "mtime": 1786349911.4902098,
-    "ast_hash": "5ada4527a7385bc785e37cc26d0ae2fb",
+    "mtime": 1786431038.725554,
+    "ast_hash": "0e6b3a37c03327dd60d83feb10f41a36",
     "semantic_hash": ""
   },
   "resources/views/components/layouts/partials/sidebar-desktop.blade.php": {
@@ -1115,9 +1115,9 @@
     "semantic_hash": ""
   },
   "resources/views/livewire/users/index.blade.php": {
-    "mtime": 1786185443.7226954,
-    "ast_hash": "658dd41a8c4e2683fee0c54c5bebc868",
-    "semantic_hash": "658dd41a8c4e2683fee0c54c5bebc868"
+    "mtime": 1786431980.6763906,
+    "ast_hash": "bfef54fab7138c13dbc29da56e97c7d6",
+    "semantic_hash": ""
   },
   "resources/views/livewire/workers/index.blade.php": {
     "mtime": 1785999247.6266038,
@@ -1735,8 +1735,8 @@
     "semantic_hash": ""
   },
   "app/Livewire/DailyActivityReports/Index.php": {
-    "mtime": 1786351356.3217094,
-    "ast_hash": "6128dd8fb678f040e03205d07e667054",
+    "mtime": 1786430131.417234,
+    "ast_hash": "c65a68a375589da258d178afaf463fd5",
     "semantic_hash": ""
   },
   "app/Models/DailyActivityReport.php": {
@@ -1792,6 +1792,16 @@
   "tests/Feature/DailyActivityReportComprehensiveTest.php": {
     "mtime": 1786351783.4420645,
     "ast_hash": "2542b7c29b1cb1c6537e095f901e0503",
+    "semantic_hash": ""
+  },
+  "database/migrations/2026_08_11_000001_add_admin_role_to_users_and_approvals_table.php": {
+    "mtime": 1786430167.8754396,
+    "ast_hash": "1666efa7e27236a606a22dd88c96d18e",
+    "semantic_hash": ""
+  },
+  "tests/Feature/AdminRolePermissionsTest.php": {
+    "mtime": 1786435765.9161847,
+    "ast_hash": "408b33115362bb188eeed337be82b3e1",
     "semantic_hash": ""
   }
 }

@@ -89,7 +89,8 @@ class Index extends Component
             $data['password'] = Hash::make($this->password);
         }
 
-        User::updateOrCreate(['id' => $this->editingUserId], $data);
+        $user = User::updateOrCreate(['id' => $this->editingUserId], $data);
+        $user->syncRoles([$this->role]);
 
         if ($this->editingUserId) {
             \App\Services\ActivityLogger::log('USER_UPDATED', "Akun user {$this->name} ({$this->email} - Role: {$this->role}) diperbarui oleh Founder.");

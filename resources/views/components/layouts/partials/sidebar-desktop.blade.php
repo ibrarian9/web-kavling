@@ -65,6 +65,8 @@
                 @php $role = auth()->user()->role ?? 'guest'; @endphp
                 @if($role === 'founder')
                     <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[9px] font-extrabold bg-purple-500/20 text-purple-300 border border-purple-500/40">FOUNDER</span>
+                @elseif($role === 'admin')
+                    <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[9px] font-extrabold bg-indigo-500/20 text-indigo-300 border border-indigo-500/40">ADMIN</span>
                 @elseif($role === 'pengawas_project')
                     <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[9px] font-extrabold bg-amber-500/20 text-amber-300 border border-amber-500/40">PENGAWAS</span>
                 @elseif($role === 'supervisor')
