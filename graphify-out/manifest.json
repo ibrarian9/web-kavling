@@ -160,13 +160,13 @@
     "semantic_hash": ""
   },
   "app/Livewire/Projects/Index.php": {
-    "mtime": 1786331761.0581808,
-    "ast_hash": "1535f058cb967aea527f92aef55d1ae3",
+    "mtime": 1786435727.0754642,
+    "ast_hash": "de024dd4969a621866a917e2d865b3de",
     "semantic_hash": ""
   },
   "app/Livewire/Projects/Show.php": {
-    "mtime": 1786336943.746401,
-    "ast_hash": "17eeb8f2f0d78d37ac0949a1bee34db9",
+    "mtime": 1786435739.9300396,
+    "ast_hash": "d25ceb98782d932fc24306a170a688e8",
     "semantic_hash": ""
   },
   "app/Livewire/Proposals/Index.php": {
@@ -190,8 +190,8 @@
     "semantic_hash": ""
   },
   "app/Livewire/Units/Show.php": {
-    "mtime": 1786342930.7200148,
-    "ast_hash": "7959c0f6e13a8563c1f055f9e24bc228",
+    "mtime": 1786435757.3878117,
+    "ast_hash": "ab481b4e0b5524231cbe2a9a4f959555",
     "semantic_hash": ""
   },
   "app/Livewire/Users/Index.php": {
@@ -1800,8 +1800,8 @@
     "semantic_hash": ""
   },
   "tests/Feature/AdminRolePermissionsTest.php": {
-    "mtime": 1786431070.652745,
-    "ast_hash": "142073dadd943a07385feb46e419b97d",
+    "mtime": 1786435765.9161847,
+    "ast_hash": "408b33115362bb188eeed337be82b3e1",
     "semantic_hash": ""
   }
 }

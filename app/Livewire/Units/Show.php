@@ -202,8 +202,8 @@ class Show extends Component
     public function approveProposal(int $proposalId, string $decision): void
     {
         $user = auth()->user();
-        if (!$user || (!$user->isFounder() && !$user->isSupervisor())) {
-            $err = 'Hanya Founder dan Supervisor yang berhak mengesahkan approval harga.';
+        if (!$user || (!$user->isAdminOrFounder() && !$user->isSupervisor())) {
+            $err = 'Hanya Admin, Founder, dan Supervisor yang berhak mengesahkan approval harga.';
             session()->flash('error', $err);
             $this->dispatch('notify', ['type' => 'error', 'title' => 'Gagal!', 'message' => $err]);
             return;
@@ -237,7 +237,7 @@ class Show extends Component
             session()->flash('error', $msg);
             $this->dispatch('notify', ['type' => 'error', 'title' => 'Ditolak!', 'message' => $msg]);
         } else {
-            if ($user->isFounder() || $proposal->isFullyApproved()) {
+            if ($user->isAdminOrFounder() || $proposal->isFullyApproved()) {
                 $proposal->update(['status' => 'disetujui']);
                 $proposal->unit->update([
                     'status' => 'disetujui',
@@ -259,11 +259,11 @@ class Show extends Component
                     ]);
                 }
 
-                $msg = 'Pengajuan harga disetujui penuh oleh Founder! Dokumen SPP PDF otomatis diterbitkan!';
+                $msg = 'Pengajuan harga disetujui penuh! Dokumen SPP PDF otomatis diterbitkan!';
                 session()->flash('success', $msg);
                 $this->dispatch('notify', ['type' => 'success', 'title' => 'ACC Berhasil!', 'message' => $msg]);
             } else {
-                $msg = 'Keputusan Disetujui dicatat. Menunggu persetujuan Founder.';
+                $msg = 'Keputusan Disetujui dicatat. Menunggu persetujuan Admin/Founder.';
                 session()->flash('success', $msg);
                 $this->dispatch('notify', ['type' => 'info', 'title' => 'Dicatat', 'message' => $msg]);
             }
@@ -283,8 +283,8 @@ class Show extends Component
     public function saveDirectProposal(): void
     {
         $user = auth()->user();
-        if (!$user->isMarketing() && !$user->isFounder()) {
-            $err = 'Hanya Marketing dan Founder yang berhak membuat pengajuan harga.';
+        if (!$user->isMarketing() && !$user->isAdminOrFounder()) {
+            $err = 'Hanya Marketing, Admin, dan Founder yang berhak membuat pengajuan harga.';
             session()->flash('error', $err);
             $this->dispatch('notify', ['type' => 'error', 'title' => 'Gagal!', 'message' => $err]);
             return;
@@ -394,7 +394,7 @@ class Show extends Component
     {
         $user = auth()->user();
         if (!$user) return false;
-        if ($user->isFounder() || $user->isFinance() || $user->isSupervisor()) return true;
+        if ($user->isAdminOrFounder() || $user->isFinance() || $user->isSupervisor()) return true;
         if ($user->isPengawasProject()) {
             $unit = Unit::find($this->unitId);
             return $unit && WorkerAssignment::where('user_id', $user->id)
@@ -408,7 +408,7 @@ class Show extends Component
     public function canManageFinancial(): bool
     {
         $user = auth()->user();
-        return $user && ($user->isFounder() || $user->isFinance());
+        return $user && ($user->isAdminOrFounder() || $user->isFinance());
     }
 
     // Modal Edit Unit Spesifikasi (Founder & Finance)

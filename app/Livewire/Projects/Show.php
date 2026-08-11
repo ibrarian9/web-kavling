@@ -111,8 +111,8 @@ class Show extends Component
     public function openLegacyModal(): void
     {
         $user = auth()->user();
-        if (!$user || !$user->isFounder()) {
-            session()->flash('error', 'Hanya Founder yang berhak mencatat penjualan unit masa lalu.');
+        if (!$user || !$user->isAdminOrFounder()) {
+            session()->flash('error', 'Hanya Admin dan Founder yang berhak mencatat penjualan unit masa lalu.');
             return;
         }
 
@@ -136,8 +136,8 @@ class Show extends Component
     public function submitLegacySale(): void
     {
         $user = auth()->user();
-        if (!$user || !$user->isFounder()) {
-            session()->flash('error', 'Hanya Founder yang berhak mencatat penjualan unit masa lalu.');
+        if (!$user || !$user->isAdminOrFounder()) {
+            session()->flash('error', 'Hanya Admin dan Founder yang berhak mencatat penjualan unit masa lalu.');
             return;
         }
 
@@ -485,8 +485,8 @@ class Show extends Component
     public function editProjectPayment($paymentId)
     {
         $user = auth()->user();
-        if (!$user->isFounder() && !$user->isFinance()) {
-            session()->flash('error', 'Hanya Founder dan Accounting yang berhak mengedit pembayaran proyek.');
+        if (!$user->isAdminOrFounder() && !$user->isFinance()) {
+            session()->flash('error', 'Hanya Founder, Admin, dan Accounting yang berhak mengedit pembayaran proyek.');
             return;
         }
 
@@ -510,8 +510,8 @@ class Show extends Component
     public function submitProjectPayment()
     {
         $user = auth()->user();
-        if (!$user->isFounder() && !$user->isFinance() && !$user->isSupervisor()) {
-            session()->flash('error', 'Hanya Founder, Finance, dan Supervisor yang berhak mencatat pembayaran proyek.');
+        if (!$user->isAdminOrFounder() && !$user->isFinance() && !$user->isSupervisor()) {
+            session()->flash('error', 'Hanya Founder, Admin, Finance, dan Supervisor yang berhak mencatat pembayaran proyek.');
             return;
         }
 

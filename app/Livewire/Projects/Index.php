@@ -61,8 +61,8 @@ class Index extends Component
     public function saveProject()
     {
         $user = auth()->user();
-        if (!$user->isFounder() && !$user->isSupervisor()) {
-            session()->flash('error', 'Hanya Founder dan Supervisor yang berhak mengedit data proyek.');
+        if (!$user->isAdminOrFounder() && !$user->isSupervisor()) {
+            session()->flash('error', 'Hanya Founder, Admin, dan Supervisor yang berhak mengedit data proyek.');
             return;
         }
 
@@ -134,11 +134,11 @@ class Index extends Component
         $this->dispatch('notify', ['type' => 'success', 'title' => 'Berhasil!', 'message' => $msg]);
     }
 
-    // Direct Pengawas Project Assignment (Founder Only)
+    // Direct Pengawas Project Assignment (Founder & Admin)
     public function openWorkerModal($projectId)
     {
-        if (!auth()->user()->isFounder()) {
-            session()->flash('error', 'Hanya Founder yang berhak menugaskan Pengawas ke proyek.');
+        if (!auth()->user()->isAdminOrFounder()) {
+            session()->flash('error', 'Hanya Founder dan Admin yang berhak menugaskan Pengawas ke proyek.');
             return;
         }
 
@@ -162,8 +162,8 @@ class Index extends Component
     public function saveWorkerAssignment()
     {
         $user = auth()->user();
-        if (!$user->isFounder()) {
-            session()->flash('error', 'Hanya Founder yang berhak menugaskan Pengawas ke proyek.');
+        if (!$user->isAdminOrFounder()) {
+            session()->flash('error', 'Hanya Founder dan Admin yang berhak menugaskan Pengawas ke proyek.');
             return;
         }
 
@@ -189,7 +189,7 @@ class Index extends Component
             ]
         );
 
-        \App\Services\ActivityLogger::log('PROJECT_ASSIGN_PENGAWAS', "Founder menugaskan Pengawas Project {$pengawasUser->name} pada proyek {$project->name}.");
+        \App\Services\ActivityLogger::log('PROJECT_ASSIGN_PENGAWAS', "Penugasan Pengawas Project {$pengawasUser->name} pada proyek {$project->name} oleh " . auth()->user()->name);
         session()->flash('success', "Pengawas Project {$pengawasUser->name} berhasil ditugaskan pada proyek {$project->name}!");
 
         $this->showWorkerModal = false;
@@ -198,8 +198,8 @@ class Index extends Component
     public function removePengawasAssignment($assignmentId)
     {
         $user = auth()->user();
-        if (!$user->isFounder()) {
-            session()->flash('error', 'Hanya Founder yang berhak mencopot Pengawas dari proyek.');
+        if (!$user->isAdminOrFounder()) {
+            session()->flash('error', 'Hanya Founder dan Admin yang berhak mencopot Pengawas dari proyek.');
             return;
         }
 
@@ -209,15 +209,15 @@ class Index extends Component
 
         $assignment->delete();
 
-        \App\Services\ActivityLogger::log('PROJECT_REMOVE_PENGAWAS', "Founder mencopot Pengawas Project {$pengawasName} dari proyek {$projectName}.");
+        \App\Services\ActivityLogger::log('PROJECT_REMOVE_PENGAWAS', "Pencopotan Pengawas Project {$pengawasName} dari proyek {$projectName} oleh " . auth()->user()->name);
         session()->flash('success', "Pengawas Project {$pengawasName} berhasil dicopot dari proyek {$projectName}!");
     }
 
     public function movePengawasAssignment($assignmentId, $targetProjectId)
     {
         $user = auth()->user();
-        if (!$user->isFounder()) {
-            session()->flash('error', 'Hanya Founder yang berhak memindahkan Pengawas ke proyek lain.');
+        if (!$user->isAdminOrFounder()) {
+            session()->flash('error', 'Hanya Founder dan Admin yang berhak memindahkan Pengawas ke proyek lain.');
             return;
         }
 

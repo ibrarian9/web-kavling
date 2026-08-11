@@ -180,3 +180,31 @@ test('admin cannot delete official documents', function () {
 
     expect(OfficialDocument::find($doc->id))->toBeNull();
 });
+
+test('admin can create and edit projects and edit unit specifications', function () {
+    $this->actingAs($this->admin);
+
+    // Admin creates new project
+    Livewire::test(\App\Livewire\Projects\Index::class)
+        ->set('name', 'Proyek Admin New')
+        ->set('location', 'Pekanbaru Admin')
+        ->set('standard_land_area', 100)
+        ->set('excess_price_per_sqm', 1000000)
+        ->set('base_price', 120000000)
+        ->call('saveProject')
+        ->assertHasNoErrors();
+
+    $newProject = Project::where('name', 'Proyek Admin New')->first();
+    expect($newProject)->not->toBeNull();
+
+    // Admin edits unit specifications
+    Livewire::test(\App\Livewire\Units\Show::class, ['id' => $this->unit->id])
+        ->set('edit_unit_code', 'A-01-UPD')
+        ->set('edit_unit_category', 'kavling')
+        ->set('edit_unit_status', 'tersedia')
+        ->set('edit_land_area', 160)
+        ->call('saveEditUnit')
+        ->assertHasNoErrors();
+
+    expect($this->unit->fresh()->code)->toBe('A-01-UPD');
+});
