@@ -38,7 +38,18 @@ class Dashboard extends Component
         // 3. Worker & Field Metrics
         $activeWorkersCount = Worker::where('status', 'active')->count();
 
-        // 4. Recent Data Feeds
+        // 4. Marketing Specific Metrics
+        $marketingDailyReportCount = 0;
+        $marketingHotDealsCount = 0;
+        if ($user->isMarketing()) {
+            $marketingDailyReportCount = \App\Models\DailyActivityReport::where('user_id', $user->id)->count();
+            $marketingHotDealsCount = \App\Models\DailyActivityReport::where('user_id', $user->id)->whereIn('lead_stage', ['hot_deal', 'booking', 'cash_lunas'])->count();
+        } else {
+            $marketingDailyReportCount = \App\Models\DailyActivityReport::count();
+            $marketingHotDealsCount = \App\Models\DailyActivityReport::whereIn('lead_stage', ['hot_deal', 'booking', 'cash_lunas'])->count();
+        }
+
+        // 5. Recent Data Feeds
         $recentProposals = PriceProposal::with(['unit.project', 'proposer', 'approvals.approver'])
             ->latest()
             ->take(5)
@@ -49,7 +60,7 @@ class Dashboard extends Component
             ->take(5)
             ->get();
 
-        // 5. Monthly Cashflow Trend Chart Data (Last 6 Months) optimized in 1 batch query
+        // 6. Monthly Cashflow Trend Chart Data (Last 6 Months) optimized in 1 batch query
         $sixMonthsAgo = now()->subMonths(5)->startOfMonth()->toDateString();
         $monthlySums = CashflowTransaction::where('transaction_date', '>=', $sixMonthsAgo)
             ->selectRaw('YEAR(transaction_date) as year_num, MONTH(transaction_date) as month_num, type, SUM(amount) as total')
@@ -89,6 +100,8 @@ class Dashboard extends Component
             'totalBookingAmount' => $totalBookingAmount,
             'totalBookingsCount' => $totalBookingsCount,
             'activeWorkersCount' => $activeWorkersCount,
+            'marketingDailyReportCount' => $marketingDailyReportCount,
+            'marketingHotDealsCount' => $marketingHotDealsCount,
             'recentProposals' => $recentProposals,
             'recentUnits' => $recentUnits,
             'chartLabels' => $chartLabels,

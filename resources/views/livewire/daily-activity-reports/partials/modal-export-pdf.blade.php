@@ -79,6 +79,28 @@
                     </div>
                 @endif
 
+                <!-- Filter Tahap Status Prospek -->
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1 text-xs uppercase tracking-wider">Tahap Status Prospek</label>
+                    <select wire:model.live="export_lead_stage" class="select-clean w-full text-xs font-semibold">
+                        <option value="">Semua Tahap Prospek</option>
+                        @foreach(\App\Models\DailyActivityReport::leadStages() as $key => $label)
+                            <option value="{{ $key }}">{{ $label }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <!-- Filter Sumber Prospek / Lead Source -->
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1 text-xs uppercase tracking-wider">Sumber Prospek (Lead Source)</label>
+                    <select wire:model.live="export_lead_source" class="select-clean w-full text-xs font-semibold">
+                        <option value="">Semua Sumber Lead</option>
+                        @foreach(\App\Models\DailyActivityReport::leadSources() as $key => $label)
+                            <option value="{{ $key }}">{{ $label }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
                 <!-- Filter Petugas Marketing (Founder/Supervisor/Admin only) -->
                 @if(auth()->user()->isAdminOrFounder() || auth()->user()->isSupervisor())
                     <div>

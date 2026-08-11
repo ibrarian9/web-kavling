@@ -100,10 +100,12 @@ class DailyActivityReportPdfController extends Controller
         $hotDealsCount = $reports->whereIn('lead_stage', ['hot_deal', 'booking', 'cash_lunas'])->count();
         $totalDealVolume = $reports->whereIn('lead_stage', ['booking', 'cash_lunas'])->sum('deal_amount');
 
-        // Marketing User Info
+        // Marketing User Info & Filter Labels
         $staffUser = $userIdParam ? User::find($userIdParam) : null;
         $staffInfo = $staffUser ? ($staffUser->name . ' (' . ($staffUser->phone_number ?: 'Tanpa HP') . ')') : 'Semua Petugas Marketing';
         $projectInfo = $projectIdParam ? Project::find($projectIdParam)?->name : 'Semua Kawasan Proyek';
+        $leadStageLabel = $leadStageParam ? (DailyActivityReport::leadStages()[$leadStageParam] ?? strtoupper($leadStageParam)) : 'Semua Tahap Prospek';
+        $leadSourceLabel = $leadSourceParam ? (DailyActivityReport::leadSources()[$leadSourceParam] ?? strtoupper($leadSourceParam)) : 'Semua Sumber Lead';
 
         $verifyUrl = route('daily-activity-reports.index');
         $qrCodeUrl = $this->generateQrBase64($verifyUrl);
@@ -121,6 +123,8 @@ class DailyActivityReportPdfController extends Controller
             'staffUser' => $staffUser,
             'staffInfo' => $staffInfo,
             'projectInfo' => $projectInfo,
+            'leadStageLabel' => $leadStageLabel,
+            'leadSourceLabel' => $leadSourceLabel,
             'printedBy' => $user->name,
             'printedAt' => now()->locale('id')->isoFormat('D MMMM YYYY HH:mm'),
             'qrCodeUrl' => $qrCodeUrl,

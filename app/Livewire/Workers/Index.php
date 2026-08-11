@@ -25,6 +25,13 @@ class Index extends Component
     public string $status = 'active';
     public string $notes = '';
 
+    public function mount(): void
+    {
+        if (auth()->user()?->isMarketing()) {
+            abort(403, 'Akses Ditolak. Role Marketing tidak memiliki hak akses ke manajemen pekerja.');
+        }
+    }
+
     protected function rules(): array
     {
         return [

@@ -85,6 +85,7 @@ class Show extends Component
     public string $installment_payment_method = 'Transfer Bank';
     public string $installment_payment_notes = '';
     public $installment_payment_receipt_photo = null;
+    public ?string $existing_installment_receipt_photo_path = null;
 
     // Modal Setup Skema Cicilan Baru (Konfigurasi oleh Finance / Founder)
     public bool $showSetupInstallmentModal = false;
@@ -988,6 +989,7 @@ class Show extends Component
         $this->installment_payment_method = 'Transfer Bank';
         $this->installment_payment_notes = '';
         $this->installment_payment_receipt_photo = null;
+        $this->existing_installment_receipt_photo_path = null;
         $this->showInstallmentPaymentModal = true;
     }
 
@@ -1005,6 +1007,7 @@ class Show extends Component
         $this->installment_payment_method = $pay->payment_method;
         $this->installment_payment_notes = $pay->notes ?? '';
         $this->installment_payment_receipt_photo = null;
+        $this->existing_installment_receipt_photo_path = $pay->receipt_photo_path;
         $this->showInstallmentPaymentModal = true;
     }
 

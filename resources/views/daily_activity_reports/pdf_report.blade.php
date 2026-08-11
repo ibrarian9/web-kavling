@@ -211,10 +211,16 @@
                 <td class="meta-value">{{ $staffInfo }}</td>
             </tr>
             <tr>
+                <td class="meta-label">Tahap Prospek:</td>
+                <td class="meta-value">{{ $leadStageLabel ?? 'Semua Tahap Prospek' }}</td>
+                <td class="meta-label">Sumber Lead:</td>
+                <td class="meta-value">{{ $leadSourceLabel ?? 'Semua Sumber Lead' }}</td>
+            </tr>
+            <tr>
                 <td class="meta-label">Kawasan Proyek:</td>
                 <td class="meta-value">{{ $projectInfo }}</td>
-                <td class="meta-label">Tanggal / Waktu Cetak:</td>
-                <td class="meta-value">{{ $printedAt }} (Oleh: {{ $printedBy }})</td>
+                <td class="meta-label">Waktu Cetak / Oleh:</td>
+                <td class="meta-value">{{ $printedAt }} ({{ $printedBy }})</td>
             </tr>
         </table>
     </div>

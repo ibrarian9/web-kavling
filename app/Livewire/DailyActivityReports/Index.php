@@ -42,6 +42,8 @@ class Index extends Component
     public string $export_month = '';
     public ?int $export_user_id = null;
     public ?int $export_project_id = null;
+    public string $export_lead_stage = '';
+    public string $export_lead_source = '';
 
     public function openExportPdfModal(): void
     {
@@ -52,6 +54,8 @@ class Index extends Component
         $this->export_month = now()->format('Y-m');
         $this->export_user_id = $this->filter_user_id;
         $this->export_project_id = $this->filter_project_id;
+        $this->export_lead_stage = $this->filter_lead_stage;
+        $this->export_lead_source = $this->filter_lead_source;
         $this->showExportPdfModal = true;
     }
 
@@ -84,9 +88,9 @@ class Index extends Component
             'month' => $this->export_month,
             'user_id' => $this->export_user_id,
             'project_id' => $this->export_project_id,
+            'lead_stage' => $this->export_lead_stage,
+            'lead_source' => $this->export_lead_source,
             'search' => $this->search,
-            'lead_stage' => $this->filter_lead_stage,
-            'lead_source' => $this->filter_lead_source,
             'filter_start_date' => $this->filter_start_date,
             'filter_end_date' => $this->filter_end_date,
         ];

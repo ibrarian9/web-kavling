@@ -46,6 +46,13 @@
                     </a>
                 @endif
 
+                @if($user->isMarketing())
+                    <a href="{{ route('daily-activity-reports.index') }}" wire:navigate.hover class="px-4 py-2.5 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-xl text-xs shadow-lg shadow-teal-900/40 transition flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                        <span>Daily Activity</span>
+                    </a>
+                @endif
+
                 @if($user->isAdminOrFounder() || $user->isMarketing() || $user->isFinance())
                     <a href="{{ route('bookings.index') }}" wire:navigate.hover class="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-100 font-bold border border-slate-700 rounded-xl text-xs transition flex items-center gap-2">
                         <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
@@ -136,39 +143,56 @@
             </div>
         </div>
 
-        <!-- Stat Card 4: Saldo Arus Kas Global -->
-        <div class="kpi-card-dark flex flex-col justify-between">
-            <div class="flex items-center justify-between">
-                <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Saldo Kas Bersih Global</span>
-                <div class="p-2.5 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+        <!-- Stat Card 4: Saldo Arus Kas Global (Non-Marketing) / Daily Activity (Marketing) -->
+        @if(!$user->isMarketing())
+            <div class="kpi-card-dark flex flex-col justify-between">
+                <div class="flex items-center justify-between">
+                    <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Saldo Kas Bersih Global</span>
+                    <div class="p-2.5 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <p class="text-2xl font-extrabold text-white font-mono">Rp {{ number_format($netCashflow, 0, ',', '.') }}</p>
+                    <p class="text-[11px] text-emerald-400 mt-1 font-mono">Pemasukan: Rp {{ number_format($totalCashIn, 0, ',', '.') }}</p>
                 </div>
             </div>
-            <div class="mt-3">
-                <p class="text-2xl font-extrabold text-white font-mono">Rp {{ number_format($netCashflow, 0, ',', '.') }}</p>
-                <p class="text-[11px] text-emerald-400 mt-1 font-mono">Pemasukan: Rp {{ number_format($totalCashIn, 0, ',', '.') }}</p>
+        @else
+            <div class="kpi-card-dark flex flex-col justify-between">
+                <div class="flex items-center justify-between">
+                    <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Daily Activity & Hot Deals</span>
+                    <div class="p-2.5 rounded-xl bg-teal-500/20 text-teal-300 border border-teal-500/30">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <p class="text-2xl font-extrabold text-white font-mono">{{ $marketingDailyReportCount ?? 0 }} Laporan</p>
+                    <p class="text-[11px] text-teal-300 mt-1 font-semibold">{{ $marketingHotDealsCount ?? 0 }} Prospek Hot Deal / Closing</p>
+                </div>
             </div>
-        </div>
+        @endif
     </div>
 
-    <!-- Visual Analytics: Grafik Real-Time Tren Arus Kas -->
-    <div class="card-clean p-5 sm:p-6 space-y-4">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
-            <div>
-                <h3 class="font-extrabold text-slate-900 text-sm flex items-center gap-2">
-                    <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18"/></svg>
-                    <span>Grafik Tren Keuangan Arus Kas (6 Bulan Terakhir)</span>
-                </h3>
-                <p class="text-[11px] text-slate-500 mt-0.5">Perbandingan pemasukan penjualan unit & booking fee vs pengeluaran operasional & belanja material</p>
+    <!-- Visual Analytics: Grafik Real-Time Tren Arus Kas (Non-Marketing Only) -->
+    @if(!$user->isMarketing())
+        <div class="card-clean p-5 sm:p-6 space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
+                <div>
+                    <h3 class="font-extrabold text-slate-900 text-sm flex items-center gap-2">
+                        <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18"/></svg>
+                        <span>Grafik Tren Keuangan Arus Kas (6 Bulan Terakhir)</span>
+                    </h3>
+                    <p class="text-[11px] text-slate-500 mt-0.5">Perbandingan pemasukan penjualan unit & booking fee vs pengeluaran operasional & belanja material</p>
+                </div>
+                <a href="{{ route('cashflow.index') }}" wire:navigate.hover class="text-xs font-bold text-emerald-700 hover:text-emerald-900 flex items-center gap-1 self-start sm:self-auto">
+                    <span>Rincian Jurnal Kas</span>
+                    <span>&rarr;</span>
+                </a>
             </div>
-            <a href="{{ route('cashflow.index') }}" wire:navigate.hover class="text-xs font-bold text-emerald-700 hover:text-emerald-900 flex items-center gap-1 self-start sm:self-auto">
-                <span>Rincian Jurnal Kas</span>
-                <span>&rarr;</span>
-            </a>
-        </div>
 
-        <div id="dashboardTrendChart" class="w-full min-h-[300px]"></div>
-    </div>
+            <div id="dashboardTrendChart" class="w-full min-h-[300px]"></div>
+        </div>
+    @endif
 
     <!-- Quick Module Navigation Shortcuts -->
     <div class="card-clean p-5 sm:p-6 space-y-4">
@@ -225,16 +249,28 @@
                 </div>
             </a>
 
-            <!-- Shortcut 5: Worker & Mandor -->
-            <a href="{{ route('workers.index') }}" wire:navigate.hover class="p-3.5 rounded-2xl border border-slate-200/80 hover:border-blue-300 hover:bg-blue-50/40 transition-all duration-150 text-left group flex flex-col justify-between shadow-2xs">
-                <div class="w-8 h-8 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center mb-2 group-hover:scale-110 transition">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-                </div>
-                <div>
-                    <p class="font-extrabold text-xs text-slate-800 group-hover:text-blue-700">Mandor & Tukang</p>
-                    <p class="text-[10px] text-slate-500 mt-0.5">Penugasan & upah kerja</p>
-                </div>
-            </a>
+            <!-- Shortcut 5: Worker & Mandor (Non-Marketing) / Daily Activity (Marketing) -->
+            @if(!$user->isMarketing())
+                <a href="{{ route('workers.index') }}" wire:navigate.hover class="p-3.5 rounded-2xl border border-slate-200/80 hover:border-blue-300 hover:bg-blue-50/40 transition-all duration-150 text-left group flex flex-col justify-between shadow-2xs">
+                    <div class="w-8 h-8 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center mb-2 group-hover:scale-110 transition">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                    </div>
+                    <div>
+                        <p class="font-extrabold text-xs text-slate-800 group-hover:text-blue-700">Mandor & Tukang</p>
+                        <p class="text-[10px] text-slate-500 mt-0.5">Penugasan & upah kerja</p>
+                    </div>
+                </a>
+            @else
+                <a href="{{ route('daily-activity-reports.index') }}" wire:navigate.hover class="p-3.5 rounded-2xl border border-slate-200/80 hover:border-teal-300 hover:bg-teal-50/40 transition-all duration-150 text-left group flex flex-col justify-between shadow-2xs">
+                    <div class="w-8 h-8 rounded-xl bg-teal-100 text-teal-700 flex items-center justify-center mb-2 group-hover:scale-110 transition">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                    </div>
+                    <div>
+                        <p class="font-extrabold text-xs text-slate-800 group-hover:text-teal-700">Daily Activity Report</p>
+                        <p class="text-[10px] text-slate-500 mt-0.5">Aktivitas & prospek sales</p>
+                    </div>
+                </a>
+            @endif
 
             <!-- Shortcut 6: Cicilan & Piutang -->
             <a href="{{ route('installments.index') }}" wire:navigate.hover class="p-3.5 rounded-2xl border border-slate-200/80 hover:border-sky-300 hover:bg-sky-50/40 transition-all duration-150 text-left group flex flex-col justify-between shadow-2xs">

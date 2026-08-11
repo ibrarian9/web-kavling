@@ -208,3 +208,24 @@ test('admin can create and edit projects and edit unit specifications', function
 
     expect($this->unit->fresh()->code)->toBe('A-01-UPD');
 });
+
+test('marketing user is restricted from viewing HPP, cashflow, and worker management', function () {
+    expect($this->marketing->isMarketing())->toBeTrue();
+    expect($this->marketing->canViewHpp())->toBeFalse();
+
+    $this->actingAs($this->marketing);
+
+    // Dashboard renders safely without errors for Marketing
+    Livewire::test(\App\Livewire\Dashboard::class)
+        ->assertStatus(200)
+        ->assertViewHas('user');
+
+    // Projects Show renders safely without errors for Marketing
+    Livewire::test(\App\Livewire\Projects\Show::class, ['id' => $this->project->id])
+        ->assertStatus(200);
+
+    // Workers page (Mandor & Tukang) returns 403 Forbidden for Marketing
+    Livewire::test(\App\Livewire\Workers\Index::class)
+        ->assertStatus(403);
+});
+

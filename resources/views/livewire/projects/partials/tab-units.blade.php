@@ -2,23 +2,25 @@
 <div class="space-y-4">
     <div class="card-clean p-4 flex flex-col sm:flex-row items-center justify-between gap-3">
         <div class="flex items-center gap-2 w-full sm:w-auto">
-            <h3 class="font-bold text-slate-900 text-sm whitespace-nowrap">{{ auth()->user()->isPengawasProject() ? 'Daftar Unit Kavling Proyek' : 'Dashboard Penjualan & Profit Per Unit' }}</h3>
+            <h3 class="font-bold text-slate-900 text-sm whitespace-nowrap">{{ (auth()->user()->isPengawasProject() || auth()->user()->isMarketing()) ? 'Daftar Status Unit Proyek' : 'Dashboard Penjualan & Profit Per Unit' }}</h3>
             <span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full border border-emerald-200">
                 {{ count($unitsList) }} Unit
             </span>
         </div>
 
         <div class="flex flex-wrap items-center gap-2 w-full sm:w-auto">
-            @if(count($unitsList) > 0)
-                <a href="{{ route('projects.sales-profit-pdf', $project->id) }}" target="_blank" class="btn-header-pdf">
-                    <svg class="w-4 h-4 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
-                    <span>Lihat PDF Rekap</span>
-                </a>
-            @else
-                <button disabled class="btn-header-pdf-disabled" title="Belum ada data unit untuk digenerate PDF">
-                    <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
-                    <span>PDF Rekap (Belum Ada Data)</span>
-                </button>
+            @if(!auth()->user()->isMarketing())
+                @if(count($unitsList) > 0)
+                    <a href="{{ route('projects.sales-profit-pdf', $project->id) }}" target="_blank" class="btn-header-pdf">
+                        <svg class="w-4 h-4 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                        <span>Lihat PDF Rekap</span>
+                    </a>
+                @else
+                    <button disabled class="btn-header-pdf-disabled" title="Belum ada data unit untuk digenerate PDF">
+                        <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                        <span>PDF Rekap (Belum Ada Data)</span>
+                    </button>
+                @endif
             @endif
 
             <div class="relative w-full sm:w-48">
@@ -137,7 +139,7 @@
                                     @endif
                                 </span>
                             </div>
-                            <div class="bg-amber-50/80 rounded-lg p-2 border border-amber-100">
+                            <div class="bg-amber-50/80 rounded-lg p-2 border border-amber-100 {{ auth()->user()->isMarketing() ? 'col-span-2' : '' }}">
                                 <span class="text-[10px] text-amber-600 font-semibold block">Sisa Tagihan</span>
                                 <span class="font-mono font-bold text-amber-700">
                                     @if($perf['is_sold'] && $perf['remaining_amount'] > 0)
@@ -149,18 +151,20 @@
                                     @endif
                                 </span>
                             </div>
-                            <div class="rounded-lg p-2 border {{ $perf['is_sold'] && $perf['profit'] >= 0 ? 'bg-emerald-50/80 border-emerald-100' : ($perf['is_sold'] ? 'bg-rose-50/80 border-rose-100' : 'bg-slate-50 border-slate-100') }}">
-                                <span class="text-[10px] font-semibold block {{ $perf['is_sold'] && $perf['profit'] >= 0 ? 'text-emerald-600' : ($perf['is_sold'] ? 'text-rose-600' : 'text-slate-500') }}">Profit</span>
-                                <span class="font-mono font-bold">
-                                    @if($perf['is_sold'])
-                                        <span class="{{ $perf['profit'] >= 0 ? 'text-emerald-600' : 'text-rose-600' }}">
-                                            {{ $perf['profit'] >= 0 ? '+' : '' }} Rp {{ number_format($perf['profit'], 0, ',', '.') }}
-                                        </span>
-                                    @else
-                                        <span class="text-slate-400 font-normal italic text-[11px]">Belum Terjual</span>
-                                    @endif
-                                </span>
-                            </div>
+                            @if(!auth()->user()->isMarketing())
+                                <div class="rounded-lg p-2 border {{ $perf['is_sold'] && $perf['profit'] >= 0 ? 'bg-emerald-50/80 border-emerald-100' : ($perf['is_sold'] ? 'bg-rose-50/80 border-rose-100' : 'bg-slate-50 border-slate-100') }}">
+                                    <span class="text-[10px] font-semibold block {{ $perf['is_sold'] && $perf['profit'] >= 0 ? 'text-emerald-600' : ($perf['is_sold'] ? 'text-rose-600' : 'text-slate-500') }}">Profit</span>
+                                    <span class="font-mono font-bold">
+                                        @if($perf['is_sold'])
+                                            <span class="{{ $perf['profit'] >= 0 ? 'text-emerald-600' : 'text-rose-600' }}">
+                                                {{ $perf['profit'] >= 0 ? '+' : '' }} Rp {{ number_format($perf['profit'], 0, ',', '.') }}
+                                            </span>
+                                        @else
+                                            <span class="text-slate-400 font-normal italic text-[11px]">Belum Terjual</span>
+                                        @endif
+                                    </span>
+                                </div>
+                            @endif
                         </div>
                     @else
                         @php $uAssignment = $u->assignments->where('status', 'active')->first(); @endphp
@@ -199,7 +203,9 @@
                             @if(auth()->user()->canViewHpp())
                                 <th class="px-3 py-3.5 text-right">HPP & Biaya (Rp)</th>
                             @endif
-                            <th class="px-3 py-3.5 text-right">Profit / Margin (Rp)</th>
+                            @if(!auth()->user()->isMarketing())
+                                <th class="px-3 py-3.5 text-right">Profit / Margin (Rp)</th>
+                            @endif
                         @else
                             <th class="px-3 py-3.5">Mandor / Worker Bertugas</th>
                         @endif
@@ -275,15 +281,17 @@
                                         @endif
                                     </td>
                                 @endif
-                                <td class="px-3 py-3.5 text-right font-mono font-extrabold">
-                                    @if($perf['is_sold'])
-                                        <span class="{{ $perf['profit'] >= 0 ? 'text-emerald-600' : 'text-rose-600' }}">
-                                            {{ $perf['profit'] >= 0 ? '+' : '' }} Rp {{ number_format($perf['profit'], 0, ',', '.') }}
-                                        </span>
-                                    @else
-                                        <span class="text-slate-400 font-normal italic">Belum Terjual</span>
-                                    @endif
-                                </td>
+                                @if(!auth()->user()->isMarketing())
+                                    <td class="px-3 py-3.5 text-right font-mono font-extrabold">
+                                        @if($perf['is_sold'])
+                                            <span class="{{ $perf['profit'] >= 0 ? 'text-emerald-600' : 'text-rose-600' }}">
+                                                {{ $perf['profit'] >= 0 ? '+' : '' }} Rp {{ number_format($perf['profit'], 0, ',', '.') }}
+                                            </span>
+                                        @else
+                                            <span class="text-slate-400 font-normal italic">Belum Terjual</span>
+                                        @endif
+                                    </td>
+                                @endif
                             @else
                                 <td class="px-3 py-3.5">
                                     @php

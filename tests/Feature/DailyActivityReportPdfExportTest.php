@@ -92,3 +92,14 @@ test('marketing user can stream their own daily activity report PDF', function (
     $response->assertStatus(200);
     $response->assertHeader('content-type', 'application/pdf');
 });
+
+test('user can export daily activity report PDF filtered specifically by lead_stage', function () {
+    $response = $this->actingAs($this->founder)
+        ->get(route('daily-activity-reports.export-pdf', [
+            'period' => 'all',
+            'lead_stage' => 'hot_deal',
+        ]));
+
+    $response->assertStatus(200);
+    $response->assertHeader('content-type', 'application/pdf');
+});
