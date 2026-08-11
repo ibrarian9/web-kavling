@@ -76,8 +76,8 @@ class Index extends Component
     public function editDocument($id): void
     {
         $user = auth()->user();
-        if (!$user->isFounder()) {
-            session()->flash('error', 'Hanya Founder yang berhak mengubah dokumen SPP.');
+        if (!$user->isAdminOrFounder()) {
+            session()->flash('error', 'Hanya Admin & Founder yang berhak mengubah dokumen SPP.');
             return;
         }
 
@@ -100,8 +100,8 @@ class Index extends Component
         $user = auth()->user();
 
         if ($this->editingDocumentId) {
-            if (!$user->isFounder()) {
-                session()->flash('error', 'Hanya Founder yang berhak mengedit dokumen SPP.');
+            if (!$user->isAdminOrFounder()) {
+                session()->flash('error', 'Hanya Admin & Founder yang berhak mengedit dokumen SPP.');
                 return;
             }
 

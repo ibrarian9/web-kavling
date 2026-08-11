@@ -1,6 +1,8 @@
 @php 
     $u = auth()->user();
     $isF = $u?->isFounder();
+    $isA = $u?->isAdmin();
+    $isFO = $u?->isAdminOrFounder();
     $isS = $u?->isSupervisor();
     $isP = $u?->isPengawasProject();
     $isFI = $u?->isFinance();
@@ -75,7 +77,7 @@
             @endif
         </a>
 
-        @if($isF)
+        @if($isFO)
             <a href="{{ route('units.legacy-sale') }}" wire:navigate.hover @click="mobileMenuOpen = false" 
                class="flex items-center justify-between px-3 py-2.5 rounded-xl text-xs sm:text-sm font-medium transition-all duration-150 group {{ request()->routeIs('units.legacy-sale') ? 'bg-gradient-to-r from-emerald-500/20 to-teal-500/10 text-emerald-400 font-bold border-l-4 border-emerald-500 shadow-2xs' : 'text-slate-400 hover:bg-slate-800/80 hover:text-slate-100 hover:translate-x-0.5' }}">
                 <div class="flex items-center gap-3 min-w-0">
@@ -92,7 +94,7 @@
     </div>
 
     <!-- Section 3: Pekerja Lapangan -->
-    @if($isF || $isS || $isP || $isFI)
+    @if($isFO || $isS || $isP || $isFI)
         <div class="space-y-1 pt-2 border-t border-slate-800/60">
             <div class="px-3 pb-1 text-[10px] uppercase font-extrabold tracking-wider text-slate-500 flex items-center gap-1.5">
                 <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
@@ -128,7 +130,7 @@
     @endif
 
     <!-- Section 4: Penjualan & Legalitas -->
-    @if($isF || $isS || $isFI || $isM)
+    @if($isFO || $isS || $isFI || $isM)
         <div class="space-y-1 pt-2 border-t border-slate-800/60">
             <div class="px-3 pb-1 text-[10px] uppercase font-extrabold tracking-wider text-slate-500 flex items-center gap-1.5">
                 <span class="w-1.5 h-1.5 rounded-full bg-teal-500"></span>
@@ -190,7 +192,7 @@
     @endif
 
     <!-- Section 5: Keuangan & Pembayaran -->
-    @if($isF || $isFI || $isM)
+    @if($isFO || $isFI || $isM)
         <div class="space-y-1 pt-2 border-t border-slate-800/60">
             <div class="px-3 pb-1 text-[10px] uppercase font-extrabold tracking-wider text-slate-500 flex items-center gap-1.5">
                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
@@ -210,7 +212,7 @@
                 @endif
             </a>
 
-            @if($isF || $isFI)
+            @if($isFO || $isFI)
                 <a href="{{ route('cashflow.index') }}" wire:navigate.hover @click="mobileMenuOpen = false" 
                    class="flex items-center justify-between px-3 py-2.5 rounded-xl text-xs sm:text-sm font-medium transition-all duration-150 group {{ request()->routeIs('cashflow.*') ? 'bg-gradient-to-r from-emerald-500/20 to-teal-500/10 text-emerald-400 font-bold border-l-4 border-emerald-500 shadow-2xs' : 'text-slate-400 hover:bg-slate-800/80 hover:text-slate-100 hover:translate-x-0.5' }}">
                     <div class="flex items-center gap-3 min-w-0">
@@ -241,11 +243,11 @@
     @endif
 
     <!-- Section 6: Founder & Administrasi -->
-    @if($isF)
+    @if($isFO)
         <div class="space-y-1 pt-2 border-t border-slate-800/60">
             <div class="px-3 pb-1 text-[10px] uppercase font-extrabold tracking-wider text-slate-500 flex items-center gap-1.5">
                 <span class="w-1.5 h-1.5 rounded-full bg-purple-500"></span>
-                <span>Pengaturan Founder</span>
+                <span>Pengaturan & Administrasi</span>
             </div>
 
             <a href="{{ route('profile.index') }}" wire:navigate.hover @click="mobileMenuOpen = false" 
@@ -261,44 +263,46 @@
                 @endif
             </a>
 
-            <a href="{{ route('employee-salaries.index') }}" wire:navigate.hover @click="mobileMenuOpen = false" 
-               class="flex items-center justify-between px-3 py-2.5 rounded-xl text-xs sm:text-sm font-medium transition-all duration-150 group {{ request()->routeIs('employee-salaries.*') ? 'bg-gradient-to-r from-emerald-500/20 to-teal-500/10 text-emerald-400 font-bold border-l-4 border-emerald-500 shadow-2xs' : 'text-slate-400 hover:bg-slate-800/80 hover:text-slate-100 hover:translate-x-0.5' }}">
-                <div class="flex items-center gap-3 min-w-0">
-                    <div class="p-1.5 rounded-lg transition-colors {{ request()->routeIs('employee-salaries.*') ? 'bg-emerald-500/20 text-emerald-400' : 'bg-slate-800/60 text-slate-400 group-hover:text-slate-200 group-hover:bg-slate-700/60' }}">
-                        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+            @if($isF)
+                <a href="{{ route('employee-salaries.index') }}" wire:navigate.hover @click="mobileMenuOpen = false" 
+                   class="flex items-center justify-between px-3 py-2.5 rounded-xl text-xs sm:text-sm font-medium transition-all duration-150 group {{ request()->routeIs('employee-salaries.*') ? 'bg-gradient-to-r from-emerald-500/20 to-teal-500/10 text-emerald-400 font-bold border-l-4 border-emerald-500 shadow-2xs' : 'text-slate-400 hover:bg-slate-800/80 hover:text-slate-100 hover:translate-x-0.5' }}">
+                    <div class="flex items-center gap-3 min-w-0">
+                        <div class="p-1.5 rounded-lg transition-colors {{ request()->routeIs('employee-salaries.*') ? 'bg-emerald-500/20 text-emerald-400' : 'bg-slate-800/60 text-slate-400 group-hover:text-slate-200 group-hover:bg-slate-700/60' }}">
+                            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                        </div>
+                        <span class="truncate">Penggajian Karyawan</span>
                     </div>
-                    <span class="truncate">Penggajian Karyawan</span>
-                </div>
-                @if(request()->routeIs('employee-salaries.*'))
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-sm"></span>
-                @endif
-            </a>
+                    @if(request()->routeIs('employee-salaries.*'))
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-sm"></span>
+                    @endif
+                </a>
 
-            <a href="{{ route('users.index') }}" wire:navigate.hover @click="mobileMenuOpen = false" 
-               class="flex items-center justify-between px-3 py-2.5 rounded-xl text-xs sm:text-sm font-medium transition-all duration-150 group {{ request()->routeIs('users.*') ? 'bg-gradient-to-r from-emerald-500/20 to-teal-500/10 text-emerald-400 font-bold border-l-4 border-emerald-500 shadow-2xs' : 'text-slate-400 hover:bg-slate-800/80 hover:text-slate-100 hover:translate-x-0.5' }}">
-                <div class="flex items-center gap-3 min-w-0">
-                    <div class="p-1.5 rounded-lg transition-colors {{ request()->routeIs('users.*') ? 'bg-emerald-500/20 text-emerald-400' : 'bg-slate-800/60 text-slate-400 group-hover:text-slate-200 group-hover:bg-slate-700/60' }}">
-                        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                <a href="{{ route('users.index') }}" wire:navigate.hover @click="mobileMenuOpen = false" 
+                   class="flex items-center justify-between px-3 py-2.5 rounded-xl text-xs sm:text-sm font-medium transition-all duration-150 group {{ request()->routeIs('users.*') ? 'bg-gradient-to-r from-emerald-500/20 to-teal-500/10 text-emerald-400 font-bold border-l-4 border-emerald-500 shadow-2xs' : 'text-slate-400 hover:bg-slate-800/80 hover:text-slate-100 hover:translate-x-0.5' }}">
+                    <div class="flex items-center gap-3 min-w-0">
+                        <div class="p-1.5 rounded-lg transition-colors {{ request()->routeIs('users.*') ? 'bg-emerald-500/20 text-emerald-400' : 'bg-slate-800/60 text-slate-400 group-hover:text-slate-200 group-hover:bg-slate-700/60' }}">
+                            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                        </div>
+                        <span class="truncate">Manajemen User</span>
                     </div>
-                    <span class="truncate">Manajemen User</span>
-                </div>
-                @if(request()->routeIs('users.*'))
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-sm"></span>
-                @endif
-            </a>
+                    @if(request()->routeIs('users.*'))
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-sm"></span>
+                    @endif
+                </a>
 
-            <a href="{{ route('activity-logs.index') }}" wire:navigate.hover @click="mobileMenuOpen = false" 
-               class="flex items-center justify-between px-3 py-2.5 rounded-xl text-xs sm:text-sm font-medium transition-all duration-150 group {{ request()->routeIs('activity-logs.*') ? 'bg-gradient-to-r from-emerald-500/20 to-teal-500/10 text-emerald-400 font-bold border-l-4 border-emerald-500 shadow-2xs' : 'text-slate-400 hover:bg-slate-800/80 hover:text-slate-100 hover:translate-x-0.5' }}">
-                <div class="flex items-center gap-3 min-w-0">
-                    <div class="p-1.5 rounded-lg transition-colors {{ request()->routeIs('activity-logs.*') ? 'bg-emerald-500/20 text-emerald-400' : 'bg-slate-800/60 text-slate-400 group-hover:text-slate-200 group-hover:bg-slate-700/60' }}">
-                        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 01-2 2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                <a href="{{ route('activity-logs.index') }}" wire:navigate.hover @click="mobileMenuOpen = false" 
+                   class="flex items-center justify-between px-3 py-2.5 rounded-xl text-xs sm:text-sm font-medium transition-all duration-150 group {{ request()->routeIs('activity-logs.*') ? 'bg-gradient-to-r from-emerald-500/20 to-teal-500/10 text-emerald-400 font-bold border-l-4 border-emerald-500 shadow-2xs' : 'text-slate-400 hover:bg-slate-800/80 hover:text-slate-100 hover:translate-x-0.5' }}">
+                    <div class="flex items-center gap-3 min-w-0">
+                        <div class="p-1.5 rounded-lg transition-colors {{ request()->routeIs('activity-logs.*') ? 'bg-emerald-500/20 text-emerald-400' : 'bg-slate-800/60 text-slate-400 group-hover:text-slate-200 group-hover:bg-slate-700/60' }}">
+                            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 01-2 2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                        </div>
+                        <span class="truncate">Audit Log & Sistem</span>
                     </div>
-                    <span class="truncate">Audit Log & Sistem</span>
-                </div>
-                @if(request()->routeIs('activity-logs.*'))
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-sm"></span>
-                @endif
-            </a>
+                    @if(request()->routeIs('activity-logs.*'))
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-sm"></span>
+                    @endif
+                </a>
+            @endif
         </div>
     @endif
 </div>

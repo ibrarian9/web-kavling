@@ -54,7 +54,7 @@ class Index extends Component
     public function mount(): void
     {
         $user = auth()->user();
-        if (!$user->isFounder() && !$user->isSupervisor() && !$user->isMarketing() && !$user->isFinance()) {
+        if (!$user->isAdminOrFounder() && !$user->isSupervisor() && !$user->isMarketing() && !$user->isFinance()) {
             abort(403, 'Akses ditolak ke Daily Activity Report.');
         }
 
@@ -109,7 +109,7 @@ class Index extends Component
         $report = DailyActivityReport::findOrFail($id);
         $user = auth()->user();
 
-        if (!$user->isFounder() && !$user->isSupervisor() && $report->user_id !== $user->id) {
+        if (!$user->isAdminOrFounder() && !$user->isSupervisor() && $report->user_id !== $user->id) {
             $msg = 'Anda hanya dapat mengedit laporan aktivitas harian Anda sendiri.';
             session()->flash('error', $msg);
             $this->dispatch('notify', ['type' => 'error', 'title' => 'Gagal!', 'message' => $msg]);
@@ -162,7 +162,7 @@ class Index extends Component
             'deal_amount' => 'nullable|numeric|min:0',
         ]);
 
-        $assignedUserId = ($user->isFounder() || $user->isSupervisor()) && $this->user_id ? $this->user_id : auth()->id();
+        $assignedUserId = ($user->isAdminOrFounder() || $user->isSupervisor()) && $this->user_id ? $this->user_id : auth()->id();
 
         $payload = [
             'user_id' => $assignedUserId,
@@ -182,7 +182,7 @@ class Index extends Component
 
         if ($this->editingReportId) {
             $report = DailyActivityReport::findOrFail($this->editingReportId);
-            if (!$user->isFounder() && !$user->isSupervisor() && $report->user_id !== $user->id) {
+            if (!$user->isAdminOrFounder() && !$user->isSupervisor() && $report->user_id !== $user->id) {
                 $msg = 'Akses ditolak.';
                 session()->flash('error', $msg);
                 $this->dispatch('notify', ['type' => 'error', 'title' => 'Gagal!', 'message' => $msg]);
@@ -230,8 +230,8 @@ class Index extends Component
         $user = auth()->user();
         $query = DailyActivityReport::with(['user', 'project', 'unit']);
 
-        // Non-founder/non-supervisor marketing users see their own reports by default, unless Founder
-        if (!$user->isFounder() && !$user->isSupervisor() && $user->isMarketing()) {
+        // Non-founder/non-supervisor marketing users see their own reports by default, unless Founder or Admin
+        if (!$user->isAdminOrFounder() && !$user->isSupervisor() && $user->isMarketing()) {
             $query->where('user_id', $user->id);
         } elseif ($this->filter_user_id) {
             $query->where('user_id', $this->filter_user_id);
@@ -269,7 +269,7 @@ class Index extends Component
 
         // Stats summary calculation
         $baseStatsQuery = DailyActivityReport::query();
-        if (!$user->isFounder() && !$user->isSupervisor() && $user->isMarketing()) {
+        if (!$user->isAdminOrFounder() && !$user->isSupervisor() && $user->isMarketing()) {
             $baseStatsQuery->where('user_id', $user->id);
         }
 

@@ -23,6 +23,7 @@
             <select wire:model.live="roleFilter" class="input-clean w-full text-xs">
                 <option value="">Semua Peran / Role</option>
                 <option value="founder">Founder Executive</option>
+                <option value="admin">Administrator Utama (Admin)</option>
                 <option value="supervisor">Field Supervisor</option>
                 <option value="pengawas_project">Pengawas Lapangan</option>
                 <option value="finance">Finance Admin</option>
@@ -63,6 +64,10 @@
                                     <span class="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-amber-50 text-amber-800 border border-amber-200 uppercase">
                                         Founder Executive
                                     </span>
+                                @elseif($u->role === 'admin')
+                                    <span class="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-purple-50 text-purple-800 border border-purple-200 uppercase">
+                                        Administrator Utama
+                                    </span>
                                 @elseif($u->role === 'supervisor')
                                     <span class="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-indigo-50 text-indigo-800 border border-indigo-200 uppercase">
                                         Field Supervisor
@@ -95,33 +100,41 @@
                             <td class="px-5 py-4 font-mono text-slate-500 text-xs">
                                 {{ $u->created_at ? $u->created_at->format('d/m/Y H:i') : '-' }}
                             </td>
-                            <td class="px-5 py-4 text-right space-x-1 whitespace-nowrap">
-                                <button wire:click="openEditModal({{ $u->id }})" class="btn-action-edit">
-                                    <svg class="w-3.5 h-3.5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-                                    <span>Edit</span>
-                                </button>
-                                @if($u->id !== auth()->id())
-                                    <button type="button" @click="confirmModalAction({
-                                        title: '{{ $u->is_active ? "Nonaktifkan Akun User" : "Aktifkan Akun User" }}',
-                                        message: '{{ $u->is_active ? "Yakin ingin menonaktifkan akun user " . $u->name . "? User ini tidak akan dapat login ke dalam sistem." : "Yakin ingin mengaktifkan kembali akun user " . $u->name . "? User ini dapat kembali login ke dalam sistem." }}',
-                                        confirmText: '{{ $u->is_active ? "Nonaktifkan User" : "Aktifkan User" }}',
-                                        btnClass: '{{ $u->is_active ? "px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5" : "px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5" }}',
-                                        onConfirm: () => $wire.toggleStatus({{ $u->id }})
-                                    })" class="{{ $u->is_active ? 'btn-action-edit' : 'btn-action-payment' }}" title="Ubah Status Akun User">
-                                        <span>{{ $u->is_active ? 'Nonaktifkan' : 'Aktifkan' }}</span>
+                            <td class="px-5 py-4 text-right whitespace-nowrap">
+                                <div class="inline-flex items-center justify-end gap-1.5">
+                                    <button wire:click="openEditModal({{ $u->id }})" class="btn-action-edit">
+                                        <svg class="w-3.5 h-3.5 text-amber-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                                        <span>Edit</span>
                                     </button>
 
-                                    <button type="button" @click="confirmModalAction({
-                                        title: 'Hapus Akun User',
-                                        message: 'Yakin ingin menghapus akun user {{ $u->name }} ({{ $u->email }}) secara permanen dari sistem?',
-                                        confirmText: 'Hapus User',
-                                        btnClass: 'px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5',
-                                        onConfirm: () => $wire.deleteUser({{ $u->id }})
-                                    })" class="btn-action-delete" title="Hapus Akun User Permanen">
-                                        <svg class="w-3.5 h-3.5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                                        <span>Hapus</span>
-                                    </button>
-                                @endif
+                                    @if($u->id !== auth()->id())
+                                        <button type="button" @click="confirmModalAction({
+                                            title: '{{ $u->is_active ? "Nonaktifkan Akun User" : "Aktifkan Akun User" }}',
+                                            message: '{{ $u->is_active ? "Yakin ingin menonaktifkan akun user " . $u->name . "? User ini tidak akan dapat login ke dalam sistem." : "Yakin ingin mengaktifkan kembali akun user " . $u->name . "? User ini dapat kembali login ke dalam sistem." }}',
+                                            confirmText: '{{ $u->is_active ? "Nonaktifkan User" : "Aktifkan User" }}',
+                                            btnClass: '{{ $u->is_active ? "px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5" : "px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5" }}',
+                                            onConfirm: () => $wire.toggleStatus({{ $u->id }})
+                                        })" class="{{ $u->is_active ? 'btn-action-edit' : 'btn-action-payment' }}" title="Ubah Status Akun User">
+                                            @if($u->is_active)
+                                                <svg class="w-3.5 h-3.5 text-amber-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg>
+                                            @else
+                                                <svg class="w-3.5 h-3.5 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                            @endif
+                                            <span>{{ $u->is_active ? 'Nonaktifkan' : 'Aktifkan' }}</span>
+                                        </button>
+
+                                        <button type="button" @click="confirmModalAction({
+                                            title: 'Hapus Akun User',
+                                            message: 'Yakin ingin menghapus akun user {{ $u->name }} ({{ $u->email }}) secara permanen dari sistem?',
+                                            confirmText: 'Hapus User',
+                                            btnClass: 'px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5',
+                                            onConfirm: () => $wire.deleteUser({{ $u->id }})
+                                        })" class="btn-action-delete" title="Hapus Akun User Permanen">
+                                            <svg class="w-3.5 h-3.5 text-rose-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                            <span>Hapus</span>
+                                        </button>
+                                    @endif
+                                </div>
                             </td>
                         </tr>
                     @empty
@@ -177,6 +190,7 @@
                         <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider">Peran / Role Akses Sistem</label>
                         <select wire:model="role" class="input-clean w-full font-bold">
                             <option value="founder">Founder Executive (Akses Penuh)</option>
+                            <option value="admin">Administrator Utama (Admin Operasional)</option>
                             <option value="supervisor">Field Supervisor (Operasional & Approval)</option>
                             <option value="pengawas_project">Pengawas Lapangan (Log & Penugasan)</option>
                             <option value="finance">Finance Admin (Keuangan & Booking ACC)</option>

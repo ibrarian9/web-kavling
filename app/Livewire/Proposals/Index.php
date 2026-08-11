@@ -121,8 +121,8 @@ class Index extends Component
     public function editProposal($id)
     {
         $user = auth()->user();
-        if (!$user->isFounder()) {
-            session()->flash('error', 'Hanya Founder yang berhak mengubah pengajuan harga.');
+        if (!$user->isAdminOrFounder()) {
+            session()->flash('error', 'Hanya Admin & Founder yang berhak mengubah pengajuan harga.');
             return;
         }
 
@@ -142,8 +142,8 @@ class Index extends Component
         $user = auth()->user();
 
         if ($this->editingProposalId) {
-            if (!$user->isFounder()) {
-                session()->flash('error', 'Hanya Founder yang berhak mengedit pengajuan harga.');
+            if (!$user->isAdminOrFounder()) {
+                session()->flash('error', 'Hanya Admin & Founder yang berhak mengedit pengajuan harga.');
                 return;
             }
 
@@ -172,17 +172,17 @@ class Index extends Component
                 $unit->update(['final_selling_price' => $proposed]);
             }
 
-            ActivityLogger::log('PROPOSAL_UPDATED', "Pengajuan harga unit {$unit->code} (ID #{$proposal->id}) telah diperbarui oleh Founder.");
+            ActivityLogger::log('PROPOSAL_UPDATED', "Pengajuan harga unit {$unit->code} (ID #{$proposal->id}) telah diperbarui.");
 
-            session()->flash('success', 'Pengajuan harga unit ' . $unit->code . ' berhasil diperbarui oleh Founder.');
+            session()->flash('success', 'Pengajuan harga unit ' . $unit->code . ' berhasil diperbarui.');
             $this->showCreateModal = false;
             $this->editingProposalId = null;
             $this->resetProposalForm();
             return;
         }
 
-        if (!$user->isMarketing() && !$user->isFounder()) {
-            session()->flash('error', 'Hanya Marketing dan Founder yang berhak membuat pengajuan harga baru.');
+        if (!$user->isMarketing() && !$user->isAdminOrFounder()) {
+            session()->flash('error', 'Hanya Marketing, Admin, dan Founder yang berhak membuat pengajuan harga baru.');
             return;
         }
 
@@ -259,8 +259,8 @@ class Index extends Component
     public function submitApproval()
     {
         $user = auth()->user();
-        if (!$user->isFounder() && !$user->isSupervisor()) {
-            session()->flash('error', 'Hanya Founder dan Supervisor yang berhak mengesahkan approval harga.');
+        if (!$user->isAdminOrFounder() && !$user->isSupervisor()) {
+            session()->flash('error', 'Hanya Admin, Founder, dan Supervisor yang berhak mengesahkan approval harga.');
             return;
         }
 
@@ -292,14 +292,14 @@ class Index extends Component
             $proposal->unit->update(['status' => 'ditolak']);
             session()->flash('error', 'Pengajuan harga ditolak oleh ' . ucfirst($userRole) . '. Unit kembali ke status ditolak.');
         } else {
-            if ($user->isFounder() || $proposal->isFullyApproved()) {
+            if ($user->isAdminOrFounder() || $proposal->isFullyApproved()) {
                 $proposal->update(['status' => 'disetujui']);
                 $proposal->unit->update([
                     'status' => 'disetujui',
                     'final_selling_price' => $proposal->proposed_price,
                 ]);
 
-                // Auto-create OfficialDocument so Marketing gets the PDF immediately upon Founder approval
+                // Auto-create OfficialDocument so Marketing gets the PDF immediately upon approval
                 $existingDoc = OfficialDocument::where('price_proposal_id', $proposal->id)->first();
                 if (!$existingDoc) {
                     $docNumber = 'INV/SPP/' . date('Y/m') . '/' . str_pad($proposal->id, 4, '0', STR_PAD_LEFT);
@@ -315,7 +315,7 @@ class Index extends Component
                     ]);
                 }
 
-                session()->flash('success', 'Pengajuan harga disetujui penuh oleh Founder! Dokumen SPP PDF kini langsung tersedia untuk diunduh oleh Marketing.');
+                session()->flash('success', 'Pengajuan harga disetujui penuh! Dokumen SPP PDF kini langsung tersedia untuk diunduh.');
             } else {
                 session()->flash('success', 'Keputusan ' . ucfirst($userRole) . ' disetujui. Menunggu persetujuan Founder.');
             }
@@ -342,8 +342,8 @@ class Index extends Component
     public function issueDocument()
     {
         $user = auth()->user();
-        if (!$user->isMarketing() && !$user->isFinance() && !$user->isFounder()) {
-            session()->flash('error', 'Hanya Marketing, Finance, dan Founder yang berhak menerbitkan Surat Pemesanan Properti (SPP) resmi.');
+        if (!$user->isMarketing() && !$user->isFinance() && !$user->isAdminOrFounder()) {
+            session()->flash('error', 'Hanya Marketing, Finance, Admin, dan Founder yang berhak menerbitkan Surat Pemesanan Properti (SPP) resmi.');
             return;
         }
 

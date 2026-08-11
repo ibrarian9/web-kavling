@@ -98,8 +98,8 @@ class LegacySale extends Component
     public function mount(): void
     {
         $user = Auth::user();
-        if (!$user || !$user->isFounder()) {
-            abort(403, 'Akses Ditolak: Hanya Founder yang berhak mencatat penjualan unit masa lalu / lunas.');
+        if (!$user || !$user->isAdminOrFounder()) {
+            abort(403, 'Akses Ditolak: Hanya Admin dan Founder yang berhak mencatat penjualan unit masa lalu / lunas.');
         }
 
         $this->sale_date = now()->subYear()->toDateString();
@@ -137,8 +137,8 @@ class LegacySale extends Component
     public function save(): void
     {
         $user = Auth::user();
-        if (!$user || !$user->isFounder()) {
-            session()->flash('error', 'Hanya Founder yang berhak mencatat penjualan unit masa lalu.');
+        if (!$user || !$user->isAdminOrFounder()) {
+            session()->flash('error', 'Hanya Admin dan Founder yang berhak mencatat penjualan unit masa lalu.');
             return;
         }
 

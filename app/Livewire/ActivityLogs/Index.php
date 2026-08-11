@@ -74,6 +74,10 @@ class Index extends Component
 
     public function render()
     {
+        if (!auth()->user() || !auth()->user()->isFounder()) {
+            abort(403, 'Akses khusus untuk Founder Executive.');
+        }
+
         $logsQuery = ActivityLog::with('user')->latest();
 
         if ($this->search) {

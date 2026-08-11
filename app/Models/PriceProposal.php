@@ -50,10 +50,10 @@ class PriceProposal extends Model
      */
     public function isFullyApproved(): bool
     {
-        $founderApproved = $this->approvals()->where('approver_role', 'founder')->where('decision', 'disetujui')->exists();
+        $founderApproved = $this->approvals()->whereIn('approver_role', ['founder', 'admin'])->where('decision', 'disetujui')->exists();
         $supervisorApproved = $this->approvals()->where('approver_role', 'supervisor')->where('decision', 'disetujui')->exists();
 
-        return $founderApproved || ($founderApproved && $supervisorApproved);
+        return $founderApproved && $supervisorApproved;
     }
 
     /**

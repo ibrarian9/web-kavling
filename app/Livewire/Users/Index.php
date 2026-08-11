@@ -66,7 +66,7 @@ class Index extends Component
         $rules = [
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255|unique:users,email,' . ($this->editingUserId ?? 'NULL'),
-            'role' => 'required|in:founder,supervisor,pengawas_project,finance,marketing',
+            'role' => 'required|in:founder,admin,supervisor,pengawas_project,finance,marketing',
             'is_active' => 'boolean',
         ];
 

@@ -26,7 +26,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('price_proposal_id')->constrained('price_proposals')->onDelete('cascade');
             $table->foreignId('approver_id')->constrained('users')->onDelete('cascade');
-            $table->enum('approver_role', ['founder', 'supervisor', 'pengawas_project']);
+            $table->enum('approver_role', ['founder', 'admin', 'supervisor', 'pengawas_project']);
             $table->enum('decision', ['disetujui', 'ditolak']);
             $table->text('notes')->nullable();
             $table->timestamp('decided_at')->nullable();

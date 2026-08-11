@@ -15,7 +15,7 @@ class UserSeeder extends Seeder
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
         // 1. Create Roles
-        $roles = ['founder', 'pengawas_project', 'supervisor', 'finance', 'marketing'];
+        $roles = ['founder', 'admin', 'pengawas_project', 'supervisor', 'finance', 'marketing'];
         foreach ($roles as $roleName) {
             Role::firstOrCreate(['name' => $roleName, 'guard_name' => 'web']);
         }
@@ -26,6 +26,12 @@ class UserSeeder extends Seeder
                 'name' => 'Marwansyah',
                 'email' => 'marwansyah@simatlantik.my.id',
                 'role' => 'founder',
+                'password' => 'password123'
+            ],
+            [
+                'name' => 'Administrator Utama (Admin)',
+                'email' => 'admin@kavling.com',
+                'role' => 'admin',
                 'password' => 'password123'
             ],
             [
