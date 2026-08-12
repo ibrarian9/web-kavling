@@ -130,21 +130,36 @@
                             </button>
                         @endif
                         @if(auth()->user()->isAdminOrFounder() || auth()->user()->isFinance())
-                            <!-- Dropdown Aksi Setoran -->
-                            <div x-data="{ open: false }" @click.outside="open = false" class="relative inline-block text-left">
-                                <button @click="open = !open" type="button" class="btn-action-edit text-[11px] px-2.5 py-1 flex items-center gap-1 font-bold shadow-2xs" title="Opsi Aksi Setoran">
+                            <!-- Dropdown Aksi Setoran (Fixed Floating outside table container) -->
+                            <div x-data="{ 
+                                     open: false,
+                                     dropdownStyle: '',
+                                     toggleDropdown(el) {
+                                         this.open = !this.open;
+                                         if (this.open) {
+                                             const rect = el.getBoundingClientRect();
+                                             const dropdownWidth = 144;
+                                             const leftPos = Math.max(10, rect.right - dropdownWidth);
+                                             this.dropdownStyle = 'position: fixed; top: ' + (rect.bottom + 4) + 'px; left: ' + leftPos + 'px; z-index: 9999; width: 144px;';
+                                         }
+                                     }
+                                 }" 
+                                 @click.outside="open = false" 
+                                 class="relative inline-block text-left">
+                                <button @click="toggleDropdown($el)" type="button" class="btn-action-edit text-[11px] px-2.5 py-1 flex items-center gap-1 font-bold shadow-2xs" title="Opsi Aksi Setoran">
                                     <span>Aksi</span>
                                     <svg class="w-3 h-3 transition-transform duration-200" :class="open ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                                 </button>
 
                                 <div x-show="open" 
+                                     :style="dropdownStyle"
                                      x-transition:enter="transition ease-out duration-100"
                                      x-transition:enter-start="transform opacity-0 scale-95"
                                      x-transition:enter-end="transform opacity-100 scale-100"
                                      x-transition:leave="transition ease-in duration-75"
                                      x-transition:leave-start="transform opacity-100 scale-100"
                                      x-transition:leave-end="transform opacity-0 scale-95"
-                                     class="absolute right-0 mt-1 w-36 rounded-xl bg-white shadow-xl border border-slate-200/90 py-1 z-30 divide-y divide-slate-100 text-xs font-semibold" style="display: none;">
+                                     class="rounded-xl bg-white shadow-2xl border border-slate-200/90 py-1 z-30 divide-y divide-slate-100 text-xs font-semibold" style="display: none;">
                                     <div class="py-1">
                                         <button wire:click="editInstallmentPayment({{ $pay->id }})" @click="open = false" class="w-full text-left px-3 py-1.5 text-slate-700 hover:bg-slate-50 flex items-center gap-1.5 transition">
                                             <svg class="w-3.5 h-3.5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>

@@ -135,8 +135,8 @@ class Index extends Component
     public function saveUnit()
     {
         $user = auth()->user();
-        if (!$user->isFounder() && !$user->isSupervisor()) {
-            session()->flash('error', 'Hanya Founder dan Supervisor yang berhak mengedit stok dan unit.');
+        if (!$user->isAdminOrFounder() && !$user->isSupervisor()) {
+            session()->flash('error', 'Hanya Founder, Admin, dan Supervisor yang berhak mengedit stok dan unit.');
             return;
         }
 

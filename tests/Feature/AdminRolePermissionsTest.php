@@ -229,3 +229,22 @@ test('marketing user is restricted from viewing HPP, cashflow, and worker manage
         ->assertStatus(403);
 });
 
+test('admin can create and save new unit in units index component', function () {
+    $this->actingAs($this->admin);
+
+    Livewire::test(\App\Livewire\Units\Index::class)
+        ->set('selected_project_id', $this->project->id)
+        ->set('code', 'B-99')
+        ->set('category', 'kavling')
+        ->set('land_width', 10)
+        ->set('land_length', 12)
+        ->set('land_area', 120)
+        ->call('saveUnit')
+        ->assertHasNoErrors();
+
+    $createdUnit = Unit::where('code', 'B-99')->where('project_id', $this->project->id)->first();
+    expect($createdUnit)->not->toBeNull();
+    expect($createdUnit->category)->toBe('kavling');
+});
+
+

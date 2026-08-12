@@ -142,7 +142,20 @@
                                 </span>
                             </td>
                             <td class="p-3.5 text-right w-36 align-middle whitespace-nowrap">
-                                <div x-data="{ open: false }" class="relative inline-flex items-center justify-end gap-1">
+                                <div x-data="{ 
+                                         open: false, 
+                                         dropdownStyle: '',
+                                         toggleDropdown(el) {
+                                             this.open = !this.open;
+                                             if (this.open) {
+                                                 const rect = el.getBoundingClientRect();
+                                                 const dropdownWidth = 208;
+                                                 const leftPos = Math.max(10, rect.right - dropdownWidth);
+                                                 this.dropdownStyle = 'position: fixed; top: ' + (rect.bottom + 6) + 'px; left: ' + leftPos + 'px; z-index: 9999; width: 208px;';
+                                             }
+                                         }
+                                     }" 
+                                     class="relative inline-flex items-center justify-end gap-1">
                                     <!-- Primary Action Button (Unit Button Outside) -->
                                     <a href="{{ route('units.index', ['project_id' => $p->id]) }}" 
                                        wire:navigate.hover 
@@ -153,15 +166,16 @@
                                     </a>
 
                                     <!-- Dropdown Trigger Button (Kebab Icon) -->
-                                    <button @click="open = !open" 
+                                    <button @click="toggleDropdown($el)" 
                                             @click.outside="open = false" 
                                             class="h-8 w-8 flex items-center justify-center text-slate-500 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 border border-slate-200/80 rounded-xl transition focus:outline-none shrink-0" 
                                             title="Menu Opsi Lainnya">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/></svg>
                                     </button>
 
-                                    <!-- Dropdown Popover Menu -->
+                                    <!-- Dropdown Popover Menu (Fixed Floating outside table container) -->
                                     <div x-show="open" 
+                                         :style="dropdownStyle"
                                          x-transition:enter="transition ease-out duration-100" 
                                          x-transition:enter-start="opacity-0 scale-95" 
                                          x-transition:enter-end="opacity-100 scale-100" 
@@ -169,7 +183,7 @@
                                          x-transition:leave-start="opacity-100 scale-100" 
                                          x-transition:leave-end="opacity-0 scale-95" 
                                          x-cloak 
-                                         class="absolute right-0 top-full z-30 mt-1.5 w-52 rounded-2xl bg-white shadow-xl ring-1 ring-slate-900/10 p-1 text-xs text-left divide-y divide-slate-100">
+                                         class="rounded-2xl bg-white shadow-2xl ring-1 ring-slate-900/10 p-1 text-xs text-left divide-y divide-slate-100 border border-slate-200/80">
                                         
                                         <!-- Tombol 1: Detail Dashboard Proyek -->
                                         <a href="{{ route('projects.show', $p->id) }}" 

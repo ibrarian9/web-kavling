@@ -36,4 +36,13 @@ class ActivityLogger
 
         return $log;
     }
+
+    /**
+     * Record a notification activity log entry.
+     */
+    public static function logNotification(string $action, string $description, ?object $user = null): ActivityLog
+    {
+        $prefixAction = str_starts_with(strtoupper($action), 'NOTIF_') ? strtoupper($action) : 'NOTIF_' . strtoupper($action);
+        return static::log($prefixAction, $description, $user);
+    }
 }

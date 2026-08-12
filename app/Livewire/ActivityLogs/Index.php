@@ -11,7 +11,7 @@ class Index extends Component
 {
     use WithPagination;
 
-    public $activeTab = 'database'; // 'database' or 'file'
+    public $activeTab = 'database'; // 'database' (operational), 'notifications', or 'file'
     public $search = '';
     public $actionFilter = '';
     public $dateFilter = '';
@@ -29,6 +29,12 @@ class Index extends Component
         }
     }
 
+    public function setTab($tab)
+    {
+        $this->activeTab = $tab;
+        $this->resetPage();
+    }
+
     public function updatingSearch()
     {
         $this->resetPage();
@@ -43,7 +49,7 @@ class Index extends Component
     {
         if (!auth()->user()->isFounder()) return;
         
-        ActivityLog::truncate();
+        ActivityLog::query()->delete();
         \App\Services\ActivityLogger::log('SYSTEM_CLEAR_LOGS', 'Founder membersihkan seluruh riwayat Log Aktivitas Sistem di database.');
         session()->flash('success', 'Riwayat Log Aktivitas Database berhasil dibersihkan.');
     }
@@ -78,7 +84,25 @@ class Index extends Component
             abort(403, 'Akses khusus untuk Founder Executive.');
         }
 
+        $operationalCount = ActivityLog::where('action', 'not like', 'NOTIF_%')->where('action', 'not like', 'NOTIFICATION_%')->count();
+        $notificationCount = ActivityLog::where(function ($q) {
+            $q->where('action', 'like', 'NOTIF_%')
+              ->orWhere('action', 'like', 'NOTIFICATION_%');
+        })->count();
+
         $logsQuery = ActivityLog::with('user')->latest();
+
+        if ($this->activeTab === 'notifications') {
+            $logsQuery->where(function ($q) {
+                $q->where('action', 'like', 'NOTIF_%')
+                  ->orWhere('action', 'like', 'NOTIFICATION_%');
+            });
+        } elseif ($this->activeTab === 'database') {
+            $logsQuery->where(function ($q) {
+                $q->where('action', 'not like', 'NOTIF_%')
+                  ->where('action', 'not like', 'NOTIFICATION_%');
+            });
+        }
 
         if ($this->search) {
             $logsQuery->where(function ($q) {
@@ -138,13 +162,27 @@ class Index extends Component
             }
         }
 
-        $availableActions = ActivityLog::select('action')->distinct()->pluck('action');
+        $availableActionsQuery = ActivityLog::query();
+        if ($this->activeTab === 'notifications') {
+            $availableActionsQuery->where(function ($q) {
+                $q->where('action', 'like', 'NOTIF_%')
+                  ->orWhere('action', 'like', 'NOTIFICATION_%');
+            });
+        } elseif ($this->activeTab === 'database') {
+            $availableActionsQuery->where(function ($q) {
+                $q->where('action', 'not like', 'NOTIF_%')
+                  ->where('action', 'not like', 'NOTIFICATION_%');
+            });
+        }
+        $availableActions = $availableActionsQuery->select('action')->distinct()->pluck('action');
 
         return view('livewire.activity-logs.index', [
             'databaseLogs' => $databaseLogs,
             'rawLogLines' => $rawLogLines,
             'deprecationLines' => $deprecationLines,
             'availableActions' => $availableActions,
+            'operationalCount' => $operationalCount,
+            'notificationCount' => $notificationCount,
         ])->layout('components.layouts.app', ['title' => 'System Log & Audit Trail - Founder']);
     }
 }

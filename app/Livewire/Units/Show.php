@@ -1149,9 +1149,8 @@ class Show extends Component
 
     public function openConvertToCashModal(): void
     {
-        $user = auth()->user();
-        if (!$user->isFinance() && !$user->isFounder()) {
-            session()->flash('error', 'Hanya tim Finance dan Founder yang berhak membatalkan cicilan dan menggantinya ke Cash.');
+        if (!$this->canManageFinancial()) {
+            session()->flash('error', 'Hanya tim Finance, Founder, dan Admin yang berhak membatalkan cicilan dan menggantinya ke Cash.');
             return;
         }
 
@@ -1171,9 +1170,8 @@ class Show extends Component
 
     public function saveConvertToCash(): void
     {
-        $user = auth()->user();
-        if (!$user->isFinance() && !$user->isFounder()) {
-            session()->flash('error', 'Hanya tim Finance dan Founder yang berhak membatalkan skema cicilan.');
+        if (!$this->canManageFinancial()) {
+            session()->flash('error', 'Hanya tim Finance, Founder, dan Admin yang berhak membatalkan skema cicilan.');
             return;
         }
 
@@ -1267,9 +1265,8 @@ class Show extends Component
 
     public function saveSetupInstallment(): void
     {
-        $user = auth()->user();
-        if (!$user->isFinance() && !$user->isFounder()) {
-            session()->flash('error', 'Hanya tim Finance dan Founder yang berhak mengonfigurasi skema cicilan.');
+        if (!$this->canManageFinancial()) {
+            session()->flash('error', 'Hanya tim Finance, Founder, dan Admin yang berhak mengonfigurasi skema cicilan.');
             return;
         }
 

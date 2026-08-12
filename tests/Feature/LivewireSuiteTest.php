@@ -1,8 +1,6 @@
 <?php
 
-use App\Models\Booking;
 use App\Models\CashflowTransaction;
-use App\Models\PriceProposal;
 use App\Models\Project;
 use App\Models\Unit;
 use App\Models\User;
@@ -11,8 +9,6 @@ use App\Livewire\Dashboard;
 use App\Livewire\Projects\Index as ProjectsIndex;
 use App\Livewire\Units\Index as UnitsIndex;
 use App\Livewire\Cashflow\Index as CashflowIndex;
-use App\Livewire\Bookings\Index as BookingsIndex;
-use App\Livewire\Proposals\Index as ProposalsIndex;
 use App\Livewire\Workers\Index as WorkersIndex;
 use Livewire\Livewire;
 use Spatie\Permission\Models\Role;
