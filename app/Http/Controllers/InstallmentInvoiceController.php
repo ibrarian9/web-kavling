@@ -14,8 +14,8 @@ class InstallmentInvoiceController extends Controller
     public function streamInvoice(string $uuid)
     {
         $user = auth()->user();
-        if (!$user || (!$user->isFounder() && !$user->isFinance())) {
-            abort(403, 'Akses ditolak. Hanya Founder dan Accounting yang berhak mencetak invoice cicilan.');
+        if (!$user || (!$user->isFounder() && !$user->isFinance() && !$user->isAdmin())) {
+            abort(403, 'Akses ditolak. Hanya Founder, Admin, dan Accounting yang berhak mencetak invoice cicilan.');
         }
 
         $payment = InstallmentPayment::with([

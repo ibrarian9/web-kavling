@@ -1665,8 +1665,8 @@
     "semantic_hash": ""
   },
   "tests/Feature/CashflowSyncAndDeleteTest.php": {
-    "mtime": 1786552954.9863698,
-    "ast_hash": "198023be6038342a0b0fd46dac950f2f",
+    "mtime": 1786554271.5763597,
+    "ast_hash": "b12ea3b6fbfc382bbba95c9c5396ec52",
     "semantic_hash": ""
   },
   "tests/Feature/UnitStatusStandardizationTest.php": {
@@ -1850,8 +1850,18 @@
     "semantic_hash": ""
   },
   "app/Services/CascadeDeletionService.php": {
-    "mtime": 1786552834.27651,
-    "ast_hash": "8658ae385a7f754234e6cddda07374f7",
+    "mtime": 1786553150.508764,
+    "ast_hash": "73571d3b8a12082585123b3d8e141049",
+    "semantic_hash": ""
+  },
+  "app/Console/Commands/AuditOrphanCashflows.php": {
+    "mtime": 1786554261.5609121,
+    "ast_hash": "af1149dd688d190fedd81cbe80c60893",
+    "semantic_hash": ""
+  },
+  "app/Services/OrphanCashflowAuditor.php": {
+    "mtime": 1786554254.294569,
+    "ast_hash": "dde7fda8e532c9e0d1dd53af18ac903e",
     "semantic_hash": ""
   }
 }

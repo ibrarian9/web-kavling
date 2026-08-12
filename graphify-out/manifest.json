@@ -45,9 +45,9 @@
     "semantic_hash": "0e5ab3d897ac37ed790dce46f06dc68b"
   },
   "app/Http/Controllers/InstallmentInvoiceController.php": {
-    "mtime": 1785317962.3197236,
-    "ast_hash": "c5bf2b9e3e06fd37a08c743796c4ce37",
-    "semantic_hash": "c5bf2b9e3e06fd37a08c743796c4ce37"
+    "mtime": 1786543685.553899,
+    "ast_hash": "42e89465c695c71061170894e57d7e77",
+    "semantic_hash": ""
   },
   "app/Http/Controllers/LandPaymentReceiptController.php": {
     "mtime": 1785137464.148579,
@@ -145,8 +145,8 @@
     "semantic_hash": "c1da44f5bfa665459ff895f1535e7526"
   },
   "app/Livewire/Installments/Index.php": {
-    "mtime": 1786437557.611427,
-    "ast_hash": "b419f118336ec919c7e5a858eb7bf60a",
+    "mtime": 1786544288.135727,
+    "ast_hash": "2658ff45ae672571fbe9744047baf0e5",
     "semantic_hash": ""
   },
   "app/Livewire/ManualInvoices/Index.php": {
@@ -160,8 +160,8 @@
     "semantic_hash": ""
   },
   "app/Livewire/Projects/Index.php": {
-    "mtime": 1786435727.0754642,
-    "ast_hash": "de024dd4969a621866a917e2d865b3de",
+    "mtime": 1786552862.8157132,
+    "ast_hash": "327f7559b02091b7d8f3c0a5199042cc",
     "semantic_hash": ""
   },
   "app/Livewire/Projects/Show.php": {
@@ -180,8 +180,8 @@
     "semantic_hash": "30efcf4db5ca2c5601c8f4ea7862b1b3"
   },
   "app/Livewire/Units/Index.php": {
-    "mtime": 1786513302.3977647,
-    "ast_hash": "a96b37df8ef03389981f7100669b0596",
+    "mtime": 1786552841.979565,
+    "ast_hash": "17339c9ccbb461e5406740f7e2eef62a",
     "semantic_hash": ""
   },
   "app/Livewire/Units/LegacySale.php": {
@@ -190,8 +190,8 @@
     "semantic_hash": ""
   },
   "app/Livewire/Units/Show.php": {
-    "mtime": 1786542427.6970265,
-    "ast_hash": "0f8c6b37bb31b38497391672b19b7374",
+    "mtime": 1786552856.0666652,
+    "ast_hash": "e0557d2e56c7a78d52b3fc121abf297d",
     "semantic_hash": ""
   },
   "app/Livewire/Users/Index.php": {
@@ -850,13 +850,13 @@
     "semantic_hash": ""
   },
   "resources/views/livewire/installments/partials/modal-installment-detail.blade.php": {
-    "mtime": 1786437575.400898,
-    "ast_hash": "69a5fab4646c62d516c8dc23a2fab79a",
+    "mtime": 1786544306.5637214,
+    "ast_hash": "d037e780e3f8ee599ec03ddb70ca2534",
     "semantic_hash": ""
   },
   "resources/views/livewire/installments/partials/modal-installment-payment.blade.php": {
-    "mtime": 1786467135.3470066,
-    "ast_hash": "1903b2a55dcfb9a96049e764ab48472b",
+    "mtime": 1786544324.8247218,
+    "ast_hash": "a8db1c5fe4815466c38ffcd45ed224b2",
     "semantic_hash": ""
   },
   "resources/views/livewire/installments/partials/modal-setup-installment.blade.php": {
@@ -1045,8 +1045,8 @@
     "semantic_hash": "ace6f6f5447aa76ac53d6f646d7f9e0a"
   },
   "resources/views/livewire/units/partials/modal-installment-payment.blade.php": {
-    "mtime": 1786467062.5522757,
-    "ast_hash": "5096c182d9a55e8bdb69c360f499d3a6",
+    "mtime": 1786543163.064538,
+    "ast_hash": "6a4df7f449cde589d737bcc8785b957c",
     "semantic_hash": ""
   },
   "resources/views/livewire/units/partials/modal-material-purchase.blade.php": {
@@ -1665,8 +1665,8 @@
     "semantic_hash": ""
   },
   "tests/Feature/CashflowSyncAndDeleteTest.php": {
-    "mtime": 1786279436.2198546,
-    "ast_hash": "3e8f4decc89df8a28df33fc2dfed5142",
+    "mtime": 1786554587.890258,
+    "ast_hash": "a1c4fdd2cc0468e5b07f2d6d13b4233b",
     "semantic_hash": ""
   },
   "tests/Feature/UnitStatusStandardizationTest.php": {
@@ -1847,6 +1847,21 @@
   "tests/Feature/AdminRoleCrudTest.php": {
     "mtime": 1786514746.3671703,
     "ast_hash": "0a8c74573ff319648e255966e8510275",
+    "semantic_hash": ""
+  },
+  "app/Services/CascadeDeletionService.php": {
+    "mtime": 1786553150.508764,
+    "ast_hash": "73571d3b8a12082585123b3d8e141049",
+    "semantic_hash": ""
+  },
+  "app/Console/Commands/AuditOrphanCashflows.php": {
+    "mtime": 1786554261.5609121,
+    "ast_hash": "af1149dd688d190fedd81cbe80c60893",
+    "semantic_hash": ""
+  },
+  "app/Services/OrphanCashflowAuditor.php": {
+    "mtime": 1786554254.294569,
+    "ast_hash": "dde7fda8e532c9e0d1dd53af18ac903e",
     "semantic_hash": ""
   }
 }

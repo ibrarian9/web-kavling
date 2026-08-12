@@ -247,23 +247,7 @@ class Index extends Component
         $unit = Unit::findOrFail($id);
         $code = $unit->code;
 
-        \Illuminate\Support\Facades\DB::transaction(function () use ($unit) {
-            \App\Models\WorkerAssignment::where('unit_id', $unit->id)->delete();
-            \App\Models\WorkerUnitPayroll::where('unit_id', $unit->id)->delete();
-            \App\Models\WeeklyMaterialPurchase::where('unit_id', $unit->id)->delete();
-
-            if ($unit->installment) {
-                \App\Models\InstallmentPayment::where('unit_installment_id', $unit->installment->id)->delete();
-                $unit->installment->delete();
-            }
-
-            \App\Models\Booking::where('unit_id', $unit->id)->delete();
-            \App\Models\PriceProposal::where('unit_id', $unit->id)->delete();
-            \App\Models\OfficialDocument::where('unit_id', $unit->id)->delete();
-            \App\Models\ManualInvoice::where('unit_id', $unit->id)->update(['unit_id' => null]);
-
-            $unit->delete();
-        });
+        \App\Services\CascadeDeletionService::deleteUnit($unit);
 
         \App\Services\ActivityLogger::log('UNIT_DELETED', "Founder menghapus Unit {$code} dari sistem.");
         session()->flash('success', 'Unit ' . $code . ' berhasil dihapus dari sistem!');

@@ -1,11 +1,11 @@
-<!-- Modal Catat Pembayaran Setoran -->
+<!-- Modal Catat / Edit Pembayaran Setoran -->
 @if($showPaymentModal && $activeInstallment)
     <div class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs p-3 sm:p-6 md:p-10 flex items-center justify-center min-h-screen">
         <div class="bg-white border border-slate-200/80 rounded-2xl sm:rounded-3xl max-w-md w-full p-4 sm:p-6 shadow-2xl space-y-4 my-auto sm:my-8 max-h-[88vh] sm:max-h-[85vh] flex flex-col">
             <!-- Header -->
             <div class="flex items-center justify-between border-b border-slate-100 pb-3 shrink-0">
                 <div>
-                    <h3 class="font-bold text-slate-900 text-sm sm:text-base">Catat Setoran Cicilan</h3>
+                    <h3 class="font-bold text-slate-900 text-sm sm:text-base">{{ !empty($editingPaymentId) ? 'Edit Setoran Cicilan' : 'Catat Setoran Cicilan' }}</h3>
                     <p class="text-slate-500 text-[11px]">Unit: <span class="font-bold text-slate-800 font-mono">{{ $activeInstallment->unit->code }}</span> (Pembeli: {{ $activeInstallment->buyer_name }})</p>
                 </div>
                 <button wire:click="$set('showPaymentModal', false)" class="text-slate-400 hover:text-slate-600 font-bold text-sm p-1">✕</button>
@@ -61,7 +61,7 @@
                     </label>
 
                     <div class="bg-slate-50/80 border border-slate-200/90 rounded-2xl p-3 sm:p-4 space-y-3">
-                        <input type="file" id="installment_payment_receipt_photo_input_inst" wire:model="payment_receipt_photo" accept="image/*,.pdf" class="hidden">
+                        <input type="file" id="installment_payment_receipt_photo_input_inst" wire:model="payment_receipt_photo" accept="image/*,.heic,.heif" class="hidden">
 
                         @if($payment_receipt_photo)
                             <!-- Live Upload Preview Card -->
@@ -96,12 +96,30 @@
                                             Pratinjau Foto Resi
                                         </div>
                                     </div>
-                                @else
-                                    <div class="p-3 bg-amber-50 border border-amber-200 rounded-xl text-amber-900 text-xs font-semibold flex items-center gap-2">
-                                        <svg class="w-5 h-5 text-amber-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
-                                        <span>Dokumen PDF Terpilih</span>
-                                    </div>
                                 @endif
+                            </div>
+
+                        @elseif(!empty($existing_receipt_photo_path))
+                            <!-- Existing Stored Photo Card -->
+                            <div class="bg-white border border-slate-200 rounded-2xl p-3 space-y-2.5 shadow-2xs">
+                                <div class="flex items-center justify-between gap-2 border-b border-slate-100 pb-2">
+                                    <div class="flex items-center gap-2">
+                                        <div class="p-1.5 rounded-lg bg-blue-50 text-blue-700">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                        </div>
+                                        <div>
+                                            <span class="text-xs font-bold text-slate-800 block">Foto Resi Tersimpan</span>
+                                            <span class="text-[10px] text-slate-500 block">Ada foto bukti setoran tersimpan</span>
+                                        </div>
+                                    </div>
+                                    <label for="installment_payment_receipt_photo_input_inst" class="px-2.5 py-1 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-lg text-[11px] font-bold cursor-pointer transition shrink-0">
+                                        Ganti Foto
+                                    </label>
+                                </div>
+
+                                <div class="relative group rounded-xl overflow-hidden bg-slate-950/5 border border-slate-200 flex items-center justify-center max-h-52 sm:max-h-64 p-1">
+                                    <img src="{{ asset('storage/' . $existing_receipt_photo_path) }}" alt="Foto Resi Transfer Saat Ini" class="max-h-48 sm:max-h-56 w-auto object-contain rounded-lg shadow-xs">
+                                </div>
                             </div>
 
                         @else
@@ -111,7 +129,7 @@
                                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                                 </div>
                                 <span class="text-xs sm:text-sm font-bold text-slate-800 group-hover:text-blue-700 block">Ketuk untuk Ambil Foto / Upload Resi</span>
-                                <span class="text-[10px] text-slate-400 block mt-0.5">Mendukung Kamera HP, Galeri (JPG, PNG, WEBP, HEIC, PDF)</span>
+                                <span class="text-[10px] text-slate-400 block mt-0.5">Mendukung Kamera HP & Galeri Foto (JPG, PNG, WEBP, HEIC)</span>
                             </label>
                         @endif
 
@@ -127,7 +145,7 @@
                 <!-- Footer Action Buttons -->
                 <div class="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2 sm:gap-3 pt-3 border-t border-slate-100 shrink-0">
                     <button type="button" wire:click="$set('showPaymentModal', false)" class="btn-secondary">Batal</button>
-                    <button type="submit" class="btn-primary">Simpan & Masukkan Kas</button>
+                    <button type="submit" class="btn-primary">{{ !empty($editingPaymentId) ? 'Simpan Perubahan Setoran' : 'Simpan & Masukkan Kas' }}</button>
                 </div>
             </form>
         </div>

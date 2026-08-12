@@ -96,11 +96,30 @@ class Index extends Component
         }
     }
 
-    public function openSetupModal()
+    // Editing state
+    public ?int $editingInstallmentSchemeId = null;
+    public ?int $editingPaymentId = null;
+    public ?string $existing_receipt_photo_path = null;
+
+    public function openSetupModal($installmentId = null)
     {
-        $firstSold = Unit::whereIn('status', ['terjual', 'disetujui'])->doesntHave('installment')->first();
-        if ($firstSold) {
-            $this->selectUnitForInstallment($firstSold->id);
+        $this->resetValidation();
+        if ($installmentId) {
+            $inst = UnitInstallment::with(['unit', 'payments'])->findOrFail($installmentId);
+            $this->editingInstallmentSchemeId = $inst->id;
+            $this->unit_id = $inst->unit_id;
+            $this->official_document_id = $inst->official_document_id;
+            $this->total_price = (float)$inst->total_price;
+            $this->down_payment = (float)$inst->down_payment;
+            $this->installment_count = (int)$inst->installment_count;
+            $this->start_date = $inst->start_date ? $inst->start_date->format('Y-m-d') : date('Y-m-d');
+            $this->calculateMonthlyInstallment();
+        } else {
+            $this->editingInstallmentSchemeId = null;
+            $firstSold = Unit::whereIn('status', ['terjual', 'disetujui'])->doesntHave('installment')->first();
+            if ($firstSold) {
+                $this->selectUnitForInstallment($firstSold->id);
+            }
         }
         $this->showSetupModal = true;
     }
@@ -114,44 +133,71 @@ class Index extends Component
             'start_date' => 'required|date',
         ]);
 
-        $installment = UnitInstallment::create([
-            'unit_id' => $this->unit_id,
-            'official_document_id' => $this->official_document_id,
-            'total_price' => $this->total_price,
-            'down_payment' => $this->down_payment,
-            'installment_count' => $this->installment_count,
-            'installment_amount' => $this->installment_amount,
-            'start_date' => $this->start_date,
-            'status' => 'berjalan',
-        ]);
+        if ($this->editingInstallmentSchemeId) {
+            $installment = UnitInstallment::with('payments')->findOrFail($this->editingInstallmentSchemeId);
+            $totalPaidSoFar = (float)$this->down_payment + (float)$installment->payments->sum('amount_paid');
+            $status = ($totalPaidSoFar >= (float)$this->total_price) ? 'lunas' : 'berjalan';
 
-        $unit = Unit::with('activeBooking')->find($this->unit_id);
-        $booking = $unit ? $unit->activeBooking : null;
-        $alreadyPaid = $booking ? max((float)$booking->dp_amount, (float)$booking->booking_amount) : 0;
-        $netDpCashflow = max(0, (float)$this->down_payment - $alreadyPaid);
-
-        // Record net DP addition to cashflow to prevent double counting booking fee
-        if ($netDpCashflow > 0) {
-            CashflowTransaction::create([
-                'project_id' => $unit->project_id,
-                'type' => 'masuk',
-                'category' => 'pembayaran_cicilan_pembeli',
-                'amount' => $netDpCashflow,
-                'transaction_date' => $this->start_date,
-                'description' => 'Pembayaran Uang Muka (DP) Unit ' . $unit->code . ($alreadyPaid > 0 ? ' (Net Tambahan DP, memperhitungkan Booking Fee Rp ' . number_format($alreadyPaid, 0, ',', '.') . ' yang sudah tercatat)' : ''),
-                'reference_type' => UnitInstallment::class,
-                'reference_id' => $installment->id,
-                'created_by' => auth()->id(),
+            $installment->update([
+                'total_price' => $this->total_price,
+                'down_payment' => $this->down_payment,
+                'installment_count' => $this->installment_count,
+                'installment_amount' => $this->installment_amount,
+                'start_date' => $this->start_date,
+                'status' => $status,
             ]);
+
+            session()->flash('success', 'Skema cicilan pembeli berhasil diperbarui!');
+            \App\Services\ActivityLogger::log('INSTALLMENT_SCHEME_UPDATED', "Skema cicilan Unit {$installment->unit->code} diperbarui.");
+        } else {
+            $installment = UnitInstallment::create([
+                'unit_id' => $this->unit_id,
+                'official_document_id' => $this->official_document_id,
+                'total_price' => $this->total_price,
+                'down_payment' => $this->down_payment,
+                'installment_count' => $this->installment_count,
+                'installment_amount' => $this->installment_amount,
+                'start_date' => $this->start_date,
+                'status' => 'berjalan',
+            ]);
+
+            $unit = Unit::with('activeBooking')->find($this->unit_id);
+            $booking = $unit ? $unit->activeBooking : null;
+            $alreadyPaid = $booking ? max((float)$booking->dp_amount, (float)$booking->booking_amount) : 0;
+            $netDpCashflow = max(0, (float)$this->down_payment - $alreadyPaid);
+
+            // Record net DP addition to cashflow to prevent double counting booking fee
+            if ($netDpCashflow > 0) {
+                CashflowTransaction::create([
+                    'project_id' => $unit->project_id,
+                    'type' => 'masuk',
+                    'category' => 'pembayaran_cicilan_pembeli',
+                    'amount' => $netDpCashflow,
+                    'transaction_date' => $this->start_date,
+                    'description' => 'Pembayaran Uang Muka (DP) Unit ' . $unit->code . ($alreadyPaid > 0 ? ' (Net Tambahan DP, memperhitungkan Booking Fee Rp ' . number_format($alreadyPaid, 0, ',', '.') . ' yang sudah tercatat)' : ''),
+                    'reference_type' => UnitInstallment::class,
+                    'reference_id' => $installment->id,
+                    'created_by' => auth()->id(),
+                ]);
+            }
+
+            session()->flash('success', 'Skema cicilan/piutang pembeli berhasil dikonfigurasi!');
+            \App\Services\ActivityLogger::log('INSTALLMENT_SCHEME_CREATED', "Skema cicilan Unit {$unit->code} dikonfigurasi sebesar Rp " . number_format($this->total_price, 0, ',', '.'));
         }
 
-        session()->flash('success', 'Skema cicilan/piutang pembeli berhasil dikonfigurasi!');
-        \App\Services\ActivityLogger::log('INSTALLMENT_SCHEME_CREATED', "Skema cicilan Unit {$unit->code} dikonfigurasi sebesar Rp " . number_format($this->total_price, 0, ',', '.'));
+        if ($this->selectedDetailInstallment) {
+            $this->selectedDetailInstallment = UnitInstallment::with(['unit.project', 'officialDocument', 'payments.creator'])->find($this->selectedDetailInstallment->id);
+        }
+
         $this->showSetupModal = false;
     }
 
     public function openPaymentModal($installmentId)
     {
+        $this->resetValidation();
+        $this->editingPaymentId = null;
+        $this->existing_receipt_photo_path = null;
+
         $this->selectedInstallmentId = $installmentId;
         $this->activeInstallment = UnitInstallment::with(['unit.project', 'officialDocument', 'payments'])->findOrFail($installmentId);
         $this->payment_amount = $this->activeInstallment->installment_amount;
@@ -161,12 +207,41 @@ class Index extends Component
         $this->showPaymentModal = true;
     }
 
+    public function editInstallmentPayment($paymentId)
+    {
+        $user = auth()->user();
+        if (!$user || (!$user->isFounder() && !$user->isAdmin() && !$user->isFinance())) {
+            $err = 'Akses ditolak. Hanya Tim Finance, Admin, dan Founder yang berhak mengedit setoran.';
+            session()->flash('error', $err);
+            $this->dispatch('notify', ['type' => 'error', 'title' => 'Gagal!', 'message' => $err]);
+            return;
+        }
+
+        $pay = InstallmentPayment::with('installment.unit.project')->findOrFail($paymentId);
+        $this->resetValidation();
+
+        $this->editingPaymentId = $pay->id;
+        $this->selectedInstallmentId = $pay->unit_installment_id;
+        $this->activeInstallment = $pay->installment;
+        $this->payment_amount = (float)$pay->amount_paid;
+        $this->payment_date = $pay->payment_date ? $pay->payment_date->format('Y-m-d') : date('Y-m-d');
+        $this->payment_method = $pay->payment_method ?: 'Transfer Bank';
+        $this->payment_notes = $pay->notes ?? '';
+        $this->payment_receipt_photo = null;
+        $this->existing_receipt_photo_path = $pay->receipt_photo_path;
+
+        $this->showPaymentModal = true;
+    }
+
     public function submitPayment()
     {
         $this->validate([
             'payment_amount' => 'required|numeric|min:1000',
             'payment_date' => 'required|date',
-            'payment_receipt_photo' => 'nullable|file|mimes:jpg,jpeg,png,webp,heic,heif,pdf|max:2048',
+            'payment_receipt_photo' => 'nullable|image|mimes:jpg,jpeg,png,webp,heic,heif|max:2048',
+        ], [
+            'payment_receipt_photo.image' => 'File bukti setoran cicilan harus berupa foto/gambar (JPG, JPEG, PNG, WEBP, HEIC).',
+            'payment_receipt_photo.mimes' => 'File bukti setoran cicilan harus berupa foto/gambar (JPG, JPEG, PNG, WEBP, HEIC).',
         ]);
 
         $inst = UnitInstallment::with('unit')->findOrFail($this->selectedInstallmentId);
@@ -176,46 +251,102 @@ class Index extends Component
             $receiptPhotoPath = \App\Services\ImageCompressor::compressAndStore($this->payment_receipt_photo, 'installment-receipts');
         }
 
-        $payment = InstallmentPayment::create([
-            'unit_installment_id' => $inst->id,
-            'payment_date' => $this->payment_date,
-            'amount_paid' => $this->payment_amount,
-            'payment_method' => $this->payment_method,
-            'notes' => $this->payment_notes,
-            'receipt_photo_path' => $receiptPhotoPath,
-            'created_by' => auth()->id(),
-        ]);
+        $hasReceiptColPayment = \Illuminate\Support\Facades\Schema::hasColumn('installment_payments', 'receipt_photo_path');
+        $hasReceiptColCashflow = \Illuminate\Support\Facades\Schema::hasColumn('cashflow_transactions', 'receipt_photo_path');
 
-        // Record in cashflow transaction
-        CashflowTransaction::create([
-            'project_id' => $inst->unit->project_id,
-            'type' => 'masuk',
-            'category' => 'pembayaran_cicilan_pembeli',
-            'amount' => $this->payment_amount,
-            'transaction_date' => $this->payment_date,
-            'description' => 'Setoran Cicilan Pembeli Unit ' . $inst->unit->code . ' (' . $this->payment_method . ')',
-            'reference_type' => InstallmentPayment::class,
-            'reference_id' => $payment->id,
-            'receipt_photo_path' => $receiptPhotoPath,
-            'created_by' => auth()->id(),
-        ]);
+        if ($this->editingPaymentId) {
+            $pay = InstallmentPayment::findOrFail($this->editingPaymentId);
+            \Illuminate\Support\Facades\DB::transaction(function () use ($inst, $pay, $receiptPhotoPath, $hasReceiptColPayment, $hasReceiptColCashflow) {
+                $payData = [
+                    'payment_date' => $this->payment_date,
+                    'amount_paid' => $this->payment_amount,
+                    'payment_method' => $this->payment_method,
+                    'notes' => $this->payment_notes,
+                ];
 
-        \App\Services\ActivityLogger::log('INSTALLMENT_PAYMENT_RECORDED', "Setoran cicilan Unit {$inst->unit->code} dicatat sebesar Rp " . number_format($this->payment_amount, 0, ',', '.'));
+                if ($receiptPhotoPath && $hasReceiptColPayment) {
+                    $payData['receipt_photo_path'] = $receiptPhotoPath;
+                }
 
-        // Check if fully paid
-        if ($inst->remaining_balance <= 0) {
-            $inst->update(['status' => 'lunas']);
-            $msg = 'Pembayaran diterima! Status cicilan Unit ' . $inst->unit->code . ' telah LUNAS!';
-            session()->flash('success', $msg);
-            $this->dispatch('notify', ['type' => 'success', 'title' => 'Lunas!', 'message' => $msg]);
-        } else {
-            $msg = 'Pembayaran cicilan Rp ' . number_format($this->payment_amount, 0, ',', '.') . ' berhasil dicatat di Arus Kas!';
+                $pay->update($payData);
+
+                $cashflow = CashflowTransaction::where('reference_type', InstallmentPayment::class)
+                    ->where('reference_id', $pay->id)
+                    ->first();
+
+                if ($cashflow) {
+                    $cashData = [
+                        'amount' => $this->payment_amount,
+                        'transaction_date' => $this->payment_date,
+                        'description' => 'Setoran Cicilan Pembeli Unit ' . $inst->unit->code . ' (' . $this->payment_method . ')',
+                    ];
+                    if ($receiptPhotoPath && $hasReceiptColCashflow) {
+                        $cashData['receipt_photo_path'] = $receiptPhotoPath;
+                    }
+                    $cashflow->update($cashData);
+                }
+
+                $totalPaid = (float)$inst->down_payment + (float)$inst->payments()->sum('amount_paid');
+                $status = ($totalPaid >= (float)$inst->total_price) ? 'lunas' : 'berjalan';
+                $inst->update(['status' => $status]);
+            });
+
+            $msg = 'Setoran cicilan Rp ' . number_format($this->payment_amount, 0, ',', '.') . ' berhasil diperbarui!';
             session()->flash('success', $msg);
             $this->dispatch('notify', ['type' => 'success', 'title' => 'Berhasil!', 'message' => $msg]);
+            \App\Services\ActivityLogger::log('INSTALLMENT_PAYMENT_UPDATED', "Setoran cicilan Unit {$inst->unit->code} diperbarui.");
+        } else {
+            $createData = [
+                'unit_installment_id' => $inst->id,
+                'payment_date' => $this->payment_date,
+                'amount_paid' => $this->payment_amount,
+                'payment_method' => $this->payment_method,
+                'notes' => $this->payment_notes,
+                'created_by' => auth()->id(),
+            ];
+            if ($receiptPhotoPath && $hasReceiptColPayment) {
+                $createData['receipt_photo_path'] = $receiptPhotoPath;
+            }
+
+            $payment = InstallmentPayment::create($createData);
+
+            $cashData = [
+                'project_id' => $inst->unit->project_id,
+                'type' => 'masuk',
+                'category' => 'pembayaran_cicilan_pembeli',
+                'amount' => $this->payment_amount,
+                'transaction_date' => $this->payment_date,
+                'description' => 'Setoran Cicilan Pembeli Unit ' . $inst->unit->code . ' (' . $this->payment_method . ')',
+                'reference_type' => InstallmentPayment::class,
+                'reference_id' => $payment->id,
+                'created_by' => auth()->id(),
+            ];
+            if ($receiptPhotoPath && $hasReceiptColCashflow) {
+                $cashData['receipt_photo_path'] = $receiptPhotoPath;
+            }
+            CashflowTransaction::create($cashData);
+
+            \App\Services\ActivityLogger::log('INSTALLMENT_PAYMENT_RECORDED', "Setoran cicilan Unit {$inst->unit->code} dicatat sebesar Rp " . number_format($this->payment_amount, 0, ',', '.'));
+
+            if ($inst->remaining_balance <= 0) {
+                $inst->update(['status' => 'lunas']);
+                $msg = 'Pembayaran diterima! Status cicilan Unit ' . $inst->unit->code . ' telah LUNAS!';
+                session()->flash('success', $msg);
+                $this->dispatch('notify', ['type' => 'success', 'title' => 'Lunas!', 'message' => $msg]);
+            } else {
+                $msg = 'Pembayaran cicilan Rp ' . number_format($this->payment_amount, 0, ',', '.') . ' berhasil dicatat di Arus Kas!';
+                session()->flash('success', $msg);
+                $this->dispatch('notify', ['type' => 'success', 'title' => 'Berhasil!', 'message' => $msg]);
+            }
+        }
+
+        if ($this->selectedDetailInstallment) {
+            $this->selectedDetailInstallment = UnitInstallment::with(['unit.project', 'officialDocument', 'payments.creator'])->find($this->selectedDetailInstallment->id);
         }
 
         $this->showPaymentModal = false;
         $this->payment_receipt_photo = null;
+        $this->editingPaymentId = null;
     }
 
     // Modal Batalkan Skema Cicilan & Dialihkan ke Cash (Founder & Finance Only)
@@ -318,8 +449,8 @@ class Index extends Component
     public function deleteInstallment($id)
     {
         $user = auth()->user();
-        if (!$user || !$user->isFounder()) {
-            session()->flash('error', 'Hanya Founder yang berhak menghapus skema cicilan pembeli.');
+        if (!$user || (!$user->isFounder() && !$user->isAdmin())) {
+            session()->flash('error', 'Hanya Admin dan Founder yang berhak menghapus skema cicilan pembeli.');
             return;
         }
 
@@ -362,8 +493,8 @@ class Index extends Component
     public function deleteInstallmentPayment($paymentId)
     {
         $user = auth()->user();
-        if (!$user || !$user->isFounder()) {
-            session()->flash('error', 'Hanya Founder yang berhak menghapus setoran cicilan pembeli.');
+        if (!$user || (!$user->isFounder() && !$user->isAdmin() && !$user->isFinance())) {
+            session()->flash('error', 'Hanya Tim Finance, Admin, dan Founder yang berhak menghapus setoran cicilan pembeli.');
             return;
         }
 

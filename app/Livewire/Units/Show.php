@@ -1049,7 +1049,10 @@ class Show extends Component
             'installment_payment_date' => 'required|date',
             'installment_payment_method' => 'required|string',
             'installment_payment_notes' => 'nullable|string',
-            'installment_payment_receipt_photo' => 'nullable|file|mimes:jpg,jpeg,png,webp,heic,heif,pdf|max:2048',
+            'installment_payment_receipt_photo' => 'nullable|image|mimes:jpg,jpeg,png,webp,heic,heif|max:2048',
+        ], [
+            'installment_payment_receipt_photo.image' => 'File bukti setoran cicilan harus berupa foto/gambar (JPG, JPEG, PNG, WEBP, HEIC).',
+            'installment_payment_receipt_photo.mimes' => 'File bukti setoran cicilan harus berupa foto/gambar (JPG, JPEG, PNG, WEBP, HEIC).',
         ]);
 
         $unit = Unit::with('installment')->findOrFail($this->unitId);
@@ -1607,36 +1610,7 @@ class Show extends Component
         $code = $unit->code;
 
         DB::transaction(function () use ($unit, $code) {
-            WorkerAssignment::where('unit_id', $unit->id)->delete();
-            WorkerUnitPayroll::where('unit_id', $unit->id)->delete();
-            WeeklyMaterialPurchase::where('unit_id', $unit->id)->delete();
-
-            if ($unit->installment) {
-                $paymentIds = InstallmentPayment::where('unit_installment_id', $unit->installment->id)->pluck('id');
-                CashflowTransaction::where('reference_type', UnitInstallment::class)
-                    ->where('reference_id', $unit->installment->id)
-                    ->delete();
-                if ($paymentIds->count() > 0) {
-                    CashflowTransaction::where('reference_type', InstallmentPayment::class)
-                        ->whereIn('reference_id', $paymentIds)
-                        ->delete();
-                }
-                InstallmentPayment::where('unit_installment_id', $unit->installment->id)->delete();
-                $unit->installment->delete();
-            }
-
-            // Delete direct Cashflow Transactions linked to Unit (e.g. legacy sale)
-            CashflowTransaction::where('reference_type', Unit::class)
-                ->where('reference_id', $unit->id)
-                ->delete();
-
-            Booking::where('unit_id', $unit->id)->delete();
-            \App\Models\PriceProposal::where('unit_id', $unit->id)->delete();
-            \App\Models\OfficialDocument::where('unit_id', $unit->id)->delete();
-            \App\Models\ManualInvoice::where('unit_id', $unit->id)->update(['unit_id' => null]);
-
-            $unit->delete();
-
+            \App\Services\CascadeDeletionService::deleteUnit($unit);
             \App\Services\ActivityLogger::log(
                 'DELETE_UNIT',
                 "Founder menghapus Unit {$code} dari sistem beserta seluruh histori terikatnya"

@@ -121,12 +121,7 @@ class Index extends Component
         $project = Project::with(['units', 'assignments', 'cashflows', 'payments'])->findOrFail($id);
         $projectName = $project->name;
 
-        $project->assignments()->delete();
-        $project->payments()->delete();
-        foreach ($project->units as $unit) {
-            $unit->delete();
-        }
-        $project->delete();
+        \App\Services\CascadeDeletionService::deleteProject($project);
 
         \App\Services\ActivityLogger::log('PROJECT_DELETE', "Founder menghapus proyek {$projectName} beserta seluruh data terikatnya.");
         $msg = "Proyek {$projectName} berhasil dihapus dari sistem!";
