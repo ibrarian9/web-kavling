@@ -190,8 +190,8 @@
     "semantic_hash": ""
   },
   "app/Livewire/Units/Show.php": {
-    "mtime": 1786466948.8665538,
-    "ast_hash": "6b5be023b37a1c6d580897ec6bb16959",
+    "mtime": 1786514703.5611205,
+    "ast_hash": "eea3e5db87ca4e8d625b3a4316753f63",
     "semantic_hash": ""
   },
   "app/Livewire/Users/Index.php": {
@@ -1842,6 +1842,11 @@
   "tests/Feature/ActivityLogsNotificationTabTest.php": {
     "mtime": 1786514020.598013,
     "ast_hash": "c51f5a2d14738366dc330247320d815e",
+    "semantic_hash": ""
+  },
+  "tests/Feature/AdminRoleCrudTest.php": {
+    "mtime": 1786514746.3671703,
+    "ast_hash": "0a8c74573ff319648e255966e8510275",
     "semantic_hash": ""
   }
 }

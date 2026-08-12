@@ -1065,9 +1065,12 @@ class Show extends Component
             $receiptPhotoPath = \App\Services\ImageCompressor::compressAndStore($this->installment_payment_receipt_photo, 'installment-receipts');
         }
 
+        $hasReceiptColPayment = \Illuminate\Support\Facades\Schema::hasColumn('installment_payments', 'receipt_photo_path');
+        $hasReceiptColCashflow = \Illuminate\Support\Facades\Schema::hasColumn('cashflow_transactions', 'receipt_photo_path');
+
         if ($this->editingInstallmentPaymentId) {
             $pay = InstallmentPayment::findOrFail($this->editingInstallmentPaymentId);
-            DB::transaction(function () use ($unit, $inst, $pay, $receiptPhotoPath) {
+            DB::transaction(function () use ($unit, $inst, $pay, $receiptPhotoPath, $hasReceiptColPayment, $hasReceiptColCashflow) {
                 $payData = [
                     'payment_date' => $this->installment_payment_date,
                     'amount_paid' => $this->installment_payment_amount,
@@ -1075,7 +1078,7 @@ class Show extends Component
                     'notes' => $this->installment_payment_notes,
                 ];
 
-                if ($receiptPhotoPath) {
+                if ($receiptPhotoPath && $hasReceiptColPayment) {
                     $payData['receipt_photo_path'] = $receiptPhotoPath;
                 }
 
@@ -1091,7 +1094,7 @@ class Show extends Component
                         'transaction_date' => $this->installment_payment_date,
                         'description' => 'Setoran Cicilan Pembeli Unit ' . $unit->code . ' (' . $this->installment_payment_method . ')',
                     ];
-                    if ($receiptPhotoPath) {
+                    if ($receiptPhotoPath && $hasReceiptColCashflow) {
                         $cashData['receipt_photo_path'] = $receiptPhotoPath;
                     }
                     $cashflow->update($cashData);
@@ -1103,18 +1106,22 @@ class Show extends Component
             });
             session()->flash('success', 'Setoran cicilan pembeli berhasil diperbarui!');
         } else {
-            DB::transaction(function () use ($unit, $inst, $receiptPhotoPath) {
-                $payment = InstallmentPayment::create([
+            DB::transaction(function () use ($unit, $inst, $receiptPhotoPath, $hasReceiptColPayment, $hasReceiptColCashflow) {
+                $createData = [
                     'unit_installment_id' => $inst->id,
                     'payment_date' => $this->installment_payment_date,
                     'amount_paid' => $this->installment_payment_amount,
                     'payment_method' => $this->installment_payment_method,
                     'notes' => $this->installment_payment_notes,
-                    'receipt_photo_path' => $receiptPhotoPath,
                     'created_by' => Auth::id(),
-                ]);
+                ];
+                if ($receiptPhotoPath && $hasReceiptColPayment) {
+                    $createData['receipt_photo_path'] = $receiptPhotoPath;
+                }
 
-                CashflowTransaction::create([
+                $payment = InstallmentPayment::create($createData);
+
+                $cashData = [
                     'project_id' => $unit->project_id,
                     'type' => 'masuk',
                     'category' => 'pembayaran_cicilan_pembeli',
@@ -1123,9 +1130,12 @@ class Show extends Component
                     'description' => 'Setoran Cicilan Pembeli Unit ' . $unit->code . ' (' . $this->installment_payment_method . ')',
                     'reference_type' => InstallmentPayment::class,
                     'reference_id' => $payment->id,
-                    'receipt_photo_path' => $receiptPhotoPath,
                     'created_by' => Auth::id(),
-                ]);
+                ];
+                if ($receiptPhotoPath && $hasReceiptColCashflow) {
+                    $cashData['receipt_photo_path'] = $receiptPhotoPath;
+                }
+                CashflowTransaction::create($cashData);
 
                 $totalPaid = $inst->down_payment + $inst->payments()->sum('amount_paid');
                 if ($totalPaid >= $inst->total_price) {
