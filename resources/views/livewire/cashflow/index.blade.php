@@ -408,25 +408,31 @@
                                             <span>Struk</span>
                                         </button>
                                     @endif
-                                    <button wire:click="openDetailModal({{ $trx->id }})" class="btn-action-detail text-xs px-2.5 py-1" title="Audit Trail Detail Transaksi">
-                                        <svg class="w-3.5 h-3.5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-                                        <span>Detail</span>
-                                    </button>
-                                    @if(auth()->user()->isFounder())
-                                        <button type="button" 
-                                                @click="confirmModalAction({
-                                                    title: 'Hapus Mutasi Transaksi Kas',
-                                                    message: 'Yakin ingin menghapus mutasi transaksi kas #TRX-{{ $trx->id }} ini?',
-                                                    confirmText: 'Hapus Transaksi',
-                                                    btnClass: 'px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5',
-                                                    onConfirm: () => $wire.deleteTransaction({{ $trx->id }})
-                                                })" 
-                                                class="btn-action-delete text-xs px-2.5 py-1" 
-                                                title="Hapus Transaksi Kas">
-                                            <svg class="w-3.5 h-3.5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                                            <span>Hapus</span>
-                                        </button>
-                                    @endif
+                                     <button wire:click="openDetailModal({{ $trx->id }})" class="btn-action-detail text-xs px-2.5 py-1" title="Audit Trail Detail Transaksi">
+                                         <svg class="w-3.5 h-3.5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                                         <span>Detail</span>
+                                     </button>
+                                     @if(auth()->user()->isFounder() || auth()->user()->isFinance())
+                                         <button type="button" wire:click="editTransaction({{ $trx->id }})" class="px-2.5 py-1 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200/90 rounded-lg text-xs font-bold transition flex items-center gap-1 shadow-2xs" title="Edit Transaksi Kas Ini">
+                                             <svg class="w-3.5 h-3.5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                                             <span>Edit</span>
+                                         </button>
+                                     @endif
+                                     @if(auth()->user()->isFounder())
+                                         <button type="button" 
+                                                 @click="confirmModalAction({
+                                                     title: 'Hapus Mutasi Transaksi Kas',
+                                                     message: 'Yakin ingin menghapus mutasi transaksi kas #TRX-{{ $trx->id }} ini?',
+                                                     confirmText: 'Hapus Transaksi',
+                                                     btnClass: 'px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5',
+                                                     onConfirm: () => $wire.deleteTransaction({{ $trx->id }})
+                                                 })" 
+                                                 class="btn-action-delete text-xs px-2.5 py-1" 
+                                                 title="Hapus Transaksi Kas">
+                                             <svg class="w-3.5 h-3.5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                             <span>Hapus</span>
+                                         </button>
+                                     @endif
                                 </div>
                             </td>
                         </tr>
@@ -443,10 +449,81 @@
             </table>
         </div>
 
-        <div class="px-5 py-3.5 border-t border-slate-100 flex items-center justify-between">
-            {{ $transactions->links() }}
-        </div>
+        @if($transactions->hasPages())
+            <div class="px-6 py-4 border-t border-slate-200">
+                {{ $transactions->links() }}
+            </div>
+        @endif
     </div>
+
+    <!-- Modal Edit Transaksi Mutasi Kas -->
+    @if($showEditModal && $editingTransactionId)
+        <div class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs p-3 sm:p-6 md:p-10 flex items-center justify-center min-h-screen">
+            <div class="bg-white border border-slate-200/80 rounded-2xl sm:rounded-3xl max-w-md w-full p-4 sm:p-6 shadow-2xl space-y-4 my-auto sm:my-8 max-h-[88vh] sm:max-h-[85vh] flex flex-col">
+                <!-- Header -->
+                <div class="flex items-center justify-between border-b border-slate-100 pb-3 shrink-0">
+                    <div class="flex items-center gap-2">
+                        <div class="p-2 rounded-xl bg-amber-50 text-amber-700 border border-amber-200">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-slate-900 text-sm sm:text-base">Edit Mutasi Transaksi Kas #TRX-{{ $editingTransactionId }}</h3>
+                            <p class="text-slate-500 text-[11px]">Ubah keterangan, nominal, atau kategori transaksi</p>
+                        </div>
+                    </div>
+                    <button wire:click="$set('showEditModal', false)" class="text-slate-400 hover:text-slate-600 font-bold text-sm p-1">✕</button>
+                </div>
+
+                <!-- Form Body -->
+                <form wire:submit.prevent="updateTransaction" class="space-y-4 text-xs sm:text-sm flex-1 overflow-y-auto pr-1">
+                    <div>
+                        <label class="block font-semibold text-slate-700 mb-1 text-xs uppercase tracking-wider">Deskripsi / Keterangan Transaksi <span class="text-rose-500">*</span></label>
+                        <input type="text" wire:model="edit_description" required placeholder="Contoh: Pembayaran Uang Muka (DP) Unit BLOK D 7..." class="input-clean w-full text-xs sm:text-sm font-medium">
+                        <span class="text-[10px] text-slate-400 block mt-1">Ganti kode unit, nama pembeli, atau keterangan catatan di sini.</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block font-semibold text-slate-700 mb-1 text-xs uppercase tracking-wider">Kategori Mutasi <span class="text-rose-500">*</span></label>
+                            <select wire:model="edit_category" class="select-clean w-full font-semibold">
+                                <option value="operasional">Operasional</option>
+                                <option value="booking_fee">Booking Fee</option>
+                                <option value="pembayaran_dp">Pembayaran Uang Muka (DP)</option>
+                                <option value="pembayaran_cicilan_pembeli">Setoran Cicilan Pembeli</option>
+                                <option value="penjualan_unit">Penjualan Unit Cash</option>
+                                <option value="upah_tukang">Upah Pekerja / Tukang</option>
+                                <option value="material">Pembelian Material</option>
+                                <option value="pembelian_lahan">Pembelian Lahan Proyek</option>
+                                <option value="gaji_karyawan">Gaji Karyawan Staf</option>
+                                <option value="pemasukan_lain">Pemasukan Lain-lain</option>
+                                <option value="pengeluaran_lain">Pengeluaran Lain-lain</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block font-semibold text-slate-700 mb-1 text-xs uppercase tracking-wider">Tanggal Transaksi <span class="text-rose-500">*</span></label>
+                            <input type="date" wire:model="edit_transaction_date" required class="input-clean w-full font-mono text-xs sm:text-sm">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block font-semibold text-slate-700 mb-1 text-xs uppercase tracking-wider">Nominal Transaksi <span class="text-rose-500">*</span></label>
+                        <div class="flex rounded-xl shadow-xs">
+                            <span class="bg-slate-100 border border-r-0 border-slate-200 px-3 py-2 text-slate-500 font-mono text-xs font-bold flex items-center rounded-l-xl">
+                                Rp
+                            </span>
+                            <x-currency-input model="edit_amount" class="input-clean rounded-r-xl rounded-l-none font-bold text-xs sm:text-sm font-mono w-full" placeholder="0" />
+                        </div>
+                    </div>
+
+                    <!-- Footer Action Buttons -->
+                    <div class="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2 sm:gap-3 pt-3 border-t border-slate-100 shrink-0">
+                        <button type="button" wire:click="$set('showEditModal', false)" class="btn-secondary">Batal</button>
+                        <button type="submit" class="btn-primary bg-amber-600 hover:bg-amber-700">Simpan Perubahan Arus Kas</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    @endif
 
     <!-- Modal Catat Kas Manual -->
     @include('livewire.cashflow.partials.modal-manual-transaction')

@@ -219,6 +219,69 @@ class Index extends Component
         $this->dispatch('notify', ['type' => 'success', 'title' => 'Berhasil!', 'message' => $msg]);
     }
 
+    public bool $showEditModal = false;
+    public $editingTransactionId = null;
+    public string $edit_description = '';
+    public string $edit_category = '';
+    public float $edit_amount = 0;
+    public string $edit_transaction_date = '';
+
+    public function editTransaction($id): void
+    {
+        $user = auth()->user();
+        if (!$user->isFounder() && !$user->isFinance()) {
+            session()->flash('error', 'Hanya Founder dan Finance yang berhak mengedit data transaksi arus kas.');
+            return;
+        }
+
+        $trx = CashflowTransaction::findOrFail($id);
+        $this->editingTransactionId = $trx->id;
+        $this->edit_description = $trx->description;
+        $this->edit_category = $trx->category;
+        $this->edit_amount = (float) $trx->amount;
+        $this->edit_transaction_date = $trx->transaction_date ? \Carbon\Carbon::parse($trx->transaction_date)->format('Y-m-d') : date('Y-m-d');
+        $this->showEditModal = true;
+    }
+
+    public function updateTransaction(): void
+    {
+        $user = auth()->user();
+        if (!$user->isFounder() && !$user->isFinance()) {
+            session()->flash('error', 'Hanya Founder dan Finance yang berhak mengedit data transaksi arus kas.');
+            return;
+        }
+
+        $this->validate([
+            'edit_description' => 'required|string|max:255',
+            'edit_category' => 'required|string',
+            'edit_amount' => 'required|numeric|min:0',
+            'edit_transaction_date' => 'required|date',
+        ]);
+
+        $trx = CashflowTransaction::findOrFail($this->editingTransactionId);
+        $oldDesc = $trx->description;
+        $oldAmount = number_format($trx->amount, 0, ',', '.');
+
+        $trx->update([
+            'description' => $this->edit_description,
+            'category' => $this->edit_category,
+            'amount' => $this->edit_amount,
+            'transaction_date' => $this->edit_transaction_date,
+        ]);
+
+        $newAmount = number_format($this->edit_amount, 0, ',', '.');
+        \App\Services\ActivityLogger::log(
+            'CASHFLOW_UPDATED',
+            "User {$user->name} memperbarui transaksi arus kas #TRX-{$trx->id}: Keterangan lama '{$oldDesc}' (Rp {$oldAmount}) -> baru '{$this->edit_description}' (Rp {$newAmount})"
+        );
+
+        $this->showEditModal = false;
+        $this->editingTransactionId = null;
+        $msg = "Transaksi mutasi kas #TRX-{$trx->id} berhasil diperbarui!";
+        session()->flash('success', $msg);
+        $this->dispatch('notify', ['type' => 'success', 'title' => 'Berhasil!', 'message' => $msg]);
+    }
+
     private function resolveAuditTrail(CashflowTransaction $t): array
     {
         // 1. Source Menu Determination
@@ -598,6 +661,8 @@ class Index extends Component
             'filter_month' => $this->filter_month,
             'showManualModal' => $this->showManualModal,
             'showDetailModal' => $this->showDetailModal,
+            'showEditModal' => $this->showEditModal,
+            'editingTransactionId' => $this->editingTransactionId,
             'selectedTransaction' => $selectedTransaction,
             'auditTrailInfo' => $auditTrailInfo,
             'showImageModal' => $this->showImageModal,
