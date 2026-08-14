@@ -35,16 +35,14 @@
                         @error('spp_buyer_contact') <span class="text-rose-600 text-[10px]">{{ $message }}</span> @enderror
                     </div>
 
-                    <div>
-                        <label class="block font-bold text-slate-700 mb-1">Harga Kesepakatan Cash <span class="text-rose-500">*</span></label>
-                        <div class="flex rounded-xl shadow-2xs">
-                            <span class="bg-slate-100 border border-r-0 border-slate-200 px-3 py-2 text-slate-600 font-mono text-xs font-bold flex items-center rounded-l-xl">
-                                Rp
-                            </span>
-                            <x-currency-input model="spp_cash_price" placeholder="250.000.000" class="input-clean rounded-r-xl rounded-l-none font-mono font-bold text-emerald-800 text-xs w-full" />
-                        </div>
-                        @error('spp_cash_price') <span class="text-rose-600 text-[10px] mt-1 block">{{ $message }}</span> @enderror
-                    </div>
+                    <x-currency-input 
+                        label="Harga Kesepakatan Cash (Rp)" 
+                        model="spp_cash_price" 
+                        :value="$spp_cash_price"
+                        placeholder="250.000.000"
+                        badgeColor="emerald"
+                        required
+                    />
                 </div>
 
                 <div>

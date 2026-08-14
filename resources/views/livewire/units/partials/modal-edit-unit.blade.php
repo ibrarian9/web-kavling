@@ -50,15 +50,13 @@
                 @endif
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div>
-                        <label class="block font-semibold text-slate-700 mb-1 text-xs uppercase tracking-wider">Harga Jual Final</label>
-                        <div class="flex rounded-xl shadow-xs">
-                            <span class="bg-slate-100 border border-r-0 border-slate-200 px-3 py-2 text-slate-500 font-mono text-xs font-bold flex items-center rounded-l-xl">
-                                Rp
-                            </span>
-                            <x-currency-input model="edit_final_selling_price" class="input-clean rounded-r-xl rounded-l-none font-mono font-bold text-xs w-full" />
-                        </div>
-                    </div>
+                    <x-currency-input 
+                        label="Harga Jual Final (Rp)" 
+                        model="edit_final_selling_price" 
+                        :value="$edit_final_selling_price"
+                        placeholder="150.000.000"
+                        badgeColor="emerald"
+                    />
                     <div>
                         <label class="block font-semibold text-slate-700 mb-1 text-xs uppercase tracking-wider">Status Unit <span class="text-rose-500">*</span></label>
                         <select wire:model="edit_unit_status" class="select-clean w-full">

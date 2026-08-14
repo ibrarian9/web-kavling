@@ -20,16 +20,14 @@
                     </select>
                 </div>
 
-                <div>
-                    <label class="block font-semibold text-slate-700 mb-1 text-xs uppercase tracking-wider">Total Nominal Gaji <span class="text-rose-500">*</span></label>
-                    <div class="flex rounded-xl shadow-xs">
-                        <span class="bg-slate-100 border border-r-0 border-slate-200 px-3 py-2 text-slate-500 font-mono text-xs font-bold flex items-center rounded-l-xl">
-                            Rp
-                        </span>
-                        <x-currency-input model="payroll_agreed_salary" class="input-clean rounded-r-xl rounded-l-none font-mono font-bold text-slate-900 text-xs sm:text-sm w-full" placeholder="Contoh: 15.000.000" />
-                    </div>
-                    @error('payroll_agreed_salary') <span class="text-rose-500 text-[10px] mt-1 block font-medium">{{ $message }}</span> @enderror
-                </div>
+                <x-currency-input 
+                    label="Total Nominal Gaji (Rp)" 
+                    model="payroll_agreed_salary" 
+                    :value="$payroll_agreed_salary"
+                    placeholder="15.000.000"
+                    badgeColor="blue"
+                    required
+                />
 
                 <div>
                     <label class="block font-semibold text-slate-700 mb-1 text-xs uppercase tracking-wider">Skema Pembayaran <span class="text-rose-500">*</span></label>

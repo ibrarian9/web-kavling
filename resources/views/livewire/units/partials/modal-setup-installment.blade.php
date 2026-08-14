@@ -24,25 +24,24 @@
                             </button>
                         @endif
                     </div>
-                    <div class="flex rounded-xl shadow-xs">
-                        <span class="bg-slate-100 border border-r-0 border-slate-200 px-3 py-2 text-slate-500 font-mono text-xs font-bold flex items-center rounded-l-xl">
-                            Rp
-                        </span>
-                        <x-currency-input model="setup_total_price" class="input-clean rounded-r-xl rounded-l-none font-mono font-bold text-xs sm:text-sm w-full" placeholder="Contoh: 150.000.000" />
-                    </div>
-                    @error('setup_total_price') <span class="text-rose-600 text-[10px] mt-1 block font-medium">{{ $message }}</span> @enderror
-                </div>
+                <x-currency-input 
+                    label="Total Harga Unit Kesepakatan (Rp)" 
+                    model="setup_total_price" 
+                    :value="$setup_total_price"
+                    placeholder="150.000.000"
+                    badgeColor="blue"
+                    required
+                />
 
-                <div>
-                    <label class="block font-semibold text-slate-700 mb-1 text-xs uppercase tracking-wider">Total Uang Muka / DP Kesepakatan <span class="text-rose-500">*</span></label>
-                    <div class="flex rounded-xl shadow-xs">
-                        <span class="bg-slate-100 border border-r-0 border-slate-200 px-3 py-2 text-slate-500 font-mono text-xs font-bold flex items-center rounded-l-xl">
-                            Rp
-                        </span>
-                        <x-currency-input model="setup_down_payment" class="input-clean rounded-r-xl rounded-l-none font-mono font-bold text-xs sm:text-sm w-full" placeholder="Contoh: 30.000.000" />
-                    </div>
-                    <p class="text-[11px] text-slate-400 mt-1">Total DP Keseluruhan (Termasuk Booking Fee / DP yang sudah dibayar saat booking unit).</p>
-                </div>
+                <x-currency-input 
+                    label="Total Uang Muka / DP Kesepakatan (Rp)" 
+                    model="setup_down_payment" 
+                    :value="$setup_down_payment"
+                    placeholder="30.000.000"
+                    badgeColor="emerald"
+                    helpText="Total DP Keseluruhan (Termasuk Booking Fee / DP yang sudah dibayar saat booking unit)."
+                    required
+                />
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>

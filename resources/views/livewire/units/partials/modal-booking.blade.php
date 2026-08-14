@@ -7,30 +7,30 @@
                     <h3 class="font-extrabold text-slate-900 text-sm sm:text-base">Booking Unit {{ $unit->code }}</h3>
                     <p class="text-slate-500 text-[11px]">Pencatatan booking & DP langsung di dalam sistem</p>
                 </div>
-                <button wire:click="$set('showBookingModal', false)" class="p-1 rounded-lg text-slate-400 hover:text-slate-600">✕</button>
+                <button wire:click="$set('showBookingModal', false)" class="p-1 rounded-lg text-slate-400 hover:text-slate-600 font-bold">✕</button>
             </div>
 
             <form wire:submit.prevent="saveBooking" class="space-y-4 text-xs sm:text-sm flex-1 overflow-y-auto pr-1">
                 <div>
                     <label class="block font-semibold text-slate-700 mb-1 text-xs uppercase tracking-wider">Nama Pembeli <span class="text-rose-500">*</span></label>
                     <input type="text" wire:model="buyer_name" required placeholder="Bpk. H. Hendra Wijaya" class="input-clean w-full font-bold text-xs sm:text-sm">
+                    @error('buyer_name') <span class="text-rose-500 text-[10px] mt-1 block font-medium">{{ $message }}</span> @enderror
                 </div>
 
                 <div>
                     <label class="block font-semibold text-slate-700 mb-1 text-xs uppercase tracking-wider">Nomor HP / WhatsApp Pembeli <span class="text-rose-500">*</span></label>
                     <input type="text" wire:model="buyer_phone" required placeholder="081234567890" class="input-clean w-full font-mono text-xs sm:text-sm">
+                    @error('buyer_phone') <span class="text-rose-500 text-[10px] mt-1 block font-medium">{{ $message }}</span> @enderror
                 </div>
 
-                <div>
-                    <label class="block font-semibold text-slate-700 mb-1 text-xs uppercase tracking-wider">Nominal Tanda Jadi / Booking Fee <span class="text-rose-500">*</span></label>
-                    <div class="flex rounded-xl shadow-xs">
-                        <span class="bg-slate-100 border border-r-0 border-slate-200 px-3 py-2 text-slate-500 font-mono text-xs font-bold flex items-center rounded-l-xl">
-                            Rp
-                        </span>
-                        <x-currency-input model="booking_amount" class="input-clean rounded-r-xl rounded-l-none font-mono font-bold text-teal-700 text-xs sm:text-sm w-full" />
-                    </div>
-                    @error('booking_amount') <span class="text-rose-500 text-[10px] mt-1 block font-medium">{{ $message }}</span> @enderror
-                </div>
+                <x-currency-input
+                    label="Nominal Tanda Jadi / Booking Fee (Rp)"
+                    model="booking_amount"
+                    :value="$booking_amount"
+                    placeholder="5.000.000"
+                    badgeColor="blue"
+                    required
+                />
 
                 <div>
                     <label class="block font-semibold text-slate-700 mb-1 text-xs uppercase tracking-wider">Catatan Pembayaran & Bukti DP</label>

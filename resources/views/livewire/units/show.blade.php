@@ -26,6 +26,9 @@
             <!-- Installment & Buyer Payments Card -->
             @include('livewire.units.partials.section-installments')
 
+            <!-- Unit Seller Commission & Installments Card -->
+            @include('livewire.units.partials.section-commissions', ['unitCommissions' => $unitCommissions ?? collect()])
+
             <!-- Unit Expenses & Material Purchases Combined Table Card -->
             @include('livewire.units.partials.section-expenses')
         </div>
@@ -39,6 +42,8 @@
     @include('livewire.units.partials.modal-material-purchase')
     @include('livewire.units.partials.modal-installment-payment')
     @include('livewire.units.partials.modal-setup-installment')
+    @include('livewire.units.partials.modal-commission')
+    @include('livewire.units.partials.modal-commission-payment')
     @include('livewire.units.partials.modal-viewer')
     @include('livewire.units.partials.modal-convert-to-cash')
     @include('livewire.units.partials.modal-edit-unit')

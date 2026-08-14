@@ -28,16 +28,14 @@
                     @error('installment_payment_date') <span class="text-rose-600 text-[10px] mt-1 block font-medium">{{ $message }}</span> @enderror
                 </div>
 
-                <div>
-                    <label class="block font-semibold text-slate-700 mb-1 text-xs uppercase tracking-wider">Nominal Setoran <span class="text-rose-500">*</span></label>
-                    <div class="flex rounded-xl shadow-xs">
-                        <span class="bg-slate-100 border border-r-0 border-slate-200 px-3 py-2 text-slate-500 font-mono text-xs font-bold flex items-center rounded-l-xl">
-                            Rp
-                        </span>
-                        <x-currency-input model="installment_payment_amount" class="input-clean rounded-r-xl rounded-l-none font-mono font-bold text-xs sm:text-sm w-full" placeholder="Contoh: 5.000.000" />
-                    </div>
-                    @error('installment_payment_amount') <span class="text-rose-600 text-[10px] mt-1 block font-medium">{{ $message }}</span> @enderror
-                </div>
+                <x-currency-input 
+                    label="Nominal Setoran (Rp)" 
+                    model="installment_payment_amount" 
+                    :value="$installment_payment_amount"
+                    placeholder="5.000.000"
+                    badgeColor="emerald"
+                    required
+                />
 
                 <div>
                     <label class="block font-semibold text-slate-700 mb-1 text-xs uppercase tracking-wider">Metode Pembayaran <span class="text-rose-500">*</span></label>

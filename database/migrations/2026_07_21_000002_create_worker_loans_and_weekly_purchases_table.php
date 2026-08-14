@@ -10,10 +10,12 @@ return new class extends Migration
     {
         Schema::create('weekly_material_purchases', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('project_id')->constrained('projects')->onDelete('cascade');
+            $table->foreignId('project_id')->nullable()->constrained('projects')->onDelete('cascade');
             $table->foreignId('unit_id')->nullable()->constrained('units')->onDelete('cascade');
-            $table->foreignId('worker_id')->constrained('workers')->onDelete('cascade');
+            $table->foreignId('worker_id')->nullable()->constrained('workers')->onDelete('cascade');
             $table->foreignId('pengawas_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('claimant_id')->nullable()->constrained('users')->onDelete('set null');
+            $table->enum('bill_type', ['material_toko', 'operational_vendor', 'employee_reimbursement'])->default('material_toko');
             $table->date('purchase_date');
             $table->string('item_name');
             $table->decimal('quantity', 10, 2);

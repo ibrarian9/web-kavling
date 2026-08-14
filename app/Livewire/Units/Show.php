@@ -14,12 +14,14 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\WorkerSalaryPayment;
 use App\Models\WorkerUnitPayroll;
 use Illuminate\Support\Facades\DB;
+use App\Livewire\Traits\WithFileUploadValidation;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
 class Show extends Component
 {
     use WithFileUploads;
+    use WithFileUploadValidation;
 
     public $unitId;
 
@@ -44,6 +46,7 @@ class Show extends Component
     public $booking_amount = 5000000;
     public $dp_amount = 25000000;
     public string $booking_notes = '';
+    public $receipt_photo = null;
 
     // Modal Worker Payroll Setup
     public bool $showPayrollSetupModal = false;
@@ -70,6 +73,8 @@ class Show extends Component
     public ?int $material_worker_id = null;
     public string $material_purchase_date = '';
     public string $material_item_name = '';
+    public string $material_store_name = '';
+    public string $material_payment_status = 'lunas';
     public $material_quantity = 1;
     public string $material_unit_measure = 'pcs';
     public $material_unit_price = 0;
@@ -94,6 +99,24 @@ class Show extends Component
     public $setup_installment_count = 12;
     public $setup_installment_amount = 0;
     public string $setup_start_date = '';
+
+    // Modal Catat Komisi Penjual Unit (Unit Detail)
+    public bool $showCommissionModal = false;
+    public string $unit_comm_seller_name = '';
+    public string $unit_comm_seller_phone = '';
+    public ?int $unit_comm_marketing_id = null;
+    public $unit_comm_percentage = 2.5;
+    public $unit_comm_amount = 0;
+    public string $unit_comm_notes = '';
+
+    // Modal Bayar Cicilan Komisi (Unit Detail)
+    public bool $showCommissionPaymentModal = false;
+    public ?int $unit_settling_commission_id = null;
+    public $unit_pay_comm_amount = 0;
+    public string $unit_pay_comm_date = '';
+    public string $unit_pay_comm_method = 'Transfer Bank';
+    public string $unit_pay_comm_notes = '';
+    public $unit_pay_comm_photo = null;
 
     // Modal Terbitkan SPP & SPJB PDF Direct (Founder / Admin)
     public bool $showDirectSppModal = false;
@@ -554,8 +577,9 @@ class Show extends Component
     {
         $this->resetValidation();
         $this->editingMaterialId = null;
-        $this->reset(['material_worker_id', 'material_item_name', 'material_unit_price', 'material_total_price', 'material_receipt_photo', 'material_notes']);
+        $this->reset(['material_worker_id', 'material_item_name', 'material_store_name', 'material_unit_price', 'material_total_price', 'material_receipt_photo', 'material_notes']);
         $this->material_purchase_date = now()->toDateString();
+        $this->material_payment_status = 'lunas';
         $this->material_quantity = 1;
         $this->material_unit_measure = 'pcs';
         $this->material_is_deducted_from_loan = false;
@@ -575,6 +599,8 @@ class Show extends Component
         $this->material_worker_id = $mat->worker_id;
         $this->material_purchase_date = $mat->purchase_date ? $mat->purchase_date->format('Y-m-d') : date('Y-m-d');
         $this->material_item_name = $mat->item_name;
+        $this->material_store_name = $mat->store_name ?? '';
+        $this->material_payment_status = $mat->payment_status ?? 'lunas';
         $this->material_quantity = $mat->quantity;
         $this->material_unit_measure = $mat->unit_measure;
         $this->material_unit_price = $mat->unit_price;
@@ -623,6 +649,8 @@ class Show extends Component
         $this->validate([
             'material_purchase_date' => 'required|date',
             'material_item_name' => 'required|string|max:255',
+            'material_store_name' => 'nullable|string|max:255',
+            'material_payment_status' => 'required|in:lunas,belum_lunas',
             'material_quantity' => 'required|numeric|min:0.01',
             'material_unit_measure' => 'required|string|max:50',
             'material_unit_price' => 'required|numeric|min:0',
@@ -647,10 +675,12 @@ class Show extends Component
                     'worker_id' => $this->material_worker_id ?: $mat->worker_id,
                     'purchase_date' => $this->material_purchase_date,
                     'item_name' => $this->material_item_name,
+                    'store_name' => $this->material_store_name,
                     'quantity' => $this->material_quantity,
                     'unit_measure' => $this->material_unit_measure,
                     'unit_price' => $this->material_unit_price,
                     'total_price' => $totalPrice,
+                    'payment_status' => $this->material_payment_status,
                     'receipt_photo_path' => $finalPhoto,
                     'notes' => $this->material_notes,
                 ]);
@@ -659,12 +689,31 @@ class Show extends Component
                     ->where('reference_id', $mat->id)
                     ->first();
 
-                if ($cashflow) {
-                    $cashflow->update([
-                        'amount' => $totalPrice,
-                        'transaction_date' => $this->material_purchase_date,
-                        'description' => "Pembelian Material Unit {$unit->code}: {$this->material_item_name} ({$this->material_quantity} {$this->material_unit_measure})",
-                    ]);
+                if ($this->material_payment_status === 'lunas') {
+                    $storeInfo = $this->material_store_name ? " (Toko: {$this->material_store_name})" : '';
+                    if ($cashflow) {
+                        $cashflow->update([
+                            'amount' => $totalPrice,
+                            'transaction_date' => $this->material_purchase_date,
+                            'description' => "Pembelian Material Unit {$unit->code}{$storeInfo}: {$this->material_item_name} ({$this->material_quantity} {$this->material_unit_measure})",
+                        ]);
+                    } else {
+                        CashflowTransaction::create([
+                            'project_id' => $unit->project_id,
+                            'type' => 'keluar',
+                            'category' => 'operasional',
+                            'amount' => $totalPrice,
+                            'transaction_date' => $this->material_purchase_date,
+                            'description' => "Pembelian Material Unit {$unit->code}{$storeInfo}: {$this->material_item_name} ({$this->material_quantity} {$this->material_unit_measure})",
+                            'reference_type' => WeeklyMaterialPurchase::class,
+                            'reference_id' => $mat->id,
+                            'created_by' => Auth::id(),
+                        ]);
+                    }
+                } else {
+                    if ($cashflow) {
+                        $cashflow->delete();
+                    }
                 }
             });
             session()->flash('success', 'Belanja material unit ' . $unit->code . ' berhasil diperbarui!');
@@ -677,27 +726,34 @@ class Show extends Component
                     'pengawas_id' => Auth::id(),
                     'purchase_date' => $this->material_purchase_date,
                     'item_name' => $this->material_item_name,
+                    'store_name' => $this->material_store_name,
                     'quantity' => $this->material_quantity,
                     'unit_measure' => $this->material_unit_measure,
                     'unit_price' => $this->material_unit_price,
                     'total_price' => $totalPrice,
+                    'payment_status' => $this->material_payment_status,
+                    'paid_at' => $this->material_payment_status === 'lunas' ? now() : null,
+                    'paid_by' => $this->material_payment_status === 'lunas' ? Auth::id() : null,
                     'receipt_photo_path' => $photoPath,
                     'notes' => $this->material_notes,
                 ]);
 
-                CashflowTransaction::create([
-                    'project_id' => $unit->project_id,
-                    'type' => 'keluar',
-                    'category' => 'operasional',
-                    'amount' => $totalPrice,
-                    'transaction_date' => $this->material_purchase_date,
-                    'description' => "Pembelian Material Unit {$unit->code}: {$this->material_item_name} ({$this->material_quantity} {$this->material_unit_measure})",
-                    'reference_type' => WeeklyMaterialPurchase::class,
-                    'reference_id' => $purchase->id,
-                    'created_by' => Auth::id(),
-                ]);
+                if ($this->material_payment_status === 'lunas') {
+                    $storeInfo = $this->material_store_name ? " (Toko: {$this->material_store_name})" : '';
+                    CashflowTransaction::create([
+                        'project_id' => $unit->project_id,
+                        'type' => 'keluar',
+                        'category' => 'operasional',
+                        'amount' => $totalPrice,
+                        'transaction_date' => $this->material_purchase_date,
+                        'description' => "Pembelian Material Unit {$unit->code}{$storeInfo}: {$this->material_item_name} ({$this->material_quantity} {$this->material_unit_measure})",
+                        'reference_type' => WeeklyMaterialPurchase::class,
+                        'reference_id' => $purchase->id,
+                        'created_by' => Auth::id(),
+                    ]);
+                }
             });
-            \App\Services\ActivityLogger::log('MATERIAL_PURCHASE_RECORDED', "Pembelian material Unit {$unit->code} ({$this->material_item_name}) dicatat sebesar Rp " . number_format($totalPrice, 0, ',', '.'));
+            \App\Services\ActivityLogger::log('MATERIAL_PURCHASE_RECORDED', "Pembelian material Unit {$unit->code} ({$this->material_item_name}) dicatat sebesar Rp " . number_format($totalPrice, 0, ',', '.') . " (" . strtoupper($this->material_payment_status) . ")");
             session()->flash('success', 'Pembelian barang/material unit ' . $unit->code . ' berhasil dicatat!');
         }
 
@@ -1415,12 +1471,23 @@ class Show extends Component
         $this->showBookingModal = true;
     }
 
+    public function updatedReceiptPhoto(): void
+    {
+        $this->validate([
+            'receipt_photo' => 'nullable|file|mimes:jpg,jpeg,png,webp,heic,heif,pdf|max:10240',
+        ]);
+    }
+
     public function saveBooking(): void
     {
         $user = auth()->user();
         if (!$user->isMarketing() && !$user->isFinance() && !$user->isFounder()) {
             session()->flash('error', 'Hanya tim Sales Marketing, Finance, dan Founder yang berhak mendaftarkan booking unit.');
             return;
+        }
+
+        if ($this->booking_amount) {
+            $this->booking_amount = (float) preg_replace('/[^0-9]/', '', (string)$this->booking_amount);
         }
 
         $this->validate([
@@ -1458,6 +1525,200 @@ class Show extends Component
 
         session()->flash('success', 'Booking unit ' . $unit->code . ' atas nama ' . $this->buyer_name . ' berhasil dicatat!');
         $this->showBookingModal = false;
+    }
+
+    public function openCommissionModal(): void
+    {
+        $user = Auth::user();
+        if (!$user->isFounder() && !$user->isFinance()) {
+            session()->flash('error', 'Hanya Founder dan Tim Finance yang berhak mencatat hutang komisi penjual.');
+            return;
+        }
+
+        $unit = Unit::with('installment')->findOrFail($this->unitId);
+        $this->resetValidation();
+        $this->unit_comm_seller_name = '';
+        $this->unit_comm_seller_phone = '';
+        $this->unit_comm_marketing_id = null;
+        $this->unit_comm_percentage = 2.5;
+        
+        $basePrice = $unit->installment ? (float)$unit->installment->total_price : (float)($unit->final_selling_price ?: $unit->price);
+        $this->unit_comm_amount = round(($this->unit_comm_percentage / 100) * $basePrice);
+        $this->unit_comm_notes = "Komisi Penjualan Unit {$unit->code}";
+        $this->showCommissionModal = true;
+    }
+
+    public function updatedUnitCommPercentage(): void
+    {
+        $unit = Unit::with('installment')->find($this->unitId);
+        if ($unit) {
+            $basePrice = $unit->installment ? (float)$unit->installment->total_price : (float)($unit->final_selling_price ?: $unit->price);
+            $this->unit_comm_amount = round(((float)$this->unit_comm_percentage / 100) * $basePrice);
+        }
+    }
+
+    public function saveCommission(): void
+    {
+        $user = Auth::user();
+        if (!$user->isFounder() && !$user->isFinance()) {
+            session()->flash('error', 'Hanya Founder dan Tim Finance yang berhak mencatat hutang komisi penjual.');
+            return;
+        }
+
+        if ($this->unit_comm_amount) {
+            $this->unit_comm_amount = (float) preg_replace('/[^0-9]/', '', (string)$this->unit_comm_amount);
+        }
+
+        $this->validate([
+            'unit_comm_seller_name' => 'required|string|max:255',
+            'unit_comm_seller_phone' => 'nullable|string|max:50',
+            'unit_comm_marketing_id' => 'nullable|exists:users,id',
+            'unit_comm_percentage' => 'nullable|numeric|min:0|max:100',
+            'unit_comm_amount' => 'required|numeric|min:1000',
+            'unit_comm_notes' => 'nullable|string|max:500',
+        ]);
+
+        $unit = Unit::findOrFail($this->unitId);
+
+        $comm = \App\Models\UnitCommission::create([
+            'project_id' => $unit->project_id,
+            'unit_id' => $unit->id,
+            'marketing_id' => $this->unit_comm_marketing_id ?: null,
+            'seller_name' => trim($this->unit_comm_seller_name),
+            'seller_phone' => trim($this->unit_comm_seller_phone) ?: null,
+            'percentage' => (float)($this->unit_comm_percentage ?: 0),
+            'commission_amount' => (float)$this->unit_comm_amount,
+            'paid_amount' => 0,
+            'status' => 'belum_dibayar',
+            'notes' => $this->unit_comm_notes,
+            'created_by' => $user->id,
+        ]);
+
+        \App\Services\ActivityLogger::log(
+            'COMMISSION_DEBT_CREATED',
+            "User {$user->name} mencatat hutang komisi penjual '{$comm->seller_name}' untuk Unit {$unit->code} sebesar Rp " . number_format($comm->commission_amount, 0, ',', '.')
+        );
+
+        $this->showCommissionModal = false;
+        $msg = "Catatan Hutang Komisi Penjual '{$comm->seller_name}' berhasil disimpan!";
+        session()->flash('success', $msg);
+        $this->dispatch('notify', ['type' => 'success', 'title' => 'Komisi Dicatat!', 'message' => $msg]);
+    }
+
+    public function openCommissionPaymentModal(int $commissionId): void
+    {
+        $user = Auth::user();
+        if (!$user->isFounder() && !$user->isFinance()) {
+            session()->flash('error', 'Hanya Founder dan Tim Finance yang berhak mencatat pembayaran cicilan komisi.');
+            return;
+        }
+
+        $comm = \App\Models\UnitCommission::with('unit')->findOrFail($commissionId);
+        $this->unit_settling_commission_id = $comm->id;
+        $this->unit_pay_comm_amount = $comm->remaining_amount;
+        $this->unit_pay_comm_date = now()->toDateString();
+        $this->unit_pay_comm_method = 'Transfer Bank';
+        $this->unit_pay_comm_notes = "Pembayaran Cicilan Komisi: {$comm->seller_name} (Unit " . ($comm->unit->code ?? '-') . ")";
+        $this->unit_pay_comm_photo = null;
+        $this->showCommissionPaymentModal = true;
+    }
+
+    public function processCommissionPayment(): void
+    {
+        if (!$this->unit_settling_commission_id) {
+            return;
+        }
+
+        $user = Auth::user();
+        if (!$user->isFounder() && !$user->isFinance()) {
+            session()->flash('error', 'Hanya Founder dan Tim Finance yang berhak mencatat pembayaran cicilan komisi.');
+            return;
+        }
+
+        $comm = \App\Models\UnitCommission::with('unit')->findOrFail($this->unit_settling_commission_id);
+
+        if ($this->unit_pay_comm_amount) {
+            $this->unit_pay_comm_amount = (float) preg_replace('/[^0-9]/', '', (string)$this->unit_pay_comm_amount);
+        }
+
+        $this->validate([
+            'unit_pay_comm_amount' => 'required|numeric|min:1000|max:' . $comm->remaining_amount,
+            'unit_pay_comm_date' => 'required|date',
+            'unit_pay_comm_method' => 'required|string',
+            'unit_pay_comm_notes' => 'nullable|string',
+            'unit_pay_comm_photo' => 'nullable|file|mimes:jpg,jpeg,png,webp,heic,heif,pdf|max:2048',
+        ], [
+            'unit_pay_comm_amount.max' => 'Nominal pembayaran cicilan komisi tidak boleh melebihi sisa hutang komisi (Rp ' . number_format($comm->remaining_amount, 0, ',', '.') . ').',
+        ]);
+
+        $photoPath = null;
+        if ($this->unit_pay_comm_photo) {
+            $photoPath = \App\Services\ImageCompressor::compressAndStore($this->unit_pay_comm_photo, 'commission-receipts');
+        }
+
+        DB::transaction(function () use ($comm, $photoPath, $user) {
+            $payment = \App\Models\UnitCommissionPayment::create([
+                'unit_commission_id' => $comm->id,
+                'payment_date' => $this->unit_pay_comm_date,
+                'amount' => $this->unit_pay_comm_amount,
+                'payment_method' => $this->unit_pay_comm_method,
+                'notes' => $this->unit_pay_comm_notes,
+                'receipt_photo_path' => $photoPath,
+                'created_by' => $user->id,
+            ]);
+
+            $unitCode = $comm->unit ? " Unit {$comm->unit->code}" : '';
+            $description = "Pembayaran Cicilan Komisi Penjual ({$comm->seller_name}){$unitCode}: Rp " . number_format($this->unit_pay_comm_amount, 0, ',', '.');
+
+            CashflowTransaction::create([
+                'project_id' => $comm->project_id,
+                'type' => 'keluar',
+                'category' => 'operasional',
+                'amount' => $this->unit_pay_comm_amount,
+                'transaction_date' => $this->unit_pay_comm_date,
+                'description' => $description,
+                'reference_type' => \App\Models\UnitCommissionPayment::class,
+                'reference_id' => $payment->id,
+                'receipt_photo_path' => $photoPath,
+                'created_by' => $user->id,
+            ]);
+
+            $comm->recalculateStatus();
+        });
+
+        \App\Services\ActivityLogger::log(
+            'COMMISSION_PAYMENT_RECORDED',
+            "User {$user->name} mencatat pembayaran cicilan komisi '{$comm->seller_name}' sebesar Rp " . number_format($this->unit_pay_comm_amount, 0, ',', '.') . " & tercatat di Arus Kas."
+        );
+
+        $this->showCommissionPaymentModal = false;
+        $this->unit_settling_commission_id = null;
+
+        $msg = "Pembayaran cicilan komisi '{$comm->seller_name}' sebesar Rp " . number_format($this->unit_pay_comm_amount, 0, ',', '.') . " berhasil dicatat ke Kas Keluar!";
+        session()->flash('success', $msg);
+        $this->dispatch('notify', ['type' => 'success', 'title' => 'Pembayaran Berhasil!', 'message' => $msg]);
+    }
+
+    public function deleteCommission(int $commissionId): void
+    {
+        $user = Auth::user();
+        if (!$user->isFounder()) {
+            session()->flash('error', 'Hanya Founder yang berhak menghapus catatan komisi.');
+            return;
+        }
+
+        $comm = \App\Models\UnitCommission::where('unit_id', $this->unitId)->findOrFail($commissionId);
+
+        DB::transaction(function () use ($comm) {
+            foreach ($comm->payments as $p) {
+                CashflowTransaction::where('reference_type', \App\Models\UnitCommissionPayment::class)
+                    ->where('reference_id', $p->id)
+                    ->delete();
+            }
+            $comm->delete();
+        });
+
+        session()->flash('success', 'Catatan komisi penjual berhasil dihapus.');
     }
 
     public function render()
@@ -1574,6 +1835,11 @@ class Show extends Component
 
         $allWorkers = Worker::where('status', 'active')->orderBy('name')->get();
 
+        $unitCommissions = \App\Models\UnitCommission::with(['payments.creator', 'marketing', 'creator'])
+            ->where('unit_id', $unit->id)
+            ->latest('id')
+            ->get();
+
         return view('livewire.units.show', [
             'unit' => $unit,
             'unitAssignments' => $unitAssignments,
@@ -1582,6 +1848,7 @@ class Show extends Component
             'totalCashIn' => $totalCashIn,
             'allWorkers' => $allWorkers,
             'unitPayrolls' => $unitPayrolls,
+            'unitCommissions' => $unitCommissions,
             'combinedExpenses' => $combinedExpenses,
             'showWorkerModal' => $this->showWorkerModal,
             'showBookingModal' => $this->showBookingModal,
@@ -1594,6 +1861,8 @@ class Show extends Component
             'showViewerModal' => $this->showViewerModal,
             'showDirectSppModal' => $this->showDirectSppModal,
             'showDirectProposalModal' => $this->showDirectProposalModal,
+            'showCommissionModal' => $this->showCommissionModal,
+            'showCommissionPaymentModal' => $this->showCommissionPaymentModal,
             'editingSalaryPaymentId' => $this->editingSalaryPaymentId,
         ])->layout('components.layouts.app', ['title' => 'Detail Unit ' . $unit->code . ' - ' . $unit->project->name]);
     }

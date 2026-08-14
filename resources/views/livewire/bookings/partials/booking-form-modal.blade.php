@@ -56,16 +56,22 @@
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div>
-                        <label class="block font-semibold text-slate-700 uppercase mb-1">Nominal Booking Fee (Rp) *</label>
-                        <x-currency-input model="booking_amount" class="input-clean w-full font-mono font-bold text-teal-700 text-sm" />
-                        @error('booking_amount') <span class="text-[10px] text-rose-500 mt-1 block font-bold">{{ $message }}</span> @enderror
-                    </div>
-                    <div>
-                        <label class="block font-semibold text-slate-700 uppercase mb-1">Total Uang Muka / DP (Rp) <span class="text-slate-400 font-normal lowercase text-[10px]">(Opsional)</span></label>
-                        <x-currency-input model="dp_amount" class="input-clean w-full font-mono font-bold text-emerald-700 text-sm" />
-                        @error('dp_amount') <span class="text-[10px] text-rose-500 mt-1 block font-bold">{{ $message }}</span> @enderror
-                    </div>
+                    <x-currency-input 
+                        label="Nominal Booking Fee (Rp)" 
+                        model="booking_amount" 
+                        :value="$booking_amount"
+                        placeholder="5.000.000"
+                        badgeColor="blue"
+                        required 
+                    />
+
+                    <x-currency-input 
+                        label="Total Uang Muka / DP (Rp) (Opsional)" 
+                        model="dp_amount" 
+                        :value="$dp_amount"
+                        placeholder="25.000.000"
+                        badgeColor="emerald"
+                    />
                 </div>
 
                 <div>

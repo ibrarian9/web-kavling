@@ -20,7 +20,7 @@
                     </select>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4">
                     <div>
                         <label class="block font-semibold text-slate-700 mb-1 text-xs uppercase tracking-wider">Tanggal Pembelian <span class="text-rose-500">*</span></label>
                         <input type="date" wire:model="material_purchase_date" required class="input-clean w-full text-xs sm:text-sm font-mono">
@@ -29,6 +29,18 @@
                         <label class="block font-semibold text-slate-700 mb-1 text-xs uppercase tracking-wider">Nama Barang / Material <span class="text-rose-500">*</span></label>
                         <input type="text" wire:model="material_item_name" required placeholder="Contoh: Semen Gresik / Pasir / Cat" class="input-clean w-full text-xs sm:text-sm font-bold">
                     </div>
+                    <div>
+                        <label class="block font-semibold text-slate-700 mb-1 text-xs uppercase tracking-wider">Nama Toko / Supplier</label>
+                        <input type="text" wire:model="material_store_name" placeholder="TB Harapan Jaya / Toko Semen" class="input-clean w-full text-xs sm:text-sm font-semibold">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1 text-xs uppercase tracking-wider">Status Pembayaran Material <span class="text-rose-500">*</span></label>
+                    <select wire:model="material_payment_status" class="select-clean w-full font-bold">
+                        <option value="lunas">LUNAS / CASH (Langsung Potong Kas Keluar)</option>
+                        <option value="belum_lunas">HUTANG TOKO / BELUM LUNAS (Tercatat sebagai Tagihan)</option>
+                    </select>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4">
@@ -40,15 +52,14 @@
                         <label class="block font-semibold text-slate-700 mb-1 text-xs uppercase tracking-wider">Satuan <span class="text-rose-500">*</span></label>
                         <input type="text" wire:model="material_unit_measure" required placeholder="sak / m3 / btg" class="input-clean w-full text-xs sm:text-sm font-semibold">
                     </div>
-                    <div>
-                        <label class="block font-semibold text-slate-700 mb-1 text-xs uppercase tracking-wider">Harga Satuan <span class="text-rose-500">*</span></label>
-                        <div class="flex rounded-xl shadow-xs">
-                            <span class="bg-slate-100 border border-r-0 border-slate-200 px-3 py-2 text-slate-500 font-mono text-xs font-bold flex items-center rounded-l-xl">
-                                Rp
-                            </span>
-                            <x-currency-input model="material_unit_price" class="input-clean rounded-r-xl rounded-l-none font-mono font-bold text-xs sm:text-sm w-full" placeholder="65.000" />
-                        </div>
-                    </div>
+                    <x-currency-input 
+                        label="Harga Satuan (Rp)" 
+                        model="material_unit_price" 
+                        :value="$material_unit_price"
+                        placeholder="65.000"
+                        badgeColor="amber"
+                        required
+                    />
                 </div>
 
                 <div class="p-3.5 bg-amber-50 rounded-2xl border border-amber-200/80 flex justify-between items-center text-amber-900 font-bold">

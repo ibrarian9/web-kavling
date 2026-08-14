@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
             WorkerSeeder::class,
             EmployeeSalarySeeder::class,
             DailyActivityReportSeeder::class,
+            PayablesAndReceivablesSeeder::class,
         ]);
     }
 }

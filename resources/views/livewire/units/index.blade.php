@@ -581,11 +581,13 @@
                     @endif
 
                     @if(auth()->user()->canViewHpp())
-                        <div>
-                            <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider">HPP Pokok Final (Rp)</label>
-                            <x-currency-input model="hpp" placeholder="Rp {{ number_format($previewRecommendedHpp, 0, ',', '.') }}" class="input-clean w-full font-bold font-mono text-slate-900" />
-                            <p class="text-[10px] text-slate-500 mt-1">*HPP dapat disesuaikan ulang oleh bagian Finance.</p>
-                        </div>
+                        <x-currency-input 
+                            label="HPP Pokok Final (Rp)" 
+                            model="hpp" 
+                            :value="$hpp" 
+                            placeholder="{{ number_format($previewRecommendedHpp, 0, ',', '.') }}" 
+                            helpText="*HPP dapat disesuaikan ulang oleh bagian Finance."
+                        />
                     @endif
 
                     <div class="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">

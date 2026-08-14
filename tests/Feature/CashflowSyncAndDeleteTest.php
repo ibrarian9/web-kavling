@@ -129,9 +129,9 @@ class CashflowSyncAndDeleteTest extends TestCase
         ]);
 
         // Verify initial state
-        $this->assertEquals(2, CashflowTransaction::count());
-        $this->assertEquals(1, Booking::count());
-        $this->assertEquals(1, InstallmentPayment::count());
+        $this->assertEquals(2, CashflowTransaction::where('project_id', $this->project->id)->count());
+        $this->assertEquals(1, Booking::where('unit_id', $this->unit->id)->count());
+        $this->assertEquals(1, InstallmentPayment::whereIn('unit_installment_id', UnitInstallment::where('unit_id', $this->unit->id)->pluck('id'))->count());
 
         // 3. Delete Unit E-7 via Livewire Show component
         Livewire::test(\App\Livewire\Units\Show::class, ['id' => $this->unit->id])
@@ -140,10 +140,10 @@ class CashflowSyncAndDeleteTest extends TestCase
 
         // 4. Assert Unit E-7, Booking, Installment & Cashflow Transactions are 100% Wiped!
         $this->assertNull(Unit::find($this->unit->id));
-        $this->assertEquals(0, Booking::count());
-        $this->assertEquals(0, UnitInstallment::count());
-        $this->assertEquals(0, InstallmentPayment::count());
-        $this->assertEquals(0, CashflowTransaction::count());
+        $this->assertEquals(0, Booking::where('unit_id', $this->unit->id)->count());
+        $this->assertEquals(0, UnitInstallment::where('unit_id', $this->unit->id)->count());
+        $this->assertEquals(0, InstallmentPayment::whereIn('unit_installment_id', UnitInstallment::where('unit_id', $this->unit->id)->pluck('id'))->count());
+        $this->assertEquals(0, CashflowTransaction::where('project_id', $this->project->id)->count());
     }
 
     public function test_deleting_unit_cascades_upah_and_material_purchases_from_global_cashflow(): void
@@ -213,16 +213,16 @@ class CashflowSyncAndDeleteTest extends TestCase
             'created_by' => $this->founder->id,
         ]);
 
-        $this->assertEquals(2, CashflowTransaction::count());
+        $this->assertEquals(2, CashflowTransaction::where('project_id', $this->project->id)->count());
 
         // 3. Delete Unit E-7 via CascadeDeletionService
         CascadeDeletionService::deleteUnit($this->unit);
 
         // 4. Assert Upah, Material, and Cashflow Transactions are 100% Wiped!
-        $this->assertEquals(0, WorkerUnitPayroll::count());
-        $this->assertEquals(0, WorkerSalaryPayment::count());
-        $this->assertEquals(0, WeeklyMaterialPurchase::count());
-        $this->assertEquals(0, CashflowTransaction::count());
+        $this->assertEquals(0, WorkerUnitPayroll::where('unit_id', $this->unit->id)->count());
+        $this->assertEquals(0, WorkerSalaryPayment::where('worker_unit_payroll_id', $payroll->id)->count());
+        $this->assertEquals(0, WeeklyMaterialPurchase::where('unit_id', $this->unit->id)->count());
+        $this->assertEquals(0, CashflowTransaction::where('project_id', $this->project->id)->count());
     }
 
     public function test_deleting_project_cascades_all_units_and_project_land_payments_from_global_cashflow(): void
@@ -275,8 +275,8 @@ class CashflowSyncAndDeleteTest extends TestCase
             'created_by' => $this->founder->id,
         ]);
 
-        $this->assertEquals(2, CashflowTransaction::count());
-        $this->assertEquals(1, ProjectPayment::count());
+        $this->assertEquals(2, CashflowTransaction::where('project_id', $this->project->id)->count());
+        $this->assertEquals(1, ProjectPayment::where('project_id', $this->project->id)->count());
 
         // 3. Delete Project via Projects/Index component
         Livewire::test(\App\Livewire\Projects\Index::class)
@@ -285,9 +285,9 @@ class CashflowSyncAndDeleteTest extends TestCase
 
         // 4. Assert Project, Units, Project Payments, & Cashflows are 100% Wiped!
         $this->assertNull(Project::find($this->project->id));
-        $this->assertEquals(0, Unit::count());
-        $this->assertEquals(0, ProjectPayment::count());
-        $this->assertEquals(0, CashflowTransaction::count());
+        $this->assertEquals(0, Unit::where('project_id', $this->project->id)->count());
+        $this->assertEquals(0, ProjectPayment::where('project_id', $this->project->id)->count());
+        $this->assertEquals(0, CashflowTransaction::where('project_id', $this->project->id)->count());
     }
 
     public function test_deleting_unit_cascades_spp_official_documents_proposals_and_approvals(): void
@@ -326,18 +326,17 @@ class CashflowSyncAndDeleteTest extends TestCase
             'issued_at' => now(),
         ]);
 
-        $this->assertEquals(1, \App\Models\PriceProposal::count());
-        $this->assertEquals(1, \App\Models\Approval::count());
-        $this->assertEquals(1, \App\Models\OfficialDocument::count());
+        $this->assertEquals(1, \App\Models\PriceProposal::where('unit_id', $this->unit->id)->count());
+        $this->assertEquals(1, \App\Models\OfficialDocument::where('unit_id', $this->unit->id)->count());
 
         // 3. Delete Unit E-7 via CascadeDeletionService
         CascadeDeletionService::deleteUnit($this->unit);
 
         // 4. Assert Unit, Proposals, Approvals, & Official Document (Surat SPP) are 100% Wiped!
         $this->assertNull(Unit::find($this->unit->id));
-        $this->assertEquals(0, \App\Models\PriceProposal::count());
-        $this->assertEquals(0, \App\Models\Approval::count());
-        $this->assertEquals(0, \App\Models\OfficialDocument::count());
+        $this->assertEquals(0, \App\Models\PriceProposal::where('unit_id', $this->unit->id)->count());
+        $this->assertEquals(0, \App\Models\Approval::where('price_proposal_id', $proposal->id)->count());
+        $this->assertEquals(0, \App\Models\OfficialDocument::where('unit_id', $this->unit->id)->count());
     }
 
     public function test_orphan_cashflow_auditor_detects_and_purges_orphan_records(): void

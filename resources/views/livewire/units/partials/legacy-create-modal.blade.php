@@ -75,17 +75,23 @@
 
                 <!-- Step 4: Nilai Keuangan HPP & Harga Jual Deal -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                    <div>
-                        <label class="block font-bold text-slate-700 uppercase mb-1">Harga Pokok (HPP) (Rp) *</label>
-                        <x-currency-input model="hpp" class="input-clean w-full font-mono font-bold text-slate-900 text-sm" placeholder="Contoh: 100.000.000" />
-                        @error('hpp') <span class="text-[10px] text-rose-500 mt-1 block font-bold">{{ $message }}</span> @enderror
-                    </div>
+                    <x-currency-input 
+                        label="Harga Pokok (HPP) (Rp)" 
+                        model="hpp" 
+                        :value="$hpp"
+                        placeholder="100.000.000"
+                        badgeColor="slate"
+                        required
+                    />
 
-                    <div>
-                        <label class="block font-bold text-slate-700 uppercase mb-1">Total Harga Jual Final / Deal (Rp) *</label>
-                        <x-currency-input model="final_selling_price" class="input-clean w-full font-mono font-bold text-emerald-700 text-sm sm:text-base" placeholder="Contoh: 150.000.000" />
-                        @error('final_selling_price') <span class="text-[10px] text-rose-500 mt-1 block font-bold">{{ $message }}</span> @enderror
-                    </div>
+                    <x-currency-input 
+                        label="Total Harga Jual Final / Deal (Rp)" 
+                        model="final_selling_price" 
+                        :value="$final_selling_price"
+                        placeholder="150.000.000"
+                        badgeColor="emerald"
+                        required
+                    />
                 </div>
 
                 <!-- Step 5: Data Pembeli & Transaksi Lunas -->

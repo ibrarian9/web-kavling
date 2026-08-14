@@ -9,6 +9,7 @@ use App\Models\Unit;
 use App\Services\ActivityLogger;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use App\Livewire\Traits\WithFileUploadValidation;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Livewire\WithPagination;
@@ -17,6 +18,7 @@ class Index extends Component
 {
     use WithPagination;
     use WithFileUploads;
+    use WithFileUploadValidation;
 
     public ?int $projectFilter = null;
     public string $typeFilter = '';
@@ -97,7 +99,9 @@ class Index extends Component
 
     public function updatedReceiptPhoto(): void
     {
-        $this->validateOnly('receipt_photo');
+        $this->validate([
+            'receipt_photo' => 'nullable|file|mimes:jpg,jpeg,png,webp,heic,heif,pdf|max:10240',
+        ]);
     }
 
     public function create(): void
@@ -202,11 +206,11 @@ class Index extends Component
             return;
         }
 
-        if (!$user->isMarketing() && !$user->isFinance() && !$user->isFounder()) {
-            $err = 'Hanya Marketing, Finance, dan Founder yang berhak mencatat booking baru.';
-            session()->flash('error', $err);
-            $this->dispatch('notify', ['type' => 'error', 'title' => 'Gagal!', 'message' => $err]);
-            return;
+        if ($this->booking_amount) {
+            $this->booking_amount = (float) preg_replace('/[^0-9]/', '', (string)$this->booking_amount);
+        }
+        if ($this->dp_amount) {
+            $this->dp_amount = (float) preg_replace('/[^0-9]/', '', (string)$this->dp_amount);
         }
 
         $validated = $this->validate();

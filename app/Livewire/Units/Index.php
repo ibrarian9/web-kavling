@@ -7,6 +7,7 @@ use App\Models\Project;
 use App\Models\Unit;
 use App\Models\WorkerAssignment;
 use Illuminate\Validation\Rule;
+use App\Livewire\Traits\WithFileUploadValidation;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Livewire\WithPagination;
@@ -15,6 +16,7 @@ class Index extends Component
 {
     use WithPagination;
     use WithFileUploads;
+    use WithFileUploadValidation;
 
     public $project_id;
     public $showModal = false;
@@ -271,6 +273,13 @@ class Index extends Component
         $this->booking_notes = 'Booking unit ' . $unit->code . ' via sistem.';
         $this->receipt_photo = null;
         $this->showBookingModal = true;
+    }
+
+    public function updatedReceiptPhoto(): void
+    {
+        $this->validate([
+            'receipt_photo' => 'nullable|file|mimes:jpg,jpeg,png,webp,heic,heif,pdf|max:10240',
+        ]);
     }
 
     public function saveBooking()

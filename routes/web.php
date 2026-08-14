@@ -93,6 +93,7 @@ Route::middleware(['auth', \App\Http\Middleware\EnsureUserIsActive::class])->gro
     Route::get('/cashflow', CashflowIndex::class)->name('cashflow.index');
     Route::get('/cashflow/export-pdf', [\App\Http\Controllers\CashflowReportController::class, 'exportPdf'])->name('cashflow.export-pdf');
     Route::get('/cashflow/export-excel', [\App\Http\Controllers\CashflowReportController::class, 'exportExcel'])->name('cashflow.export-excel');
+    Route::get('/payables', \App\Livewire\Payables\Index::class)->name('payables.index');
     Route::get('/manual-invoices', \App\Livewire\ManualInvoices\Index::class)->name('manual-invoices.index');
     Route::get('/manual-invoices/{uuid}/pdf', [\App\Http\Controllers\ManualInvoiceController::class, 'streamPdf'])->name('manual-invoices.pdf');
 
