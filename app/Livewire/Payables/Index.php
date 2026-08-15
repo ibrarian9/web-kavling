@@ -102,6 +102,28 @@ class Index extends Component
     public string $pay_rec_notes = '';
     public $pay_rec_photo = null;
 
+    // Universal Media Viewer Modal
+    public bool $showViewerModal = false;
+    public string $viewerType = 'auto';
+    public string $viewerUrl = '';
+    public string $viewerTitle = '';
+
+    public function openViewerModal(string $type, string $url, string $title = ''): void
+    {
+        $this->viewerType = $type;
+        $this->viewerUrl = $url;
+        $this->viewerTitle = $title ?: 'Pratinjau Berkas & Dokumen';
+        $this->showViewerModal = true;
+    }
+
+    public function closeViewerModal(): void
+    {
+        $this->showViewerModal = false;
+        $this->viewerType = 'auto';
+        $this->viewerUrl = '';
+        $this->viewerTitle = '';
+    }
+
     protected $queryString = [
         'activeTab' => ['except' => 'material_bills'],
         'search' => ['except' => ''],

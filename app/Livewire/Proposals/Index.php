@@ -256,6 +256,11 @@ class Index extends Component
         $this->showApprovalModal = true;
     }
 
+    public function openApproveModal($proposalId)
+    {
+        $this->openApprovalModal($proposalId);
+    }
+
     public function submitApproval()
     {
         $user = auth()->user();

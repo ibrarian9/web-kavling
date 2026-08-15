@@ -74,7 +74,12 @@ class ActivityLogTest extends TestCase
 
     public function test_user_login_triggers_activity_log(): void
     {
-        $user = User::where('role', 'founder')->firstOrFail();
+        $this->flushSession();
+        $user = User::factory()->create([
+            'role' => 'founder',
+            'password' => bcrypt('password123'),
+            'is_active' => true,
+        ]);
 
         $response = $this->post('/login', [
             'email' => $user->email,
@@ -91,7 +96,8 @@ class ActivityLogTest extends TestCase
 
     public function test_role_switch_triggers_activity_log(): void
     {
-        $founder = User::where('role', 'founder')->firstOrFail();
+        $founder = User::factory()->create(['role' => 'founder', 'is_active' => true]);
+        User::factory()->create(['role' => 'marketing', 'is_active' => true]);
 
         $response = $this->actingAs($founder)->get('/switch-role/marketing');
         $response->assertRedirect('/dashboard');

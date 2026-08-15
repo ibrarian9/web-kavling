@@ -5,6 +5,8 @@ namespace App\Livewire\Installments;
 use App\Models\CashflowTransaction;
 use App\Models\InstallmentPayment;
 use App\Models\OfficialDocument;
+use App\Models\Project;
+use App\Models\ProjectPayment;
 use App\Models\Unit;
 use App\Models\UnitInstallment;
 use Livewire\Component;
@@ -15,6 +17,24 @@ class Index extends Component
 {
     use WithPagination;
     use WithFileUploads;
+
+    public string $activeTab = 'unit_installments'; // 'unit_installments' or 'land_payments'
+
+    protected $queryString = [
+        'activeTab' => ['except' => 'unit_installments'],
+        'search' => ['except' => ''],
+        'statusFilter' => ['except' => ''],
+        'projectIdFilter' => ['except' => ''],
+        'monthlyFilter' => ['except' => 'all'],
+        'landSearch' => ['except' => ''],
+        'landProjectIdFilter' => ['except' => ''],
+    ];
+
+    public function setTab(string $tab): void
+    {
+        $this->activeTab = $tab;
+        $this->resetPage();
+    }
 
     public $showSetupModal = false;
     public $showPaymentModal = false;
@@ -60,10 +80,24 @@ class Index extends Component
     public $payment_notes = '';
     public $payment_receipt_photo = null;
 
+    // Land Payment Form
+    public bool $showLandPaymentModal = false;
+    public ?int $editingLandPaymentId = null;
+    public $land_project_id = '';
+    public $land_payment_amount = 0;
+    public $land_payment_date = '';
+    public $land_payment_method = 'Transfer Bank';
+    public $land_payment_notes = '';
+    public $land_payment_receipt_photo = null;
+    public ?string $existing_land_receipt_photo_path = null;
+    public string $landSearch = '';
+    public string $landProjectIdFilter = '';
+
     public function mount()
     {
         $this->start_date = date('Y-m-d');
         $this->payment_date = date('Y-m-d');
+        $this->land_payment_date = date('Y-m-d');
     }
 
     public function updated($propertyName)
@@ -525,6 +559,160 @@ class Index extends Component
         }
     }
 
+    // ==========================================
+    // LAND PAYMENTS MANAGEMENT (PEMBAYARAN LAHAN)
+    // ==========================================
+
+    public function openLandPaymentModal($paymentId = null)
+    {
+        $user = auth()->user();
+        if (!$user || (!$user->isFounder() && !$user->isAdmin() && !$user->isFinance())) {
+            session()->flash('error', 'Hanya Founder, Admin, dan Tim Finance yang berhak mencatat pembayaran lahan.');
+            return;
+        }
+
+        $this->resetValidation();
+        if ($paymentId) {
+            $pay = ProjectPayment::with('project')->findOrFail($paymentId);
+            $this->editingLandPaymentId = $pay->id;
+            $this->land_project_id = $pay->project_id;
+            $this->land_payment_amount = (float)$pay->amount_paid;
+            $this->land_payment_date = $pay->payment_date ? $pay->payment_date->format('Y-m-d') : date('Y-m-d');
+            $this->land_payment_method = $pay->payment_method ?: 'Transfer Bank';
+            $this->land_payment_notes = $pay->notes ?? '';
+            $this->land_payment_receipt_photo = null;
+            $this->existing_land_receipt_photo_path = $pay->receipt_photo_path;
+        } else {
+            $this->editingLandPaymentId = null;
+            $firstProj = Project::orderBy('name')->first();
+            $this->land_project_id = $firstProj ? $firstProj->id : '';
+            $this->land_payment_amount = 0;
+            $this->land_payment_date = date('Y-m-d');
+            $this->land_payment_method = 'Transfer Bank';
+            $this->land_payment_notes = '';
+            $this->land_payment_receipt_photo = null;
+            $this->existing_land_receipt_photo_path = null;
+        }
+        $this->showLandPaymentModal = true;
+    }
+
+    public function closeLandPaymentModal()
+    {
+        $this->showLandPaymentModal = false;
+        $this->editingLandPaymentId = null;
+        $this->land_payment_receipt_photo = null;
+        $this->existing_land_receipt_photo_path = null;
+    }
+
+    public function submitLandPayment()
+    {
+        $user = auth()->user();
+        if (!$user || (!$user->isFounder() && !$user->isAdmin() && !$user->isFinance())) {
+            session()->flash('error', 'Hanya Founder, Admin, dan Tim Finance yang berhak mencatat pembayaran lahan.');
+            return;
+        }
+
+        $this->validate([
+            'land_project_id' => 'required|exists:projects,id',
+            'land_payment_amount' => 'required|numeric|min:1000',
+            'land_payment_date' => 'required|date',
+            'land_payment_method' => 'required|string',
+            'land_payment_receipt_photo' => 'nullable|image|mimes:jpg,jpeg,png,webp,heic,heif|max:2048',
+        ], [
+            'land_payment_receipt_photo.image' => 'File bukti pembayaran lahan harus berupa foto/gambar (JPG, JPEG, PNG, WEBP, HEIC).',
+            'land_payment_receipt_photo.mimes' => 'File bukti pembayaran lahan harus berupa foto/gambar (JPG, JPEG, PNG, WEBP, HEIC).',
+        ]);
+
+        $project = Project::findOrFail($this->land_project_id);
+
+        $photoPath = null;
+        if ($this->land_payment_receipt_photo) {
+            $photoPath = \App\Services\ImageCompressor::compressAndStore($this->land_payment_receipt_photo, 'project-payment-receipts');
+        }
+
+        if ($this->editingLandPaymentId) {
+            $payment = ProjectPayment::findOrFail($this->editingLandPaymentId);
+            $updateData = [
+                'project_id' => $this->land_project_id,
+                'payment_date' => $this->land_payment_date,
+                'amount_paid' => $this->land_payment_amount,
+                'payment_method' => $this->land_payment_method,
+                'notes' => $this->land_payment_notes,
+            ];
+            if ($photoPath) {
+                $updateData['receipt_photo_path'] = $photoPath;
+            }
+            $payment->update($updateData);
+
+            // Sync related CashflowTransaction
+            CashflowTransaction::where('reference_type', ProjectPayment::class)
+                ->where('reference_id', $payment->id)
+                ->update([
+                    'project_id' => $project->id,
+                    'amount' => $this->land_payment_amount,
+                    'transaction_date' => $this->land_payment_date,
+                    'description' => 'Pembayaran Lahan Proyek ' . $project->name . ' ke Penjual Tanah (' . $this->land_payment_method . ')',
+                ]);
+
+            \App\Services\ActivityLogger::log('PROJECT_PAYMENT_UPDATED', "Pembayaran lahan Proyek {$project->name} sebesar Rp " . number_format($this->land_payment_amount, 0, ',', '.') . " diperbarui.");
+            session()->flash('success', 'Data pembayaran lahan berhasil diperbarui! Arus Kas otomatis disesuaikan.');
+            $this->closeLandPaymentModal();
+            return;
+        }
+
+        // CREATE MODE
+        $payment = ProjectPayment::create([
+            'project_id' => $project->id,
+            'payment_date' => $this->land_payment_date,
+            'amount_paid' => $this->land_payment_amount,
+            'payment_method' => $this->land_payment_method,
+            'notes' => $this->land_payment_notes,
+            'receipt_photo_path' => $photoPath,
+            'created_by' => auth()->id(),
+        ]);
+
+        // Auto record in Cashflow Transactions as Kas Keluar (Pengeluaran Pembelian Lahan)
+        CashflowTransaction::create([
+            'project_id' => $project->id,
+            'type' => 'keluar',
+            'category' => 'operasional',
+            'amount' => $this->land_payment_amount,
+            'transaction_date' => $this->land_payment_date,
+            'description' => 'Pembayaran Lahan Proyek ' . $project->name . ' ke Penjual Tanah (' . $this->land_payment_method . ')',
+            'reference_type' => ProjectPayment::class,
+            'reference_id' => $payment->id,
+            'created_by' => auth()->id(),
+        ]);
+
+        \App\Services\ActivityLogger::log('PROJECT_PAYMENT_CREATED', "Pembayaran lahan Proyek {$project->name} sebesar Rp " . number_format($this->land_payment_amount, 0, ',', '.') . " dicatat di Arus Kas.");
+
+        session()->flash('success', 'Pembayaran pembelian lahan sebesar Rp ' . number_format($this->land_payment_amount, 0, ',', '.') . ' ke penjual tanah berhasil dicatat di Arus Kas (Kas Keluar)!');
+        $this->closeLandPaymentModal();
+    }
+
+    public function deleteLandPayment($paymentId)
+    {
+        $user = auth()->user();
+        if (!$user || (!$user->isFounder() && !$user->isFinance())) {
+            session()->flash('error', 'Hanya Founder dan Tim Finance yang berhak menghapus catatan pembayaran lahan proyek.');
+            return;
+        }
+
+        $payment = ProjectPayment::with('project')->findOrFail($paymentId);
+        $projectName = $payment->project->name ?? '-';
+
+        // Remove related CashflowTransaction if present
+        CashflowTransaction::where('reference_type', ProjectPayment::class)
+            ->where('reference_id', $payment->id)
+            ->delete();
+
+        $payment->delete();
+
+        \App\Services\ActivityLogger::log('PROJECT_PAYMENT_DELETED', "Catatan pembayaran lahan proyek {$projectName} (ID #{$paymentId}) dihapus.");
+
+        session()->flash('success', 'Catatan pembayaran lahan proyek berhasil dihapus.');
+    }
+
     public string $search = '';
     public string $statusFilter = '';
     public string $projectIdFilter = '';
@@ -546,6 +734,16 @@ class Index extends Component
         $this->resetPage();
     }
 
+    public function updatingLandSearch(): void
+    {
+        $this->resetPage('land_page');
+    }
+
+    public function updatingLandProjectIdFilter(): void
+    {
+        $this->resetPage('land_page');
+    }
+
     public function updatingStatusFilter(): void
     {
         $this->resetPage();
@@ -558,6 +756,7 @@ class Index extends Component
 
     public function render()
     {
+        // 1. QUERY FOR UNIT INSTALLMENTS
         $query = UnitInstallment::with(['unit.project', 'unit.activeBooking', 'unit.bookings', 'officialDocument', 'payments']);
 
         if (trim($this->search) !== '') {
@@ -608,13 +807,13 @@ class Index extends Component
 
         $installments = $query->latest()->paginate(10);
 
-        $projects = \App\Models\Project::orderBy('name')->get();
+        $projects = Project::with('payments')->orderBy('name')->get();
 
         $eligibleUnits = Unit::whereIn('status', ['terjual', 'disetujui'])
             ->doesntHave('installment')
             ->get();
 
-        // Calculate Monthly Metrics for Cards
+        // Calculate Monthly Metrics for Unit Installment Cards
         $activeInstallments = UnitInstallment::with(['payments'])->where('status', 'berjalan')->get();
         $unpaidThisMonthCount = 0;
         $unpaidThisMonthAmount = 0;
@@ -637,8 +836,32 @@ class Index extends Component
             }
         }
 
+        // 2. QUERY FOR LAND PAYMENTS (PEMBAYARAN LAHAN)
+        $landQuery = ProjectPayment::with(['project', 'creator', 'cashflowTransaction']);
+        if (trim($this->landSearch) !== '') {
+            $ls = '%' . trim($this->landSearch) . '%';
+            $landQuery->where(function ($q) use ($ls) {
+                $q->whereHas('project', function ($pq) use ($ls) {
+                    $pq->where('name', 'like', $ls)->orWhere('location', 'like', $ls);
+                })->orWhere('notes', 'like', $ls)
+                  ->orWhere('payment_method', 'like', $ls);
+            });
+        }
+        if ($this->landProjectIdFilter !== '') {
+            $landQuery->where('project_id', $this->landProjectIdFilter);
+        }
+
+        $landPayments = $landQuery->latest('payment_date')->paginate(10, ['*'], 'land_page');
+
+        // Land Payment KPI Metrics
+        $totalLandCost = (float)Project::sum('total_project_price');
+        $totalLandPaid = (float)ProjectPayment::sum('amount_paid');
+        $totalLandRemaining = max(0, $totalLandCost - $totalLandPaid);
+        $totalLandTransactions = ProjectPayment::count();
+
         return view('livewire.installments.index', [
             'installments' => $installments,
+            'landPayments' => $landPayments,
             'projects' => $projects,
             'eligibleUnits' => $eligibleUnits,
             'showConvertToCashModal' => $this->showConvertToCashModal,
@@ -653,6 +876,10 @@ class Index extends Component
             'viewerType' => $this->viewerType,
             'viewerUrl' => $this->viewerUrl,
             'viewerTitle' => $this->viewerTitle,
-        ])->layout('components.layouts.app', ['title' => 'Cicilan & Piutang Pembeli']);
+            'totalLandCost' => $totalLandCost,
+            'totalLandPaid' => $totalLandPaid,
+            'totalLandRemaining' => $totalLandRemaining,
+            'totalLandTransactions' => $totalLandTransactions,
+        ])->layout('components.layouts.app', ['title' => 'Cicilan & Piutang']);
     }
 }

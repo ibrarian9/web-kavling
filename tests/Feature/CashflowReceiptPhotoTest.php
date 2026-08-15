@@ -9,6 +9,7 @@ use Livewire\Livewire;
 
 beforeEach(function () {
     Storage::fake('public');
+    Storage::fake('local');
 
     $this->founder = User::factory()->create([
         'role' => 'founder',
@@ -27,7 +28,7 @@ beforeEach(function () {
 });
 
 test('user can upload receipt photo when creating cashflow transaction and view it', function () {
-    $file = UploadedFile::fake()->image('bukti_kas.jpg');
+    $file = UploadedFile::fake()->image('bukti_kas.jpg', 100, 100);
 
     $this->actingAs($this->founder);
 
@@ -46,8 +47,12 @@ test('user can upload receipt photo when creating cashflow transaction and view 
     expect($trx)->not->toBeNull();
     expect($trx->receipt_photo_path)->not->toBeNull();
     expect($trx->receipt_photo_url)->not->toBeNull();
+    $fullPath = storage_path('app/public/' . $trx->receipt_photo_path);
+    expect(file_exists($fullPath))->toBeTrue();
 
-    Storage::disk('public')->assertExists($trx->receipt_photo_path);
+    if (file_exists($fullPath)) {
+        @unlink($fullPath);
+    }
 
     // Test opening image modal
     Livewire::test(\App\Livewire\Cashflow\Index::class)

@@ -47,4 +47,9 @@ class Booking extends Model
     {
         return $this->belongsTo(User::class, 'created_by');
     }
+
+    public function getReceiptPhotoUrlAttribute(): ?string
+    {
+        return $this->receipt_photo_path ? asset('storage/' . $this->receipt_photo_path) : null;
+    }
 }

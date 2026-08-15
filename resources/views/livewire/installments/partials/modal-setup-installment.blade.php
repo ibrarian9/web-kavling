@@ -30,23 +30,24 @@
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
-                        <label class="block font-semibold text-slate-700 mb-1 text-xs uppercase tracking-wider">Total Harga Jual <span class="text-rose-500">*</span></label>
-                        <div class="flex rounded-xl shadow-xs">
-                            <span class="bg-slate-100 border border-r-0 border-slate-200 px-3 py-2 text-slate-500 font-mono text-xs font-bold flex items-center rounded-l-xl">
-                                Rp
-                            </span>
-                            <x-currency-input model="total_price" class="input-clean rounded-r-xl rounded-l-none font-bold text-xs sm:text-sm font-mono w-full" placeholder="0" />
-                        </div>
+                        <x-currency-input 
+                            label="Total Harga Jual (Rp)" 
+                            model="total_price" 
+                            :value="$total_price"
+                            placeholder="0" 
+                            required 
+                        />
                     </div>
                     <div>
-                        <label class="block font-semibold text-slate-700 mb-1 text-xs uppercase tracking-wider">Total Uang Muka / DP Kesepakatan <span class="text-rose-500">*</span></label>
-                        <div class="flex rounded-xl shadow-xs">
-                            <span class="bg-slate-100 border border-r-0 border-slate-200 px-3 py-2 text-slate-500 font-mono text-xs font-bold flex items-center rounded-l-xl">
-                                Rp
-                            </span>
-                            <x-currency-input model="down_payment" class="input-clean rounded-r-xl rounded-l-none font-bold text-xs sm:text-sm font-mono text-emerald-700 w-full" placeholder="0" />
-                        </div>
-                        <p class="text-[10px] text-slate-400 mt-1">Total DP Keseluruhan (Termasuk Booking Fee yang sudah dibayar).</p>
+                        <x-currency-input 
+                            label="Total DP Kesepakatan (Rp)" 
+                            model="down_payment" 
+                            :value="$down_payment"
+                            placeholder="0" 
+                            badgeColor="emerald"
+                            helpText="Total DP Keseluruhan (Termasuk Booking Fee yang sudah dibayar)."
+                            required 
+                        />
                     </div>
                 </div>
 

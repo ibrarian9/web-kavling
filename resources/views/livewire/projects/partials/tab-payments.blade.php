@@ -7,10 +7,10 @@
         </div>
         <div class="flex flex-wrap items-center gap-2">
             @if(count($projectPaymentsList) > 0)
-                <a href="{{ route('projects.land-payments-pdf', $project->id) }}" target="_blank" class="btn-header-pdf">
+                <button type="button" wire:click="openViewerModal('pdf', '{{ route('projects.land-payments-pdf', $project->id) }}', 'Rekapitulasi Pembayaran Lahan - {{ $project->name }}')" class="btn-header-pdf">
                     <svg class="w-4 h-4 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
                     <span>Lihat PDF Rekap</span>
-                </a>
+                </button>
             @else
                 <button disabled class="btn-header-pdf-disabled" title="Belum ada data pembayaran lahan untuk digenerate PDF">
                     <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
@@ -65,20 +65,20 @@
                             </button>
                         @endif
                         @if($pay->receipt_photo_url)
-                            <a href="{{ $pay->receipt_photo_url }}" target="_blank" class="btn-action-pdf">
+                            <button type="button" wire:click="openViewerModal('image', '{{ $pay->receipt_photo_url }}', 'Foto Bukti Pembayaran Lahan - {{ $project->name }}')" class="btn-action-pdf">
                                 <svg class="w-3.5 h-3.5 text-sky-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                                 <span>Foto Resi</span>
-                            </a>
+                            </button>
                         @endif
                         @if($pay->uuid)
-                            <a href="{{ route('land-payment.receipt', $pay->uuid) }}" target="_blank" class="btn-action-pdf">
+                            <button type="button" wire:click="openViewerModal('pdf', '{{ route('land-payment.receipt', $pay->uuid) }}', 'Kuitansi Pembayaran Lahan - {{ $project->name }}')" class="btn-action-pdf">
                                 <svg class="w-3.5 h-3.5 text-sky-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                                 <span>Kuitansi PDF</span>
-                            </a>
-                            <a href="{{ route('verify.land-payment', $pay->uuid) }}" target="_blank" class="btn-action-qr">
+                            </button>
+                            <button type="button" wire:click="openViewerModal('qr', '{{ route('verify.land-payment', $pay->uuid) }}', 'Verifikasi Keabsahan Kuitansi Lahan - {{ $project->name }}')" class="btn-action-qr">
                                 <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/></svg>
                                 <span>Scan QR</span>
-                            </a>
+                            </button>
                         @endif
                         @if(auth()->user()->isAdminOrFounder() || auth()->user()->isFinance())
                             <button wire:click="editProjectPayment({{ $pay->id }})" class="btn-action-edit" title="Edit">
@@ -137,10 +137,10 @@
                             </td>
                             <td class="px-4 py-3.5">
                                 @if($pay->receipt_photo_url)
-                                    <a href="{{ $pay->receipt_photo_url }}" target="_blank" class="btn-action-pdf">
+                                    <button type="button" wire:click="openViewerModal('image', '{{ $pay->receipt_photo_url }}', 'Foto Bukti Pembayaran Lahan - {{ $project->name }}')" class="btn-action-pdf">
                                         <svg class="w-3.5 h-3.5 text-sky-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                                         <span>Foto Resi</span>
-                                    </a>
+                                    </button>
                                 @else
                                     <span class="text-slate-400 italic text-[11px]">-</span>
                                 @endif
@@ -148,15 +148,15 @@
                             <td class="px-4 py-3.5">
                                 @if($pay->uuid)
                                     <div class="flex items-center gap-1.5">
-                                        <a href="{{ route('land-payment.receipt', $pay->uuid) }}" target="_blank" class="btn-action-pdf">
+                                        <button type="button" wire:click="openViewerModal('pdf', '{{ route('land-payment.receipt', $pay->uuid) }}', 'Kuitansi Pembayaran Lahan - {{ $project->name }}')" class="btn-action-pdf">
                                             <svg class="w-3.5 h-3.5 text-sky-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                                             <span>Kuitansi PDF</span>
-                                        </a>
+                                        </button>
 
-                                        <a href="{{ route('verify.land-payment', $pay->uuid) }}" target="_blank" class="btn-action-qr" title="Verifikasi QR Keabsahan">
+                                        <button type="button" wire:click="openViewerModal('qr', '{{ route('verify.land-payment', $pay->uuid) }}', 'Verifikasi Keabsahan Kuitansi Lahan - {{ $project->name }}')" class="btn-action-qr" title="Verifikasi QR Keabsahan">
                                             <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/></svg>
                                             <span>Scan QR</span>
-                                        </a>
+                                        </button>
                                     </div>
                                 @else
                                     <span class="text-slate-400 italic text-[11px]">-</span>

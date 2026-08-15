@@ -39,7 +39,7 @@
     </div>
 
     <!-- Control & Filter Bar -->
-    <div class="card-clean p-4 space-y-4">
+    <div class="card-clean p-4 border border-slate-200/80 rounded-3xl space-y-4">
         <div class="flex flex-col md:flex-row items-center justify-between gap-4">
             
             <!-- Tabs Switcher -->
@@ -57,7 +57,7 @@
                 </button>
 
                 <button wire:click="setTab('file')" type="button" class="px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 shrink-0 {{ $activeTab === 'file' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-500 hover:text-slate-800' }}">
-                    <svg class="w-4 h-4 text-purple-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 01-2-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                    <svg class="w-4 h-4 text-purple-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                     <span>File Server (`laravel.log`)</span>
                 </button>
             </div>
@@ -67,7 +67,7 @@
                 <x-search-input placeholder="Cari user, aksi, IP..." containerClass="w-full sm:w-64" />
 
                 @if(in_array($activeTab, ['database', 'notifications']))
-                    <select wire:model.live="actionFilter" class="w-full sm:w-48 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold text-slate-700 focus:ring-2 focus:ring-emerald-500 outline-none">
+                    <select wire:model.live="actionFilter" class="select-clean text-xs font-bold w-full sm:w-48">
                         <option value="">Semua Aksi</option>
                         @foreach($availableActions as $act)
                             <option value="{{ $act }}">{{ $act }}</option>
@@ -81,79 +81,64 @@
 
     <!-- TAB 1 & 2: Database Audit Logs (Operational or Notifications) -->
     @if(in_array($activeTab, ['database', 'notifications']))
-        <div class="card-clean overflow-hidden">
-            <div class="overflow-x-auto">
-                <table class="w-full text-left text-xs">
-                    <thead class="bg-slate-50 text-slate-700 uppercase text-[10px] font-extrabold tracking-wider border-b border-slate-200">
-                        <tr>
-                            <th class="px-4 py-3.5">Waktu Presisi</th>
-                            <th class="px-4 py-3.5">Pengguna / Peran</th>
-                            <th class="px-4 py-3.5">Jenis Event / Aksi</th>
-                            <th class="px-4 py-3.5">Detail Log Aktivitas / Notifikasi</th>
-                            <th class="px-4 py-3.5">IP & Client Device</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-100">
-                        @forelse($databaseLogs as $log)
-                            <tr class="hover:bg-slate-50/80 transition">
-                                <td class="px-4 py-3.5 font-mono text-[11px] text-slate-600 whitespace-nowrap">
-                                    <div class="font-bold text-slate-800">{{ $log->created_at->format('d M Y') }}</div>
-                                    <div class="text-[10px] text-slate-400">{{ $log->created_at->format('H:i:s') }} ({{ $log->created_at->diffForHumans() }})</div>
-                                </td>
-                                <td class="px-4 py-3.5">
-                                    <div class="flex items-center gap-2">
-                                        <div class="w-7 h-7 rounded-full {{ $activeTab === 'notifications' ? 'bg-blue-100 text-blue-700' : 'bg-purple-100 text-purple-700' }} font-extrabold flex items-center justify-center text-xs shrink-0">
-                                            {{ strtoupper(substr($log->user_name, 0, 1)) }}
-                                        </div>
-                                        <div>
-                                            <div class="font-bold text-slate-900">{{ $log->user_name }}</div>
-                                            <span class="px-1.5 py-0.5 rounded bg-slate-100 border border-slate-200 text-[9px] font-semibold text-slate-600 uppercase">
-                                                {{ $log->user_role }}
-                                            </span>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="px-4 py-3.5 whitespace-nowrap">
-                                    @php
-                                        $isNotif = str_starts_with($log->action, 'NOTIF_') || str_starts_with($log->action, 'NOTIFICATION_');
-                                        $badgeClass = match(true) {
-                                            $isNotif => 'bg-blue-50 text-blue-700 border-blue-200',
-                                            str_contains($log->action, 'LOGIN') || str_contains($log->action, 'AUTH') => 'bg-emerald-50 text-emerald-700 border-emerald-200',
-                                            str_contains($log->action, 'CLEAR') || str_contains($log->action, 'DELETE') => 'bg-rose-50 text-rose-700 border-rose-200',
-                                            str_contains($log->action, 'CREATE') || str_contains($log->action, 'ADD') => 'bg-sky-50 text-sky-700 border-sky-200',
-                                            default => 'bg-purple-50 text-purple-700 border-purple-200',
-                                        };
-                                    @endphp
-                                    <span class="px-2.5 py-1 rounded-lg border text-[10px] font-extrabold font-mono uppercase tracking-wider {{ $badgeClass }}">
-                                        {{ $log->action }}
+        <div class="space-y-4">
+            <x-table :headers="['Waktu Presisi', 'Pengguna / Peran', 'Jenis Event / Aksi', 'Detail Log Aktivitas / Notifikasi', 'IP & Client Device']" loadingTarget="search, actionFilter, gotoPage, nextPage, previousPage">
+                @forelse($databaseLogs as $log)
+                    <tr class="hover:bg-slate-50/80 transition">
+                        <td class="p-3.5 font-mono text-[11px] text-slate-600 whitespace-nowrap">
+                            <div class="font-bold text-slate-800">{{ $log->created_at->format('d M Y') }}</div>
+                            <div class="text-[10px] text-slate-400">{{ $log->created_at->format('H:i:s') }} ({{ $log->created_at->diffForHumans() }})</div>
+                        </td>
+                        <td class="p-3.5">
+                            <div class="flex items-center gap-2">
+                                <div class="w-7 h-7 rounded-full {{ $activeTab === 'notifications' ? 'bg-blue-100 text-blue-700' : 'bg-purple-100 text-purple-700' }} font-extrabold flex items-center justify-center text-xs shrink-0">
+                                    {{ strtoupper(substr($log->user_name, 0, 1)) }}
+                                </div>
+                                <div>
+                                    <div class="font-bold text-slate-900 text-xs">{{ $log->user_name }}</div>
+                                    <span class="px-1.5 py-0.5 rounded bg-slate-100 border border-slate-200 text-[9px] font-semibold text-slate-600 uppercase">
+                                        {{ $log->user_role }}
                                     </span>
-                                </td>
-                                <td class="px-4 py-3.5 text-slate-700 font-medium max-w-md">
-                                    {{ $log->description }}
-                                </td>
-                                <td class="px-4 py-3.5 text-[11px] font-mono text-slate-500 whitespace-nowrap">
-                                    <div>{{ $log->ip_address ?: '127.0.0.1' }}</div>
-                                    <div class="text-[9px] text-slate-400 max-w-xs truncate" title="{{ $log->user_agent }}">
-                                        {{ $log->user_agent ? Str::limit($log->user_agent, 30) : '-' }}
-                                    </div>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="5" class="px-6 py-12 text-center text-slate-400">
-                                    <svg class="w-12 h-12 mx-auto text-slate-300 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                                    <p class="font-semibold text-slate-600">Belum ada riwayat {{ $activeTab === 'notifications' ? 'log notifikasi terkirim' : 'aktivitas operasional' }} tercatat</p>
-                                    <p class="text-xs text-slate-400 mt-1">Seluruh log terikat akan ditampilkan di sini.</p>
-                                </td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="p-3.5 whitespace-nowrap">
+                            @php
+                                $isNotif = str_starts_with($log->action, 'NOTIF_') || str_starts_with($log->action, 'NOTIFICATION_');
+                                $badgeClass = match(true) {
+                                    $isNotif => 'bg-blue-50 text-blue-700 border-blue-200',
+                                    str_contains($log->action, 'LOGIN') || str_contains($log->action, 'AUTH') => 'bg-emerald-50 text-emerald-700 border-emerald-200',
+                                    str_contains($log->action, 'CLEAR') || str_contains($log->action, 'DELETE') => 'bg-rose-50 text-rose-700 border-rose-200',
+                                    str_contains($log->action, 'CREATE') || str_contains($log->action, 'ADD') => 'bg-sky-50 text-sky-700 border-sky-200',
+                                    default => 'bg-purple-50 text-purple-700 border-purple-200',
+                                };
+                            @endphp
+                            <span class="px-2.5 py-1 rounded-lg border text-[10px] font-extrabold font-mono uppercase tracking-wider {{ $badgeClass }}">
+                                {{ $log->action }}
+                            </span>
+                        </td>
+                        <td class="p-3.5 text-slate-700 font-medium text-xs max-w-md">
+                            {{ $log->description }}
+                        </td>
+                        <td class="p-3.5 text-[11px] font-mono text-slate-500 whitespace-nowrap">
+                            <div>{{ $log->ip_address ?: '127.0.0.1' }}</div>
+                            <div class="text-[9px] text-slate-400 max-w-xs truncate" title="{{ $log->user_agent }}">
+                                {{ $log->user_agent ? Str::limit($log->user_agent, 30) : '-' }}
+                            </div>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="5" class="p-12 text-center text-slate-400">
+                            <svg class="w-12 h-12 mx-auto text-slate-300 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                            <p class="font-semibold text-slate-600">Belum ada riwayat {{ $activeTab === 'notifications' ? 'log notifikasi terkirim' : 'aktivitas operasional' }} tercatat</p>
+                            <p class="text-xs text-slate-400 mt-1">Seluruh log terikat akan ditampilkan di sini.</p>
+                        </td>
+                    </tr>
+                @endforelse
+            </x-table>
 
-            <div class="p-4 border-t border-slate-100">
-                {{ $databaseLogs->links() }}
-            </div>
+            <div>{{ $databaseLogs->links() }}</div>
         </div>
 
     <!-- TAB 3: File Log (`laravel.log`) -->

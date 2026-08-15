@@ -1,16 +1,16 @@
 # Graph Report - web-kavling  (2026-08-15)
 
 ## Corpus Check
-- 406 files · ~196,576 words
+- 408 files · ~196,145 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 1707 nodes · 3056 edges · 286 communities (182 shown, 104 thin omitted)
+- 1703 nodes · 3050 edges · 289 communities (181 shown, 108 thin omitted)
 - Extraction: 84% EXTRACTED · 16% INFERRED · 0% AMBIGUOUS · INFERRED: 488 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `d57a8046`
+- Built from commit: `5b03f522`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -23,26 +23,27 @@
 - UnitInstallment
 - Index
 - Show
-- DailyActivityReport
+- Index
 - scripts
-- ActivityLogTest
+- ActivityLogger
 - Show
 - Index
 - Unit
-- WorkerAssignment
+- DailyActivityReport
 - Illuminate\Database\Seeder
 - Booking
 - Index
 - package.json
-- ActivityLogger
+- Index
 - units/show.blade.php
 - DocumentPdfController
+- Project.php
 - projects/show.blade.php
 - Livewire\Component
 - .run
 - installments/index.blade.php
 - cashflow/index.blade.php
-- User.php
+- Illuminate\Foundation\Testing\RefreshDatabase
 - 2. Activity Diagrams (Diagram Aktivitas UML)
 - Index
 - 8. Rancangan Database (Skema Tabel Terbaru)
@@ -69,7 +70,7 @@
 - users/index.blade.php
 - projects/index.blade.php
 - ActivityLog
-- Unit.php
+- Worker
 - modal-payment.blade.php
 - tab-siteplan.blade.php
 - worker-table-list.blade.php
@@ -127,21 +128,21 @@
 - openSalaryModal
 - 🎴 Panduan Standarisasi Card Status & Badge Status (Status Card Design System)
 - README.md
+- User.php
 - modal-payment-process.blade.php
 - Illuminate\Database\Eloquent\Relations\BelongsTo
 - require
-- Index
 - .exportPdf
 - rules/graphify.md
 - workflows/graphify.md
 - Illuminate\Database\Eloquent\Relations\HasMany
-- Index
+- static
 - Illuminate\Database\Eloquent\Factories\HasFactory
 - table-list.blade.php
-- Index
-- UniqueUnitCodeTest
+- WorkerAssignment
+- PriceProposal
 - modal-direct-proposal.blade.php
-- OrphanCashflowAuditor
+- OrphanCashflowAuditor.php
 - CompanyReceivable
 - require-dev
 - daily-activity-reports/index.blade.php
@@ -149,40 +150,42 @@
 - setup
 - AdminRoleCrudTest
 - Controller
-- BookingRejectionAndHppVisibilityTest
+- ActivityLogTest
 - daily-activity-reports/partials/header-banner.blade.php
 - modal-detail.blade.php
 - modal-form.blade.php
-- filter-bar.blade.php
+- resetFilters
 - WorkerUnitPayroll
-- AllPagesTest
+- BookingRejectionAndHppVisibilityTest.php
 - config
 - MaterialPurchaseReceiptController
 - .render
 - modal-export-pdf.blade.php
 - daily-activity-reports/partials/modal-viewer.blade.php
-- ContractorAndInstallmentCancellationTest
+- UniqueUnitCodeTest.php
 - dev
 - psr-4
 - payables/index.blade.php
 - section-commissions.blade.php
 - InactiveAccountLoginTest
 - search-input.blade.php
-- tab-unit-commissions.blade.php
-- tab-material-bills.blade.php
-- tab-company-receivables.blade.php
+- openSettleCommissionModal({{ $c->id }})
+- openSettleModal({{ $m->id }})
+- openPayReceivableModal({{ $r->id }})
 - modal-commission.blade.php
 - modal-commission-payment.blade.php
-- tab-worker-payrolls.blade.php
+- openWorkerPaymentModal({{ $w->id }})
 - Index
 - modal-create-bill.blade.php
 - modal-create-commission.blade.php
-- UnitDetailResponsivenessAndRoleTest
+- UnitDetailResponsivenessAndRoleTest.php
 - modal-create-receivable.blade.php
 - modal-pay-receivable.blade.php
 - modal-settle-commission.blade.php
 - modal-settle-material.blade.php
 - modal-settle-worker-payroll.blade.php
+- EmployeePayrollPayment
+- modal-dialog.blade.php
 
 ## God Nodes (most connected - your core abstractions)
 1. `Unit` - 123 edges
@@ -211,14 +214,10 @@
 ## Import Cycles
 - None detected.
 
-## Communities (286 total, 104 thin omitted)
-
-### Community 0 - "Index"
-Cohesion: 0.10
-Nodes (3): Index, Approval, PriceProposal
+## Communities (289 total, 108 thin omitted)
 
 ### Community 2 - "Project"
-Cohesion: 0.23
+Cohesion: 0.21
 Nodes (3): ProjectReportController, Project, createTestProjectForValidation()
 
 ### Community 3 - "composer.json"
@@ -246,20 +245,16 @@ Cohesion: 0.13
 Nodes (3): CashflowVerificationController, Unit, Illuminate\Database\Eloquent\Relations\HasOne
 
 ### Community 15 - "Illuminate\Database\Seeder"
-Cohesion: 0.12
-Nodes (12): BookingSeeder, DailyActivityReportSeeder, DatabaseSeeder, FinancialSeeder, OfficialDocumentSeeder, PriceProposalSeeder, ProductionSeeder, ProjectSeeder (+4 more)
+Cohesion: 0.14
+Nodes (11): BookingSeeder, DailyActivityReportSeeder, FinancialSeeder, OfficialDocumentSeeder, PayablesAndReceivablesSeeder, ProductionSeeder, ProjectSeeder, UnitSeeder (+3 more)
 
 ### Community 16 - "Booking"
-Cohesion: 0.11
-Nodes (4): Index, Dashboard, Booking, me_date()
+Cohesion: 0.12
+Nodes (3): Index, Booking, me_date()
 
 ### Community 18 - "package.json"
 Cohesion: 0.10
 Nodes (20): concurrently, laravel-vite-plugin, micromodal, dependencies, micromodal, devDependencies, concurrently, laravel-vite-plugin (+12 more)
-
-### Community 19 - "ActivityLogger"
-Cohesion: 0.05
-Nodes (10): Index, Index, EmployeePayrollPayment, EmployeeSalary, ActivityLogger, UserFactory, EmployeeSalarySeeder, Illuminate\Database\Eloquent\Factories\Factory (+2 more)
 
 ### Community 20 - "units/show.blade.php"
 Cohesion: 0.09
@@ -274,16 +269,16 @@ Cohesion: 0.21
 Nodes (3): Livewire\Component, Livewire\WithFileUploads, Livewire\WithPagination
 
 ### Community 26 - "installments/index.blade.php"
-Cohesion: 0.18
-Nodes (10): livewire.installments.partials.modal-convert-to-cash, livewire.installments.partials.modal-installment-detail, livewire.installments.partials.modal-installment-payment, livewire.installments.partials.modal-setup-installment, openDetailModal({{ $inst->id }}), openPaymentModal({{ $inst->id }}), openSetupModal, closeViewerModal (+2 more)
+Cohesion: 0.20
+Nodes (9): livewire.installments.partials.modal-convert-to-cash, livewire.installments.partials.modal-installment-detail, livewire.installments.partials.modal-installment-payment, livewire.installments.partials.modal-setup-installment, openDetailModal({{ $inst->id }}), openPaymentModal({{ $inst->id }}), openSetupModal, closeViewerModal (+1 more)
 
 ### Community 27 - "cashflow/index.blade.php"
 Cohesion: 0.18
 Nodes (10): editTransaction({{ $trx->id }}), livewire.cashflow.partials.modal-manual-transaction, openDetailModal({{ $trx->id }}), openManualModal, closeImageModal, livewire.cashflow.partials.modal-detail-transaction, openImageModal(, $set( (+2 more)
 
-### Community 28 - "User.php"
-Cohesion: 0.13
-Nodes (5): Illuminate\Foundation\Testing\RefreshDatabase, Illuminate\Foundation\Testing\TestCase, GlobalSearchTest, OfficialDocumentSearchFilterTest, TestCase
+### Community 28 - "Illuminate\Foundation\Testing\RefreshDatabase"
+Cohesion: 0.09
+Nodes (9): DatabaseSeeder, Illuminate\Foundation\Testing\RefreshDatabase, Illuminate\Foundation\Testing\TestCase, AllPagesTest, ContractorAndInstallmentCancellationTest, GlobalSearchTest, OfficialDocumentSearchFilterTest, PengawasManagementTest (+1 more)
 
 ### Community 29 - "2. Activity Diagrams (Diagram Aktivitas UML)"
 Cohesion: 0.08
@@ -373,6 +368,10 @@ Nodes (3): openEditModal({{ $u->id }}), openCreateModal, $set(
 Cohesion: 0.50
 Nodes (3): closeModal, openModal, $set(
 
+### Community 54 - "ActivityLog"
+Cohesion: 0.10
+Nodes (3): Index, ActivityLog, ActivityLogsNotificationTabTest
+
 ### Community 109 - "modal-installment-detail.blade.php"
 Cohesion: 0.40
 Nodes (4): openSetupModal({{ $selectedDetailInstallment->id }}), closeDetailModal, editInstallmentPayment({{ $pay->id }}), openViewerModal(
@@ -390,16 +389,16 @@ Cohesion: 0.15
 Nodes (12): 🗂️ 1. Categorization & Specifications Summary, 📐 2. Standard Layout & Anatomi Input Search (Pencarian Teks), 🔽 3. Standard Select Filter Dropdown (Pilihan Filter Table & Toolbar), 🪟 4. Standard Floating Popover Dropdown Menu (Menu Aksi / Opsi Melayang), 📝 5. Standard Form Input Controls (Form Modal & Entry Data), 🛠️ 6. Kelas CSS Terpusat di `resources/css/app.css`, 📋 7. Ringkasan Prinsip Implementasi, 💡 Contoh Kode Blade Component: (+4 more)
 
 ### Community 207 - "User"
-Cohesion: 0.11
-Nodes (5): User, Illuminate\Foundation\Auth\User, Illuminate\Notifications\Notifiable, Spatie\Permission\Traits\HasRoles, CashflowSeparationAndExportTest
+Cohesion: 0.10
+Nodes (6): Index, User, Illuminate\Foundation\Auth\User, Illuminate\Notifications\Notifiable, Spatie\Permission\Traits\HasRoles, CashflowSeparationAndExportTest
 
 ### Community 208 - "📐 2. Standardisasi Komponen Antarmuka (UI Components Standard)"
 Cohesion: 0.17
 Nodes (11): 🌟 1. Prinsip Utama Desain (Core Design Principles), 📐 2. Standardisasi Komponen Antarmuka (UI Components Standard), 🗺️ 3. Rencana Eksekusi Overhaul per Modul, A. Stat Metrics Summary Card, B. Filter & Search Toolbar Baris Tunggal, C. Data Table & List View Modern, 🌿 Clean & Uncluttered Layout, D. Modal Form Interaktif & Backdrop Blur (+3 more)
 
 ### Community 211 - "CashflowTransaction"
-Cohesion: 0.14
-Nodes (3): CashflowTransaction, CascadeDeletionService, CashflowSyncAndDeleteTest
+Cohesion: 0.12
+Nodes (4): CashflowTransaction, WorkerSalaryPayment, CascadeDeletionService, CashflowSyncAndDeleteTest
 
 ### Community 213 - "🎴 Panduan Standarisasi Card Status & Badge Status (Status Card Design System)"
 Cohesion: 0.25
@@ -413,16 +412,16 @@ Nodes (7): About Laravel, Agentic Development, Code of Conduct, Contributing, Le
 Cohesion: 0.18
 Nodes (11): require, barryvdh/laravel-dompdf, laravel/framework, laravel/octane, laravel/tinker, livewire/livewire, php, simplesoftwareio/simple-qrcode (+3 more)
 
-### Community 227 - "Illuminate\Database\Eloquent\Factories\HasFactory"
+### Community 225 - "static"
 Cohesion: 0.20
-Nodes (3): PayablesAndReceivablesSeeder, Illuminate\Database\Eloquent\Factories\HasFactory, Illuminate\Database\Eloquent\Model
+Nodes (3): UserFactory, Illuminate\Database\Eloquent\Factories\Factory, static
 
 ### Community 228 - "table-list.blade.php"
 Cohesion: 0.50
 Nodes (3): deleteReport({{ $rep->id }}), editReport({{ $rep->id }}), showReportDetail({{ $rep->id }})
 
-### Community 233 - "OrphanCashflowAuditor"
-Cohesion: 0.33
+### Community 233 - "OrphanCashflowAuditor.php"
+Cohesion: 0.32
 Nodes (3): AuditOrphanCashflows, OrphanCashflowAuditor, Illuminate\Console\Command
 
 ### Community 236 - "require-dev"
@@ -446,8 +445,8 @@ Cohesion: 0.05
 Nodes (17): AuthController, BookingReceiptController, Controller, DailyActivityReportPdfController, DocumentVerificationController, EmployeeSalarySlipController, FieldExpensesReportController, LandPaymentReceiptController (+9 more)
 
 ### Community 250 - "WorkerUnitPayroll"
-Cohesion: 0.08
-Nodes (4): UnitExpensesReportController, WorkerSpkController, WorkerSalaryPayment, WorkerUnitPayroll
+Cohesion: 0.13
+Nodes (3): UnitExpensesReportController, WorkerSpkController, WorkerUnitPayroll
 
 ### Community 252 - "config"
 Cohesion: 0.29
@@ -470,19 +469,19 @@ Cohesion: 0.40
 Nodes (4): deleteCommission({{ $comm->id }}), openCommissionModal, openCommissionPaymentModal({{ $comm->id }}), openViewerModal(
 
 ## Knowledge Gaps
-- **413 isolated node(s):** `$schema`, `name`, `type`, `description`, `laravel` (+408 more)
+- **407 isolated node(s):** `$schema`, `name`, `type`, `description`, `laravel` (+402 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **104 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **108 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `Unit` connect `Unit` to `Index`, `Project`, `ContractorAndInstallmentCancellationTest`, `Index`, `UnitInstallment`, `Index`, `Show`, `DailyActivityReport`, `Show`, `Index`, `WorkerAssignment`, `Booking`, `UnitDetailResponsivenessAndRoleTest`, `.run`, `Index`, `Unit.php`, `User`, `CashflowTransaction`, `UnitInstallment.php`, `Illuminate\Database\Eloquent\Relations\BelongsTo`, `.exportPdf`, `Illuminate\Database\Eloquent\Relations\HasMany`, `Illuminate\Database\Eloquent\Factories\HasFactory`, `UniqueUnitCodeTest`, `CompanyReceivable`, `AdminRoleCrudTest`, `Controller`, `BookingRejectionAndHppVisibilityTest`, `WorkerUnitPayroll`, `AllPagesTest`, `.render`?**
-  _High betweenness centrality (0.060) - this node is a cross-community bridge._
-- **Why does `Project` connect `Project` to `Index`, `UnitInstallment`, `Index`, `Show`, `DailyActivityReport`, `Index`, `Unit`, `WorkerAssignment`, `Booking`, `Index`, `Project.php`, `UnitDetailResponsivenessAndRoleTest`, `.run`, `Index`, `User`, `CashflowTransaction`, `UnitInstallment.php`, `.exportPdf`, `Illuminate\Database\Eloquent\Relations\HasMany`, `Illuminate\Database\Eloquent\Factories\HasFactory`, `Index`, `OrphanCashflowAuditor`, `CompanyReceivable`, `AdminRoleCrudTest`, `Controller`, `BookingRejectionAndHppVisibilityTest`, `AllPagesTest`, `.render`?**
-  _High betweenness centrality (0.035) - this node is a cross-community bridge._
-- **Why does `User` connect `User` to `Index`, `OfficialDocument`, `ContractorAndInstallmentCancellationTest`, `Index`, `UnitInstallment`, `DailyActivityReport`, `InactiveAccountLoginTest`, `ActivityLogTest`, `Show`, `WorkerAssignment`, `Booking`, `ActivityLogger`, `UnitDetailResponsivenessAndRoleTest`, `.run`, `User.php`, `ActivityLog`, `CashflowTransaction`, `UnitInstallment.php`, `Index`, `Illuminate\Database\Eloquent\Factories\HasFactory`, `UniqueUnitCodeTest`, `CompanyReceivable`, `AdminRoleCrudTest`, `Controller`, `BookingRejectionAndHppVisibilityTest`, `AllPagesTest`?**
-  _High betweenness centrality (0.030) - this node is a cross-community bridge._
+- **Why does `Unit` connect `Unit` to `Index`, `Project`, `UniqueUnitCodeTest.php`, `Index`, `UnitInstallment`, `Index`, `Show`, `Show`, `Index`, `DailyActivityReport`, `Booking`, `UnitDetailResponsivenessAndRoleTest.php`, `.run`, `Illuminate\Foundation\Testing\RefreshDatabase`, `Index`, `User`, `CashflowTransaction`, `User.php`, `Illuminate\Database\Eloquent\Relations\BelongsTo`, `UnitInstallment.php`, `.exportPdf`, `Illuminate\Database\Eloquent\Relations\HasMany`, `Illuminate\Database\Eloquent\Factories\HasFactory`, `WorkerAssignment`, `PriceProposal`, `CompanyReceivable`, `AdminRoleCrudTest`, `Controller`, `WorkerUnitPayroll`, `BookingRejectionAndHppVisibilityTest.php`, `.render`?**
+  _High betweenness centrality (0.057) - this node is a cross-community bridge._
+- **Why does `Project` connect `Project` to `UnitInstallment`, `Index`, `Show`, `Index`, `Unit`, `DailyActivityReport`, `Booking`, `Index`, `Project.php`, `UnitDetailResponsivenessAndRoleTest.php`, `.run`, `Illuminate\Foundation\Testing\RefreshDatabase`, `Index`, `User`, `CashflowTransaction`, `Illuminate\Database\Eloquent\Relations\BelongsTo`, `UnitInstallment.php`, `.exportPdf`, `Illuminate\Database\Eloquent\Relations\HasMany`, `Illuminate\Database\Eloquent\Factories\HasFactory`, `WorkerAssignment`, `PriceProposal`, `OrphanCashflowAuditor.php`, `CompanyReceivable`, `AdminRoleCrudTest`, `Controller`, `BookingRejectionAndHppVisibilityTest.php`, `.render`?**
+  _High betweenness centrality (0.034) - this node is a cross-community bridge._
+- **Why does `User` connect `User` to `OfficialDocument`, `Project`, `UniqueUnitCodeTest.php`, `Index`, `UnitInstallment`, `InactiveAccountLoginTest`, `ActivityLogger`, `Show`, `DailyActivityReport`, `Booking`, `Index`, `UnitDetailResponsivenessAndRoleTest.php`, `.run`, `Illuminate\Foundation\Testing\RefreshDatabase`, `EmployeePayrollPayment`, `ActivityLog`, `CashflowTransaction`, `User.php`, `UnitInstallment.php`, `Illuminate\Database\Eloquent\Factories\HasFactory`, `WorkerAssignment`, `PriceProposal`, `CompanyReceivable`, `AdminRoleCrudTest`, `Controller`, `ActivityLogTest`, `BookingRejectionAndHppVisibilityTest.php`?**
+  _High betweenness centrality (0.031) - this node is a cross-community bridge._
 - **Are the 87 inferred relationships involving `Unit` (e.g. with `.exportExcel()` and `.exportPdf()`) actually correct?**
   _`Unit` has 87 INFERRED edges - model-reasoned connections that need verification._
 - **Are the 64 inferred relationships involving `User` (e.g. with `.login()` and `.switchRole()`) actually correct?**

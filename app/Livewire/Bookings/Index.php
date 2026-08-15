@@ -40,8 +40,13 @@ class Index extends Component
     {
         $this->viewerType = $type;
         $this->viewerUrl = $url;
-        $this->viewerTitle = $title ?: 'Pratinjau Resi PDF';
+        $this->viewerTitle = $title ?: ($type === 'image' ? 'Foto Resi Bukti Transfer / DP' : 'Pratinjau Resi PDF');
         $this->showViewerModal = true;
+        if ($type === 'image') {
+            $this->showImageModal = true;
+            $this->imageModalUrl = $url;
+            $this->imageModalTitle = $this->viewerTitle;
+        }
     }
 
     public function closeViewerModal(): void
@@ -50,20 +55,19 @@ class Index extends Component
         $this->viewerType = '';
         $this->viewerUrl = '';
         $this->viewerTitle = '';
+        $this->showImageModal = false;
+        $this->imageModalUrl = '';
+        $this->imageModalTitle = '';
     }
 
     public function openImageModal(string $url, string $title = ''): void
     {
-        $this->imageModalUrl = $url;
-        $this->imageModalTitle = $title ?: 'Foto Resi Bukti Transfer / DP';
-        $this->showImageModal = true;
+        $this->openViewerModal('image', $url, $title ?: 'Foto Resi Bukti Transfer / DP');
     }
 
     public function closeImageModal(): void
     {
-        $this->showImageModal = false;
-        $this->imageModalUrl = '';
-        $this->imageModalTitle = '';
+        $this->closeViewerModal();
     }
 
     // Modal state
@@ -163,7 +167,7 @@ class Index extends Component
             $validated['dp_amount'] = (float)($this->dp_amount ?: 0);
 
             if ($this->receipt_photo) {
-                $validated['receipt_photo_path'] = $this->receipt_photo->store('receipts/bookings', 'public');
+                $validated['receipt_photo_path'] = \App\Services\ImageCompressor::compressAndStore($this->receipt_photo, 'receipts/bookings');
             }
             unset($validated['receipt_photo']);
 
@@ -222,8 +226,9 @@ class Index extends Component
         ]);
 
         if ($this->receipt_photo) {
-            $bookingData['receipt_photo_path'] = $this->receipt_photo->store('receipts/bookings', 'public');
+            $bookingData['receipt_photo_path'] = \App\Services\ImageCompressor::compressAndStore($this->receipt_photo, 'receipts/bookings');
         }
+        unset($bookingData['receipt_photo']);
 
         $booking = Booking::create($bookingData);
 

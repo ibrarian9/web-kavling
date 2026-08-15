@@ -10,7 +10,8 @@
      class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-40 md:hidden"></div>
 
 <!-- Mobile Sidebar Drawer Content -->
-<aside x-show="mobileMenuOpen" 
+<aside x-data="{ sidebarExpanded: true }"
+       x-show="mobileMenuOpen" 
        x-transition:enter="transition ease-out duration-300 transform" 
        x-transition:enter-start="-translate-x-full" 
        x-transition:enter-end="translate-x-0" 

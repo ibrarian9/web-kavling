@@ -1,21 +1,33 @@
 @props([
     'label' => null,
     'model' => '',
-    'value' => 0,
+    'value' => null,
     'placeholder' => '0',
     'required' => false,
-    'badgeColor' => 'emerald',
+    'badgeColor' => 'slate',
     'helpText' => null,
     'inputClass' => '',
     'error' => null,
+    'containerClass' => '',
 ])
 
 @php
-    $errorKey = $error ?? ($model ? str_replace(['.live', '.defer', '.blur'], '', $model) : null);
-    $wireModel = $model ? str_replace(['.live', '.defer', '.blur'], '', $model) : '';
+    $wireModel = $model ?: $attributes->wire('model')->value();
+    $wireModelClean = $wireModel ? str_replace(['.live', '.defer', '.blur'], '', $wireModel) : '';
+    $errorKey = $error ?? ($wireModelClean ?: null);
+    
+    $badgeClasses = match($badgeColor) {
+        'purple' => 'bg-purple-50 text-purple-700 border-purple-200',
+        'emerald' => 'bg-emerald-50 text-emerald-700 border-emerald-200',
+        'amber' => 'bg-amber-50 text-amber-700 border-amber-200',
+        'blue' => 'bg-blue-50 text-blue-700 border-blue-200',
+        'rose' => 'bg-rose-50 text-rose-700 border-rose-200',
+        default => 'bg-slate-100 text-slate-600 border-slate-200',
+    };
 @endphp
 
 <div 
+    class="{{ $containerClass }}"
     x-data="{
         displayVal: '',
         format(num) {
@@ -25,16 +37,17 @@
             return parseInt(digits, 10).toLocaleString('id-ID');
         },
         init() {
-            @if($wireModel)
-                this.displayVal = this.format($wire.get('{{ $wireModel }}'));
-                $wire.watch('{{ $wireModel }}', (val) => {
+            @if($wireModelClean)
+                let initial = $wire.get('{{ $wireModelClean }}');
+                this.displayVal = this.format(initial);
+                $wire.watch('{{ $wireModelClean }}', (val) => {
                     let cleanCurrent = this.displayVal.replace(/[^0-9]/g, '');
-                    let cleanNew = String(val || '').replace(/[^0-9]/g, '');
+                    let cleanNew = String(val === null || val === undefined ? '' : val).replace(/[^0-9]/g, '');
                     if (cleanCurrent !== cleanNew) {
                         this.displayVal = this.format(val);
                     }
                 });
-            @else
+            @elseif(!is_null($value))
                 this.displayVal = this.format('{{ $value }}');
             @endif
         },
@@ -42,21 +55,21 @@
             let input = e.target.value;
             let digits = input.replace(/[^0-9]/g, '');
             this.displayVal = digits ? parseInt(digits, 10).toLocaleString('id-ID') : '';
-            @if($wireModel)
-                $wire.set('{{ $wireModel }}', digits ? parseInt(digits, 10) : 0);
+            @if($wireModelClean)
+                $wire.set('{{ $wireModelClean }}', digits ? parseInt(digits, 10) : 0);
             @endif
         }
     }"
 >
     @if($label)
-        <label class="block font-bold text-slate-700 mb-1 text-xs">
+        <label class="block font-bold text-slate-700 mb-1 text-xs uppercase tracking-wider">
             {{ $label }}
             @if($required) <span class="text-rose-500">*</span> @endif
         </label>
     @endif
 
     <div class="flex rounded-xl shadow-2xs border border-slate-200 overflow-hidden focus-within:border-teal-500 focus-within:ring-2 focus-within:ring-teal-500/20 bg-white transition">
-        <span class="bg-slate-100 text-slate-500 font-mono font-extrabold text-xs px-3 flex items-center shrink-0 border-r border-slate-200 select-none">
+        <span class="font-mono font-extrabold text-xs px-3 flex items-center shrink-0 border-r select-none {{ $badgeClasses }}">
             Rp
         </span>
         <input 
@@ -66,7 +79,7 @@
             @input="onInput($event)"
             placeholder="{{ $placeholder }}"
             {{ $required ? 'required' : '' }}
-            {{ $attributes->merge(['class' => "w-full px-3 py-2 font-mono font-bold text-xs text-slate-800 bg-transparent focus:outline-none {$inputClass}"]) }}
+            {{ $attributes->whereDoesntStartWith('wire:model')->merge(['class' => "w-full px-3 py-2 font-mono font-bold text-xs text-slate-800 bg-transparent focus:outline-none {$inputClass}"]) }}
         >
     </div>
 
@@ -76,7 +89,7 @@
 
     @if($errorKey)
         @error($errorKey) 
-            <span class="text-red-500 text-[11px] mt-0.5 block font-semibold">{{ $message }}</span> 
+            <span class="text-rose-500 text-[11px] mt-0.5 block font-semibold">{{ $message }}</span> 
         @enderror
     @endif
 </div>

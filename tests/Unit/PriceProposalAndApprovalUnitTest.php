@@ -5,6 +5,9 @@ use App\Models\Approval;
 use App\Models\Unit;
 use App\Models\User;
 use App\Models\Project;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+
+uses(RefreshDatabase::class);
 
 test('price proposal model can be created with correct attributes and casts', function () {
     $user = User::factory()->create(['role' => 'marketing']);

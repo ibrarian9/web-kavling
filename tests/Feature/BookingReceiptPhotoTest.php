@@ -41,7 +41,7 @@ beforeEach(function () {
 });
 
 test('user can upload receipt photo when creating booking and view photo modal', function () {
-    $file = UploadedFile::fake()->image('bukti_transfer_dp.jpg');
+    $file = UploadedFile::fake()->image('bukti_transfer_dp.jpg', 100, 100);
 
     $this->actingAs($this->founder);
 
@@ -59,8 +59,12 @@ test('user can upload receipt photo when creating booking and view photo modal',
     $booking = Booking::where('buyer_name', 'Bpk. Ahmad Santoso')->first();
     expect($booking)->not->toBeNull();
     expect($booking->receipt_photo_path)->not->toBeNull();
+    $fullPath = storage_path('app/public/' . $booking->receipt_photo_path);
+    expect(file_exists($fullPath))->toBeTrue();
 
-    Storage::disk('public')->assertExists($booking->receipt_photo_path);
+    if (file_exists($fullPath)) {
+        @unlink($fullPath);
+    }
 
     // Test opening image modal
     Livewire::test(\App\Livewire\Bookings\Index::class)

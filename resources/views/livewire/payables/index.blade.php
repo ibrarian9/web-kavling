@@ -122,24 +122,15 @@
                 <div class="flex items-center gap-2">
                     @if(auth()->user()->isFounder() || auth()->user()->isFinance())
                         @if($activeTab === 'material_bills' || $activeTab === 'settled_history')
-                            <button type="button" wire:click="openCreateBillModal" class="px-3.5 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center justify-center gap-1.5 shrink-0 whitespace-nowrap">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                                <span>Catat Tagihan Material</span>
-                            </button>
+                            <x-button variant="rose" icon="plus" wire:click="openCreateBillModal">Catat Tagihan Material</x-button>
                         @endif
 
                         @if($activeTab === 'unit_commissions' || $activeTab === 'settled_history')
-                            <button type="button" wire:click="openCreateCommissionModal" class="px-3.5 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center justify-center gap-1.5 shrink-0 whitespace-nowrap">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                                <span>Catat Komisi Penjual</span>
-                            </button>
+                            <x-button variant="purple" icon="plus" wire:click="openCreateCommissionModal">Catat Komisi Penjual</x-button>
                         @endif
 
                         @if($activeTab === 'company_receivables' || $activeTab === 'settled_history')
-                            <button type="button" wire:click="openCreateReceivableModal" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center justify-center gap-1.5 shrink-0 whitespace-nowrap">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                                <span>Catat Pinjaman / Kasbon</span>
-                            </button>
+                            <x-button variant="emerald" icon="plus" wire:click="openCreateReceivableModal">Catat Pinjaman / Kasbon</x-button>
                         @endif
                     @endif
                 </div>
@@ -164,4 +155,13 @@
     @include('livewire.payables.partials.modal-settle-commission')
     @include('livewire.payables.partials.modal-create-receivable')
     @include('livewire.payables.partials.modal-pay-receivable')
+
+    <!-- Media Viewer Modal (Foto Struk / Resi / PDF) -->
+    <x-media-viewer-modal 
+        :show="$showViewerModal ?? false" 
+        :type="$viewerType ?? 'auto'" 
+        :url="$viewerUrl ?? ''" 
+        :title="$viewerTitle ?? 'Pratinjau Berkas & Dokumen'" 
+        closeAction="closeViewerModal"
+    />
 </div>

@@ -34,18 +34,36 @@ class Show extends Component
     public string $imageModalUrl = '';
     public string $imageModalTitle = '';
 
+    // Universal Media Viewer Modal
+    public bool $showViewerModal = false;
+    public string $viewerType = 'auto';
+    public string $viewerUrl = '';
+    public string $viewerTitle = '';
+
+    public function openViewerModal(string $type, string $url, string $title = ''): void
+    {
+        $this->viewerType = $type;
+        $this->viewerUrl = $url;
+        $this->viewerTitle = $title ?: 'Pratinjau Berkas & Dokumen';
+        $this->showViewerModal = true;
+    }
+
+    public function closeViewerModal(): void
+    {
+        $this->showViewerModal = false;
+        $this->viewerType = 'auto';
+        $this->viewerUrl = '';
+        $this->viewerTitle = '';
+    }
+
     public function openImageModal(string $url, string $title = ''): void
     {
-        $this->imageModalUrl = $url;
-        $this->imageModalTitle = $title ?: 'Foto Resi Bukti Transfer / Transaksi';
-        $this->showImageModal = true;
+        $this->openViewerModal('image', $url, $title ?: 'Foto Resi Bukti Transfer / Transaksi');
     }
 
     public function closeImageModal(): void
     {
-        $this->showImageModal = false;
-        $this->imageModalUrl = '';
-        $this->imageModalTitle = '';
+        $this->closeViewerModal();
     }
 
     // Siteplan Unit Modal Quick Actions

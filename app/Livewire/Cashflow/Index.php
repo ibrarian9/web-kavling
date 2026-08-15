@@ -442,7 +442,7 @@ class Index extends Component
 
         $receiptPath = null;
         if ($this->receipt_photo) {
-            $receiptPath = $this->receipt_photo->store('receipts/cashflow', 'public');
+            $receiptPath = \App\Services\ImageCompressor::compressAndStore($this->receipt_photo, 'receipts/cashflow');
         }
 
         CashflowTransaction::create([
