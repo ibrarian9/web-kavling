@@ -64,10 +64,7 @@
 
             <!-- Search & Filters -->
             <div class="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
-                <div class="relative w-full sm:w-64">
-                    <input type="text" wire:model.live.debounce.300ms="search" placeholder="Cari user, aksi, IP..." class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-9 pr-3 py-2 text-xs text-slate-900 focus:ring-2 focus:ring-emerald-500 outline-none">
-                    <svg class="w-4 h-4 text-slate-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                </div>
+                <x-search-input placeholder="Cari user, aksi, IP..." containerClass="w-full sm:w-64" />
 
                 @if(in_array($activeTab, ['database', 'notifications']))
                     <select wire:model.live="actionFilter" class="w-full sm:w-48 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold text-slate-700 focus:ring-2 focus:ring-emerald-500 outline-none">

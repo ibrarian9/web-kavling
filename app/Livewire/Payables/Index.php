@@ -16,6 +16,7 @@ use App\Models\WorkerUnitPayroll;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Livewire\Traits\WithFileUploadValidation;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Livewire\WithPagination;
@@ -123,25 +124,34 @@ class Index extends Component
         $this->pay_rec_date = now()->toDateString();
     }
 
-    public function updatingSearch(): void
+    public function resetAllPages(): void
     {
         $this->resetPage();
+        $this->resetPage('wrk_page');
+        $this->resetPage('com_page');
+        $this->resetPage('rec_page');
+        $this->resetPage('his_page');
+    }
+
+    public function updatingSearch(): void
+    {
+        $this->resetAllPages();
     }
 
     public function updatingFilterProjectId(): void
     {
-        $this->resetPage();
+        $this->resetAllPages();
     }
 
     public function updatingFilterStatus(): void
     {
-        $this->resetPage();
+        $this->resetAllPages();
     }
 
     public function setTab(string $tab): void
     {
         $this->activeTab = $tab;
-        $this->resetPage();
+        $this->resetAllPages();
     }
 
     // --- TAB 1 ACTIONS (Belanja Toko & Operational Debt) ---
@@ -1118,10 +1128,25 @@ class Index extends Component
         }
 
         // Sort by date descending
-        $settledHistory = $settledHistory->sortByDesc(function ($item) {
+        $settledHistorySorted = $settledHistory->sortByDesc(function ($item) {
             $d = $item->date ? (is_string($item->date) ? $item->date : $item->date->format('Y-m-d')) : '0000-00-00';
             return $d . '_' . $item->id;
         })->values();
+
+        $hisPage = LengthAwarePaginator::resolveCurrentPage('his_page');
+        $perPage = 10;
+        $currentPageItems = $settledHistorySorted->slice(($hisPage - 1) * $perPage, $perPage)->values();
+
+        $paginatedSettledHistory = new LengthAwarePaginator(
+            $currentPageItems,
+            $settledHistorySorted->count(),
+            $perPage,
+            $hisPage,
+            [
+                'path' => LengthAwarePaginator::resolveCurrentPath(),
+                'pageName' => 'his_page',
+            ]
+        );
 
         $availableUnits = $this->new_project_id ? Unit::where('project_id', $this->new_project_id)->orderBy('code')->get() : collect();
         $commAvailableUnits = $this->comm_project_id ? Unit::where('project_id', $this->comm_project_id)->orderBy('code')->get() : collect();
@@ -1131,7 +1156,7 @@ class Index extends Component
             'workerPayrolls' => $workerPayrolls,
             'unitCommissions' => $unitCommissions,
             'companyReceivables' => $companyReceivables,
-            'settledHistory' => $settledHistory,
+            'settledHistory' => $paginatedSettledHistory,
             'projects' => $projects,
             'allUsers' => $allUsers,
             'allWorkers' => $allWorkers,

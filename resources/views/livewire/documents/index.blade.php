@@ -51,7 +51,7 @@
             </select>
         </div>
         <div class="flex-1">
-            <input type="text" wire:model.live.debounce.300ms="search" placeholder="Cari no. SPP, nama pembeli, no. HP, atau kode unit..." class="input-clean w-full">
+            <x-search-input placeholder="Cari no. SPP, nama pembeli, no. HP, atau kode unit..." containerClass="w-full" />
         </div>
     </div>
 

@@ -6,9 +6,7 @@
             <p class="text-xs text-slate-500">Master penetapan komponen gaji pokok, tunjangan, dan potongan karyawan yang dikelola Founder.</p>
         </div>
 
-        <div class="w-full sm:w-64">
-            <input type="text" wire:model.live.debounce.300ms="search" placeholder="Cari nama karyawan, jabatan..." class="input-clean w-full text-xs">
-        </div>
+        <x-search-input placeholder="Cari nama karyawan, jabatan..." containerClass="w-full sm:w-64" />
     </div>
 
     <div class="overflow-x-auto">

@@ -302,13 +302,7 @@
     <div class="card-clean overflow-hidden space-y-0">
         <!-- Table Search & Filters Control Bar -->
         <div class="p-4 bg-slate-50/60 border-b border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3">
-            <div class="relative w-full sm:w-80">
-                <svg class="w-4 h-4 text-slate-400 absolute left-3.5 top-3 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                <input type="text" 
-                       wire:model.live.debounce.300ms="search" 
-                       placeholder="Cari keterangan, proyek, atau pencatat..." 
-                       class="w-full pl-9 pr-3.5 py-2 text-xs bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 font-medium text-slate-800 placeholder-slate-400 shadow-2xs" />
-            </div>
+            <x-search-input placeholder="Cari keterangan, proyek, atau pencatat..." />
 
             <div class="flex items-center gap-2.5 w-full sm:w-auto justify-end flex-wrap">
                 <!-- Type Filter -->

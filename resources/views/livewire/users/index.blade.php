@@ -15,9 +15,7 @@
 
     <!-- Toolbar Filter & Search -->
     <div class="card-clean p-4 flex flex-col sm:flex-row items-center justify-between gap-3">
-        <div class="w-full sm:w-72">
-            <input type="text" wire:model.live.debounce.300ms="search" placeholder="Cari nama atau email user..." class="input-clean w-full text-xs">
-        </div>
+        <x-search-input placeholder="Cari nama atau email user..." containerClass="w-full sm:w-72" />
 
         <div class="w-full sm:w-48">
             <select wire:model.live="roleFilter" class="input-clean w-full text-xs">

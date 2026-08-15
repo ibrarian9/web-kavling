@@ -34,10 +34,7 @@
 
         <!-- Filter Bar -->
         <div class="flex flex-col sm:flex-row items-center justify-between gap-3">
-            <div class="w-full sm:w-72 relative">
-                <input type="text" wire:model.live.debounce.250ms="unitSearch" placeholder="Cari kode unit (cth: A-01)..." class="input-clean w-full pl-9 text-xs">
-                <svg class="w-4 h-4 text-slate-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-            </div>
+            <x-search-input model="unitSearch" placeholder="Cari kode unit (cth: A-01)..." containerClass="w-full sm:w-72" />
 
             <div class="flex items-center gap-2 w-full sm:w-auto">
                 <select wire:model.live="statusFilter" class="input-clean text-xs w-full sm:w-48 font-medium">

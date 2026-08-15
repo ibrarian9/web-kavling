@@ -1,7 +1,7 @@
 <!-- Filters Toolbar -->
 <div class="card-clean p-4 flex flex-col md:flex-row gap-3">
     <div class="flex-1">
-        <input type="text" wire:model.live.debounce.300ms="search" placeholder="Cari nama, telepon, atau spesialisasi..." class="input-clean w-full">
+        <x-search-input placeholder="Cari nama, telepon, atau spesialisasi..." containerClass="w-full" />
     </div>
     <div class="w-full md:w-48">
         <select wire:model.live="typeFilter" class="input-clean w-full">

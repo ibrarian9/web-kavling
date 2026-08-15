@@ -58,7 +58,7 @@
         <div class="grid grid-cols-1 sm:grid-cols-4 gap-3 text-xs">
             <div class="sm:col-span-1">
                 <label class="block font-semibold text-slate-600 mb-1 text-[11px] uppercase">Cari Invoice</label>
-                <input type="text" wire:model.live.debounce.300ms="search" placeholder="No. Inv, Penerima, Keterangan..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-800 focus:ring-2 focus:ring-teal-500 outline-none">
+                <x-search-input placeholder="No. Inv, Penerima, Keterangan..." containerClass="w-full" />
             </div>
 
             <div>

@@ -18,22 +18,7 @@
     </div>
 
     <!-- Main Search Bar -->
-    <div class="relative">
-        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-        </div>
-
-        <input type="text" 
-               wire:model.live.debounce.300ms="search" 
-               placeholder="Cari nama klien, nomor telepon, atau catatan aktivitas..." 
-               class="w-full pl-10 pr-10 py-2.5 bg-slate-50/80 border border-slate-200 rounded-xl text-xs sm:text-sm text-slate-800 placeholder-slate-400 focus:outline-hidden focus:bg-white focus:border-teal-500 focus:ring-3 focus:ring-teal-500/15 transition-all shadow-2xs font-medium">
-
-        @if($search)
-            <button wire:click="$set('search', '')" class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-            </button>
-        @endif
-    </div>
+    <x-search-input placeholder="Cari nama klien, nomor telepon, atau catatan aktivitas..." containerClass="relative w-full" />
 
     <!-- Dropdown Filter Controls -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs pt-1">

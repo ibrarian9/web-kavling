@@ -27,7 +27,7 @@
     </div>
 
     <div class="flex-1">
-        <input type="text" wire:model.live.debounce.300ms="search" placeholder="Cari kode unit, nama proyek, barang, atau worker..." class="input-clean w-full">
+        <x-search-input placeholder="Cari kode unit, nama proyek, barang, atau worker..." containerClass="w-full" />
     </div>
 </div>
 

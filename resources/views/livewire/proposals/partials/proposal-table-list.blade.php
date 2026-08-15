@@ -19,7 +19,7 @@
     </div>
 
     <div class="flex-1">
-        <input type="text" wire:model.live.debounce.300ms="search" placeholder="Cari kode unit, nama proyek, atau nama marketing pengaju..." class="input-clean w-full">
+        <x-search-input placeholder="Cari kode unit, nama proyek, atau nama marketing pengaju..." containerClass="w-full" />
     </div>
 </div>
 
