@@ -46,26 +46,44 @@ class UnitInstallment extends Model
 
     public function getTotalPaidAttribute(): float
     {
-        return $this->down_payment + $this->payments()->sum('amount_paid');
+        $paid = $this->relationLoaded('payments') 
+            ? (float) $this->payments->sum('amount_paid') 
+            : (float) $this->payments()->sum('amount_paid');
+
+        return (float) $this->down_payment + $paid;
     }
 
     public function getRemainingBalanceAttribute(): float
     {
-        return max(0, $this->total_price - $this->total_paid);
+        return max(0, (float) $this->total_price - $this->total_paid);
     }
 
     public function getBuyerNameAttribute(): string
     {
+        if ($this->relationLoaded('officialDocument') && $this->officialDocument?->buyer_name) {
+            return $this->officialDocument->buyer_name;
+        }
+
+        if ($this->relationLoaded('unit') && $this->unit) {
+            return $this->unit->buyer_name;
+        }
+
         return $this->officialDocument?->buyer_name 
-            ?? $this->unit?->activeBooking?->buyer_name 
-            ?? $this->unit?->bookings()?->latest()->first()?->buyer_name 
+            ?? $this->unit?->buyer_name 
             ?? 'Konsumen Pembeli';
     }
 
     public function getBuyerPhoneAttribute(): ?string
     {
+        if ($this->relationLoaded('officialDocument') && $this->officialDocument?->buyer_contact) {
+            return $this->officialDocument->buyer_contact;
+        }
+
+        if ($this->relationLoaded('unit') && $this->unit) {
+            return $this->unit->buyer_phone;
+        }
+
         return $this->officialDocument?->buyer_contact 
-            ?? $this->unit?->activeBooking?->buyer_phone 
-            ?? $this->unit?->bookings()?->latest()->first()?->buyer_phone;
+            ?? $this->unit?->buyer_phone;
     }
 }

@@ -3,7 +3,7 @@
     $commissionsList = $unitCommissions ?? collect();
 @endphp
 
-<div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-200 space-y-4">
+<x-card padding="p-6">
     <div class="flex items-center justify-between flex-wrap gap-3">
         <div class="flex items-center gap-3">
             <div class="w-10 h-10 rounded-2xl bg-purple-100 text-purple-700 flex items-center justify-center font-bold">
@@ -18,17 +18,14 @@
         </div>
 
         @if(auth()->user()->isFounder() || auth()->user()->isFinance())
-            <button type="button" wire:click="openCommissionModal" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5 shrink-0">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                </svg>
+            <x-button variant="purple" size="sm" wire:click="openCommissionModal" icon="plus">
                 <span>Catat Komisi Penjual</span>
-            </button>
+            </x-button>
         @endif
     </div>
 
     @if($commissionsList->isEmpty())
-        <div class="p-6 text-center text-slate-400 bg-slate-50 rounded-2xl border border-dashed border-slate-200">
+        <div class="p-6 text-center text-slate-400 bg-slate-50 rounded-2xl border border-dashed border-slate-200 mt-4">
             <svg class="w-10 h-10 mx-auto text-slate-300 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
             </svg>
@@ -36,7 +33,7 @@
             <p class="text-[11px] text-slate-400">Klik tombol "Catat Komisi Penjual" di atas untuk menambahkan persenan / fee marketing.</p>
         </div>
     @else
-        <div class="space-y-4">
+        <div class="space-y-4 mt-4">
             @foreach($commissionsList as $comm)
                 @php
                     $isLunas = $comm->status === 'lunas';
@@ -56,35 +53,34 @@
                                     <span class="text-xs text-slate-500 font-mono">({{ $comm->seller_phone }})</span>
                                 @endif
                                 
-                                @if($isLunas)
-                                    <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">LUNAS 100%</span>
-                                @elseif($isBerjalan)
-                                    <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-100 text-blue-800 border border-blue-200">DICICIL ({{ $percentPaid }}%)</span>
-                                @else
-                                    <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-200">BELUM DIBAYAR</span>
-                                @endif
+                                <x-status-badge :status="$comm->status" />
                             </div>
                             @if($comm->notes)
                                 <p class="text-xs text-slate-500 italic mt-0.5">{{ $comm->notes }}</p>
                             @endif
                         </div>
 
-                        <div class="flex items-center gap-2">
+                        <div class="flex items-center gap-2 whitespace-nowrap flex-nowrap">
                             @if(!$isLunas && (auth()->user()->isFounder() || auth()->user()->isFinance()))
-                                <button type="button" wire:click="openCommissionPaymentModal({{ $comm->id }})" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow-xs transition flex items-center gap-1">
-                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                                    </svg>
+                                <x-button variant="payment" size="xs" wire:click="openCommissionPaymentModal({{ $comm->id }})" icon="plus">
                                     <span>Bayar Cicilan</span>
-                                </button>
+                                </x-button>
                             @endif
 
                             @if(auth()->user()->isFounder())
-                                <button type="button" wire:confirm="Hapus catatan komisi ini?" wire:click="deleteCommission({{ $comm->id }})" class="p-1.5 text-slate-400 hover:text-red-600 rounded-lg hover:bg-red-50 transition" title="Hapus Komisi">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                    </svg>
-                                </button>
+                                <x-action-dropdown title="Menu Opsi Komisi" size="xs">
+                                    <div class="py-1">
+                                        <x-dropdown-item icon="delete" variant="danger" @click="confirmModalAction({
+                                            title: 'Hapus Catatan Komisi',
+                                            message: 'Yakin ingin menghapus catatan komisi {{ $comm->seller_name }}?',
+                                            confirmText: 'Hapus Komisi',
+                                            btnClass: 'px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5',
+                                            onConfirm: () => $wire.deleteCommission({{ $comm->id }})
+                                        })">
+                                            Hapus Komisi
+                                        </x-dropdown-item>
+                                    </div>
+                                </x-action-dropdown>
                             @endif
                         </div>
                     </div>
@@ -140,4 +136,4 @@
             @endforeach
         </div>
     @endif
-</div>
+</x-card>

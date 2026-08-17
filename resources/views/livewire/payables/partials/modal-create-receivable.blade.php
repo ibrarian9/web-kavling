@@ -59,8 +59,8 @@
         </div>
 
         <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
-            <button type="button" wire:click="$set('showCreateReceivableModal', false)" class="btn-secondary">Batal</button>
-            <button type="submit" class="btn-primary bg-emerald-600 hover:bg-emerald-700">Simpan Piutang Kasbon</button>
+            <x-button variant="secondary" size="md" type="button" wire:click="$set('showCreateReceivableModal', false)">Batal</x-button>
+            <x-button variant="emerald" size="md" type="submit">Simpan Piutang Kasbon</x-button>
         </div>
     </form>
 </x-modal-dialog>

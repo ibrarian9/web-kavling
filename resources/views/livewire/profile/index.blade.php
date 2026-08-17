@@ -75,9 +75,9 @@
                     </div>
 
                     <div class="pt-3 border-t border-slate-100 flex items-center justify-end">
-                        <button type="submit" class="btn-action-primary px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold shadow-md text-xs">
+                        <x-button variant="emerald" size="md" type="submit">
                             Simpan Perubahan Profil
-                        </button>
+                        </x-button>
                     </div>
                 </form>
             </div>
@@ -118,9 +118,9 @@
                     </div>
 
                     <div class="pt-2 border-t border-slate-100 flex items-center justify-end">
-                        <button type="submit" class="btn-action-primary px-5 py-2.5 bg-amber-600 hover:bg-amber-700 text-white rounded-xl font-bold shadow-sm text-xs">
+                        <x-button variant="amber" size="md" type="submit">
                             Update Password
-                        </button>
+                        </x-button>
                     </div>
                 </form>
             </div>

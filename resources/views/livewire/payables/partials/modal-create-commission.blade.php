@@ -55,8 +55,8 @@
         </div>
 
         <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
-            <button type="button" wire:click="$set('showCreateCommissionModal', false)" class="btn-secondary">Batal</button>
-            <button type="submit" class="btn-primary bg-purple-600 hover:bg-purple-700">Simpan Hutang Komisi</button>
+            <x-button variant="secondary" size="md" type="button" wire:click="$set('showCreateCommissionModal', false)">Batal</x-button>
+            <x-button variant="purple" size="md" type="submit">Simpan Hutang Komisi</x-button>
         </div>
     </form>
 </x-modal-dialog>

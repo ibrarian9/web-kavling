@@ -10,6 +10,18 @@
 
     // Map status key to display configuration
     $config = match($normalized) {
+        'masuk', 'kas_masuk', 'pemasukan', 'income' => [
+            'text' => $label ?? 'KAS MASUK',
+            'class' => 'bg-emerald-100/90 text-emerald-800 border border-emerald-300 shadow-2xs',
+            'icon' => 'check',
+            'icon_color' => 'text-emerald-600',
+        ],
+        'keluar', 'kas_keluar', 'pengeluaran', 'expense' => [
+            'text' => $label ?? 'KAS KELUAR',
+            'class' => 'bg-rose-100/90 text-rose-800 border border-rose-300 shadow-2xs',
+            'icon' => 'pulse',
+            'dot_color' => 'bg-rose-600',
+        ],
         'lunas', 'terbayar', 'paid', 'disetujui', 'acc', 'completed' => [
             'text' => $label ?? ($normalized === 'terbayar' ? 'TERBAYAR' : 'LUNAS'),
             'class' => 'bg-emerald-100/90 text-emerald-800 border border-emerald-200/80',
@@ -75,6 +87,73 @@
             'class' => 'bg-indigo-100/90 text-indigo-800 border border-indigo-200/80',
             'icon' => 'dot',
             'dot_color' => 'bg-indigo-600',
+        ],
+        // --- KATEGORI ARUS KAS ---
+        'pembayaran_cicilan_pembeli', 'cicilan_pembeli' => [
+            'text' => $label ?? 'CICILAN PEMBELI',
+            'class' => 'bg-emerald-50 text-emerald-800 border border-emerald-200/90 shadow-2xs',
+            'icon' => 'dot',
+            'dot_color' => 'bg-emerald-500',
+        ],
+        'booking_fee' => [
+            'text' => $label ?? 'BOOKING FEE',
+            'class' => 'bg-purple-50 text-purple-800 border border-purple-200/90 shadow-2xs',
+            'icon' => 'dot',
+            'dot_color' => 'bg-purple-500',
+        ],
+        'pembayaran_dp', 'dp', 'uang_muka' => [
+            'text' => $label ?? 'UANG MUKA (DP)',
+            'class' => 'bg-blue-50 text-blue-800 border border-blue-200/90 shadow-2xs',
+            'icon' => 'dot',
+            'dot_color' => 'bg-blue-500',
+        ],
+        'penjualan_unit' => [
+            'text' => $label ?? 'PENJUALAN UNIT',
+            'class' => 'bg-teal-50 text-teal-800 border border-teal-200/90 shadow-2xs',
+            'icon' => 'dot',
+            'dot_color' => 'bg-teal-500',
+        ],
+        'pemasukan_lain' => [
+            'text' => $label ?? 'PEMASUKAN LAIN',
+            'class' => 'bg-cyan-50 text-cyan-800 border border-cyan-200/90 shadow-2xs',
+            'icon' => 'dot',
+            'dot_color' => 'bg-cyan-500',
+        ],
+        'operasional' => [
+            'text' => $label ?? 'OPERASIONAL',
+            'class' => 'bg-amber-50 text-amber-900 border border-amber-300 shadow-2xs',
+            'icon' => 'dot',
+            'dot_color' => 'bg-amber-500',
+        ],
+        'gaji_karyawan' => [
+            'text' => $label ?? 'GAJI KARYAWAN',
+            'class' => 'bg-rose-50 text-rose-800 border border-rose-200/90 shadow-2xs',
+            'icon' => 'dot',
+            'dot_color' => 'bg-rose-500',
+        ],
+        'upah_tukang', 'pembayaran_tukang' => [
+            'text' => $label ?? 'UPAH TUKANG',
+            'class' => 'bg-orange-50 text-orange-800 border border-orange-200/90 shadow-2xs',
+            'icon' => 'dot',
+            'dot_color' => 'bg-orange-500',
+        ],
+        'material', 'belanja_material' => [
+            'text' => $label ?? 'BELANJA MATERIAL',
+            'class' => 'bg-indigo-50 text-indigo-800 border border-indigo-200/90 shadow-2xs',
+            'icon' => 'dot',
+            'dot_color' => 'bg-indigo-500',
+        ],
+        'pembelian_lahan', 'lahan_proyek' => [
+            'text' => $label ?? 'PEMBELIAN LAHAN',
+            'class' => 'bg-violet-50 text-violet-800 border border-violet-200/90 shadow-2xs',
+            'icon' => 'dot',
+            'dot_color' => 'bg-violet-500',
+        ],
+        'pengeluaran_lain', 'lain_lain', 'lainnya' => [
+            'text' => $label ?? 'PENGELUARAN LAIN',
+            'class' => 'bg-slate-100 text-slate-700 border border-slate-200 shadow-2xs',
+            'icon' => 'dot',
+            'dot_color' => 'bg-slate-400',
         ],
         default => [
             'text' => $label ?? strtoupper(str_replace('_', ' ', $normalized)),

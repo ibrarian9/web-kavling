@@ -127,8 +127,8 @@
 
                 <!-- Action Buttons Footer -->
                 <div class="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2 sm:gap-3 pt-3 border-t border-slate-100 shrink-0">
-                    <button type="button" wire:click="$set('showReportModal', false)" class="btn-secondary text-xs">Batal</button>
-                    <button type="submit" class="btn-primary bg-teal-600 hover:bg-teal-700 text-xs font-bold">Simpan Laporan Activity</button>
+                    <x-button variant="secondary" size="md" type="button" wire:click="$set('showReportModal', false)">Batal</x-button>
+                    <x-button variant="primary" size="md" type="submit">Simpan Laporan Activity</x-button>
                 </div>
             </form>
         </div>

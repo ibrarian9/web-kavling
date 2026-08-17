@@ -29,21 +29,21 @@
                         <x-status-badge :status="$r->status" />
                     </td>
                     <td class="p-3 text-center">
-                        <div class="flex items-center justify-center gap-1.5">
+                        <div class="flex items-center justify-center gap-1.5 whitespace-nowrap">
                             @if($sisaRec > 0)
-                                @if(auth()->user()->isFounder() || auth()->user()->isFinance())
-                                    <x-button variant="emerald" size="xs" wire:click="openPayReceivableModal({{ $r->id }})">
-                                        Terima Pengembalian
-                                    </x-button>
-                                @endif
+                                 @if(auth()->user()->isFounder() || auth()->user()->isFinance())
+                                     <x-button variant="payment" size="xs" wire:click="openPayReceivableModal({{ $r->id }})">
+                                         <span>Terima Pengembalian</span>
+                                     </x-button>
+                                 @endif
                             @else
                                 <span class="text-[11px] text-emerald-600 font-semibold whitespace-nowrap">Lunas</span>
                             @endif
 
                             @if(auth()->user()->isFounder())
-                                <button type="button" @click="confirmModalAction({ title: 'Hapus Piutang Staf', message: 'Apakah Anda yakin ingin menghapus catatan piutang / kasbon staf ini secara permanen?', confirmText: 'Ya, Hapus Piutang', onConfirm: () => $wire.deleteReceivable({{ $r->id }}) })" class="p-1.5 text-slate-400 hover:text-red-600 rounded-lg hover:bg-red-50 transition" title="Hapus Piutang">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                                </button>
+                                <x-button variant="delete" size="xs" @click="confirmModalAction({ title: 'Hapus Piutang Staf', message: 'Apakah Anda yakin ingin menghapus catatan piutang / kasbon staf ini secara permanen?', confirmText: 'Ya, Hapus Piutang', btnClass: 'px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5', onConfirm: () => $wire.deleteReceivable({{ $r->id }}) })" title="Hapus Piutang">
+                                    <span>Hapus</span>
+                                </x-button>
                             @endif
                         </div>
                     </td>

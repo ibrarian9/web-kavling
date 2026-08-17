@@ -663,8 +663,12 @@ class Show extends Component
             'proposals' => function ($q) {
                 $q->latest();
             },
-            'officialDocument',
-            'installment',
+            'officialDocument.proposal',
+            'installment.payments',
+            'activeBooking',
+            'bookings',
+            'assignments.worker',
+            'activeAssignments.worker',
         ])->where('project_id', $project->id);
 
         if ($this->unitSearch) {
@@ -691,8 +695,12 @@ class Show extends Component
 
         $allUnits = Unit::with([
             'proposals',
-            'officialDocument',
-            'installment',
+            'officialDocument.proposal',
+            'installment.payments',
+            'activeBooking',
+            'bookings',
+            'assignments.worker',
+            'activeAssignments.worker',
         ])->where('project_id', $project->id)->get();
 
         // Calculate Project Financial Metrics

@@ -30,33 +30,52 @@
     class="{{ $containerClass }}"
     x-data="{
         displayVal: '',
+        parseValue(raw) {
+            if (raw === null || raw === undefined || raw === '') return null;
+            let str = String(raw).trim();
+            if (!str) return null;
+
+            // If it's already a number
+            if (typeof raw === 'number') {
+                return Math.round(raw);
+            }
+
+            // If it's a decimal string from database e.g. '180000000.00' (standard float/decimal format)
+            if (/^\d+\.\d+$/.test(str)) {
+                return Math.round(parseFloat(str));
+            }
+
+            // If it contains dots as thousands separators e.g. '180.000.000'
+            let digits = str.replace(/[^0-9]/g, '');
+            return digits ? parseInt(digits, 10) : 0;
+        },
         format(num) {
-            if (num === null || num === undefined || num === '') return '';
-            let digits = String(num).replace(/[^0-9]/g, '');
-            if (!digits) return '';
-            return parseInt(digits, 10).toLocaleString('id-ID');
+            let val = this.parseValue(num);
+            if (val === null || isNaN(val) || (val === 0 && (num === '' || num === null))) return '';
+            return val.toLocaleString('id-ID');
         },
         init() {
             @if($wireModelClean)
                 let initial = $wire.get('{{ $wireModelClean }}');
                 this.displayVal = this.format(initial);
                 $wire.watch('{{ $wireModelClean }}', (val) => {
-                    let cleanCurrent = this.displayVal.replace(/[^0-9]/g, '');
-                    let cleanNew = String(val === null || val === undefined ? '' : val).replace(/[^0-9]/g, '');
+                    let cleanCurrent = this.parseValue(this.displayVal);
+                    let cleanNew = this.parseValue(val);
                     if (cleanCurrent !== cleanNew) {
                         this.displayVal = this.format(val);
                     }
                 });
             @elseif(!is_null($value))
-                this.displayVal = this.format('{{ $value }}');
+                this.displayVal = this.format(@js($value));
             @endif
         },
         onInput(e) {
             let input = e.target.value;
             let digits = input.replace(/[^0-9]/g, '');
-            this.displayVal = digits ? parseInt(digits, 10).toLocaleString('id-ID') : '';
+            let val = digits ? parseInt(digits, 10) : 0;
+            this.displayVal = digits ? val.toLocaleString('id-ID') : '';
             @if($wireModelClean)
-                $wire.set('{{ $wireModelClean }}', digits ? parseInt(digits, 10) : 0);
+                $wire.set('{{ $wireModelClean }}', val);
             @endif
         }
     }"

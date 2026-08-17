@@ -402,7 +402,7 @@ class Index extends Component
 
     public function render()
     {
-        $query = PriceProposal::with(['unit.project', 'proposer', 'approvals.approver']);
+        $query = PriceProposal::with(['unit.project', 'proposer', 'approvals.approver', 'officialDocument']);
 
         if ($this->projectIdFilter) {
             $query->whereHas('unit', function ($q) {

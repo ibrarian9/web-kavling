@@ -60,7 +60,7 @@ class CashflowSeparationAndExportTest extends TestCase
         $response->assertHeader('content-type', 'application/pdf');
     }
 
-    public function test_can_export_cashflow_excel_csv(): void
+    public function test_can_export_excel_csv(): void
     {
         $finance = User::where('role', 'finance')->firstOrFail();
 
@@ -71,5 +71,62 @@ class CashflowSeparationAndExportTest extends TestCase
 
         $response->assertStatus(200);
         $this->assertStringContainsString('text/csv', $response->headers->get('content-type'));
+    }
+
+    public function test_can_record_and_filter_non_project_cashflow(): void
+    {
+        $founder = User::where('role', 'founder')->firstOrFail();
+
+        // 1. Record Non-Project / Corporate Manual Transaction
+        Livewire::actingAs($founder)
+            ->test(\App\Livewire\Cashflow\Index::class)
+            ->set('project_id', '') // Empty string = Non-Proyek
+            ->set('type', 'keluar')
+            ->set('category', 'operasional')
+            ->set('amount', 2500000)
+            ->set('description', 'Pembayaran Listrik & Internet Kantor Pusat')
+            ->set('transaction_date', now()->toDateString())
+            ->call('saveTransaction')
+            ->assertHasNoErrors();
+
+        $trx = CashflowTransaction::where('description', 'Pembayaran Listrik & Internet Kantor Pusat')->firstOrFail();
+        $this->assertNull($trx->project_id);
+        $this->assertEquals(2500000, (float)$trx->amount);
+
+        // 2. Filter by Non-Proyek
+        Livewire::actingAs($founder)
+            ->test(\App\Livewire\Cashflow\Index::class)
+            ->set('filter_project_id', 'non_project')
+            ->assertSee('Pembayaran Listrik & Internet Kantor Pusat')
+            ->assertSee('Non-Proyek / Kantor Pusat');
+
+        // 3. Edit Non-Project Transaction
+        Livewire::actingAs($founder)
+            ->test(\App\Livewire\Cashflow\Index::class)
+            ->call('editTransaction', $trx->id)
+            ->assertSet('edit_project_id', '')
+            ->assertSet('edit_description', 'Pembayaran Listrik & Internet Kantor Pusat')
+            ->set('edit_amount', 3000000)
+            ->call('updateTransaction')
+            ->assertHasNoErrors();
+
+        $trx->refresh();
+        $this->assertEquals(3000000, (float)$trx->amount);
+    }
+
+    public function test_can_open_and_close_modals_cleanly(): void
+    {
+        $founder = User::where('role', 'founder')->firstOrFail();
+
+        Livewire::actingAs($founder)
+            ->test(\App\Livewire\Cashflow\Index::class)
+            ->call('openManualModal')
+            ->assertSet('showManualModal', true)
+            ->set('amount', 500000)
+            ->set('description', 'Test Description')
+            ->call('closeManualModal')
+            ->assertSet('showManualModal', false)
+            ->assertSet('amount', 0)
+            ->assertSet('description', '');
     }
 }

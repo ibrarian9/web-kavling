@@ -56,6 +56,9 @@ class Project extends Model
 
     public function getTotalPaidAttribute(): float
     {
+        if ($this->relationLoaded('payments')) {
+            return (float) $this->payments->sum('amount_paid');
+        }
         return (float) $this->payments()->sum('amount_paid');
     }
 

@@ -38,8 +38,9 @@ class CascadeDeletionService
             }
 
             // 2. Clean up Installments, Installment Payments & their Cashflow Transactions
-            if ($unit->installment) {
-                $installmentId = $unit->installment->id;
+            $installment = UnitInstallment::where('unit_id', $unitId)->first();
+            if ($installment) {
+                $installmentId = $installment->id;
                 $paymentIds = InstallmentPayment::where('unit_installment_id', $installmentId)->pluck('id');
 
                 CashflowTransaction::where('reference_type', UnitInstallment::class)
@@ -53,7 +54,7 @@ class CascadeDeletionService
                     InstallmentPayment::whereIn('id', $paymentIds)->delete();
                 }
 
-                $unit->installment->delete();
+                $installment->delete();
             }
 
             // 3. Clean up Worker Unit Payrolls, Salary Payments & their Cashflow Transactions

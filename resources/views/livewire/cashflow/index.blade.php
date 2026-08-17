@@ -53,7 +53,8 @@
                 <div>
                     <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Pilih Proyek Properti:</label>
                     <select wire:model.live="filter_project_id" class="w-full py-2 px-3 text-xs bg-slate-50 border border-slate-200 rounded-xl font-semibold text-slate-800 focus:outline-none focus:border-emerald-500">
-                        <option value="">Semua Proyek</option>
+                        <option value="">Semua Proyek & Non-Proyek</option>
+                        <option value="non_project">Non-Proyek / Kantor Pusat</option>
                         @foreach ($projects as $p)
                             <option value="{{ $p->id }}">{{ $p->name }} ({{ $p->location }})</option>
                         @endforeach
@@ -232,8 +233,8 @@
                     $pct = $totalMasuk > 0 ? min(100, round(($cat->total_amount / $totalMasuk) * 100, 1)) : 0;
                 @endphp
                 <div class="space-y-1 text-xs">
-                    <div class="flex justify-between font-semibold">
-                        <span class="text-slate-700 capitalize">{{ str_replace('_', ' ', $cat->category) }}</span>
+                    <div class="flex justify-between items-center font-semibold">
+                        <x-category-badge :category="$cat->category" />
                         <span class="font-mono text-emerald-700 font-bold">Rp {{ number_format($cat->total_amount, 0, ',', '.') }} ({{ $pct }}%)</span>
                     </div>
                     <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
@@ -252,8 +253,8 @@
                     $pct = $totalKeluar > 0 ? min(100, round(($cat->total_amount / $totalKeluar) * 100, 1)) : 0;
                 @endphp
                 <div class="space-y-1 text-xs">
-                    <div class="flex justify-between font-semibold">
-                        <span class="text-slate-700 capitalize">{{ str_replace('_', ' ', $cat->category) }}</span>
+                    <div class="flex justify-between items-center font-semibold">
+                        <x-category-badge :category="$cat->category" />
                         <span class="font-mono text-rose-700 font-bold">Rp {{ number_format($cat->total_amount, 0, ',', '.') }} ({{ $pct }}%)</span>
                     </div>
                     <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
@@ -314,12 +315,21 @@
                 <!-- Category Filter -->
                 <select wire:model.live="categoryFilter" class="select-clean text-xs font-bold">
                     <option value="">Semua Kategori</option>
-                    <option value="pembayaran_cicilan_pembeli">Cicilan Pembeli</option>
-                    <option value="booking_fee">Booking Fee</option>
-                    <option value="belanja_material">Belanja Material</option>
-                    <option value="gaji_karyawan">Gaji Karyawan</option>
-                    <option value="operasional">Operasional</option>
-                    <option value="lahan_proyek">Pembayaran Lahan</option>
+                    <optgroup label="Pemasukan (Kas Masuk)">
+                        <option value="pembayaran_cicilan_pembeli">Setoran Cicilan Pembeli</option>
+                        <option value="booking_fee">Booking Fee</option>
+                        <option value="pembayaran_dp">Pembayaran Uang Muka (DP)</option>
+                        <option value="penjualan_unit">Penjualan Unit Cash</option>
+                        <option value="pemasukan_lain">Pemasukan Lain-lain</option>
+                    </optgroup>
+                    <optgroup label="Pengeluaran (Kas Keluar)">
+                        <option value="operasional">Operasional Kantor / Proyek</option>
+                        <option value="gaji_karyawan">Gaji Karyawan Staf</option>
+                        <option value="upah_tukang">Upah Pekerja / Tukang</option>
+                        <option value="material">Pembelian Material</option>
+                        <option value="pembelian_lahan">Pembelian Lahan Proyek</option>
+                        <option value="pengeluaran_lain">Pengeluaran Lain-lain</option>
+                    </optgroup>
                 </select>
             </div>
         </div>
@@ -338,21 +348,19 @@
                     <td class="p-3.5 font-bold text-slate-800 text-xs">
                         <div class="flex items-center gap-1.5">
                             <svg class="w-4 h-4 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5m3 0h1m-1-4h.01M9 16h.01M9 12h.01M9 8h.01M15 16h.01M15 12h.01M15 8h.01M12 16h.01M12 12h.01M12 8h.01"/></svg>
-                            <span>{{ $trx->project->name ?? 'Global / Kantor Pusat' }}</span>
+                            <span>{{ $trx->project->name ?? 'Non-Proyek / Kantor Pusat' }}</span>
                         </div>
                     </td>
 
                     <!-- Tipe & Kategori -->
                     <td class="p-3.5">
-                        <div class="space-y-1">
+                        <div class="space-y-1.5 flex flex-col items-start">
                             @if($trx->type === 'masuk')
-                                <x-status-badge status="disetujui" label="KAS MASUK" />
+                                <x-status-badge status="kas_masuk" label="KAS MASUK" />
                             @else
-                                <x-status-badge status="ditolak" label="KAS KELUAR" />
+                                <x-status-badge status="kas_keluar" label="KAS KELUAR" />
                             @endif
-                            <span class="capitalize font-semibold text-slate-700 bg-slate-100 px-2 py-0.5 rounded-md text-[10px] border border-slate-200/60 block w-fit">
-                                {{ str_replace('_', ' ', $trx->category) }}
-                            </span>
+                            <x-category-badge :category="$trx->category" />
                         </div>
                     </td>
 
@@ -379,37 +387,45 @@
 
                     <!-- Aksi -->
                     <td class="p-3.5 text-center whitespace-nowrap">
-                        <div class="inline-flex items-center justify-center gap-1.5">
-                            @if ($trx->receipt_photo_url)
-                                <x-button variant="amber" size="xs" wire:click="openImageModal('{{ $trx->receipt_photo_url }}', 'Foto Struk Resi Kas - {{ $trx->description }}')" title="Buka Foto Struk Bukti Transfer / Transaksi">
-                                    Struk
-                                </x-button>
-                            @endif
-                            
+                        <div class="inline-flex items-center justify-center gap-1.5 whitespace-nowrap">
                             <x-button variant="outline" size="xs" wire:click="openDetailModal({{ $trx->id }})" title="Audit Trail Detail Transaksi">
                                 Detail
                             </x-button>
 
-                            @if(auth()->user()->isFounder() || auth()->user()->isFinance())
-                                <x-button variant="outline" size="xs" wire:click="editTransaction({{ $trx->id }})" title="Edit Transaksi Kas Ini">
-                                    Edit
-                                </x-button>
-                            @endif
+                            <x-action-dropdown title="Menu Opsi Transaksi Kas" size="xs">
+                                <div class="py-1">
+                                    @if ($trx->receipt_photo_url)
+                                        <button type="button" wire:click="openImageModal('{{ $trx->receipt_photo_url }}', 'Foto Struk Resi Kas - {{ $trx->description }}')" class="w-full text-left px-3.5 py-2 text-amber-700 hover:bg-amber-50 flex items-center gap-2 transition">
+                                            <svg class="w-4 h-4 text-amber-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                            <span>Foto Struk Resi</span>
+                                        </button>
+                                    @endif
 
-                            @if(auth()->user()->isFounder())
-                                <button type="button" 
-                                        @click="confirmModalAction({
-                                            title: 'Hapus Mutasi Transaksi Kas',
-                                            message: 'Yakin ingin menghapus mutasi transaksi kas #TRX-{{ $trx->id }} ini?',
-                                            confirmText: 'Hapus Transaksi',
-                                            btnClass: 'px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5',
-                                            onConfirm: () => $wire.deleteTransaction({{ $trx->id }})
-                                        })" 
-                                        class="p-1.5 text-slate-400 hover:text-rose-600 rounded-lg hover:bg-rose-50 transition" 
-                                        title="Hapus Transaksi Kas">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                                </button>
-                            @endif
+                                    @if(auth()->user()->isFounder() || auth()->user()->isFinance())
+                                        <button type="button" wire:click="editTransaction({{ $trx->id }})" class="w-full text-left px-3.5 py-2 text-slate-700 hover:bg-slate-50 flex items-center gap-2 transition">
+                                            <svg class="w-4 h-4 text-slate-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                                            <span>Edit Transaksi</span>
+                                        </button>
+                                    @endif
+                                </div>
+
+                                @if(auth()->user()->isFounder())
+                                    <div class="py-1">
+                                        <button type="button" 
+                                                @click="confirmModalAction({
+                                                    title: 'Hapus Mutasi Transaksi Kas',
+                                                    message: 'Yakin ingin menghapus mutasi transaksi kas #TRX-{{ $trx->id }} ini?',
+                                                    confirmText: 'Hapus Transaksi',
+                                                    btnClass: 'px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5',
+                                                    onConfirm: () => $wire.deleteTransaction({{ $trx->id }})
+                                                })" 
+                                                class="w-full text-left px-3.5 py-2 text-rose-600 hover:bg-rose-50 flex items-center gap-2 transition">
+                                            <svg class="w-4 h-4 text-rose-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                            <span>Hapus Transaksi</span>
+                                        </button>
+                                    </div>
+                                @endif
+                            </x-action-dropdown>
                         </div>
                     </td>
                 </tr>

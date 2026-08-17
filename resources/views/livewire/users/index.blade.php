@@ -79,35 +79,37 @@
                     {{ $u->created_at ? $u->created_at->format('d/m/Y H:i') : '-' }}
                 </td>
                 <td class="px-5 py-4 text-right whitespace-nowrap">
-                    <div class="inline-flex items-center justify-end gap-1.5">
-                        <x-button variant="amber" size="xs" wire:click="openEditModal({{ $u->id }})">
-                            Edit
+                    <div class="inline-flex items-center justify-end gap-1.5 whitespace-nowrap">
+                        <x-button variant="edit" size="xs" wire:click="openEditModal({{ $u->id }})">
+                            <span>Edit</span>
                         </x-button>
 
                         @if($u->id !== auth()->id())
-                            <x-button 
-                                variant="{{ $u->is_active ? 'secondary' : 'emerald' }}" 
-                                size="xs" 
-                                @click="confirmModalAction({
-                                    title: '{{ $u->is_active ? 'Nonaktifkan Akun User' : 'Aktifkan Akun User' }}',
-                                    message: '{{ $u->is_active ? 'Yakin ingin menonaktifkan akun user ' . $u->name . '? User ini tidak akan dapat login ke dalam sistem.' : 'Yakin ingin mengaktifkan kembali akun user ' . $u->name . '? User ini dapat kembali login ke dalam sistem.' }}',
-                                    confirmText: '{{ $u->is_active ? 'Nonaktifkan User' : 'Aktifkan User' }}',
-                                    btnClass: '{{ $u->is_active ? 'px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5' : 'px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5' }}',
-                                    onConfirm: () => $wire.toggleStatus({{ $u->id }})
-                                })"
-                            >
-                                {{ $u->is_active ? 'Nonaktifkan' : 'Aktifkan' }}
-                            </x-button>
+                            <x-action-dropdown title="Menu Opsi User" size="xs">
+                                <div class="py-1">
+                                    <x-dropdown-item icon="toggle" :variant="$u->is_active ? 'warning' : 'success'" @click="confirmModalAction({
+                                        title: '{{ $u->is_active ? 'Nonaktifkan Akun User' : 'Aktifkan Akun User' }}',
+                                        message: '{{ $u->is_active ? 'Yakin ingin menonaktifkan akun user ' . $u->name . '? User ini tidak akan dapat login ke dalam sistem.' : 'Yakin ingin mengaktifkan kembali akun user ' . $u->name . '? User ini dapat kembali login ke dalam sistem.' }}',
+                                        confirmText: '{{ $u->is_active ? 'Nonaktifkan User' : 'Aktifkan User' }}',
+                                        btnClass: '{{ $u->is_active ? 'px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5' : 'px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5' }}',
+                                        onConfirm: () => $wire.toggleStatus({{ $u->id }})
+                                    })">
+                                        {{ $u->is_active ? 'Nonaktifkan Akun' : 'Aktifkan Akun' }}
+                                    </x-dropdown-item>
+                                </div>
 
-                            <button type="button" @click="confirmModalAction({
-                                title: 'Hapus Akun User',
-                                message: 'Yakin ingin menghapus akun user {{ $u->name }} ({{ $u->email }}) secara permanen dari sistem?',
-                                confirmText: 'Hapus User',
-                                btnClass: 'px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5',
-                                onConfirm: () => $wire.deleteUser({{ $u->id }})
-                            })" class="p-1.5 text-slate-400 hover:text-rose-600 rounded-lg hover:bg-rose-50 transition" title="Hapus Akun User Permanen">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                            </button>
+                                <div class="py-1">
+                                    <x-dropdown-item icon="delete" variant="danger" @click="confirmModalAction({
+                                        title: 'Hapus Akun User',
+                                        message: 'Yakin ingin menghapus akun user {{ $u->name }} ({{ $u->email }}) secara permanen dari sistem?',
+                                        confirmText: 'Hapus User',
+                                        btnClass: 'px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5',
+                                        onConfirm: () => $wire.deleteUser({{ $u->id }})
+                                    })">
+                                        Hapus User
+                                    </x-dropdown-item>
+                                </div>
+                            </x-action-dropdown>
                         @endif
                     </div>
                 </td>

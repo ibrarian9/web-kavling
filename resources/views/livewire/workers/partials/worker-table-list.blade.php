@@ -68,34 +68,40 @@
                 @endif
             </td>
             <td class="p-3.5 text-right whitespace-nowrap">
-                <div class="inline-flex items-center justify-end gap-1.5 flex-wrap">
-                    <x-button variant="outline" size="xs" wire:click="openAssignModal({{ $worker->id }})" title="Tugaskan Pekerja ke Proyek / Unit">
-                        Tugaskan
+                <div class="inline-flex items-center justify-end gap-2.5 whitespace-nowrap">
+                    <x-button variant="assign" size="sm" wire:click="openAssignModal({{ $worker->id }})" title="Tugaskan Pekerja ke Proyek / Unit">
+                        <span>Tugaskan</span>
                     </x-button>
 
-                    <x-button variant="amber" size="xs" wire:click="edit({{ $worker->id }})" title="Edit Data Pekerja">
-                        Edit
-                    </x-button>
+                    <x-action-dropdown title="Menu Opsi Pekerja" size="sm">
+                        <div class="py-1">
+                            <x-dropdown-item icon="edit" wire:click="edit({{ $worker->id }})">
+                                Edit Data
+                            </x-dropdown-item>
 
-                    <button type="button" @click="confirmModalAction({
-                        title: '{{ $worker->status === "active" ? "Nonaktifkan Status Pekerja" : "Aktifkan Status Pekerja" }}',
-                        message: '{{ $worker->status === "active" ? "Yakin ingin menonaktifkan status pekerja " . $worker->name . "?" : "Yakin ingin mengaktifkan kembali status pekerja " . $worker->name . "?" }}',
-                        confirmText: '{{ $worker->status === "active" ? "Nonaktifkan" : "Aktifkan" }}',
-                        btnClass: 'px-4 py-2 {{ $worker->status === "active" ? "bg-amber-600 hover:bg-amber-700" : "bg-emerald-600 hover:bg-emerald-700" }} text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5',
-                        onConfirm: () => $wire.toggleStatus({{ $worker->id }})
-                    })" class="p-1.5 text-slate-400 hover:text-amber-600 rounded-lg hover:bg-amber-50 transition" title="{{ $worker->status === 'active' ? 'Nonaktifkan' : 'Aktifkan' }}">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg>
-                    </button>
+                            <x-dropdown-item icon="toggle" :variant="$worker->status === 'active' ? 'warning' : 'success'" @click="confirmModalAction({
+                                title: '{{ $worker->status === 'active' ? 'Nonaktifkan Status Pekerja' : 'Aktifkan Status Pekerja' }}',
+                                message: '{{ $worker->status === 'active' ? 'Yakin ingin menonaktifkan status pekerja ' . $worker->name . '?' : 'Yakin ingin mengaktifkan kembali status pekerja ' . $worker->name . '?' }}',
+                                confirmText: '{{ $worker->status === 'active' ? 'Nonaktifkan' : 'Aktifkan' }}',
+                                btnClass: 'px-4 py-2 {{ $worker->status === 'active' ? 'bg-amber-600 hover:bg-amber-700' : 'bg-emerald-600 hover:bg-emerald-700' }} text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5',
+                                onConfirm: () => $wire.toggleStatus({{ $worker->id }})
+                            })">
+                                {{ $worker->status === 'active' ? 'Nonaktifkan' : 'Aktifkan' }}
+                            </x-dropdown-item>
+                        </div>
 
-                    <button type="button" @click="confirmModalAction({
-                        title: 'Hapus Pekerja',
-                        message: 'Yakin ingin menghapus permanen data pekerja {{ $worker->name }}? Seluruh riwayat penugasan dan catatan gaji pekerja ini akan dihapus.',
-                        confirmText: 'Hapus Pekerja',
-                        btnClass: 'px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5',
-                        onConfirm: () => $wire.delete({{ $worker->id }})
-                    })" class="p-1.5 text-slate-400 hover:text-rose-600 rounded-lg hover:bg-rose-50 transition" title="Hapus Permanen">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                    </button>
+                        <div class="py-1">
+                            <x-dropdown-item icon="delete" variant="danger" @click="confirmModalAction({
+                                title: 'Hapus Pekerja',
+                                message: 'Yakin ingin menghapus permanen data pekerja {{ $worker->name }}? Seluruh riwayat penugasan dan catatan gaji pekerja ini akan dihapus.',
+                                confirmText: 'Hapus Pekerja',
+                                btnClass: 'px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5',
+                                onConfirm: () => $wire.delete({{ $worker->id }})
+                            })">
+                                Hapus Pekerja
+                            </x-dropdown-item>
+                        </div>
+                    </x-action-dropdown>
                 </div>
             </td>
         </tr>

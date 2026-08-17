@@ -62,8 +62,8 @@
 
                 <!-- Footer Action Buttons -->
                 <div class="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2 sm:gap-3 pt-3 border-t border-slate-100 shrink-0">
-                    <button type="button" wire:click="$set('showConvertToCashModal', false)" class="btn-secondary">Batal</button>
-                    <button type="submit" class="btn-primary bg-purple-600 hover:bg-purple-700">Proses Pelunasan Cash & Batalkan Cicilan</button>
+                    <x-button variant="secondary" size="md" type="button" wire:click="$set('showConvertToCashModal', false)">Batal</x-button>
+                    <x-button variant="purple" size="md" type="submit">Proses Pelunasan Cash & Batalkan Cicilan</x-button>
                 </div>
             </form>
         </div>

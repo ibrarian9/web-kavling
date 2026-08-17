@@ -36,8 +36,13 @@ class Index extends Component
         'total_project_price' => 'nullable|numeric|min:0',
     ];
 
-    public function openModal()
+    public function openModal($projectId = null)
     {
+        $this->resetValidation();
+        if ($projectId) {
+            $this->editProject($projectId);
+            return;
+        }
         $this->resetInputFields();
         $this->showModal = true;
     }
@@ -45,6 +50,8 @@ class Index extends Component
     public function closeModal()
     {
         $this->showModal = false;
+        $this->resetValidation();
+        $this->resetInputFields();
     }
 
     public function resetInputFields()
@@ -98,6 +105,7 @@ class Index extends Component
 
     public function editProject($id)
     {
+        $this->resetValidation();
         $project = Project::findOrFail($id);
         $this->editingProjectId = $project->id;
         $this->name = $project->name;
@@ -105,7 +113,7 @@ class Index extends Component
         $this->standard_land_area = $project->standard_land_area;
         $this->excess_price_per_sqm = $project->excess_price_per_sqm;
         $this->base_price = $project->base_price;
-        $this->total_project_price = $project->total_project_price;
+        $this->total_project_price = (float)$project->total_project_price;
 
         $this->showModal = true;
     }

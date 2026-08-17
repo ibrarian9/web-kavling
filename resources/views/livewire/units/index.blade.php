@@ -1,7 +1,7 @@
 <div class="space-y-6">
 
     <!-- Header & Filter Toolbar Section -->
-    <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-4 sm:p-5 mb-6 space-y-4">
+    <x-card padding="p-4 sm:p-5" class="mb-6 space-y-4">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-3.5">
             <!-- Judul & Deskripsi Halaman -->
             <div class="space-y-1">
@@ -28,12 +28,9 @@
                 </div>
 
                 @if(auth()->user()->isAdminOrFounder() || auth()->user()->isSupervisor())
-                    <button wire:click="openModal" class="btn-primary h-9 text-xs font-bold whitespace-nowrap shadow-sm px-3.5 flex items-center gap-1.5">
-                        <svg class="w-4 h-4 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
-                        </svg>
+                    <x-button variant="primary" size="sm" wire:click="openModal" icon="plus">
                         <span>Tambah Unit Baru</span>
-                    </button>
+                    </x-button>
                 @endif
             </div>
         </div>
@@ -77,15 +74,7 @@
                 </select>
             </div>
         </div>
-    </div>
-
-    <!-- Livewire Loading State Banner -->
-    <div wire:loading wire:target="search, status_filter, category_filter, project_id, viewMode" class="w-full mb-4">
-        <div class="p-3 bg-emerald-50 border border-emerald-200/80 rounded-2xl text-emerald-900 text-xs font-bold flex items-center justify-center gap-2 animate-pulse shadow-xs">
-            <svg class="w-4 h-4 text-emerald-600 animate-spin shrink-0" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-            <span>Memperbarui data unit sesuai filter...</span>
-        </div>
-    </div>
+    </x-card>
 
     <!-- Content Area Container with Loading Dimming -->
     <div wire:loading.class="opacity-50 pointer-events-none transition-opacity duration-200" wire:target="search, status_filter, category_filter, project_id, viewMode">
@@ -213,42 +202,34 @@
             <div class="card-clean p-5 space-y-4 flex flex-col justify-between hover:shadow-md transition">
                 <div>
                     <!-- Top Badge & Code -->
-                    <div class="flex items-center justify-between gap-2">
-                        <div class="flex items-center gap-2">
-                            <span class="text-lg font-extrabold text-slate-900 font-mono">{{ $unit->code }}</span>
+                    <div class="flex items-center justify-between gap-2 flex-nowrap">
+                        <div class="flex items-center gap-2 flex-nowrap whitespace-nowrap overflow-hidden">
+                            <span class="text-lg font-extrabold text-slate-900 font-mono whitespace-nowrap">{{ $unit->code }}</span>
                             @if($unit->category === 'infrastruktur' || $unit->status === 'infrastruktur')
-                                <span class="text-[10px] uppercase font-extrabold px-2 py-0.5 rounded-md bg-sky-100 text-sky-800 border border-sky-300">
+                                <span class="text-[10px] uppercase font-extrabold px-2 py-0.5 rounded-md bg-sky-100 text-sky-800 border border-sky-300 whitespace-nowrap">
                                     FASUM: {{ strtoupper($unit->type) }}
                                 </span>
                             @elseif($unit->category === 'rumah')
-                                <span class="text-[10px] uppercase font-bold px-2 py-0.5 rounded-md bg-purple-50 text-purple-800 border border-purple-200">
+                                <span class="text-[10px] uppercase font-bold px-2 py-0.5 rounded-md bg-purple-50 text-purple-800 border border-purple-200 whitespace-nowrap">
                                     Rumah
                                 </span>
                             @else
-                                <span class="text-[10px] uppercase font-bold px-2 py-0.5 rounded-md bg-amber-50 text-amber-800 border border-amber-200">
+                                <span class="text-[10px] uppercase font-bold px-2 py-0.5 rounded-md bg-amber-50 text-amber-800 border border-amber-200 whitespace-nowrap">
                                     Kavling
                                 </span>
                             @endif
                         </div>
 
                         <!-- Status Badge -->
-                        @if($unit->status === 'infrastruktur' || $unit->category === 'infrastruktur')
-                            <span class="px-2.5 py-0.5 rounded-md text-[10px] font-bold bg-sky-950 text-sky-300 border border-sky-500/40">
-                                Infrastruktur Proyek
-                            </span>
-                        @elseif($unit->status === 'tersedia')
-                            <span class="status-tersedia">Tersedia</span>
-                        @elseif($unit->status === 'booked')
-                            <span class="status-booked">Booked</span>
-                        @elseif($unit->status === 'menunggu_persetujuan')
-                            <span class="status-menunggu">Pending Approval</span>
-                        @elseif($unit->status === 'disetujui')
-                            <span class="status-disetujui">Harga ACC</span>
-                        @elseif($unit->status === 'terjual')
-                            <span class="status-terjual">Terjual</span>
-                        @else
-                            <span class="status-draft">{{ ucfirst($unit->status) }}</span>
-                        @endif
+                        <div class="shrink-0 whitespace-nowrap">
+                            @if($unit->status === 'infrastruktur' || $unit->category === 'infrastruktur')
+                                <span class="px-2.5 py-0.5 rounded-md text-[10px] font-bold bg-sky-950 text-sky-300 border border-sky-500/40 whitespace-nowrap">
+                                    Infrastruktur Proyek
+                                </span>
+                            @else
+                                <x-status-badge :status="$unit->status" />
+                            @endif
+                        </div>
                     </div>
 
                     <p class="text-xs font-semibold text-slate-600 mt-1 flex items-center gap-1.5">
@@ -358,73 +339,56 @@
                 </div>
 
                 <!-- Footer Actions & Booking Button -->
-                <div class="pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
-                    <a href="{{ route('units.show', $unit->id) }}" wire:navigate.hover class="btn-action-detail text-xs font-bold px-3 py-1.5 flex items-center gap-1.5">
+                <div class="pt-3 border-t border-slate-100 flex items-center justify-between gap-2 whitespace-nowrap flex-nowrap">
+                    <x-button variant="outline" size="xs" href="{{ route('units.show', $unit->id) }}" wire:navigate.hover>
                         <svg class="w-3.5 h-3.5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                         <span>Detail Unit</span>
-                    </a>
+                    </x-button>
 
-                    <div class="flex items-center gap-1.5">
+                    <div class="flex items-center gap-1.5 whitespace-nowrap flex-nowrap">
                         @if(!auth()->user()->isPengawasProject() && $unit->category !== 'infrastruktur' && $unit->status === 'tersedia')
-                            <button wire:click="openBookingModal({{ $unit->id }})" class="bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-3 py-1.5 rounded-xl transition shadow-2xs flex items-center gap-1">
+                            <x-button variant="blue" size="xs" wire:click="openBookingModal({{ $unit->id }})">
                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                                 <span>Booking</span>
-                            </button>
+                            </x-button>
                         @endif
 
                         <!-- Dropdown Opsi Unit Card -->
-                        <div x-data="{ open: false }" @click.outside="open = false" class="relative inline-block text-left">
-                            <button @click="open = !open" type="button" class="p-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition flex items-center justify-center border border-slate-200" title="Opsi Tindakan Unit">
-                                <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/></svg>
-                            </button>
+                        <x-action-dropdown title="Opsi Tindakan Unit" size="xs">
+                            <div class="py-1">
+                                @if((auth()->user()->isAdminOrFounder() || auth()->user()->isFinance()) && $unit->category !== 'infrastruktur' && $unit->status === 'tersedia')
+                                    <x-dropdown-item icon="plus" variant="success" href="{{ route('units.show', $unit->id) }}">
+                                        Pembelian Cash
+                                    </x-dropdown-item>
+                                @endif
 
-                            <div x-show="open" 
-                                 x-transition:enter="transition ease-out duration-100"
-                                 x-transition:enter-start="transform opacity-0 scale-95"
-                                 x-transition:enter-end="transform opacity-100 scale-100"
-                                 x-transition:leave="transition ease-in duration-75"
-                                 x-transition:leave-start="transform opacity-100 scale-100"
-                                 x-transition:leave-end="transform opacity-0 scale-95"
-                                 class="absolute right-0 mt-1 w-44 rounded-2xl bg-white shadow-xl border border-slate-200/90 py-1 z-30 divide-y divide-slate-100 text-xs font-semibold" style="display: none;">
-                                <div class="py-1">
-                                    @if((auth()->user()->isAdminOrFounder() || auth()->user()->isFinance()) && $unit->category !== 'infrastruktur' && $unit->status === 'tersedia')
-                                        <a href="{{ route('units.show', $unit->id) }}" @click="open = false" class="w-full text-left px-3.5 py-1.5 text-emerald-700 hover:bg-emerald-50 flex items-center gap-2 transition">
-                                            <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 01-2-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                                            <span>Pembelian Cash</span>
-                                        </a>
-                                    @endif
+                                @if(auth()->user()->isMarketing() && $unit->category !== 'infrastruktur' && $unit->status === 'tersedia')
+                                    <x-dropdown-item icon="plus" variant="info" href="{{ route('proposals.index', ['create_unit_id' => $unit->id]) }}">
+                                        Ajukan Harga
+                                    </x-dropdown-item>
+                                @endif
 
-                                    @if(auth()->user()->isMarketing() && $unit->category !== 'infrastruktur' && $unit->status === 'tersedia')
-                                        <a href="{{ route('proposals.index', ['create_unit_id' => $unit->id]) }}" @click="open = false" class="w-full text-left px-3.5 py-1.5 text-blue-700 hover:bg-blue-50 flex items-center gap-2 transition">
-                                            <svg class="w-3.5 h-3.5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                                            <span>Ajukan Harga</span>
-                                        </a>
-                                    @endif
-
-                                    @if(auth()->user()->isAdminOrFounder() || auth()->user()->isSupervisor())
-                                        <button wire:click="editUnit({{ $unit->id }})" @click="open = false" class="w-full text-left px-3.5 py-1.5 text-slate-700 hover:bg-slate-50 flex items-center gap-2 transition">
-                                            <svg class="w-3.5 h-3.5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-                                            <span>Edit Unit</span>
-                                        </button>
-                                    @endif
-                                </div>
-
-                                @if(auth()->user()->isFounder())
-                                    <div class="py-1">
-                                        <button type="button" @click="open = false; confirmModalAction({
-                                            title: 'Hapus Unit Kavling/Rumah',
-                                            message: 'Yakin ingin menghapus unit {{ $unit->code }} dari sistem beserta seluruh histori terikatnya?',
-                                            confirmText: 'Hapus Unit',
-                                            btnClass: 'px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5',
-                                            onConfirm: () => $wire.deleteUnit({{ $unit->id }})
-                                        })" class="w-full text-left px-3.5 py-1.5 text-rose-600 hover:bg-rose-50 flex items-center gap-2 transition">
-                                            <svg class="w-3.5 h-3.5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                                            <span>Hapus Unit</span>
-                                        </button>
-                                    </div>
+                                @if(auth()->user()->isAdminOrFounder() || auth()->user()->isSupervisor())
+                                    <x-dropdown-item icon="edit" wire:click="editUnit({{ $unit->id }})">
+                                        Edit Unit
+                                    </x-dropdown-item>
                                 @endif
                             </div>
-                        </div>
+
+                            @if(auth()->user()->isFounder())
+                                <div class="py-1">
+                                    <x-dropdown-item icon="delete" variant="danger" @click="confirmModalAction({
+                                        title: 'Hapus Unit Kavling/Rumah',
+                                        message: 'Yakin ingin menghapus unit {{ $unit->code }} dari sistem beserta seluruh histori terikatnya?',
+                                        confirmText: 'Hapus Unit',
+                                        btnClass: 'px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5',
+                                        onConfirm: () => $wire.deleteUnit({{ $unit->id }})
+                                    })">
+                                        Hapus Unit
+                                    </x-dropdown-item>
+                                </div>
+                            @endif
+                        </x-action-dropdown>
                     </div>
                 </div>
             </div>
@@ -442,227 +406,220 @@
         <div class="mt-4">
             {{ $units->links() }}
         </div>
-    @endif
-    </div>
+    @endif </div>
 
     <!-- Modal Form Unit -->
     @if($showModal)
-        <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm">
-            <div class="bg-white border border-slate-200/80 rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
-                <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-                    <h3 class="font-bold text-slate-900 text-base">
-                        {{ $editingUnitId ? 'Edit Data Unit' : 'Tambah Unit (Kavling, Rumah & Infrastruktur)' }}
-                    </h3>
-                    <button wire:click="closeModal" class="text-slate-400 hover:text-slate-600">✕</button>
+        <x-modal-dialog show="showModal" 
+                        closeAction="closeModal" 
+                        title="{{ $editingUnitId ? 'Edit Data Unit' : 'Tambah Unit (Kavling, Rumah & Infrastruktur)' }}" 
+                        subTitle="Kelola unit kavling, bangunan rumah, dan fasum kawasan" 
+                        maxWidth="max-w-lg">
+            <form wire:submit.prevent="saveUnit" class="space-y-4 text-xs">
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider">Pilih Proyek</label>
+                    <select wire:model.live="selected_project_id" class="select-clean w-full font-semibold">
+                        <option value="">Pilih Proyek...</option>
+                        @foreach($projects as $p)
+                            <option value="{{ $p->id }}">{{ $p->name }} (Standar: {{ number_format($p->standard_land_area, 0, ',', '.') }}m²)</option>
+                        @endforeach
+                    </select>
+                    @error('selected_project_id') <span class="text-rose-500 text-[10px] mt-1 block">{{ $message }}</span> @enderror
                 </div>
 
-                <form wire:submit.prevent="saveUnit" class="space-y-4 text-xs">
+                <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider">Pilih Proyek</label>
-                        <select wire:model.live="selected_project_id" class="input-clean w-full font-semibold">
-                            <option value="">Pilih Proyek...</option>
-                            @foreach($projects as $p)
-                                <option value="{{ $p->id }}">{{ $p->name }} (Standar: {{ number_format($p->standard_land_area, 0, ',', '.') }}m²)</option>
-                            @endforeach
+                        <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider">Kode Unit</label>
+                        <input type="text" wire:model="code" placeholder="Contoh: A-01 / INF-PARIT-01" class="input-clean w-full font-bold font-mono">
+                        @error('code') <span class="text-rose-500 text-[10px] mt-1 block">{{ $message }}</span> @enderror
+                    </div>
+
+                    <div>
+                        <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider">Kategori Unit</label>
+                        <select wire:model.live="category" class="select-clean w-full font-semibold">
+                            <option value="kavling">Kavling Tanah (Komersial)</option>
+                            <option value="rumah">Bangunan Rumah (Komersial)</option>
+                            <option value="infrastruktur">Fasilitas Umum & Infrastruktur Kawasan</option>
                         </select>
-                        @error('selected_project_id') <span class="text-rose-500 text-[10px] mt-1 block">{{ $message }}</span> @enderror
+                        @error('category') <span class="text-rose-500 text-[10px] mt-1 block">{{ $message }}</span> @enderror
                     </div>
+                </div>
 
-                    <div class="grid grid-cols-2 gap-3">
+                @if($category === 'infrastruktur')
+                    <div class="bg-sky-50/80 border border-sky-200/80 rounded-xl p-3.5 space-y-3">
+                        <p class="font-bold text-[11px] uppercase tracking-wider text-sky-900">Detail Infrastruktur & Fasilitas Umum Kawasan:</p>
+                        
                         <div>
-                            <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider">Kode Unit</label>
-                            <input type="text" wire:model="code" placeholder="Contoh: A-01 / INF-PARIT-01" class="input-clean w-full font-bold font-mono">
-                            @error('code') <span class="text-rose-500 text-[10px] mt-1 block">{{ $message }}</span> @enderror
-                        </div>
-
-                        <div>
-                            <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider">Kategori Unit</label>
-                            <select wire:model.live="category" class="input-clean w-full font-semibold">
-                                <option value="kavling">Kavling Tanah (Komersial)</option>
-                                <option value="rumah">Bangunan Rumah (Komersial)</option>
-                                <option value="infrastruktur">Fasilitas Umum & Infrastruktur Kawasan</option>
+                            <label class="block font-semibold text-sky-800 mb-1 uppercase tracking-wider">Sub-Jenis Infrastruktur</label>
+                            <select wire:model="infra_type" class="select-clean w-full font-bold bg-white">
+                                <option value="parit">Pembuatan Parit / Drainase Utama Kawasan</option>
+                                <option value="jalan">Pengerasan / Paving / Aspal Jalan Perumahan</option>
+                                <option value="taman">Taman Kawasan & Ruang Terbuka Hijau (RTH)</option>
+                                <option value="pos_satpam">Gerbang Utama & Pos Security / Satpam</option>
+                                <option value="pju">Penerangan Jalan Umum (PJU) & Listrik</option>
+                                <option value="air">Jaringan Air Bersih & Sanitasi</option>
+                                <option value="fasum_lainnya">Infrastruktur / Fasum Kawasan Lainnya</option>
                             </select>
-                            @error('category') <span class="text-rose-500 text-[10px] mt-1 block">{{ $message }}</span> @enderror
+                        </div>
+
+                        <div>
+                            <label class="block font-semibold text-sky-800 mb-1 uppercase tracking-wider">Keterangan / Deskripsi Pengerjaan</label>
+                            <textarea wire:model="specifications" rows="2" placeholder="Detail lokasi, spesifikasi cor parit, lebar jalan, dll." class="input-clean w-full bg-white"></textarea>
                         </div>
                     </div>
-
-                    @if($category === 'infrastruktur')
-                        <div class="bg-sky-50/80 border border-sky-200/80 rounded-xl p-3.5 space-y-3">
-                            <p class="font-bold text-[11px] uppercase tracking-wider text-sky-900">Detail Infrastruktur & Fasilitas Umum Kawasan:</p>
-                            
+                @elseif($category === 'rumah')
+                    <div class="bg-purple-50/70 border border-purple-200/80 rounded-xl p-3.5 space-y-3">
+                        <p class="font-bold text-[11px] uppercase tracking-wider text-purple-900">Spesifikasi Bangunan Rumah:</p>
+                        
+                        <div class="grid grid-cols-2 gap-3">
                             <div>
-                                <label class="block font-semibold text-sky-800 mb-1 uppercase tracking-wider">Sub-Jenis Infrastruktur</label>
-                                <select wire:model="infra_type" class="input-clean w-full font-bold bg-white">
-                                    <option value="parit">Pembuatan Parit / Drainase Utama Kawasan</option>
-                                    <option value="jalan">Pengerasan / Paving / Aspal Jalan Perumahan</option>
-                                    <option value="taman">Taman Kawasan & Ruang Terbuka Hijau (RTH)</option>
-                                    <option value="pos_satpam">Gerbang Utama & Pos Security / Satpam</option>
-                                    <option value="pju">Penerangan Jalan Umum (PJU) & Listrik</option>
-                                    <option value="air">Jaringan Air Bersih & Sanitasi</option>
-                                    <option value="fasum_lainnya">Infrastruktur / Fasum Kawasan Lainnya</option>
-                                </select>
+                                <label class="block font-semibold text-purple-800 mb-1 uppercase tracking-wider">Luas Bangunan (m²)</label>
+                                <input type="number" step="0.01" wire:model="building_area" placeholder="36" class="input-clean w-full font-mono bg-white">
                             </div>
-
                             <div>
-                                <label class="block font-semibold text-sky-800 mb-1 uppercase tracking-wider">Keterangan / Deskripsi Pengerjaan</label>
-                                <textarea wire:model="specifications" rows="2" placeholder="Detail lokasi, spesifikasi cor parit, lebar jalan, dll." class="input-clean w-full bg-white"></textarea>
+                                <label class="block font-semibold text-purple-800 mb-1 uppercase tracking-wider">Jumlah Lantai</label>
+                                <input type="number" min="1" wire:model="floors_count" placeholder="1" class="input-clean w-full font-mono bg-white">
                             </div>
                         </div>
-                    @elseif($category === 'rumah')
-                        <div class="bg-purple-50/70 border border-purple-200/80 rounded-xl p-3.5 space-y-3">
-                            <p class="font-bold text-[11px] uppercase tracking-wider text-purple-900">Spesifikasi Bangunan Rumah:</p>
-                            
-                            <div class="grid grid-cols-2 gap-3">
-                                <div>
-                                    <label class="block font-semibold text-purple-800 mb-1 uppercase tracking-wider">Luas Bangunan (m²)</label>
-                                    <input type="number" step="0.01" wire:model="building_area" placeholder="36" class="input-clean w-full font-mono bg-white">
-                                </div>
-                                <div>
-                                    <label class="block font-semibold text-purple-800 mb-1 uppercase tracking-wider">Jumlah Lantai</label>
-                                    <input type="number" min="1" wire:model="floors_count" placeholder="1" class="input-clean w-full font-mono bg-white">
-                                </div>
-                            </div>
 
-                            <div>
-                                <label class="block font-semibold text-purple-800 mb-1 uppercase tracking-wider">Deskripsi Spesifikasi Fisik</label>
-                                <textarea wire:model="specifications" rows="2" placeholder="Pondasi batu kali, granit 60x60, atap baja ringan, dll." class="input-clean w-full bg-white"></textarea>
-                            </div>
+                        <div>
+                            <label class="block font-semibold text-purple-800 mb-1 uppercase tracking-wider">Deskripsi Spesifikasi Fisik</label>
+                            <textarea wire:model="specifications" rows="2" placeholder="Pondasi batu kali, granit 60x60, atap baja ringan, dll." class="input-clean w-full bg-white"></textarea>
                         </div>
-                    @endif
-
-                    @if($category !== 'infrastruktur')
-                        <div class="grid grid-cols-3 gap-3">
-                            <div>
-                                <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider">Panjang (m)</label>
-                                <input type="number" step="0.01" wire:model.live="land_length" class="input-clean w-full font-mono">
-                            </div>
-                            <div>
-                                <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider">Lebar (m)</label>
-                                <input type="number" step="0.01" wire:model.live="land_width" class="input-clean w-full font-mono">
-                            </div>
-                            <div>
-                                <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider">Luas Tanah (m²)</label>
-                                <input type="number" step="0.01" wire:model.live="land_area" class="input-clean w-full font-bold font-mono">
-                                @error('land_area') <span class="text-rose-500 text-[10px] mt-1 block">{{ $message }}</span> @enderror
-                            </div>
-                        </div>
-                    @endif
-
-                    @if($selected_project_id && $category !== 'infrastruktur')
-                        <div class="bg-emerald-50 border border-emerald-200/80 rounded-xl p-3.5 space-y-1.5 text-emerald-900">
-                            <p class="font-bold text-[11px] uppercase tracking-wider text-emerald-800">Kalkulasi Otomatis Kelebihan Tanah:</p>
-                            <div class="flex justify-between text-xs">
-                                <span>Kelebihan Luas:</span>
-                                <span class="font-mono font-bold">{{ number_format($previewExcessArea, 0, ',', '.') }} m²</span>
-                            </div>
-                            <div class="flex justify-between text-xs">
-                                <span>Biaya Kelebihan Tanah:</span>
-                                <span class="font-mono font-bold">Rp {{ number_format($previewExcessCost, 0, ',', '.') }}</span>
-                            </div>
-                            <div class="flex justify-between text-xs font-bold pt-1.5 border-t border-emerald-200/80">
-                                <span>Rekomendasi HPP Final:</span>
-                                <span class="font-mono text-emerald-700">Rp {{ number_format($previewRecommendedHpp, 0, ',', '.') }}</span>
-                            </div>
-                        </div>
-                    @endif
-
-                    @if(auth()->user()->canViewHpp())
-                        <x-currency-input 
-                            label="HPP Pokok Final (Rp)" 
-                            model="hpp" 
-                            :value="$hpp" 
-                            placeholder="{{ number_format($previewRecommendedHpp, 0, ',', '.') }}" 
-                            helpText="*HPP dapat disesuaikan ulang oleh bagian Finance."
-                        />
-                    @endif
-
-                    <div class="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
-                        <button type="button" wire:click="closeModal" class="btn-secondary">Batal</button>
-                        <button type="submit" class="btn-primary">Simpan Unit</button>
                     </div>
-                </form>
-            </div>
-        </div>
+                @endif
+
+                @if($category !== 'infrastruktur')
+                    <div class="grid grid-cols-3 gap-3">
+                        <div>
+                            <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider">Panjang (m)</label>
+                            <input type="number" step="0.01" wire:model.live="land_length" class="input-clean w-full font-mono">
+                        </div>
+                        <div>
+                            <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider">Lebar (m)</label>
+                            <input type="number" step="0.01" wire:model.live="land_width" class="input-clean w-full font-mono">
+                        </div>
+                        <div>
+                            <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider">Luas Tanah (m²)</label>
+                            <input type="number" step="0.01" wire:model.live="land_area" class="input-clean w-full font-bold font-mono">
+                            @error('land_area') <span class="text-rose-500 text-[10px] mt-1 block">{{ $message }}</span> @enderror
+                        </div>
+                    </div>
+                @endif
+
+                @if($selected_project_id && $category !== 'infrastruktur')
+                    <div class="bg-emerald-50 border border-emerald-200/80 rounded-xl p-3.5 space-y-1.5 text-emerald-900">
+                        <p class="font-bold text-[11px] uppercase tracking-wider text-emerald-800">Kalkulasi Otomatis Kelebihan Tanah:</p>
+                        <div class="flex justify-between text-xs">
+                            <span>Kelebihan Luas:</span>
+                            <span class="font-mono font-bold">{{ number_format($previewExcessArea, 0, ',', '.') }} m²</span>
+                        </div>
+                        <div class="flex justify-between text-xs">
+                            <span>Biaya Kelebihan Tanah:</span>
+                            <span class="font-mono font-bold">Rp {{ number_format($previewExcessCost, 0, ',', '.') }}</span>
+                        </div>
+                        <div class="flex justify-between text-xs font-bold pt-1.5 border-t border-emerald-200/80">
+                            <span>Rekomendasi HPP Final:</span>
+                            <span class="font-mono text-emerald-700">Rp {{ number_format($previewRecommendedHpp, 0, ',', '.') }}</span>
+                        </div>
+                    </div>
+                @endif
+
+                @if(auth()->user()->canViewHpp())
+                    <x-currency-input 
+                        label="HPP Pokok Final (Rp)" 
+                        model="hpp" 
+                        :value="$hpp" 
+                        placeholder="{{ number_format($previewRecommendedHpp, 0, ',', '.') }}" 
+                        helpText="*HPP dapat disesuaikan ulang oleh bagian Finance."
+                    />
+                @endif
+
+                <div class="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2 pt-3 border-t border-slate-100">
+                    <x-button type="button" variant="secondary" wire:click="closeModal">Batal</x-button>
+                    <x-button type="submit" variant="primary" loadingTarget="saveUnit">Simpan Unit</x-button>
+                </div>
+            </form>
+        </x-modal-dialog>
     @endif
 
     <!-- Modal Form Booking Unit Langsung (Req #2) -->
     @if($showBookingModal)
-        <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm">
-            <div class="bg-white border border-slate-200/80 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
-                <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-                    <div>
-                        <h3 class="font-bold text-slate-900 text-base">Booking Unit {{ $bookingUnitCode }}</h3>
-                        <p class="text-slate-500 text-[11px]">Pencatatan booking unit & bukti DP langsung di dalam sistem</p>
-                    </div>
-                    <button wire:click="$set('showBookingModal', false)" class="text-slate-400 hover:text-slate-600">✕</button>
+        <x-modal-dialog show="showBookingModal" 
+                        title="Booking Unit {{ $bookingUnitCode }}" 
+                        subTitle="Pencatatan booking unit & bukti DP langsung di dalam sistem" 
+                        maxWidth="max-w-md">
+            <form wire:submit.prevent="saveBooking" class="space-y-4 text-xs">
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider">Nama Pembeli</label>
+                    <input type="text" wire:model="buyer_name" required placeholder="Contoh: Bpk. H. Hendra Wijaya" class="input-clean w-full font-bold">
+                    @error('buyer_name') <span class="text-rose-500 text-[10px] mt-1 block">{{ $message }}</span> @enderror
                 </div>
 
-                <form wire:submit.prevent="saveBooking" class="space-y-4 text-xs">
-                    <div>
-                        <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider">Nama Pembeli</label>
-                        <input type="text" wire:model="buyer_name" required placeholder="Contoh: Bpk. H. Hendra Wijaya" class="input-clean w-full font-bold">
-                        @error('buyer_name') <span class="text-rose-500 text-[10px] mt-1 block">{{ $message }}</span> @enderror
-                    </div>
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider">Nomor HP / WhatsApp Pembeli</label>
+                    <input type="text" wire:model="buyer_phone" required placeholder="081234567890" class="input-clean w-full font-mono">
+                    @error('buyer_phone') <span class="text-rose-500 text-[10px] mt-1 block">{{ $message }}</span> @enderror
+                </div>
 
-                    <div>
-                        <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider">Nomor HP / WhatsApp Pembeli</label>
-                        <input type="text" wire:model="buyer_phone" required placeholder="081234567890" class="input-clean w-full font-mono">
-                        @error('buyer_phone') <span class="text-rose-500 text-[10px] mt-1 block">{{ $message }}</span> @enderror
-                    </div>
+                <div>
+                    <x-currency-input 
+                        label="Nominal Tanda Jadi / Booking Fee (Rp)"
+                        model="booking_amount" 
+                        :value="$booking_amount"
+                        placeholder="5.000.000"
+                        badgeColor="teal"
+                        required 
+                    />
+                    @error('booking_amount') <span class="text-rose-500 text-[10px] mt-1 block">{{ $message }}</span> @enderror
+                </div>
 
-                    <div>
-                        <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider">Nominal Tanda Jadi / Booking Fee (Rp)</label>
-                        <x-currency-input model="booking_amount" class="input-clean w-full font-mono font-bold text-teal-700 text-sm" />
-                        @error('booking_amount') <span class="text-rose-500 text-[10px] mt-1 block">{{ $message }}</span> @enderror
-                    </div>
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider">Catatan Pembayaran & Bukti DP</label>
+                    <textarea wire:model="booking_notes" rows="2" placeholder="Informasi bukti transfer DP, skema pelunasan, dll." class="input-clean w-full"></textarea>
+                </div>
 
-                    <div>
-                        <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider">Catatan Pembayaran & Bukti DP</label>
-                        <textarea wire:model="booking_notes" rows="2" placeholder="Informasi bukti transfer DP, skema pelunasan, dll." class="input-clean w-full"></textarea>
+                <div>
+                    <label class="block font-semibold text-slate-700 uppercase mb-1">Foto Struk / Bukti Transfer <span class="text-amber-600 font-bold lowercase text-[10px] bg-amber-50 px-1.5 py-0.5 rounded border border-amber-200">(Opsional, Maks. 2MB)</span></label>
+                    <input type="file" wire:model="receipt_photo" accept="image/*,.heic,.heif,.pdf" class="w-full text-xs text-slate-600 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100 transition cursor-pointer">
+                    <div wire:loading wire:target="receipt_photo" class="text-[11px] text-amber-600 font-semibold mt-1 flex items-center gap-1.5">
+                        <svg class="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                        <span>Mengunggah foto resi...</span>
                     </div>
-
-                    <div>
-                        <label class="block font-semibold text-slate-700 uppercase mb-1">Foto Struk / Bukti Transfer <span class="text-amber-600 font-bold lowercase text-[10px] bg-amber-50 px-1.5 py-0.5 rounded border border-amber-200">(Opsional, Maks. 2MB)</span></label>
-                        <input type="file" wire:model="receipt_photo" accept="image/*,.heic,.heif,.pdf" class="w-full text-xs text-slate-600 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100 transition cursor-pointer">
-                        <div wire:loading wire:target="receipt_photo" class="text-[11px] text-amber-600 font-semibold mt-1 flex items-center gap-1.5">
-                            <svg class="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-                            <span>Mengunggah foto resi...</span>
-                        </div>
-                        @error('receipt_photo') <span class="text-rose-500 text-[10px] mt-1 block font-semibold">{{ $message }}</span> @enderror
-                        @if ($receipt_photo ?? false)
-                            <div class="mt-2.5 p-2.5 bg-slate-50 border border-slate-200 rounded-2xl space-y-2">
-                                <div class="flex items-center justify-between text-[11px] font-semibold text-slate-700">
-                                    <span class="flex items-center gap-1 text-emerald-600">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                                        <span>Berkas Terpilih ({{ method_exists($receipt_photo, 'getClientOriginalName') ? $receipt_photo->getClientOriginalName() : 'Foto Resi' }}):</span>
-                                    </span>
-                                    <button type="button" wire:click="$set('receipt_photo', null)" class="text-rose-500 hover:text-rose-700 text-[10px] underline font-bold">Hapus Foto</button>
-                                </div>
-                                @if (is_object($receipt_photo) && method_exists($receipt_photo, 'isPreviewable') && $receipt_photo->isPreviewable())
-                                    <div class="relative max-h-36 sm:max-h-40 overflow-y-auto rounded-xl border border-slate-200 bg-slate-900 flex items-center justify-center p-1.5">
-                                        <img src="{{ $receipt_photo->temporaryUrl() }}" alt="Preview Resi" class="max-h-32 sm:max-h-36 w-auto max-w-full object-contain rounded-lg shadow-sm">
-                                    </div>
-                                @else
-                                    <div class="p-2.5 bg-amber-50 border border-amber-200/80 rounded-xl text-amber-800 text-[11px] font-semibold flex items-center gap-2">
-                                        <svg class="w-4 h-4 text-amber-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                        <span>Format berkas siap diunggah. Pratinjau langsung didukung untuk file gambar (JPG/PNG).</span>
-                                    </div>
-                                @endif
+                    @error('receipt_photo') <span class="text-rose-500 text-[10px] mt-1 block font-semibold">{{ $message }}</span> @enderror
+                    @if ($receipt_photo ?? false)
+                        <div class="mt-2.5 p-2.5 bg-slate-50 border border-slate-200 rounded-2xl space-y-2">
+                            <div class="flex items-center justify-between text-[11px] font-semibold text-slate-700">
+                                <span class="flex items-center gap-1 text-emerald-600">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                    <span>Berkas Terpilih ({{ method_exists($receipt_photo, 'getClientOriginalName') ? $receipt_photo->getClientOriginalName() : 'Foto Resi' }}):</span>
+                                </span>
+                                <button type="button" wire:click="$set('receipt_photo', null)" class="text-rose-500 hover:text-rose-700 text-[10px] underline font-bold">Hapus Foto</button>
                             </div>
-                        @endif
-                    </div>
+                            @if (is_object($receipt_photo) && method_exists($receipt_photo, 'isPreviewable') && $receipt_photo->isPreviewable())
+                                <div class="relative max-h-36 sm:max-h-40 overflow-y-auto rounded-xl border border-slate-200 bg-slate-900 flex items-center justify-center p-1.5">
+                                    <img src="{{ $receipt_photo->temporaryUrl() }}" alt="Preview Resi" class="max-h-32 sm:max-h-36 w-auto max-w-full object-contain rounded-lg shadow-sm">
+                                </div>
+                            @else
+                                <div class="p-2.5 bg-amber-50 border border-amber-200/80 rounded-xl text-amber-800 text-[11px] font-semibold flex items-center gap-2">
+                                    <svg class="w-4 h-4 text-amber-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                    <span>Format berkas siap diunggah. Pratinjau langsung didukung untuk file gambar (JPG/PNG).</span>
+                                </div>
+                            @endif
+                        </div>
+                    @endif
+                </div>
 
-                    <div class="p-3 bg-blue-50 border border-blue-200/80 rounded-xl text-blue-900 text-[11px] space-y-1">
-                        <span class="font-bold">Info Verifikasi:</span> Setelah disimpan, unit otomatis menjadi status <strong>Booked</strong> dan data transaksi akan dikirim ke menu Booking untuk diverifikasi & disetujui DP-nya oleh Finance / Founder.
-                    </div>
+                <div class="p-3 bg-blue-50 border border-blue-200/80 rounded-xl text-blue-900 text-[11px] space-y-1">
+                    <span class="font-bold">Info Verifikasi:</span> Setelah disimpan, unit otomatis menjadi status <strong>Booked</strong> dan data transaksi akan dikirim ke menu Booking untuk diverifikasi & disetujui DP-nya oleh Finance / Founder.
+                </div>
 
-                    <div class="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
-                        <button type="button" wire:click="$set('showBookingModal', false)" class="btn-secondary">Batal</button>
-                        <button type="submit" class="btn-primary">Proses Booking Unit</button>
-                    </div>
-                </form>
-            </div>
-        </div>
+                <div class="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2 pt-3 border-t border-slate-100">
+                    <x-button type="button" variant="secondary" wire:click="$set('showBookingModal', false)">Batal</x-button>
+                    <x-button type="submit" variant="primary" loadingTarget="saveBooking">Proses Booking Unit</x-button>
+                </div>
+            </form>
+        </x-modal-dialog>
     @endif
 
 </div>

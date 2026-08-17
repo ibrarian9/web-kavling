@@ -150,16 +150,46 @@ class Unit extends Model
 
     public function getBuyerNameAttribute(): string
     {
+        if ($this->relationLoaded('officialDocument') && $this->officialDocument?->buyer_name) {
+            return $this->officialDocument->buyer_name;
+        }
+
+        if ($this->relationLoaded('activeBooking') && $this->activeBooking?->buyer_name) {
+            return $this->activeBooking->buyer_name;
+        }
+
+        if ($this->relationLoaded('bookings')) {
+            $latest = $this->bookings->sortByDesc('id')->first();
+            if ($latest?->buyer_name) {
+                return $latest->buyer_name;
+            }
+        }
+
         return $this->officialDocument?->buyer_name 
             ?? $this->activeBooking?->buyer_name 
-            ?? $this->bookings()?->latest()->first()?->buyer_name 
+            ?? $this->bookings()->latest('id')->first()?->buyer_name 
             ?? 'Konsumen Pembeli';
     }
 
     public function getBuyerPhoneAttribute(): ?string
     {
+        if ($this->relationLoaded('officialDocument') && $this->officialDocument?->buyer_contact) {
+            return $this->officialDocument->buyer_contact;
+        }
+
+        if ($this->relationLoaded('activeBooking') && $this->activeBooking?->buyer_phone) {
+            return $this->activeBooking->buyer_phone;
+        }
+
+        if ($this->relationLoaded('bookings')) {
+            $latest = $this->bookings->sortByDesc('id')->first();
+            if ($latest?->buyer_phone) {
+                return $latest->buyer_phone;
+            }
+        }
+
         return $this->officialDocument?->buyer_contact 
             ?? $this->activeBooking?->buyer_phone 
-            ?? $this->bookings()?->latest()->first()?->buyer_phone;
+            ?? $this->bookings()->latest('id')->first()?->buyer_phone;
     }
 }

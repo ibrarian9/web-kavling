@@ -418,7 +418,7 @@ class Index extends Component
     public function render()
     {
         $query = Booking::query()
-            ->with(['project', 'unit', 'creator']);
+            ->with(['project', 'unit.project', 'creator']);
 
         if ($this->projectFilter) {
             $query->where('project_id', $this->projectFilter);

@@ -76,9 +76,7 @@ class Index extends Component
 
         $this->filter_month = date('Y-m');
         $this->transaction_date = date('Y-m-d');
-        if (Project::count() > 0) {
-            $this->project_id = Project::first()->id;
-        }
+        $this->project_id = '';
     }
 
     public function updatedFilterProjectId()
@@ -221,6 +219,7 @@ class Index extends Component
 
     public bool $showEditModal = false;
     public $editingTransactionId = null;
+    public $edit_project_id = '';
     public string $edit_description = '';
     public string $edit_category = '';
     public float $edit_amount = 0;
@@ -236,6 +235,7 @@ class Index extends Component
 
         $trx = CashflowTransaction::findOrFail($id);
         $this->editingTransactionId = $trx->id;
+        $this->edit_project_id = $trx->project_id ? (string)$trx->project_id : '';
         $this->edit_description = $trx->description;
         $this->edit_category = $trx->category;
         $this->edit_amount = (float) $trx->amount;
@@ -252,6 +252,7 @@ class Index extends Component
         }
 
         $this->validate([
+            'edit_project_id' => 'nullable|exists:projects,id',
             'edit_description' => 'required|string|max:255',
             'edit_category' => 'required|string',
             'edit_amount' => 'required|numeric|min:0',
@@ -263,6 +264,7 @@ class Index extends Component
         $oldAmount = number_format($trx->amount, 0, ',', '.');
 
         $trx->update([
+            'project_id' => !empty($this->edit_project_id) ? (int)$this->edit_project_id : null,
             'description' => $this->edit_description,
             'category' => $this->edit_category,
             'amount' => $this->edit_amount,
@@ -285,25 +287,25 @@ class Index extends Component
     private function resolveAuditTrail(CashflowTransaction $t): array
     {
         // 1. Source Menu Determination
-        $sourceMenu = '📝 Input Direct Modul Arus Kas';
+        $sourceMenu = 'Input Langsung Modul Arus Kas';
         if ($t->reference_type) {
             if ($t->reference_type === \App\Models\ManualInvoice::class) {
-                $sourceMenu = '📄 Menu Invoice Manual / Kuitansi';
+                $sourceMenu = 'Menu Invoice Manual / Kuitansi';
             } elseif ($t->reference_type === \App\Models\InstallmentPayment::class) {
-                $sourceMenu = '💳 Menu Cicilan Pembeli & Setoran Unit';
+                $sourceMenu = 'Menu Cicilan Pembeli & Setoran Unit';
             } elseif ($t->reference_type === \App\Models\Booking::class) {
-                $sourceMenu = '📌 Menu Booking Unit & Penjualan';
+                $sourceMenu = 'Menu Booking Unit & Penjualan';
             } elseif ($t->reference_type === \App\Models\ProjectPayment::class) {
-                $sourceMenu = '🏗️ Menu Detail Proyek (Lahan & Operasional)';
+                $sourceMenu = 'Menu Detail Proyek (Lahan & Operasional)';
             } elseif ($t->reference_type === \App\Models\WorkerSalaryPayment::class) {
-                $sourceMenu = '👷 Menu Penggajian Worker / Detail Unit';
+                $sourceMenu = 'Menu Penggajian Pekerja / Detail Unit';
             }
         } else {
             $descLower = strtolower($t->description ?? '');
             if (str_contains($descLower, 'material') || str_contains($descLower, 'semen') || str_contains($descLower, 'pasir') || str_contains($descLower, 'bata')) {
-                $sourceMenu = '🧱 Menu Detail Unit (Belanja Material)';
+                $sourceMenu = 'Menu Belanja Material Unit';
             } elseif (str_contains($descLower, 'lapangan') || str_contains($descLower, 'operasional')) {
-                $sourceMenu = '🛠️ Menu Pengeluaran Lapangan / Operasional';
+                $sourceMenu = 'Menu Pengeluaran Lapangan / Operasional';
             }
         }
 
@@ -416,28 +418,58 @@ class Index extends Component
     public function openManualModal()
     {
         $this->resetForm();
+        if ($this->filter_project_id && $this->filter_project_id !== 'non_project') {
+            $this->project_id = $this->filter_project_id;
+        } else {
+            $this->project_id = '';
+        }
         $this->showManualModal = true;
     }
 
     public function resetForm()
     {
+        $this->project_id = '';
         $this->type = 'masuk';
-        $this->category = 'operasional';
+        $this->category = 'pembayaran_cicilan_pembeli';
         $this->amount = 0;
         $this->transaction_date = date('Y-m-d');
         $this->description = '';
         $this->receipt_photo = null;
     }
 
+    public function updatedType($value): void
+    {
+        if ($value === 'masuk') {
+            $this->category = 'pembayaran_cicilan_pembeli';
+        } else {
+            $this->category = 'operasional';
+        }
+    }
+
+    public function closeManualModal(): void
+    {
+        $this->showManualModal = false;
+        $this->resetForm();
+        $this->resetValidation();
+    }
+
+    public function closeEditModal(): void
+    {
+        $this->showEditModal = false;
+        $this->editingTransactionId = null;
+        $this->resetValidation();
+    }
+
     public function saveTransaction()
     {
         $this->validate([
-            'project_id' => 'required|exists:projects,id',
+            'project_id' => 'nullable|exists:projects,id',
             'type' => 'required|in:masuk,keluar',
+            'category' => 'nullable|string',
             'amount' => 'required|numeric|min:1000',
             'description' => 'required|string|max:255',
             'transaction_date' => 'required|date',
-            'receipt_photo' => 'nullable|image|max:2048',
+            'receipt_photo' => 'nullable|file|mimes:jpg,jpeg,png,webp,heic,heif,pdf|max:5120',
         ]);
 
         $receiptPath = null;
@@ -446,20 +478,23 @@ class Index extends Component
         }
 
         CashflowTransaction::create([
-            'project_id' => $this->project_id,
+            'project_id' => !empty($this->project_id) ? (int)$this->project_id : null,
             'type' => $this->type,
-            'category' => $this->category,
-            'amount' => $this->amount,
-            'transaction_date' => $this->transaction_date,
+            'category' => $this->category ?: 'operasional',
+            'amount' => (float)$this->amount,
+            'transaction_date' => $this->transaction_date ?: date('Y-m-d'),
             'description' => $this->description,
             'receipt_photo_path' => $receiptPath,
             'created_by' => auth()->id(),
         ]);
 
+        $this->resetForm();
+        $this->resetValidation();
+        $this->showManualModal = false;
+
         $msg = 'Transaksi Arus Kas berhasil dicatat!';
         session()->flash('success', $msg);
         $this->dispatch('notify', ['type' => 'success', 'title' => 'Berhasil!', 'message' => $msg]);
-        $this->showManualModal = false;
     }
 
     public string $search = '';
@@ -504,11 +539,25 @@ class Index extends Component
         }
 
         if ($this->categoryFilter !== '') {
-            $query->where('category', $this->categoryFilter);
+            if ($this->categoryFilter === 'material') {
+                $query->whereIn('category', ['material', 'belanja_material']);
+            } elseif ($this->categoryFilter === 'pembelian_lahan') {
+                $query->whereIn('category', ['pembelian_lahan', 'lahan_proyek']);
+            } elseif ($this->categoryFilter === 'upah_tukang') {
+                $query->whereIn('category', ['upah_tukang', 'pembayaran_tukang']);
+            } elseif ($this->categoryFilter === 'pengeluaran_lain') {
+                $query->whereIn('category', ['pengeluaran_lain', 'lain_lain', 'lainnya']);
+            } else {
+                $query->where('category', $this->categoryFilter);
+            }
         }
 
-        if ($this->view_mode === 'project' && $this->filter_project_id) {
-            $query->where('project_id', $this->filter_project_id);
+        if ($this->view_mode === 'project' || $this->filter_project_id !== '') {
+            if ($this->filter_project_id === 'non_project') {
+                $query->whereNull('project_id');
+            } elseif ($this->filter_project_id) {
+                $query->where('project_id', $this->filter_project_id);
+            }
         }
 
         if ($this->view_mode === 'unit' || $this->filter_unit_id) {
@@ -532,7 +581,9 @@ class Index extends Component
 
         $transactions = (clone $query)->latest('transaction_date')->latest('id')->paginate(12);
         $projects = Project::orderBy('name')->get();
-        $availableUnits = $this->filter_project_id ? Unit::where('project_id', $this->filter_project_id)->get() : Unit::all();
+        $availableUnits = ($this->filter_project_id && $this->filter_project_id !== 'non_project') 
+            ? Unit::where('project_id', $this->filter_project_id)->get() 
+            : Unit::all();
 
         // Global Statistics
         $globalMasuk = CashflowTransaction::where('type', 'masuk')->sum('amount');
@@ -575,6 +626,20 @@ class Index extends Component
                 ];
             });
 
+        // Add Non-Project / Corporate row to breakdown if present
+        $nonProjectSums = $sumsByProject->get('', collect())->merge($sumsByProject->get(null, collect()));
+        $npMasuk = (float) ($nonProjectSums->where('type', 'masuk')->first()?->total ?? 0);
+        $npKeluar = (float) ($nonProjectSums->where('type', 'keluar')->first()?->total ?? 0);
+        if ($npMasuk > 0 || $npKeluar > 0) {
+            $projectBreakdown->push([
+                'id' => 'non_project',
+                'name' => 'Non-Proyek / Kantor Pusat',
+                'masuk' => $npMasuk,
+                'keluar' => $npKeluar,
+                'net' => $npMasuk - $npKeluar,
+            ]);
+        }
+
         // 1. Historical Trend Data (6 Months Trend) optimized with 1 batch query
         $trendMonths = collect();
         for ($i = 5; $i >= 0; $i--) {
@@ -583,8 +648,12 @@ class Index extends Component
 
         $sixMonthsAgo = now()->subMonths(5)->startOfMonth()->toDateString();
         $qM = CashflowTransaction::where('transaction_date', '>=', $sixMonthsAgo);
-        if ($this->view_mode === 'project' && $this->filter_project_id) {
-            $qM->where('project_id', $this->filter_project_id);
+        if ($this->view_mode === 'project' || $this->filter_project_id !== '') {
+            if ($this->filter_project_id === 'non_project') {
+                $qM->whereNull('project_id');
+            } elseif ($this->filter_project_id) {
+                $qM->where('project_id', $this->filter_project_id);
+            }
         }
 
         $monthlyTrendSums = $qM->selectRaw('YEAR(transaction_date) as year_num, MONTH(transaction_date) as month_num, type, SUM(amount) as total')

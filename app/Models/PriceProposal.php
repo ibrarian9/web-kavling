@@ -45,11 +45,22 @@ class PriceProposal extends Model
         return $this->hasMany(Approval::class);
     }
 
+    public function officialDocument(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(OfficialDocument::class, 'price_proposal_id');
+    }
+
     /**
      * Cek apakah pengajuan sudah disetujui penuh (Persetujuan Founder cukup untuk langsung mengesahkan SPP)
      */
     public function isFullyApproved(): bool
     {
+        if ($this->relationLoaded('approvals')) {
+            $founderApproved = $this->approvals->whereIn('approver_role', ['founder', 'admin'])->where('decision', 'disetujui')->isNotEmpty();
+            $supervisorApproved = $this->approvals->where('approver_role', 'supervisor')->where('decision', 'disetujui')->isNotEmpty();
+            return $founderApproved && $supervisorApproved;
+        }
+
         $founderApproved = $this->approvals()->whereIn('approver_role', ['founder', 'admin'])->where('decision', 'disetujui')->exists();
         $supervisorApproved = $this->approvals()->where('approver_role', 'supervisor')->where('decision', 'disetujui')->exists();
 
@@ -61,6 +72,9 @@ class PriceProposal extends Model
      */
     public function isRejected(): bool
     {
+        if ($this->relationLoaded('approvals')) {
+            return $this->approvals->where('decision', 'ditolak')->isNotEmpty();
+        }
         return $this->approvals()->where('decision', 'ditolak')->exists();
     }
 }

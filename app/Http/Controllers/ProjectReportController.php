@@ -57,8 +57,10 @@ class ProjectReportController extends Controller
         $project = Project::findOrFail($projectId);
         $allUnits = Unit::with([
             'proposals',
-            'officialDocument',
-            'installment',
+            'officialDocument.proposal',
+            'installment.payments',
+            'activeBooking',
+            'bookings',
         ])->where('project_id', $project->id)->get();
 
         if ($allUnits->isEmpty()) {

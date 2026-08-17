@@ -8,10 +8,9 @@
         <p class="text-xs text-slate-500 mt-1">Form khusus pendaftaran unit kavling/rumah yang sudah terjual & lunas 100% sebelum sistem SIM Properti dibuat.</p>
     </div>
 
-    <button wire:click="openCreateModal" class="btn-header-setup bg-purple-700 hover:bg-purple-800 text-white">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+    <x-button variant="purple" size="sm" wire:click="openCreateModal" icon="plus">
         <span>Catat Unit Terjual Lunas</span>
-    </button>
+    </x-button>
 </div>
 
 <!-- Highlight Information Banner -->

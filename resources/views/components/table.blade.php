@@ -10,7 +10,7 @@
     $colspan = $emptyColspan ?? (count($headers) > 0 ? count($headers) : 1);
 @endphp
 
-<div class="card-clean overflow-hidden border border-slate-200/80 rounded-3xl shadow-xs">
+<div class="relative card-clean overflow-hidden border border-slate-200/80 rounded-3xl shadow-xs">
     @if($loadingTarget)
         <x-table-loading :target="$loadingTarget" />
     @endif

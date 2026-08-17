@@ -89,8 +89,8 @@
                 </div>
 
                 <div class="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
-                    <button type="button" wire:click="$set('showPaymentModal', false)" class="btn-secondary">Batal</button>
-                    <button type="submit" class="btn-primary px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold">Proses Bayar & Terbitkan Slip PDF</button>
+                    <x-button variant="secondary" size="md" type="button" wire:click="$set('showPaymentModal', false)">Batal</x-button>
+                    <x-button variant="emerald" size="md" type="submit">Proses Bayar & Terbitkan Slip PDF</x-button>
                 </div>
             </form>
         </div>

@@ -19,11 +19,20 @@
             <!-- Form Body -->
             <form wire:submit.prevent="saveSetup" class="space-y-4 text-xs sm:text-sm flex-1 overflow-y-auto pr-1">
                 <div>
-                    <label class="block font-semibold text-slate-700 mb-1 text-xs uppercase tracking-wider">Pilih Unit Terjual <span class="text-rose-500">*</span></label>
+                    <label class="block font-semibold text-slate-700 mb-1 text-xs uppercase tracking-wider">Pilih Unit (Booking / Terjual) <span class="text-rose-500">*</span></label>
                     <select wire:change="selectUnitForInstallment($event.target.value)" wire:model="unit_id" class="select-clean w-full font-semibold">
-                        <option value="">Pilih Unit Terjual</option>
+                        <option value="">-- Pilih Unit Kavling (Booking / Terjual) --</option>
                         @foreach($eligibleUnits as $u)
-                            <option value="{{ $u->id }}">Unit {{ $u->code }} ({{ $u->project->name }})</option>
+                            @php
+                                $buyer = ($u->relationLoaded('activeBooking') && $u->activeBooking) 
+                                    ? $u->activeBooking->buyer_name 
+                                    : (($u->relationLoaded('bookings') && $u->bookings->isNotEmpty()) 
+                                        ? $u->bookings->first()->buyer_name 
+                                        : (($u->relationLoaded('officialDocument') && $u->officialDocument) 
+                                            ? $u->officialDocument->buyer_name 
+                                            : null));
+                            @endphp
+                            <option value="{{ $u->id }}">Unit {{ $u->code }} - {{ $u->project->name ?? '-' }} {{ $buyer ? "({$buyer} • " . ucfirst($u->status) . ")" : "({$u->status_label})" }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -91,8 +100,8 @@
 
                 <!-- Footer Action Buttons -->
                 <div class="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2 sm:gap-3 pt-3 border-t border-slate-100 shrink-0">
-                    <button type="button" wire:click="$set('showSetupModal', false)" class="btn-secondary">Batal</button>
-                    <button type="submit" class="btn-primary">Simpan Skema</button>
+                    <x-button variant="secondary" size="md" type="button" wire:click="$set('showSetupModal', false)">Batal</x-button>
+                    <x-button variant="primary" size="md" type="submit">Simpan Skema</x-button>
                 </div>
             </form>
         </div>

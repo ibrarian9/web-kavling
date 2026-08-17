@@ -1,51 +1,51 @@
 <!-- TAB 1: Penjualan & Profit Per Unit -->
 <div class="space-y-4">
-    <div class="card-clean p-4 flex flex-col sm:flex-row items-center justify-between gap-3">
-        <div class="flex items-center gap-2 w-full sm:w-auto">
-            <h3 class="font-bold text-slate-900 text-sm whitespace-nowrap">{{ (auth()->user()->isPengawasProject() || auth()->user()->isMarketing()) ? 'Daftar Status Unit Proyek' : 'Dashboard Penjualan & Profit Per Unit' }}</h3>
-            <span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full border border-emerald-200">
-                {{ count($unitsList) }} Unit
-            </span>
-        </div>
+    <x-card padding="p-4">
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div class="flex items-center gap-2 w-full sm:w-auto flex-nowrap">
+                <h3 class="font-bold text-slate-900 text-sm whitespace-nowrap">{{ (auth()->user()->isPengawasProject() || auth()->user()->isMarketing()) ? 'Daftar Status Unit Proyek' : 'Dashboard Penjualan & Profit Per Unit' }}</h3>
+                <span class="inline-flex items-center bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2.5 py-0.5 rounded-full border border-emerald-200 whitespace-nowrap">
+                    {{ count($unitsList) }} Unit
+                </span>
+            </div>
 
-        <div class="flex flex-wrap items-center gap-2 w-full sm:w-auto">
-            @if(!auth()->user()->isMarketing())
-                @if(count($unitsList) > 0)
-                    <a href="{{ route('projects.sales-profit-pdf', $project->id) }}" target="_blank" class="btn-header-pdf">
-                        <svg class="w-4 h-4 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
-                        <span>Lihat PDF Rekap</span>
-                    </a>
-                @else
-                    <button disabled class="btn-header-pdf-disabled" title="Belum ada data unit untuk digenerate PDF">
-                        <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
-                        <span>PDF Rekap (Belum Ada Data)</span>
-                    </button>
+            <div class="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+                @if(!auth()->user()->isMarketing())
+                    @if(count($unitsList) > 0)
+                        <x-button variant="outline" size="sm" href="{{ route('projects.sales-profit-pdf', $project->id) }}" target="_blank" icon="pdf">
+                            <span>Lihat PDF Rekap</span>
+                        </x-button>
+                    @else
+                        <x-button variant="outline" size="sm" disabled icon="pdf" title="Belum ada data unit untuk digenerate PDF" class="opacity-50 cursor-not-allowed">
+                            <span>PDF Rekap (Kosong)</span>
+                        </x-button>
+                    @endif
                 @endif
-            @endif
 
-            <x-search-input model="unitSearch" placeholder="Cari kode unit..." containerClass="w-full sm:w-48" />
+                <x-search-input model="unitSearch" placeholder="Cari kode unit..." containerClass="w-full sm:w-48" />
 
-            <div class="w-full sm:w-36">
-                <select wire:model.live="statusFilter" class="select-clean w-full">
-                    <option value="">Semua Status Unit</option>
-                    <option value="tersedia">Tersedia</option>
-                    <option value="menunggu_persetujuan">Menunggu Approval</option>
-                    <option value="disetujui">Disetujui / Terjual</option>
-                    <option value="booked">Booked</option>
-                </select>
-            </div>
-            <div class="w-full sm:w-32">
-                <select wire:model.live="typeFilter" class="select-clean w-full">
-                    <option value="">Semua Tipe</option>
-                    <option value="kavling">Kavling Tanah</option>
-                    <option value="rumah">Rumah Bangunan</option>
-                </select>
+                <div class="w-full sm:w-36">
+                    <select wire:model.live="statusFilter" class="select-clean w-full">
+                        <option value="">Semua Status Unit</option>
+                        <option value="tersedia">Tersedia</option>
+                        <option value="menunggu_persetujuan">Menunggu Approval</option>
+                        <option value="disetujui">Disetujui / Terjual</option>
+                        <option value="booked">Booked</option>
+                    </select>
+                </div>
+                <div class="w-full sm:w-32">
+                    <select wire:model.live="typeFilter" class="select-clean w-full">
+                        <option value="">Semua Tipe</option>
+                        <option value="kavling">Kavling Tanah</option>
+                        <option value="rumah">Rumah Bangunan</option>
+                    </select>
+                </div>
             </div>
         </div>
-    </div>
+    </x-card>
 
     <!-- Table: Unit Sales, Costs, and Profit Performance -->
-    <div class="card-clean overflow-hidden">
+    <x-card padding="p-0" class="overflow-hidden">
 
         <!-- Mobile Card Layout (visible on small screens) -->
         <div class="md:hidden divide-y divide-slate-100">
@@ -67,38 +67,28 @@
                     <div class="flex items-center justify-between">
                         <div class="flex items-center gap-2">
                             <span class="font-extrabold text-sm font-mono text-emerald-700">{{ $u->code }}</span>
-                            @if ($u->status === 'tersedia')
-                                <span class="status-tersedia">Tersedia</span>
-                            @elseif ($u->status === 'disetujui' || $u->status === 'converted' || $u->status === 'terjual')
-                                <span class="status-disetujui">Terjual</span>
-                            @elseif ($u->status === 'booked')
-                                <span class="status-booked">Booked</span>
-                            @else
-                                <span class="status-menunggu">{{ ucfirst($u->status) }}</span>
-                            @endif
+                            <x-status-badge :status="$u->status" />
                         </div>
-                        <div class="flex items-center gap-1.5">
+                        <div class="flex items-center gap-1.5 shrink-0">
                             @if((auth()->user()->isAdminOrFounder() || auth()->user()->isFinance()) && $u->status === 'tersedia' && $u->category !== 'infrastruktur')
-                                <a href="{{ route('units.show', $u->id) }}" wire:navigate.hover class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-bold transition shadow-xs" title="Pembelian Cash Direct">
+                                <x-button variant="emerald" size="xs" href="{{ route('units.show', $u->id) }}" wire:navigate.hover title="Pembelian Cash Direct">
                                     <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 01-2 2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                                     <span>Pembelian Cash</span>
-                                </a>
+                                </x-button>
                             @endif
-                            <a href="{{ route('units.show', $u->id) }}" wire:navigate.hover class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-teal-50 text-teal-800 hover:bg-teal-100 border border-teal-200 text-[11px] font-bold transition">
-                                <svg class="w-3.5 h-3.5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                            <x-button variant="detail" size="xs" href="{{ route('units.show', $u->id) }}">
                                 <span>Detail</span>
-                            </a>
+                            </x-button>
                             @if(auth()->user()->isFounder())
-                                <button type="button" @click="confirmModalAction({
+                                <x-button variant="delete" size="xs" @click="confirmModalAction({
                                     title: 'Hapus Unit Kavling/Rumah',
                                     message: 'Yakin ingin menghapus unit {{ $u->code }} dari proyek ini beserta seluruh histori terikatnya?',
                                     confirmText: 'Hapus Unit',
                                     btnClass: 'px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5',
                                     onConfirm: () => $wire.deleteUnit({{ $u->id }})
-                                })" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200 text-[11px] font-bold transition" title="Hapus Unit">
-                                    <svg class="w-3.5 h-3.5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                })" title="Hapus Unit">
                                     <span>Hapus</span>
-                                </button>
+                                </x-button>
                             @endif
                         </div>
                     </div>
@@ -224,44 +214,36 @@
                             ];
                         @endphp
                         <tr class="hover:bg-slate-50/80 transition-colors">
-                            <td class="px-3 py-3.5">
-                                <div class="flex items-center gap-2">
-                                    <span class="font-extrabold text-slate-900 text-sm font-mono text-emerald-700">{{ $u->code }}</span>
-                                    @if ($u->status === 'tersedia')
-                                        <span class="status-tersedia">Tersedia</span>
-                                    @elseif ($u->status === 'disetujui' || $u->status === 'converted' || $u->status === 'terjual')
-                                        <span class="status-disetujui">Terjual</span>
-                                    @elseif ($u->status === 'booked')
-                                        <span class="status-booked">Booked</span>
-                                    @else
-                                        <span class="status-menunggu">{{ ucfirst($u->status) }}</span>
-                                    @endif
+                            <td class="px-3 py-3.5 whitespace-nowrap">
+                                <div class="inline-flex items-center gap-2 whitespace-nowrap flex-nowrap">
+                                    <span class="font-extrabold text-slate-900 text-sm font-mono text-emerald-700 whitespace-nowrap">{{ $u->code }}</span>
+                                    <x-status-badge :status="$u->status" />
                                 </div>
                             </td>
-                            <td class="px-3 py-3.5">
+                            <td class="px-3 py-3.5 whitespace-nowrap">
                                 <span class="font-semibold text-slate-800 capitalize">{{ $u->category ?? $u->type }}</span>
                                 <span class="text-[11px] text-slate-500 font-mono block">{{ number_format($u->land_area, 0, ',', '.') }} m²</span>
                             </td>
 
                             @if(!auth()->user()->isPengawasProject())
-                                <td class="px-3 py-3.5 font-bold text-slate-800">
+                                <td class="px-3 py-3.5 font-bold text-slate-800 whitespace-nowrap">
                                     {{ $perf['buyer_name'] }}
                                 </td>
-                                <td class="px-3 py-3.5 text-right font-mono font-extrabold text-emerald-700">
+                                <td class="px-3 py-3.5 text-right font-mono font-extrabold text-emerald-700 whitespace-nowrap">
                                     @if($perf['selling_price'] > 0)
                                         Rp {{ number_format($perf['selling_price'], 0, ',', '.') }}
                                     @else
                                         <span class="text-slate-400 font-normal italic">-</span>
                                     @endif
                                 </td>
-                                <td class="px-3 py-3.5 text-right font-mono font-extrabold text-sky-700">
+                                <td class="px-3 py-3.5 text-right font-mono font-extrabold text-sky-700 whitespace-nowrap">
                                     @if($perf['paid_amount'] > 0)
                                         Rp {{ number_format($perf['paid_amount'], 0, ',', '.') }}
                                     @else
                                         <span class="text-slate-400 font-normal italic">Rp 0</span>
                                     @endif
                                 </td>
-                                <td class="px-3 py-3.5 text-right font-mono font-extrabold text-amber-700">
+                                <td class="px-3 py-3.5 text-right font-mono font-extrabold text-amber-700 whitespace-nowrap">
                                     @if($perf['is_sold'] && $perf['remaining_amount'] > 0)
                                         Rp {{ number_format($perf['remaining_amount'], 0, ',', '.') }}
                                     @elseif($perf['is_sold'] && $perf['remaining_amount'] == 0)
@@ -271,7 +253,7 @@
                                     @endif
                                 </td>
                                 @if(auth()->user()->canViewHpp())
-                                    <td class="px-3 py-3.5 text-right font-mono text-slate-600">
+                                    <td class="px-3 py-3.5 text-right font-mono text-slate-600 whitespace-nowrap">
                                         <div>HPP: Rp {{ number_format($perf['hpp'], 0, ',', '.') }}</div>
                                         @if($perf['unit_costs'] > 0)
                                             <div class="text-[10px] text-rose-600 font-semibold">+ Biaya: Rp {{ number_format($perf['unit_costs'], 0, ',', '.') }}</div>
@@ -279,7 +261,7 @@
                                     </td>
                                 @endif
                                 @if(!auth()->user()->isMarketing())
-                                    <td class="px-3 py-3.5 text-right font-mono font-extrabold">
+                                    <td class="px-3 py-3.5 text-right font-mono font-extrabold whitespace-nowrap">
                                         @if($perf['is_sold'])
                                             <span class="{{ $perf['profit'] >= 0 ? 'text-emerald-600' : 'text-rose-600' }}">
                                                 {{ $perf['profit'] >= 0 ? '+' : '' }} Rp {{ number_format($perf['profit'], 0, ',', '.') }}
@@ -290,43 +272,50 @@
                                     </td>
                                 @endif
                             @else
-                                <td class="px-3 py-3.5">
+                                <td class="px-3 py-3.5 whitespace-nowrap">
                                     @php
                                         $uAssignment = $u->assignments->where('status', 'active')->first();
                                     @endphp
                                     @if($uAssignment && $uAssignment->worker)
-                                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-blue-50 text-blue-800 border border-blue-200 text-xs font-semibold">
+                                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-blue-50 text-blue-800 border border-blue-200 text-xs font-semibold whitespace-nowrap">
                                             {{ $uAssignment->worker->name }} ({{ ucfirst($uAssignment->worker->type) }})
                                         </span>
                                     @else
-                                        <span class="text-slate-400 text-xs italic">Penugasan mengikuti proyek</span>
+                                        <span class="text-slate-400 text-xs italic whitespace-nowrap">Penugasan mengikuti proyek</span>
                                     @endif
                                 </td>
                             @endif
 
                             <td class="px-3 py-3.5 text-center whitespace-nowrap">
-                                <div class="flex items-center justify-center gap-1.5">
-                                    @if((auth()->user()->isAdminOrFounder() || auth()->user()->isFinance()) && $u->status === 'tersedia' && $u->category !== 'infrastruktur')
-                                        <a href="{{ route('units.show', $u->id) }}" wire:navigate.hover class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-bold transition shadow-xs" title="Pembelian Cash Direct">
-                                            <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 01-2 2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                                            <span>Pembelian Cash</span>
-                                        </a>
-                                    @endif
-                                    <a href="{{ route('units.show', $u->id) }}" wire:navigate.hover class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-teal-50 text-teal-800 hover:bg-teal-100 border border-teal-200 text-[11px] font-bold transition">
-                                        <svg class="w-3.5 h-3.5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-                                        <span>Detail</span>
-                                    </a>
-                                    @if(auth()->user()->isFounder())
-                                         <button type="button" @click="confirmModalAction({
-                                             title: 'Hapus Unit Kavling/Rumah',
-                                             message: 'Yakin ingin menghapus unit {{ $u->code }} dari proyek ini beserta seluruh histori terikatnya?',
-                                             confirmText: 'Hapus Unit',
-                                             btnClass: 'px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5',
-                                             onConfirm: () => $wire.deleteUnit({{ $u->id }})
-                                         })" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200 text-[11px] font-bold transition" title="Hapus Unit">
-                                             <svg class="w-3.5 h-3.5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                                             <span>Hapus</span>
-                                         </button>
+                                <div class="inline-flex items-center justify-center gap-1.5 whitespace-nowrap">
+                                    <x-button variant="detail" size="xs" href="{{ route('units.show', $u->id) }}" wire:navigate.hover>
+                                        Detail
+                                    </x-button>
+
+                                    @if(((auth()->user()->isAdminOrFounder() || auth()->user()->isFinance()) && $u->status === 'tersedia' && $u->category !== 'infrastruktur') || auth()->user()->isFounder())
+                                        <x-action-dropdown title="Menu Opsi Unit" size="xs">
+                                            @if((auth()->user()->isAdminOrFounder() || auth()->user()->isFinance()) && $u->status === 'tersedia' && $u->category !== 'infrastruktur')
+                                                <div class="py-1">
+                                                    <x-dropdown-item icon="plus" variant="success" href="{{ route('units.show', $u->id) }}" wire:navigate.hover>
+                                                        Pembelian Cash
+                                                    </x-dropdown-item>
+                                                </div>
+                                            @endif
+
+                                            @if(auth()->user()->isFounder())
+                                                <div class="py-1">
+                                                    <x-dropdown-item icon="delete" variant="danger" @click="confirmModalAction({
+                                                        title: 'Hapus Unit Kavling/Rumah',
+                                                        message: 'Yakin ingin menghapus unit {{ $u->code }} dari proyek ini beserta seluruh histori terikatnya?',
+                                                        confirmText: 'Hapus Unit',
+                                                        btnClass: 'px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5',
+                                                        onConfirm: () => $wire.deleteUnit({{ $u->id }})
+                                                    })">
+                                                        Hapus Unit
+                                                    </x-dropdown-item>
+                                                </div>
+                                            @endif
+                                        </x-action-dropdown>
                                     @endif
                                 </div>
                             </td>
@@ -343,5 +332,5 @@
                 </tbody>
             </table>
         </div>
-    </div>
+    </x-card>
 </div>

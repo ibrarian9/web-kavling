@@ -1,5 +1,5 @@
 <!-- Gaji Borongan Worker Unit Card -->
-<div class="card-clean p-5 space-y-4">
+<x-card padding="p-5">
     <div class="flex items-center justify-between border-b border-slate-100 pb-3 gap-2">
         <div class="flex items-center gap-2">
             <div class="p-2 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100 shadow-2xs">
@@ -12,14 +12,13 @@
         </div>
 
         @if(auth()->user()->isSupervisor() || auth()->user()->isPengawasProject() || auth()->user()->isFounder())
-            <button wire:click="openPayrollSetupModal" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold inline-flex items-center gap-1.5 transition shadow-2xs active:scale-[0.98]">
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            <x-button variant="emerald" size="xs" wire:click="openPayrollSetupModal" icon="plus">
                 <span>Set Gaji Unit</span>
-            </button>
+            </x-button>
         @endif
     </div>
 
-    <div class="space-y-4 text-xs">
+    <div class="space-y-4 text-xs mt-4">
         @forelse($unitPayrolls as $up)
             <div class="bg-white rounded-2xl border border-slate-200/90 shadow-2xs overflow-hidden transition-all duration-200 hover:border-slate-300">
                 <!-- Worker Header Bar -->
@@ -35,9 +34,7 @@
                     </div>
                     
                     <div class="flex items-center gap-2 shrink-0">
-                        <span class="{{ $up->status === 'lunas' ? 'status-lunas' : 'status-booked' }} text-[10px] uppercase font-bold">
-                            {{ strtoupper($up->status) }}
-                        </span>
+                        <x-status-badge :status="$up->status" />
                         @if(auth()->user()->isFounder())
                             <div class="flex items-center gap-1">
                                 <button wire:click="editPayrollSetup({{ $up->id }})" class="p-1 text-slate-400 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition" title="Edit Penetapan Gaji">
@@ -87,17 +84,17 @@
                 </div>
 
                 <!-- Footer Action Bar -->
-                <div class="px-3.5 py-2.5 bg-slate-50/60 border-t border-slate-100 flex items-center justify-between gap-2">
-                    <button wire:click="openViewerModal('pdf', '{{ route('units.payroll.spk-pdf', $up->id) }}', 'Pratinjau Surat Perintah Kerja (SPK) - {{ $up->worker->name }}')" class="px-2.5 py-1.5 bg-sky-50 hover:bg-sky-100 text-sky-800 border border-sky-200 rounded-xl text-[11px] font-bold inline-flex items-center gap-1.5 transition shadow-2xs">
+                <div class="px-3.5 py-2.5 bg-slate-50/60 border-t border-slate-100 flex items-center justify-between gap-2 whitespace-nowrap flex-nowrap">
+                    <x-button variant="outline" size="xs" wire:click="openViewerModal('pdf', '{{ route('units.payroll.spk-pdf', $up->id) }}', 'Pratinjau Surat Perintah Kerja (SPK) - {{ $up->worker->name }}')">
                         <svg class="w-3.5 h-3.5 text-sky-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
                         <span>Cetak SPK PDF</span>
-                    </button>
+                    </x-button>
 
                     @if($up->status !== 'lunas')
-                        <button wire:click="openPayrollPaymentModal({{ $up->id }})" class="btn-action-payment text-[11px] px-3 py-1.5 flex items-center gap-1 font-extrabold shadow-2xs">
-                            <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                        <x-button variant="emerald" size="xs" wire:click="openPayrollPaymentModal({{ $up->id }})">
+                            <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                             <span>Bayar Gaji</span>
-                        </button>
+                        </x-button>
                     @endif
                 </div>
             </div>
@@ -107,4 +104,4 @@
             </div>
         @endforelse
     </div>
-</div>
+</x-card>

@@ -50,40 +50,60 @@
         </div>
     </div>
 
-    <!-- Search & Dropdown Filter Controls Bar -->
-    <div class="card-clean p-4 border border-slate-200/80 rounded-3xl flex flex-col sm:flex-row items-center justify-between gap-3">
-        <!-- Live Search Input -->
-        <x-search-input placeholder="Cari kode unit (A-01), pembeli..." containerClass="w-full sm:w-72" />
+    <!-- 2-Baris Search & Filter Controls Bar -->
+    <div class="card-clean p-4 border border-slate-200/80 rounded-3xl space-y-3 shadow-xs">
+        <!-- Baris 1: Full-Width Search Input -->
+        <div class="w-full">
+            <x-search-input placeholder="Cari kode unit (contoh: A-01, B-05), nama pembeli, atau proyek..." containerClass="w-full" />
+        </div>
 
-        <div class="flex items-center gap-2.5 w-full sm:w-auto justify-end flex-wrap">
-            <!-- Skema & Monthly Status Dropdown Filter -->
-            <select wire:model.live="monthlyFilter" class="select-clean text-xs font-bold">
-                <option value="all">Semua Skema Pembayaran</option>
-                <option value="unpaid_this_month">Belum Bayar Bulan Ini (Tunggakan {{ $unpaidThisMonthCount > 0 ? "[$unpaidThisMonthCount]" : '' }})</option>
-                <option value="paid_this_month">Sudah Bayar Bulan Ini</option>
-                <option value="lunas">Lunas / Konversi Cash</option>
-            </select>
+        <!-- Baris 2: Filter Controls Grid/Flex -->
+        <div class="flex items-center justify-between gap-2.5 flex-wrap pt-1 border-t border-slate-100/80">
+            <div class="flex items-center gap-2 flex-wrap">
+                <!-- Global Date Period Filter -->
+                <x-date-period-filter 
+                    periodModel="datePeriod" 
+                    startModel="startDate" 
+                    endModel="endDate" 
+                    :periodValue="$datePeriod" 
+                />
 
-            <!-- Project Filter Dropdown -->
-            <select wire:model.live="projectIdFilter" class="select-clean text-xs font-bold">
-                <option value="">Semua Proyek Properti</option>
-                @foreach(($projects ?? \App\Models\Project::orderBy('name')->get()) as $p)
-                    <option value="{{ $p->id }}">{{ $p->name }}</option>
-                @endforeach
-            </select>
+                <!-- Skema & Monthly Status Dropdown Filter -->
+                <select wire:model.live="monthlyFilter" class="select-clean text-xs font-bold">
+                    <option value="all">Semua Skema Pembayaran</option>
+                    <option value="unpaid_this_month">Belum Bayar Bulan Ini (Tunggakan {{ $unpaidThisMonthCount > 0 ? "[$unpaidThisMonthCount]" : '' }})</option>
+                    <option value="paid_this_month">Sudah Bayar Bulan Ini</option>
+                    <option value="lunas">Lunas / Konversi Cash</option>
+                </select>
 
-            <!-- Status Filter -->
-            <select wire:model.live="statusFilter" class="select-clean text-xs font-bold">
-                <option value="">Semua Status</option>
-                <option value="berjalan">Berjalan (Aktif)</option>
-                <option value="lunas">Lunas</option>
-                <option value="konversi_cash">Konversi Cash</option>
-            </select>
+                <!-- Project Filter Dropdown -->
+                <select wire:model.live="projectIdFilter" class="select-clean text-xs font-bold">
+                    <option value="">Semua Proyek Properti</option>
+                    @foreach(($projects ?? \App\Models\Project::orderBy('name')->get()) as $p)
+                        <option value="{{ $p->id }}">{{ $p->name }}</option>
+                    @endforeach
+                </select>
+
+                <!-- Status Filter -->
+                <select wire:model.live="statusFilter" class="select-clean text-xs font-bold">
+                    <option value="">Semua Status Cicilan</option>
+                    <option value="berjalan">Berjalan (Aktif)</option>
+                    <option value="lunas">Lunas</option>
+                    <option value="konversi_cash">Konversi Cash</option>
+                </select>
+            </div>
+
+            @if($search || $statusFilter || $projectIdFilter || $monthlyFilter !== 'all' || $datePeriod !== 'all')
+                <button wire:click="$set('search', ''); $set('statusFilter', ''); $set('projectIdFilter', ''); $set('monthlyFilter', 'all'); $set('datePeriod', 'all'); $set('startDate', ''); $set('endDate', '');" class="px-2.5 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 rounded-xl text-xs font-bold transition flex items-center gap-1 shadow-2xs">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                    <span>Reset Filter</span>
+                </button>
+            @endif
         </div>
     </div>
 
     <!-- Installment Table -->
-    <x-table :headers="['Unit & Proyek', 'Nama Konsumen / Pembeli', 'Harga Kesepakatan', 'Uang Muka (DP)', 'Progres & Terbayar', 'Sisa Piutang', 'Status', ['label' => 'Aksi', 'class' => 'p-3.5 text-center']]" loadingTarget="search, statusFilter, projectIdFilter, monthlyFilter, page">
+    <x-table :headers="['Unit & Proyek', 'Nama Konsumen / Pembeli', 'Harga Kesepakatan', 'Uang Muka (DP)', 'Progres & Terbayar', 'Sisa Piutang', 'Status', ['label' => 'Aksi', 'class' => 'p-3.5 text-center']]" loadingTarget="search, statusFilter, projectIdFilter, monthlyFilter, datePeriod, startDate, endDate, page">
         @forelse($installments as $inst)
             @php
                 $currentMonth = now()->month;
@@ -142,35 +162,45 @@
                         <x-status-badge status="berjalan" label="BERJALAN" />
                     @endif
                 </td>
-                <td class="p-3.5 text-center">
-                    <div class="inline-flex items-center justify-center gap-1.5">
-                        <x-button variant="outline" size="xs" wire:click="openDetailModal({{ $inst->id }})" title="Lihat Histori & Rincian Setoran">
-                            Detail
-                        </x-button>
-
-                        @if($inst->status === 'berjalan')
-                            @if(auth()->user()->isFounder() || auth()->user()->isFinance())
-                                <x-button variant="emerald" size="xs" wire:click="openPaymentModal({{ $inst->id }})" title="Catat Pembayaran Setoran Cicilan">
-                                    + Setor
-                                </x-button>
-                            @endif
-                        @endif
-
-                        @if(auth()->user()->isFounder() || auth()->user()->isAdmin())
-                            <x-button variant="amber" size="xs" wire:click="openSetupModal({{ $inst->id }})" title="Edit Skema Cicilan">
-                                Edit
+                <td class="p-3.5 text-center whitespace-nowrap">
+                    <div class="inline-flex items-center justify-center gap-1.5 whitespace-nowrap">
+                        @if($inst->status === 'berjalan' && (auth()->user()->isFounder() || auth()->user()->isFinance()))
+                            <x-button variant="payment" size="xs" wire:click="openPaymentModal({{ $inst->id }})" title="Catat Pembayaran Setoran Cicilan">
+                                Setor
                             </x-button>
-
-                            <button type="button" @click="confirmModalAction({
-                                title: 'Hapus Skema Cicilan',
-                                message: 'Yakin ingin menghapus seluruh skema cicilan Unit {{ $inst->unit->code ?? '' }} dan seluruh riwayat setorannya?',
-                                confirmText: 'Ya, Hapus Skema',
-                                btnClass: 'px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5',
-                                onConfirm: () => $wire.deleteInstallment({{ $inst->id }})
-                            })" class="p-1.5 text-slate-400 hover:text-rose-600 rounded-lg hover:bg-rose-50 transition" title="Hapus Skema">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                            </button>
+                        @else
+                            <x-button variant="detail" size="xs" wire:click="openDetailModal({{ $inst->id }})" title="Lihat Histori & Rincian Setoran">
+                                Detail
+                            </x-button>
                         @endif
+
+                        <x-action-dropdown title="Menu Opsi Cicilan" size="xs">
+                            <div class="py-1">
+                                <x-dropdown-item icon="detail" wire:click="openDetailModal({{ $inst->id }})">
+                                    Detail Rincian
+                                </x-dropdown-item>
+
+                                @if(auth()->user()->isFounder() || auth()->user()->isAdmin())
+                                    <x-dropdown-item icon="edit" wire:click="openSetupModal({{ $inst->id }})">
+                                        Edit Skema
+                                    </x-dropdown-item>
+                                @endif
+                            </div>
+
+                            @if(auth()->user()->isFounder() || auth()->user()->isAdmin())
+                                <div class="py-1">
+                                    <x-dropdown-item icon="delete" variant="danger" @click="confirmModalAction({
+                                        title: 'Hapus Skema Cicilan',
+                                        message: 'Yakin ingin menghapus seluruh skema cicilan Unit {{ $inst->unit->code ?? '' }} dan seluruh riwayat setorannya?',
+                                        confirmText: 'Ya, Hapus Skema',
+                                        btnClass: 'px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5',
+                                        onConfirm: () => $wire.deleteInstallment({{ $inst->id }})
+                                    })">
+                                        Hapus Skema
+                                    </x-dropdown-item>
+                                </div>
+                            @endif
+                        </x-action-dropdown>
                     </div>
                 </td>
             </tr>

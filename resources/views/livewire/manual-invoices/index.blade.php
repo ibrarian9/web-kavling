@@ -99,12 +99,14 @@
                     @endif
                 </td>
                 <td class="p-3.5">
-                    @if($inv->type === 'masuk')
-                        <x-status-badge status="disetujui" label="KAS MASUK" />
-                    @else
-                        <x-status-badge status="ditolak" label="KAS KELUAR" />
-                    @endif
-                    <span class="text-slate-500 block text-[10px] capitalize mt-0.5">{{ str_replace('_', ' ', $inv->category) }}</span>
+                    <div class="space-y-1.5 flex flex-col items-start">
+                        @if($inv->type === 'masuk')
+                            <x-status-badge status="kas_masuk" label="KAS MASUK" />
+                        @else
+                            <x-status-badge status="kas_keluar" label="KAS KELUAR" />
+                        @endif
+                        <x-category-badge :category="$inv->category" />
+                    </div>
                 </td>
                 <td class="p-3.5 text-right font-mono font-extrabold text-xs {{ $inv->type === 'masuk' ? 'text-emerald-700' : 'text-rose-700' }}">
                     {{ $inv->type === 'masuk' ? '+' : '-' }} Rp {{ number_format($inv->amount, 0, ',', '.') }}
@@ -129,24 +131,29 @@
                     @endif
                 </td>
                 <td class="p-3.5 text-center whitespace-nowrap">
-                    <div class="inline-flex items-center justify-center gap-1.5">
-                        <x-button variant="outline" size="xs" wire:click="openPdfPreview('{{ $inv->uuid }}')" title="Pratinjau Invoice PDF">
-                            PDF
+                    <div class="inline-flex items-center justify-center gap-1.5 whitespace-nowrap">
+                        <x-button variant="pdf" size="xs" wire:click="openPdfPreview('{{ $inv->uuid }}')" title="Pratinjau Invoice PDF" icon="pdf">
+                            <span>PDF</span>
                         </x-button>
 
-                        <x-button variant="amber" size="xs" wire:click="editInvoice({{ $inv->id }})" title="Edit Invoice">
-                            Edit
-                        </x-button>
-
-                        <button type="button" @click="confirmModalAction({
-                             title: 'Hapus Invoice Manual',
-                             message: 'Yakin ingin menghapus invoice manual ini beserta mutasi arus kas terkait?',
-                             confirmText: 'Hapus Invoice',
-                             btnClass: 'px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5',
-                             onConfirm: () => $wire.deleteInvoice({{ $inv->id }})
-                         })" class="p-1.5 text-slate-400 hover:text-rose-600 rounded-lg hover:bg-rose-50 transition" title="Hapus Invoice">
-                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                         </button>
+                        <x-action-dropdown title="Menu Opsi Invoice" size="xs">
+                            <div class="py-1">
+                                <x-dropdown-item icon="edit" wire:click="editInvoice({{ $inv->id }})">
+                                    Edit Invoice
+                                </x-dropdown-item>
+                            </div>
+                            <div class="py-1">
+                                <x-dropdown-item icon="delete" variant="danger" @click="confirmModalAction({
+                                     title: 'Hapus Invoice Manual',
+                                     message: 'Yakin ingin menghapus invoice manual ini beserta mutasi arus kas terkait?',
+                                     confirmText: 'Hapus Invoice',
+                                     btnClass: 'px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5',
+                                     onConfirm: () => $wire.deleteInvoice({{ $inv->id }})
+                                 })">
+                                     Hapus Invoice
+                                </x-dropdown-item>
+                            </div>
+                        </x-action-dropdown>
                     </div>
                 </td>
             </tr>

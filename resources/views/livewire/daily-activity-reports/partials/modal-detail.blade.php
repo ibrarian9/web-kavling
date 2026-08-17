@@ -110,7 +110,7 @@
             </div>
 
             <div class="pt-3 border-t border-slate-100 flex items-center justify-end gap-2">
-                <button type="button" wire:click="closeDetailModal" class="btn-secondary text-xs px-4 py-2">Tutup</button>
+                <x-button variant="secondary" size="md" type="button" wire:click="closeDetailModal">Tutup</x-button>
             </div>
         </div>
     </div>

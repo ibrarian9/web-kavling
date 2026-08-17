@@ -145,8 +145,8 @@
 
                 <!-- Footer Action Buttons -->
                 <div class="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2 sm:gap-3 pt-3 border-t border-slate-100 shrink-0">
-                    <button type="button" wire:click="$set('showPaymentModal', false)" class="btn-secondary">Batal</button>
-                    <button type="submit" class="btn-primary">{{ !empty($editingPaymentId) ? 'Simpan Perubahan Setoran' : 'Simpan & Masukkan Kas' }}</button>
+                    <x-button variant="secondary" size="md" type="button" wire:click="$set('showPaymentModal', false)">Batal</x-button>
+                    <x-button variant="primary" size="md" type="submit">{{ !empty($editingPaymentId) ? 'Simpan Perubahan Setoran' : 'Simpan & Masukkan Kas' }}</x-button>
                 </div>
             </form>
         </div>

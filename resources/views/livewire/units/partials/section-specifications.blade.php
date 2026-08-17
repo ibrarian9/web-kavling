@@ -1,12 +1,5 @@
 <!-- Physical Specifications Card -->
-<div class="card-clean p-5 space-y-4">
-    <h3 class="font-extrabold text-slate-900 text-sm border-b border-slate-100 pb-3 flex items-center gap-2">
-        <div class="p-1.5 rounded-lg bg-amber-50 text-amber-600">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5m0 0h5m-5 0v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
-        </div>
-        <span>Spesifikasi Fisik & Dimensi</span>
-    </h3>
-
+<x-card padding="p-5" title="Spesifikasi Fisik & Dimensi">
     <div class="space-y-2.5 text-xs">
         <div class="flex items-center justify-between py-1.5 border-b border-slate-50">
             <span class="text-slate-500 font-medium">Proyek Properti:</span>
@@ -51,4 +44,4 @@
             </div>
         @endif
     </div>
-</div>
+</x-card>

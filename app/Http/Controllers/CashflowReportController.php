@@ -29,8 +29,12 @@ class CashflowReportController extends Controller
         $unit = null;
 
         if ($viewMode === 'project' && $projectId) {
-            $query->where('project_id', $projectId);
-            $project = Project::find($projectId);
+            if ($projectId === 'non_project') {
+                $query->whereNull('project_id');
+            } else {
+                $query->where('project_id', $projectId);
+                $project = Project::find($projectId);
+            }
         }
 
         if ($unitId) {

@@ -31,8 +31,8 @@
         </div>
 
         <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
-            <button type="button" wire:click="$set('showSettleCommissionModal', false)" class="btn-secondary">Batal</button>
-            <button type="submit" class="btn-primary bg-purple-600 hover:bg-purple-700">Konfirmasi Cicilan & Catat Kas Keluar</button>
+            <x-button variant="secondary" size="md" type="button" wire:click="$set('showSettleCommissionModal', false)">Batal</x-button>
+            <x-button variant="purple" size="md" type="submit">Konfirmasi Cicilan & Catat Kas Keluar</x-button>
         </div>
     </form>
 </x-modal-dialog>

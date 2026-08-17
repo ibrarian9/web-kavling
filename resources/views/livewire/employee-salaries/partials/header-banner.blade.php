@@ -15,7 +15,7 @@
         </div>
     </div>
 
-    <button wire:click="openSalaryModal" class="px-4.5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl text-xs font-bold inline-flex items-center transition shadow-md shrink-0 border border-emerald-500/50">
+    <x-button variant="emerald" size="md" wire:click="openSalaryModal" icon="plus">
         <span>Tetapkan Gaji Karyawan</span>
-    </button>
+    </x-button>
 </div>

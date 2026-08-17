@@ -90,7 +90,7 @@ class GlobalSearch extends Component
                 ->get();
 
             // Filter Bookings / Buyers
-            $results['bookings'] = Booking::with('unit')
+            $results['bookings'] = Booking::with(['unit', 'project'])
                 ->where('buyer_name', 'like', $s)
                 ->orWhere('buyer_phone', 'like', $s)
                 ->take(4)

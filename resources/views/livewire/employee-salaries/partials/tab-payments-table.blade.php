@@ -44,22 +44,27 @@
                         {{ strtoupper($pay->payment_method) }}
                     </span>
                 </td>
-                <td class="p-3.5 text-center">
-                    <div class="inline-flex items-center justify-center gap-1.5">
+                <td class="p-3.5 text-center whitespace-nowrap">
+                    <div class="inline-flex items-center justify-center gap-1.5 whitespace-nowrap">
                         <a href="{{ route('employee-salary.slip-pdf', $pay->uuid) }}" target="_blank">
                             <x-button variant="emerald" size="xs" title="Buka / Stream Slip Gaji PDF Resmi">
                                 Slip Gaji PDF
                             </x-button>
                         </a>
-                        <button type="button" @click="confirmModalAction({
-                            title: 'Hapus Histori Penggajian',
-                            message: 'Yakin ingin menghapus berkas penggajian ini dari sistem?',
-                            confirmText: 'Hapus Berkas',
-                            btnClass: 'px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5',
-                            onConfirm: () => $wire.deletePaymentRecord({{ $pay->id }})
-                        })" class="p-1.5 text-slate-400 hover:text-rose-600 rounded-lg hover:bg-rose-50 transition" title="Hapus Berkas">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                        </button>
+
+                        <x-action-dropdown title="Menu Opsi Berkas" size="xs">
+                            <div class="py-1">
+                                <x-dropdown-item icon="delete" variant="danger" @click="confirmModalAction({
+                                    title: 'Hapus Histori Penggajian',
+                                    message: 'Yakin ingin menghapus berkas penggajian ini dari sistem?',
+                                    confirmText: 'Hapus Berkas',
+                                    btnClass: 'px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5',
+                                    onConfirm: () => $wire.deletePaymentRecord({{ $pay->id }})
+                                })">
+                                    Hapus Berkas
+                                </x-dropdown-item>
+                            </div>
+                        </x-action-dropdown>
                     </div>
                 </td>
             </tr>

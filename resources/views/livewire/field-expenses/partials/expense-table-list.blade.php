@@ -78,21 +78,26 @@
                 </div>
             </td>
             <td class="p-3.5 text-right whitespace-nowrap">
-                <div class="inline-flex items-center justify-end gap-1.5">
+                <div class="inline-flex items-center justify-end gap-1.5 whitespace-nowrap">
                     @if (auth()->user()->isAdminOrFounder() || auth()->user()->isSupervisor() || auth()->user()->isFinance())
-                        <x-button variant="amber" size="xs" wire:click="editExpense('{{ $item['type'] }}', {{ $item['id'] }})" title="Ubah Catatan Pengeluaran">
-                            Edit
-                        </x-button>
-
-                        <button type="button" @click="confirmModalAction({
-                            title: 'Hapus Biaya Lapangan',
-                            message: 'Yakin ingin menghapus catatan biaya ini beserta transaksi arus kas terkait?',
-                            confirmText: 'Hapus Biaya',
-                            btnClass: 'px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5',
-                            onConfirm: () => $wire.deleteExpense('{{ $item['type'] }}', {{ $item['id'] }})
-                        })" class="p-1.5 text-slate-400 hover:text-rose-600 rounded-lg hover:bg-rose-50 transition" title="Hapus Biaya">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                        </button>
+                        <x-action-dropdown title="Menu Opsi Biaya" size="xs">
+                            <div class="py-1">
+                                <x-dropdown-item icon="edit" wire:click="editExpense('{{ $item['type'] }}', {{ $item['id'] }})">
+                                    Edit Data Biaya
+                                </x-dropdown-item>
+                            </div>
+                            <div class="py-1">
+                                <x-dropdown-item icon="delete" variant="danger" @click="confirmModalAction({
+                                    title: 'Hapus Biaya Lapangan',
+                                    message: 'Yakin ingin menghapus catatan biaya ini beserta transaksi arus kas terkait?',
+                                    confirmText: 'Hapus Biaya',
+                                    btnClass: 'px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5',
+                                    onConfirm: () => $wire.deleteExpense('{{ $item['type'] }}', {{ $item['id'] }})
+                                })">
+                                    Hapus Biaya
+                                </x-dropdown-item>
+                            </div>
+                        </x-action-dropdown>
                     @endif
                 </div>
             </td>

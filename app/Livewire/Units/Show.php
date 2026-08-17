@@ -1734,7 +1734,7 @@ class Show extends Component
             'bookings.creator',
         ])->findOrFail($this->unitId);
 
-        $unitAssignments = WorkerAssignment::with('worker')
+        $unitAssignments = WorkerAssignment::with(['worker', 'user'])
             ->where('status', 'active')
             ->where(function($q) use ($unit) {
                 $q->where('unit_id', $unit->id)

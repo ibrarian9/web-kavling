@@ -138,7 +138,7 @@
 
             <!-- Footer -->
             <div class="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end pt-3 border-t border-slate-100 shrink-0">
-                <button type="button" wire:click="closeDetailModal" class="btn-secondary">Tutup Detail</button>
+                <x-button variant="secondary" size="md" type="button" wire:click="closeDetailModal">Tutup Detail</x-button>
             </div>
         </div>
     </div>

@@ -27,6 +27,8 @@ class AppServiceProvider extends ServiceProvider
             URL::forceScheme('https');
         }
 
+        \Illuminate\Database\Eloquent\Model::preventLazyLoading(!app()->isProduction());
+
         \Livewire\Livewire::component('cashflow', \App\Livewire\Cashflow\Index::class);
         \Livewire\Livewire::component('cashflow.index', \App\Livewire\Cashflow\Index::class);
     }

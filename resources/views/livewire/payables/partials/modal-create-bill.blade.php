@@ -91,8 +91,8 @@
         </div>
 
         <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
-            <button type="button" wire:click="$set('showCreateBillModal', false)" class="btn-secondary">Batal</button>
-            <button type="submit" class="btn-primary bg-rose-600 hover:bg-rose-700">Simpan Tagihan Material</button>
+            <x-button variant="secondary" size="md" type="button" wire:click="$set('showCreateBillModal', false)">Batal</x-button>
+            <x-button variant="rose" size="md" type="submit">Simpan Tagihan Material</x-button>
         </div>
     </form>
 </x-modal-dialog>

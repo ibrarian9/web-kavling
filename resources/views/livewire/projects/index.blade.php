@@ -1,21 +1,23 @@
 <div class="space-y-6">
 
     <!-- Header Section -->
-    <div class="card-clean p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-            <h2 class="text-xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
-                <span>Daftar Proyek Kavling & Properti</span>
-                <span class="px-2.5 py-0.5 rounded-full bg-blue-100 text-blue-800 text-[11px] font-extrabold border border-blue-200">Master Data</span>
-            </h2>
-            <p class="text-slate-500 text-xs mt-0.5">Kelola standar luas kavling, penugasan pengawas lapangan, skema tanah, dan pantau unit properti.</p>
-        </div>
+    <x-card padding="p-5">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+                <h2 class="text-xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
+                    <span>Daftar Proyek Kavling & Properti</span>
+                    <span class="px-2.5 py-0.5 rounded-full bg-blue-100 text-blue-800 text-[11px] font-extrabold border border-blue-200">Master Data</span>
+                </h2>
+                <p class="text-slate-500 text-xs mt-0.5">Kelola standar luas kavling, penugasan pengawas lapangan, skema tanah, dan pantau unit properti.</p>
+            </div>
 
-        @if(auth()->user()->isAdminOrFounder() || auth()->user()->isSupervisor())
-            <x-button variant="emerald" size="sm" wire:click="openModal" icon="plus">
-                Tambah Proyek Baru
-            </x-button>
-        @endif
-    </div>
+            @if(auth()->user()->isAdminOrFounder() || auth()->user()->isSupervisor())
+                <x-button variant="emerald" size="sm" wire:click="openModal" icon="plus">
+                    Tambah Proyek Baru
+                </x-button>
+            @endif
+        </div>
+    </x-card>
 
     <!-- Summary KPI Cards Grid -->
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
@@ -132,39 +134,45 @@
                     <td class="p-3.5 font-mono text-emerald-700 font-bold">Rp {{ number_format($p->base_price, 0, ',', '.') }}</td>
                 @endif
                 <td class="p-3.5 font-mono text-slate-700">Rp {{ number_format($p->excess_price_per_sqm, 0, ',', '.') }} / m²</td>
-                <td class="p-3.5 font-bold text-slate-800">
-                    <span class="bg-slate-100 text-slate-700 px-2.5 py-0.5 rounded-full border border-slate-200 text-xs">
+                <td class="p-3.5 font-bold text-slate-800 whitespace-nowrap">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700 border border-slate-200 text-xs font-semibold whitespace-nowrap">
                         {{ $p->units_count }} Unit
                     </span>
                 </td>
                 <td class="p-3.5 text-center whitespace-nowrap">
-                    <div class="inline-flex items-center justify-center gap-1.5">
-                        <a href="{{ route('projects.show', $p->id) }}" wire:navigate.hover>
-                            <x-button variant="outline" size="xs">
-                                Kelola Unit
-                            </x-button>
-                        </a>
+                    <div class="inline-flex items-center justify-center gap-1.5 whitespace-nowrap">
+                        <x-button variant="outline" size="xs" href="{{ route('projects.show', $p->id) }}" wire:navigate.hover>
+                            Kelola Unit
+                        </x-button>
 
                         @if(auth()->user()->isAdminOrFounder() || auth()->user()->isSupervisor())
-                            <x-button variant="amber" size="xs" wire:click="openModal({{ $p->id }})" title="Edit Parameter Proyek">
-                                Edit
-                            </x-button>
-                        @endif
+                            <x-action-dropdown title="Menu Opsi Proyek" size="xs">
+                                <div class="py-1">
+                                    <x-dropdown-item icon="edit" wire:click="editProject({{ $p->id }})">
+                                        Edit Parameter
+                                    </x-dropdown-item>
 
-                        @if(auth()->user()->isAdminOrFounder())
-                            <x-button variant="primary" size="xs" wire:click="openWorkerModal({{ $p->id }})" title="Kelola Pengawas Proyek">
-                                Pengawas
-                            </x-button>
+                                    @if(auth()->user()->isAdminOrFounder())
+                                        <x-dropdown-item icon="detail" variant="purple" wire:click="openWorkerModal({{ $p->id }})">
+                                            Kelola Pengawas
+                                        </x-dropdown-item>
+                                    @endif
+                                </div>
 
-                            <button type="button" @click="confirmModalAction({
-                                title: 'Hapus Proyek',
-                                message: 'Yakin ingin menghapus proyek {{ $p->name }}? Seluruh unit dan data terkait akan terhapus!',
-                                confirmText: 'Hapus Proyek',
-                                btnClass: 'px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5',
-                                onConfirm: () => $wire.deleteProject({{ $p->id }})
-                            })" class="p-1.5 text-slate-400 hover:text-rose-600 rounded-lg hover:bg-rose-50 transition" title="Hapus Proyek">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                            </button>
+                                @if(auth()->user()->isAdminOrFounder())
+                                    <div class="py-1">
+                                        <x-dropdown-item icon="delete" variant="danger" @click="confirmModalAction({
+                                            title: 'Hapus Proyek',
+                                            message: 'Yakin ingin menghapus proyek {{ $p->name }}? Seluruh unit dan data terkait akan terhapus!',
+                                            confirmText: 'Hapus Proyek',
+                                            btnClass: 'px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5',
+                                            onConfirm: () => $wire.deleteProject({{ $p->id }})
+                                        })">
+                                            Hapus Proyek
+                                        </x-dropdown-item>
+                                    </div>
+                                @endif
+                            </x-action-dropdown>
                         @endif
                     </div>
                 </td>

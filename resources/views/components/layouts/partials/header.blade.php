@@ -31,14 +31,9 @@
              window.addEventListener('beforeunload', () => start());
              document.addEventListener('click', (e) => {
                  const a = e.target.closest('a');
-                 if (a && a.href && !a.href.startsWith('#') && !a.target && !a.hasAttribute('download')) {
+                 if (a && a.href && !a.href.startsWith('#') && !a.target && !a.hasAttribute('download') && a.origin === window.location.origin) {
                      start();
                  }
-             });
-             Livewire.hook('commit', ({ succeed, fail }) => {
-                 start();
-                 succeed(() => finish());
-                 fail(() => finish());
              });
          "
          class="absolute top-0 left-0 right-0 h-1 z-50 overflow-hidden pointer-events-none bg-slate-100/50">

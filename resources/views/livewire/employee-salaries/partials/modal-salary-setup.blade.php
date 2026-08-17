@@ -108,8 +108,8 @@
                 </div>
 
                 <div class="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
-                    <button type="button" wire:click="closeSalaryModal" class="btn-secondary">Batal</button>
-                    <button type="submit" class="btn-primary">Simpan Standar Gaji</button>
+                    <x-button variant="secondary" size="md" type="button" wire:click="closeSalaryModal">Batal</x-button>
+                    <x-button variant="primary" size="md" type="submit">Simpan Standar Gaji</x-button>
                 </div>
             </form>
         </div>

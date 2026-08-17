@@ -78,12 +78,10 @@
                 </div>
 
                 <div class="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
-                    <button type="button" wire:click="closeEditModal" class="btn-secondary">Batal</button>
-                    <button type="submit" wire:loading.attr="disabled" class="btn-primary flex items-center justify-center gap-2">
-                        <svg wire:loading wire:target="saveEdit" class="w-4 h-4 animate-spin text-white shrink-0" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-                        <span wire:loading.remove wire:target="saveEdit">Simpan Perubahan</span>
-                        <span wire:loading wire:target="saveEdit">Menyimpan...</span>
-                    </button>
+                    <x-button variant="secondary" size="md" type="button" wire:click="closeEditModal">Batal</x-button>
+                    <x-button variant="primary" size="md" type="submit" loadingTarget="saveEdit">
+                        Simpan Perubahan
+                    </x-button>
                 </div>
             </form>
         </div>
