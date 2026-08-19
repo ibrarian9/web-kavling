@@ -6,17 +6,29 @@ use App\Models\Project;
 use App\Models\Unit;
 use App\Models\WeeklyMaterialPurchase;
 use App\Models\WorkerSalaryPayment;
+use App\Traits\WithDatePeriodFilter;
 use Livewire\Component;
 use Livewire\WithPagination;
 
 class Index extends Component
 {
     use WithPagination;
+    use WithDatePeriodFilter;
 
     public $project_id = '';
     public $unit_id = '';
     public string $category_filter = 'all'; // 'all', 'salary', 'material'
     public string $search = '';
+
+    protected $queryString = [
+        'project_id' => ['except' => ''],
+        'unit_id' => ['except' => ''],
+        'category_filter' => ['except' => 'all'],
+        'search' => ['except' => ''],
+        'datePeriod' => ['except' => 'all'],
+        'startDate' => ['except' => ''],
+        'endDate' => ['except' => ''],
+    ];
 
     // Viewer Modal State
     public bool $showViewerModal = false;
@@ -75,6 +87,9 @@ class Index extends Component
                 $q->where('unit_id', $this->unit_id);
             });
         }
+        if ($this->datePeriod !== 'all') {
+            $this->applyDatePeriodFilter($salaryQuery, 'payment_date');
+        }
         if ($this->search) {
             $term = '%' . trim($this->search) . '%';
             $salaryQuery->where(function ($q) use ($term) {
@@ -97,6 +112,9 @@ class Index extends Component
         }
         if ($this->unit_id) {
             $materialQuery->where('unit_id', $this->unit_id);
+        }
+        if ($this->datePeriod !== 'all') {
+            $this->applyDatePeriodFilter($materialQuery, 'purchase_date');
         }
         if ($this->search) {
             $term = '%' . trim($this->search) . '%';
@@ -226,6 +244,11 @@ class Index extends Component
         $this->showEditModal = true;
     }
 
+    public function editExpense(string $type, int $id): void
+    {
+        $this->openEditModal($type, $id);
+    }
+
     public function closeEditModal(): void
     {
         $this->showEditModal = false;
@@ -325,8 +348,8 @@ class Index extends Component
     public function deleteExpense(string $type, int $id): void
     {
         $user = auth()->user();
-        if (!$user || (!$user->isFounder() && !$user->isFinance() && !$user->isSupervisor() && !$user->isPengawasProject())) {
-            $err = 'Akses ditolak.';
+        if (!$user || (!$user->isSuperAdmin() && !$user->isPengawasProject())) {
+            $err = 'Akses ditolak. Tim Finance tidak memiliki hak akses menghapus pengeluaran proyek.';
             session()->flash('error', $err);
             $this->dispatch('notify', ['type' => 'error', 'title' => 'Gagal!', 'message' => $err]);
             return;

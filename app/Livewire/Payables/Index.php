@@ -15,8 +15,9 @@ use App\Models\WorkerSalaryPayment;
 use App\Models\WorkerUnitPayroll;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use App\Livewire\Traits\WithFileUploadValidation;
 use Illuminate\Pagination\LengthAwarePaginator;
+use App\Livewire\Traits\WithFileUploadValidation;
+use App\Traits\WithDatePeriodFilter;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Livewire\WithPagination;
@@ -26,13 +27,24 @@ class Index extends Component
     use WithPagination;
     use WithFileUploads;
     use WithFileUploadValidation;
+    use WithDatePeriodFilter;
 
-    public string $activeTab = 'material_bills'; // 'material_bills', 'worker_payrolls', 'unit_commissions', 'company_receivables'
+    public string $activeTab = 'material_bills'; // 'material_bills', 'worker_payrolls', 'unit_commissions', 'company_receivables', 'settled_history'
 
     // Filter properties
     public string $search = '';
     public string $filter_project_id = '';
     public string $filter_status = 'belum_lunas'; // 'belum_lunas', 'lunas', 'all'
+
+    protected $queryString = [
+        'activeTab' => ['except' => 'material_bills'],
+        'search' => ['except' => ''],
+        'filter_project_id' => ['except' => ''],
+        'filter_status' => ['except' => 'belum_lunas'],
+        'datePeriod' => ['except' => 'all'],
+        'startDate' => ['except' => ''],
+        'endDate' => ['except' => ''],
+    ];
 
     // Settlement Modal Properties for Material Bill (Tab 1)
     public bool $showSettleModal = false;
@@ -124,13 +136,6 @@ class Index extends Component
         $this->viewerTitle = '';
     }
 
-    protected $queryString = [
-        'activeTab' => ['except' => 'material_bills'],
-        'search' => ['except' => ''],
-        'filter_project_id' => ['except' => ''],
-        'filter_status' => ['except' => 'belum_lunas'],
-    ];
-
     public function mount()
     {
         $user = auth()->user();
@@ -180,7 +185,7 @@ class Index extends Component
     public function openCreateBillModal(): void
     {
         $user = auth()->user();
-        if (!$user || (!$user->isFounder() && !$user->isFinance())) {
+        if (!$user || (!$user->isAdminOrFounder() && !$user->isFinance())) {
             session()->flash('error', 'Hanya Founder dan Tim Finance yang berhak mencatat tagihan operasional.');
             return;
         }
@@ -218,7 +223,7 @@ class Index extends Component
     public function saveNewBill(): void
     {
         $user = auth()->user();
-        if (!$user || (!$user->isFounder() && !$user->isFinance())) {
+        if (!$user || (!$user->isAdminOrFounder() && !$user->isFinance())) {
             session()->flash('error', 'Hanya Founder dan Tim Finance yang berhak mencatat tagihan operasional.');
             return;
         }
@@ -298,7 +303,7 @@ class Index extends Component
     public function openSettleModal(int $materialId): void
     {
         $user = auth()->user();
-        if (!$user->isFounder() && !$user->isFinance()) {
+        if (!$user->isAdminOrFounder() && !$user->isFinance()) {
             session()->flash('error', 'Hanya Founder dan Tim Finance yang berhak mengonfirmasi pelunasan tagihan.');
             return;
         }
@@ -319,7 +324,7 @@ class Index extends Component
         }
 
         $user = auth()->user();
-        if (!$user->isFounder() && !$user->isFinance()) {
+        if (!$user->isAdminOrFounder() && !$user->isFinance()) {
             session()->flash('error', 'Hanya Founder dan Tim Finance yang berhak mengonfirmasi pelunasan tagihan.');
             return;
         }
@@ -386,7 +391,7 @@ class Index extends Component
     public function openWorkerPaymentModal(int $payrollId): void
     {
         $user = auth()->user();
-        if (!$user->isFounder() && !$user->isFinance()) {
+        if (!$user->isAdminOrFounder() && !$user->isFinance()) {
             session()->flash('error', 'Hanya Founder dan Tim Finance yang berhak mencatat pembayaran upah tukang.');
             return;
         }
@@ -409,7 +414,7 @@ class Index extends Component
         }
 
         $user = auth()->user();
-        if (!$user->isFounder() && !$user->isFinance()) {
+        if (!$user->isAdminOrFounder() && !$user->isFinance()) {
             session()->flash('error', 'Hanya Founder dan Tim Finance yang berhak mencatat pembayaran upah tukang.');
             return;
         }
@@ -474,7 +479,7 @@ class Index extends Component
     public function openCreateCommissionModal(): void
     {
         $user = auth()->user();
-        if (!$user || (!$user->isFounder() && !$user->isFinance())) {
+        if (!$user || (!$user->isAdminOrFounder() && !$user->isFinance())) {
             session()->flash('error', 'Hanya Founder dan Tim Finance yang berhak mencatat hutang komisi penjual.');
             return;
         }
@@ -525,7 +530,7 @@ class Index extends Component
     public function saveCommission(): void
     {
         $user = auth()->user();
-        if (!$user || (!$user->isFounder() && !$user->isFinance())) {
+        if (!$user || (!$user->isAdminOrFounder() && !$user->isFinance())) {
             session()->flash('error', 'Hanya Founder dan Tim Finance yang berhak mencatat komisi penjual.');
             return;
         }
@@ -571,7 +576,7 @@ class Index extends Component
     public function openSettleCommissionModal(int $commissionId): void
     {
         $user = auth()->user();
-        if (!$user->isFounder() && !$user->isFinance()) {
+        if (!$user->isAdminOrFounder() && !$user->isFinance()) {
             session()->flash('error', 'Hanya Founder dan Tim Finance yang berhak mengonfirmasi pembayaran komisi.');
             return;
         }
@@ -593,7 +598,7 @@ class Index extends Component
         }
 
         $user = auth()->user();
-        if (!$user->isFounder() && !$user->isFinance()) {
+        if (!$user->isAdminOrFounder() && !$user->isFinance()) {
             session()->flash('error', 'Hanya Founder dan Tim Finance yang berhak mengonfirmasi pembayaran komisi.');
             return;
         }
@@ -666,7 +671,7 @@ class Index extends Component
     public function openCreateReceivableModal(): void
     {
         $user = auth()->user();
-        if (!$user || (!$user->isFounder() && !$user->isFinance())) {
+        if (!$user || (!$user->isAdminOrFounder() && !$user->isFinance())) {
             session()->flash('error', 'Hanya Founder dan Tim Finance yang berhak mencatat piutang / kasbon.');
             return;
         }
@@ -707,7 +712,7 @@ class Index extends Component
     public function saveReceivable(): void
     {
         $user = auth()->user();
-        if (!$user || (!$user->isFounder() && !$user->isFinance())) {
+        if (!$user || (!$user->isAdminOrFounder() && !$user->isFinance())) {
             session()->flash('error', 'Hanya Founder dan Tim Finance yang berhak mencatat piutang.');
             return;
         }
@@ -746,7 +751,7 @@ class Index extends Component
     public function openPayReceivableModal(int $receivableId): void
     {
         $user = auth()->user();
-        if (!$user->isFounder() && !$user->isFinance()) {
+        if (!$user->isAdminOrFounder() && !$user->isFinance()) {
             session()->flash('error', 'Hanya Founder dan Tim Finance yang berhak mencatat pengembalian piutang.');
             return;
         }
@@ -770,7 +775,7 @@ class Index extends Component
         }
 
         $user = auth()->user();
-        if (!$user->isFounder() && !$user->isFinance()) {
+        if (!$user->isAdminOrFounder() && !$user->isFinance()) {
             session()->flash('error', 'Hanya Founder dan Tim Finance yang berhak mencatat pengembalian piutang.');
             return;
         }
@@ -839,12 +844,12 @@ class Index extends Component
         $this->dispatch('notify', ['type' => 'success', 'title' => 'Kas Masuk Diterima!', 'message' => $msg]);
     }
 
-    // --- FOUNDER DELETION METHODS ---
+    // --- FOUNDER & SUPERVISOR DELETION METHODS ---
     public function deleteMaterialPurchase(int $id): void
     {
         $user = auth()->user();
-        if (!$user->isFounder()) {
-            session()->flash('error', 'Hanya Founder yang berhak menghapus catatan tagihan material.');
+        if (!$user->isSuperAdmin()) {
+            session()->flash('error', 'Hanya Founder dan Supervisor yang berhak menghapus catatan tagihan material.');
             return;
         }
 
@@ -856,15 +861,15 @@ class Index extends Component
             $mat->delete();
         });
 
-        session()->flash('success', 'Catatan tagihan material berhasil dihapus oleh Founder.');
+        session()->flash('success', 'Catatan tagihan material berhasil dihapus.');
         $this->dispatch('notify', ['type' => 'success', 'title' => 'Dihapus!', 'message' => 'Catatan tagihan material berhasil dihapus.']);
     }
 
     public function deleteWorkerPayroll(int $id): void
     {
         $user = auth()->user();
-        if (!$user->isFounder()) {
-            session()->flash('error', 'Hanya Founder yang berhak menghapus kontrak upah worker.');
+        if (!$user->isSuperAdmin()) {
+            session()->flash('error', 'Hanya Founder dan Supervisor yang berhak menghapus kontrak upah worker.');
             return;
         }
 
@@ -879,15 +884,15 @@ class Index extends Component
             $payroll->delete();
         });
 
-        session()->flash('success', 'Kontrak upah worker berhasil dihapus oleh Founder.');
+        session()->flash('success', 'Kontrak upah worker berhasil dihapus.');
         $this->dispatch('notify', ['type' => 'success', 'title' => 'Dihapus!', 'message' => 'Kontrak upah worker berhasil dihapus.']);
     }
 
     public function deleteCommission(int $id): void
     {
         $user = auth()->user();
-        if (!$user->isFounder()) {
-            session()->flash('error', 'Hanya Founder yang berhak menghapus catatan komisi.');
+        if (!$user->isSuperAdmin()) {
+            session()->flash('error', 'Hanya Founder dan Supervisor yang berhak menghapus catatan komisi.');
             return;
         }
 
@@ -902,15 +907,15 @@ class Index extends Component
             $comm->delete();
         });
 
-        session()->flash('success', 'Catatan hutang komisi penjual berhasil dihapus oleh Founder.');
+        session()->flash('success', 'Catatan hutang komisi penjual berhasil dihapus.');
         $this->dispatch('notify', ['type' => 'success', 'title' => 'Dihapus!', 'message' => 'Catatan hutang komisi penjual berhasil dihapus.']);
     }
 
     public function deleteReceivable(int $id): void
     {
         $user = auth()->user();
-        if (!$user->isFounder()) {
-            session()->flash('error', 'Hanya Founder yang berhak menghapus catatan piutang/kasbon.');
+        if (!$user->isSuperAdmin()) {
+            session()->flash('error', 'Hanya Founder dan Supervisor yang berhak menghapus catatan piutang/kasbon.');
             return;
         }
 
@@ -925,8 +930,8 @@ class Index extends Component
             $rec->delete();
         });
 
-        session()->flash('success', 'Catatan piutang / kasbon berhasil dihapus oleh Founder.');
-        $this->dispatch('notify', ['type' => 'success', 'title' => 'Dihapus!', 'message' => 'Catatan piutang / kasbon berhasil dihapus.']);
+        session()->flash('success', 'Catatan piutang berhasil dihapus.');
+        $this->dispatch('notify', ['type' => 'success', 'title' => 'Dihapus!', 'message' => 'Catatan piutang berhasil dihapus.']);
     }
 
     public function render()
@@ -962,6 +967,10 @@ class Index extends Component
             });
         }
 
+        if ($this->datePeriod !== 'all') {
+            $this->applyDatePeriodFilter($materialQuery, 'purchase_date');
+        }
+
         $materialBills = (clone $materialQuery)->latest('purchase_date')->latest('id')->paginate(10, ['*'], 'mat_page');
 
         // Total Unpaid Material Bills KPI
@@ -980,7 +989,7 @@ class Index extends Component
         if (trim($this->search) !== '') {
             $s = '%' . trim($this->search) . '%';
             $workerPayrollQuery->where(function ($q) use ($s) {
-                $q->where('work_description', 'like', $s)
+                $q->where('notes', 'like', $s)
                     ->orWhereHas('unit', function ($uq) use ($s) {
                         $uq->where('code', 'like', $s);
                     })
@@ -988,6 +997,10 @@ class Index extends Component
                         $wq->where('name', 'like', $s);
                     });
             });
+        }
+
+        if ($this->datePeriod !== 'all') {
+            $this->applyDatePeriodFilter($workerPayrollQuery, 'created_at');
         }
 
         $workerPayrolls = (clone $workerPayrollQuery)->latest('created_at')->paginate(10, ['*'], 'wrk_page');
@@ -1021,6 +1034,10 @@ class Index extends Component
             });
         }
 
+        if ($this->datePeriod !== 'all') {
+            $this->applyDatePeriodFilter($commissionQuery, 'created_at');
+        }
+
         $unitCommissions = (clone $commissionQuery)->latest('created_at')->paginate(10, ['*'], 'com_page');
 
         // Total Unpaid Commissions KPI
@@ -1040,6 +1057,10 @@ class Index extends Component
         if (trim($this->search) !== '') {
             $s = '%' . trim($this->search) . '%';
             $receivableQuery->where('debtor_name', 'like', $s);
+        }
+
+        if ($this->datePeriod !== 'all') {
+            $this->applyDatePeriodFilter($receivableQuery, 'loan_date');
         }
 
         $companyReceivables = (clone $receivableQuery)->latest('loan_date')->paginate(10, ['*'], 'rec_page');
@@ -1146,6 +1167,43 @@ class Index extends Component
                     || str_contains(strtolower($item->sub_info), $term)
                     || str_contains(strtolower($item->category_name), $term)
                     || str_contains(strtolower($item->notes ?? ''), $term);
+            });
+        }
+
+        // Date Period filter for Settled History
+        if ($this->datePeriod !== 'all') {
+            $settledHistory = $settledHistory->filter(function ($item) {
+                if (empty($item->date)) {
+                    return false;
+                }
+                $d = is_string($item->date) ? substr($item->date, 0, 10) : $item->date->toDateString();
+                switch ($this->datePeriod) {
+                    case 'today':
+                        return $d === \Carbon\Carbon::today()->toDateString();
+                    case 'yesterday':
+                        return $d === \Carbon\Carbon::yesterday()->toDateString();
+                    case 'this_week':
+                        return $d >= \Carbon\Carbon::now()->startOfWeek()->toDateString() && $d <= \Carbon\Carbon::now()->endOfWeek()->toDateString();
+                    case 'this_month':
+                        return substr($d, 0, 7) === \Carbon\Carbon::now()->format('Y-m');
+                    case 'last_month':
+                        return substr($d, 0, 7) === \Carbon\Carbon::now()->subMonth()->format('Y-m');
+                    case 'this_year':
+                        return substr($d, 0, 4) === \Carbon\Carbon::now()->format('Y');
+                    case 'custom':
+                        if ($this->startDate && $this->endDate) {
+                            $min = min($this->startDate, $this->endDate);
+                            $max = max($this->startDate, $this->endDate);
+                            return $d >= $min && $d <= $max;
+                        } elseif ($this->startDate) {
+                            return $d >= $this->startDate;
+                        } elseif ($this->endDate) {
+                            return $d <= $this->endDate;
+                        }
+                        return true;
+                    default:
+                        return true;
+                }
             });
         }
 

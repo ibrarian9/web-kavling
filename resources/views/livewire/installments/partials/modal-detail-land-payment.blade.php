@@ -116,7 +116,7 @@
                     <span>Dicatat Oleh: <strong class="text-slate-700">{{ $selectedLandPayment->creator->name ?? 'Sistem' }}</strong></span>
                 </div>
                 <div>
-                    <span>Tanggal Entri: <strong class="text-slate-700 font-mono">{{ $selectedLandPayment->created_at ? $selectedLandPayment->created_at->format('d M Y, H:i') : '-' }}</strong></span>
+                    <span>Tanggal Entri: <strong class="text-slate-700 font-mono">{{ format_id_datetime($selectedLandPayment->created_at) }}</strong></span>
                 </div>
             </div>
 

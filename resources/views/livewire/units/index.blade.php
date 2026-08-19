@@ -36,43 +36,52 @@
         </div>
 
         <!-- Filter Controls Container (Responsive Grid / Flex) -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2.5">
-            <!-- Search Bar -->
-            <x-search-input placeholder="Cari kode unit, mandor..." containerClass="relative w-full sm:col-span-2 md:col-span-1" />
+        <div class="flex items-center gap-2.5 flex-wrap">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2.5 flex-1">
+                <!-- Search Bar -->
+                <x-search-input placeholder="Cari kode unit, mandor..." containerClass="relative w-full sm:col-span-2 md:col-span-1" />
 
-            <!-- Filter Status Unit -->
-            <div class="w-full">
-                <select wire:model.live="status_filter" 
-                        class="w-full h-10 px-3 text-xs font-bold text-slate-700 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all cursor-pointer">
-                    <option value="">Semua Status Unit</option>
-                    <option value="tersedia">Unit Tersedia</option>
-                    <option value="booked">Unit Booked</option>
-                    <option value="terjual">Unit Terjual / ACC</option>
-                    <option value="infrastruktur">Infrastruktur Kawasan</option>
-                </select>
+                <!-- Filter Status Unit -->
+                <div class="w-full">
+                    <select wire:model.live="status_filter" 
+                            class="w-full h-10 px-3 text-xs font-bold text-slate-700 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all cursor-pointer">
+                        <option value="">Semua Status Unit</option>
+                        <option value="tersedia">Unit Tersedia</option>
+                        <option value="booked">Unit Booked</option>
+                        <option value="terjual">Unit Terjual / ACC</option>
+                        <option value="infrastruktur">Infrastruktur Kawasan</option>
+                    </select>
+                </div>
+
+                <!-- Filter Kategori -->
+                <div class="w-full">
+                    <select wire:model.live="category_filter" 
+                            class="w-full h-10 px-3 text-xs font-semibold text-slate-700 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all cursor-pointer">
+                        <option value="">Semua Kategori</option>
+                        <option value="kavling">Kavling Tanah</option>
+                        <option value="rumah">Bangunan Rumah</option>
+                        <option value="infrastruktur">Fasum & Infrastruktur</option>
+                    </select>
+                </div>
+
+                <!-- Filter Proyek -->
+                <div class="w-full">
+                    <select wire:model.live="project_id" 
+                            class="w-full h-10 px-3 text-xs font-semibold text-slate-700 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all cursor-pointer">
+                        <option value="">Semua Proyek Properti</option>
+                        @foreach($projects as $p)
+                            <option value="{{ $p->id }}">{{ $p->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
             </div>
 
-            <!-- Filter Kategori -->
-            <div class="w-full">
-                <select wire:model.live="category_filter" 
-                        class="w-full h-10 px-3 text-xs font-semibold text-slate-700 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all cursor-pointer">
-                    <option value="">Semua Kategori</option>
-                    <option value="kavling">Kavling Tanah</option>
-                    <option value="rumah">Bangunan Rumah</option>
-                    <option value="infrastruktur">Fasum & Infrastruktur</option>
-                </select>
-            </div>
-
-            <!-- Filter Proyek -->
-            <div class="w-full">
-                <select wire:model.live="project_id" 
-                        class="w-full h-10 px-3 text-xs font-semibold text-slate-700 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all cursor-pointer">
-                    <option value="">Semua Proyek Properti</option>
-                    @foreach($projects as $p)
-                        <option value="{{ $p->id }}">{{ $p->name }}</option>
-                    @endforeach
-                </select>
-            </div>
+            @if($search || $status_filter || $category_filter || $project_id)
+                <x-reset-filter-button 
+                    size="sm"
+                    wire:click="$set('search', ''); $set('status_filter', ''); $set('category_filter', ''); $set('project_id', '');" 
+                />
+            @endif
         </div>
     </x-card>
 
@@ -88,8 +97,8 @@
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
                 </div>
             </div>
-            <p class="text-2xl font-extrabold text-slate-900 font-mono mt-1.5">{{ method_exists($units, 'total') ? $units->total() : $units->count() }} Unit</p>
-            <p class="text-[10px] text-slate-400 mt-0.5">Total unit kavling & rumah</p>
+            <p class="text-2xl font-extrabold text-slate-900 font-mono mt-1.5">{{ $totalUnitsCount }} Unit</p>
+            <p class="text-[10px] text-slate-400 mt-0.5">{{ $project_id ? 'Proyek terpilih' : ($category_filter ? 'Kategori: ' . ucfirst($category_filter) : 'Total stok unit') }}</p>
         </div>
 
         <div class="kpi-card-emerald">
@@ -100,7 +109,7 @@
                 </div>
             </div>
             <p class="text-2xl font-extrabold text-emerald-700 font-mono mt-1.5">
-                {{ \App\Models\Unit::where('status', 'tersedia')->count() }} Unit
+                {{ $availableUnitsCount }} Unit
             </p>
             <p class="text-[10px] text-slate-400 mt-0.5">Siap dijual / dipesan</p>
         </div>
@@ -113,7 +122,7 @@
                 </div>
             </div>
             <p class="text-2xl font-extrabold text-amber-700 font-mono mt-1.5">
-                {{ \App\Models\Unit::whereIn('status', ['booked', 'menunggu_persetujuan'])->count() }} Unit
+                {{ $bookedUnitsCount }} Unit
             </p>
             <p class="text-[10px] text-slate-400 mt-0.5">Dalam proses transaksi</p>
         </div>
@@ -126,7 +135,7 @@
                 </div>
             </div>
             <p class="text-2xl font-extrabold text-rose-700 font-mono mt-1.5">
-                {{ \App\Models\Unit::whereIn('status', ['disetujui', 'terjual', 'converted'])->count() }} Unit
+                {{ $soldUnitsCount }} Unit
             </p>
             <p class="text-[10px] text-slate-400 mt-0.5">Penjualan lunas / cicilan</p>
         </div>
@@ -375,7 +384,7 @@
                                 @endif
                             </div>
 
-                            @if(auth()->user()->isFounder())
+                            @if(auth()->user()->isSuperAdmin())
                                 <div class="py-1">
                                     <x-dropdown-item icon="delete" variant="danger" @click="confirmModalAction({
                                         title: 'Hapus Unit Kavling/Rumah',
@@ -412,46 +421,49 @@
     @if($showModal)
         <x-modal-dialog show="showModal" 
                         closeAction="closeModal" 
-                        title="{{ $editingUnitId ? 'Edit Data Unit' : 'Tambah Unit (Kavling, Rumah & Infrastruktur)' }}" 
-                        subTitle="Kelola unit kavling, bangunan rumah, dan fasum kawasan" 
+                        title="{{ $editingUnitId ? 'Edit Data Unit' : 'Tambah Unit Baru' }}" 
+                        subTitle="Kelola spesifikasi unit kavling, bangunan rumah, dan fasilitas umum" 
                         maxWidth="max-w-lg">
             <form wire:submit.prevent="saveUnit" class="space-y-4 text-xs">
-                <div>
-                    <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider">Pilih Proyek</label>
-                    <select wire:model.live="selected_project_id" class="select-clean w-full font-semibold">
-                        <option value="">Pilih Proyek...</option>
-                        @foreach($projects as $p)
-                            <option value="{{ $p->id }}">{{ $p->name }} (Standar: {{ number_format($p->standard_land_area, 0, ',', '.') }}m²)</option>
-                        @endforeach
-                    </select>
-                    @error('selected_project_id') <span class="text-rose-500 text-[10px] mt-1 block">{{ $message }}</span> @enderror
-                </div>
-
-                <div class="grid grid-cols-2 gap-3">
+                <!-- Proyek & Kode Unit -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
-                        <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider">Kode Unit</label>
-                        <input type="text" wire:model="code" placeholder="Contoh: A-01 / INF-PARIT-01" class="input-clean w-full font-bold font-mono">
-                        @error('code') <span class="text-rose-500 text-[10px] mt-1 block">{{ $message }}</span> @enderror
-                    </div>
-
-                    <div>
-                        <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider">Kategori Unit</label>
-                        <select wire:model.live="category" class="select-clean w-full font-semibold">
-                            <option value="kavling">Kavling Tanah (Komersial)</option>
-                            <option value="rumah">Bangunan Rumah (Komersial)</option>
-                            <option value="infrastruktur">Fasilitas Umum & Infrastruktur Kawasan</option>
+                        <label class="block font-semibold text-slate-700 mb-1.5 text-[11px] uppercase tracking-wider truncate">Pilih Proyek <span class="text-rose-500">*</span></label>
+                        <select wire:model.live="selected_project_id" class="select-clean w-full h-10 text-xs font-semibold">
+                            <option value="">-- Pilih Proyek --</option>
+                            @foreach($projects as $p)
+                                <option value="{{ $p->id }}">{{ $p->name }} (Std: {{ number_format($p->standard_land_area, 0, ',', '.') }}m²)</option>
+                            @endforeach
                         </select>
-                        @error('category') <span class="text-rose-500 text-[10px] mt-1 block">{{ $message }}</span> @enderror
+                        @error('selected_project_id') <span class="text-rose-500 text-[10px] mt-1 block font-semibold">{{ $message }}</span> @enderror
+                    </div>
+
+                    <div>
+                        <label class="block font-semibold text-slate-700 mb-1.5 text-[11px] uppercase tracking-wider truncate">Kode Unit <span class="text-rose-500">*</span></label>
+                        <input type="text" wire:model="code" placeholder="Contoh: A-01 / B-05" class="input-clean w-full h-10 font-bold font-mono text-xs uppercase">
+                        @error('code') <span class="text-rose-500 text-[10px] mt-1 block font-semibold">{{ $message }}</span> @enderror
                     </div>
                 </div>
 
+                <!-- Kategori Unit -->
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1.5 text-[11px] uppercase tracking-wider">Kategori Unit <span class="text-rose-500">*</span></label>
+                    <select wire:model.live="category" class="select-clean w-full h-10 text-xs font-semibold">
+                        <option value="kavling">Kavling Tanah (Komersial)</option>
+                        <option value="rumah">Bangunan Rumah (Komersial)</option>
+                        <option value="infrastruktur">Fasilitas Umum & Infrastruktur Kawasan</option>
+                    </select>
+                    @error('category') <span class="text-rose-500 text-[10px] mt-1 block font-semibold">{{ $message }}</span> @enderror
+                </div>
+
+                <!-- Infrastruktur Options -->
                 @if($category === 'infrastruktur')
-                    <div class="bg-sky-50/80 border border-sky-200/80 rounded-xl p-3.5 space-y-3">
+                    <div class="bg-sky-50/80 border border-sky-200/80 rounded-2xl p-3.5 space-y-3">
                         <p class="font-bold text-[11px] uppercase tracking-wider text-sky-900">Detail Infrastruktur & Fasilitas Umum Kawasan:</p>
                         
                         <div>
-                            <label class="block font-semibold text-sky-800 mb-1 uppercase tracking-wider">Sub-Jenis Infrastruktur</label>
-                            <select wire:model="infra_type" class="select-clean w-full font-bold bg-white">
+                            <label class="block font-semibold text-sky-800 mb-1 text-[11px] uppercase tracking-wider">Sub-Jenis Infrastruktur</label>
+                            <select wire:model="infra_type" class="select-clean w-full h-10 font-bold bg-white text-xs">
                                 <option value="parit">Pembuatan Parit / Drainase Utama Kawasan</option>
                                 <option value="jalan">Pengerasan / Paving / Aspal Jalan Perumahan</option>
                                 <option value="taman">Taman Kawasan & Ruang Terbuka Hijau (RTH)</option>
@@ -463,52 +475,61 @@
                         </div>
 
                         <div>
-                            <label class="block font-semibold text-sky-800 mb-1 uppercase tracking-wider">Keterangan / Deskripsi Pengerjaan</label>
-                            <textarea wire:model="specifications" rows="2" placeholder="Detail lokasi, spesifikasi cor parit, lebar jalan, dll." class="input-clean w-full bg-white"></textarea>
+                            <label class="block font-semibold text-sky-800 mb-1 text-[11px] uppercase tracking-wider">Keterangan / Deskripsi Pengerjaan</label>
+                            <textarea wire:model="specifications" rows="2" placeholder="Detail lokasi, spesifikasi cor parit, lebar jalan, dll." class="input-clean w-full bg-white text-xs"></textarea>
                         </div>
                     </div>
                 @elseif($category === 'rumah')
-                    <div class="bg-purple-50/70 border border-purple-200/80 rounded-xl p-3.5 space-y-3">
+                    <div class="bg-purple-50/70 border border-purple-200/80 rounded-2xl p-3.5 space-y-3">
                         <p class="font-bold text-[11px] uppercase tracking-wider text-purple-900">Spesifikasi Bangunan Rumah:</p>
                         
                         <div class="grid grid-cols-2 gap-3">
                             <div>
-                                <label class="block font-semibold text-purple-800 mb-1 uppercase tracking-wider">Luas Bangunan (m²)</label>
-                                <input type="number" step="0.01" wire:model="building_area" placeholder="36" class="input-clean w-full font-mono bg-white">
+                                <label class="block font-semibold text-purple-800 mb-1 text-[11px] uppercase tracking-wider">Luas Bangunan (m²)</label>
+                                <input type="number" step="0.01" wire:model="building_area" placeholder="36" class="input-clean w-full h-10 font-mono bg-white text-xs">
                             </div>
                             <div>
-                                <label class="block font-semibold text-purple-800 mb-1 uppercase tracking-wider">Jumlah Lantai</label>
-                                <input type="number" min="1" wire:model="floors_count" placeholder="1" class="input-clean w-full font-mono bg-white">
+                                <label class="block font-semibold text-purple-800 mb-1 text-[11px] uppercase tracking-wider">Jumlah Lantai</label>
+                                <input type="number" min="1" wire:model="floors_count" placeholder="1" class="input-clean w-full h-10 font-mono bg-white text-xs">
                             </div>
                         </div>
 
                         <div>
-                            <label class="block font-semibold text-purple-800 mb-1 uppercase tracking-wider">Deskripsi Spesifikasi Fisik</label>
-                            <textarea wire:model="specifications" rows="2" placeholder="Pondasi batu kali, granit 60x60, atap baja ringan, dll." class="input-clean w-full bg-white"></textarea>
+                            <label class="block font-semibold text-purple-800 mb-1 text-[11px] uppercase tracking-wider">Deskripsi Spesifikasi Fisik</label>
+                            <textarea wire:model="specifications" rows="2" placeholder="Pondasi batu kali, granit 60x60, atap baja ringan, dll." class="input-clean w-full bg-white text-xs"></textarea>
                         </div>
                     </div>
                 @endif
 
+                <!-- Dimensi Tanah: Panjang, Lebar, Luas Tanah (Sejajar & Rapi) -->
                 @if($category !== 'infrastruktur')
                     <div class="grid grid-cols-3 gap-3">
                         <div>
-                            <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider">Panjang (m)</label>
-                            <input type="number" step="0.01" wire:model.live="land_length" class="input-clean w-full font-mono">
+                            <label class="block font-semibold text-slate-700 mb-1.5 text-[11px] uppercase tracking-wider truncate" title="Panjang Tanah (meter)">
+                                Panjang (m) <span class="text-rose-500">*</span>
+                            </label>
+                            <input type="number" step="0.01" min="0.1" wire:model.live="land_length" placeholder="10" required class="input-clean w-full h-10 font-mono font-semibold text-xs text-center">
+                            @error('land_length') <span class="text-rose-500 text-[10px] mt-1 block font-semibold">{{ $message }}</span> @enderror
                         </div>
                         <div>
-                            <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider">Lebar (m)</label>
-                            <input type="number" step="0.01" wire:model.live="land_width" class="input-clean w-full font-mono">
+                            <label class="block font-semibold text-slate-700 mb-1.5 text-[11px] uppercase tracking-wider truncate" title="Lebar Tanah (meter)">
+                                Lebar (m) <span class="text-rose-500">*</span>
+                            </label>
+                            <input type="number" step="0.01" min="0.1" wire:model.live="land_width" placeholder="10" required class="input-clean w-full h-10 font-mono font-semibold text-xs text-center">
+                            @error('land_width') <span class="text-rose-500 text-[10px] mt-1 block font-semibold">{{ $message }}</span> @enderror
                         </div>
                         <div>
-                            <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider">Luas Tanah (m²)</label>
-                            <input type="number" step="0.01" wire:model.live="land_area" class="input-clean w-full font-bold font-mono">
-                            @error('land_area') <span class="text-rose-500 text-[10px] mt-1 block">{{ $message }}</span> @enderror
+                            <label class="block font-semibold text-slate-700 mb-1.5 text-[11px] uppercase tracking-wider truncate" title="Luas Tanah (meter persegi)">
+                                Luas (m²) <span class="text-emerald-600 font-bold lowercase text-[10px]">(auto)</span>
+                            </label>
+                            <input type="number" step="0.01" wire:model="land_area" readonly tabindex="-1" class="input-clean w-full h-10 font-extrabold font-mono text-xs text-center bg-slate-100/90 text-slate-800 border-slate-300 cursor-not-allowed" title="Luas tanah terhitung otomatis dari Panjang x Lebar">
+                            @error('land_area') <span class="text-rose-500 text-[10px] mt-1 block font-semibold">{{ $message }}</span> @enderror
                         </div>
                     </div>
                 @endif
 
                 @if($selected_project_id && $category !== 'infrastruktur')
-                    <div class="bg-emerald-50 border border-emerald-200/80 rounded-xl p-3.5 space-y-1.5 text-emerald-900">
+                    <div class="bg-emerald-50 border border-emerald-200/80 rounded-2xl p-3.5 space-y-1.5 text-emerald-900">
                         <p class="font-bold text-[11px] uppercase tracking-wider text-emerald-800">Kalkulasi Otomatis Kelebihan Tanah:</p>
                         <div class="flex justify-between text-xs">
                             <span>Kelebihan Luas:</span>
@@ -579,36 +600,11 @@
                     <textarea wire:model="booking_notes" rows="2" placeholder="Informasi bukti transfer DP, skema pelunasan, dll." class="input-clean w-full"></textarea>
                 </div>
 
-                <div>
-                    <label class="block font-semibold text-slate-700 uppercase mb-1">Foto Struk / Bukti Transfer <span class="text-amber-600 font-bold lowercase text-[10px] bg-amber-50 px-1.5 py-0.5 rounded border border-amber-200">(Opsional, Maks. 2MB)</span></label>
-                    <input type="file" wire:model="receipt_photo" accept="image/*,.heic,.heif,.pdf" class="w-full text-xs text-slate-600 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100 transition cursor-pointer">
-                    <div wire:loading wire:target="receipt_photo" class="text-[11px] text-amber-600 font-semibold mt-1 flex items-center gap-1.5">
-                        <svg class="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-                        <span>Mengunggah foto resi...</span>
-                    </div>
-                    @error('receipt_photo') <span class="text-rose-500 text-[10px] mt-1 block font-semibold">{{ $message }}</span> @enderror
-                    @if ($receipt_photo ?? false)
-                        <div class="mt-2.5 p-2.5 bg-slate-50 border border-slate-200 rounded-2xl space-y-2">
-                            <div class="flex items-center justify-between text-[11px] font-semibold text-slate-700">
-                                <span class="flex items-center gap-1 text-emerald-600">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                                    <span>Berkas Terpilih ({{ method_exists($receipt_photo, 'getClientOriginalName') ? $receipt_photo->getClientOriginalName() : 'Foto Resi' }}):</span>
-                                </span>
-                                <button type="button" wire:click="$set('receipt_photo', null)" class="text-rose-500 hover:text-rose-700 text-[10px] underline font-bold">Hapus Foto</button>
-                            </div>
-                            @if (is_object($receipt_photo) && method_exists($receipt_photo, 'isPreviewable') && $receipt_photo->isPreviewable())
-                                <div class="relative max-h-36 sm:max-h-40 overflow-y-auto rounded-xl border border-slate-200 bg-slate-900 flex items-center justify-center p-1.5">
-                                    <img src="{{ $receipt_photo->temporaryUrl() }}" alt="Preview Resi" class="max-h-32 sm:max-h-36 w-auto max-w-full object-contain rounded-lg shadow-sm">
-                                </div>
-                            @else
-                                <div class="p-2.5 bg-amber-50 border border-amber-200/80 rounded-xl text-amber-800 text-[11px] font-semibold flex items-center gap-2">
-                                    <svg class="w-4 h-4 text-amber-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                    <span>Format berkas siap diunggah. Pratinjau langsung didukung untuk file gambar (JPG/PNG).</span>
-                                </div>
-                            @endif
-                        </div>
-                    @endif
-                </div>
+                <x-receipt-upload 
+                    model="receipt_photo" 
+                    :photo="$receipt_photo" 
+                    label="Foto Struk / Bukti Transfer DP"
+                />
 
                 <div class="p-3 bg-blue-50 border border-blue-200/80 rounded-xl text-blue-900 text-[11px] space-y-1">
                     <span class="font-bold">Info Verifikasi:</span> Setelah disimpan, unit otomatis menjadi status <strong>Booked</strong> dan data transaksi akan dikirim ke menu Booking untuk diverifikasi & disetujui DP-nya oleh Finance / Founder.

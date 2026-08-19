@@ -96,6 +96,10 @@
             background-color: #d1fae5;
             color: #065f46;
         }
+        .badge-contract {
+            background-color: #f3e8ff;
+            color: #6b21a8;
+        }
         .total-box {
             background-color: #f0fdf4;
             border: 1.5px solid #bbf7d0;
@@ -157,14 +161,14 @@
             <tr>
                 <td class="meta-label">Luas Tanah:</td>
                 <td class="meta-value">{{ number_format($unit->land_area, 0, ',', '.') }} m²</td>
-                <td class="meta-label">HPP Pokok:</td>
-                <td class="meta-value">Rp {{ number_format($unit->hpp, 0, ',', '.') }}</td>
+                <td class="meta-label">Tanggal Cetak:</td>
+                <td class="meta-value">{{ format_id_full_date(now()) }}</td>
             </tr>
             <tr>
-                <td class="meta-label">Tanggal Rekap:</td>
-                <td class="meta-value">{{ date('d F Y') }}</td>
-                <td class="meta-label">Status Unit:</td>
-                <td class="meta-value" style="text-transform: uppercase;">{{ str_replace('_', ' ', $unit->status) }}</td>
+                <td class="meta-label">Jumlah Transaksi:</td>
+                <td class="meta-value">{{ $combinedExpenses->count() }} Pengeluaran</td>
+                <td class="meta-label">Dicetak Oleh:</td>
+                <td class="meta-value">{{ auth()->user()->name ?? 'Administrator' }}</td>
             </tr>
         </table>
     </div>
@@ -184,10 +188,12 @@
             @forelse($combinedExpenses as $index => $exp)
                 <tr>
                     <td style="text-align: center; color: #64748b;">{{ $index + 1 }}</td>
-                    <td style="font-family: monospace;">{{ $exp->date ? $exp->date->format('d/m/Y') : '-' }}</td>
+                    <td style="font-family: monospace;">{{ format_id_date($exp->date) }}</td>
                     <td>
                         @if($exp->source_type === 'material')
                             <span class="badge badge-material">Belanja Material</span>
+                        @elseif($exp->source_type === 'payroll_setup')
+                            <span class="badge badge-contract">Kontrak Gaji</span>
                         @else
                             <span class="badge badge-salary">Gaji Worker</span>
                         @endif
@@ -218,8 +224,14 @@
                 <td style="color: #475569; font-weight: bold;">Subtotal Gaji Worker Terbayar:</td>
                 <td style="text-align: right; font-family: monospace; font-weight: bold;">Rp {{ number_format($totalSalaryCost, 0, ',', '.') }}</td>
             </tr>
+            @if(isset($totalPayrollContractCost) && $totalPayrollContractCost > 0)
+                <tr>
+                    <td style="color: #475569; font-weight: bold;">Total Nilai Kontrak Borongan:</td>
+                    <td style="text-align: right; font-family: monospace; font-weight: bold;">Rp {{ number_format($totalPayrollContractCost, 0, ',', '.') }}</td>
+                </tr>
+            @endif
             <tr style="border-top: 1px solid #bbf7d0;">
-                <td style="color: #15803d; font-size: 12px; font-weight: bold; padding-top: 4px;">TOTAL REKAPITULASI BIAYA UNIT:</td>
+                <td style="color: #15803d; font-size: 12px; font-weight: bold; padding-top: 4px;">TOTAL BIAYA TEREALISASI:</td>
                 <td style="text-align: right; font-family: monospace; font-size: 13px; font-weight: bold; color: #15803d; padding-top: 4px;">
                     Rp {{ number_format($totalExpenses, 0, ',', '.') }}
                 </td>
@@ -228,10 +240,12 @@
     </div>
 
     <!-- QR Code Verifikasi Resmi -->
-    <div class="qr-section">
-        <img src="{{ $qrCodeUrl }}" class="qr-img" alt="QR Code Verifikasi">
-        <div class="qr-text">DOKUMEN RESMI REKAPITULASI BIAYA TERVERIFIKASI SISTEM</div>
-    </div>
+    @if(!empty($qrCodeUrl))
+        <div class="qr-section">
+            <img src="{{ $qrCodeUrl }}" class="qr-img" alt="QR Code Verifikasi">
+            <div class="qr-text">DOKUMEN RESMI REKAPITULASI BIAYA TERVERIFIKASI SISTEM</div>
+        </div>
+    @endif
 
 </body>
 </html>

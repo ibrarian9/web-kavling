@@ -79,7 +79,7 @@
                             <x-button variant="detail" size="xs" href="{{ route('units.show', $u->id) }}">
                                 <span>Detail</span>
                             </x-button>
-                            @if(auth()->user()->isFounder())
+                            @if(auth()->user()->isSuperAdmin())
                                 <x-button variant="delete" size="xs" @click="confirmModalAction({
                                     title: 'Hapus Unit Kavling/Rumah',
                                     message: 'Yakin ingin menghapus unit {{ $u->code }} dari proyek ini beserta seluruh histori terikatnya?',
@@ -302,7 +302,7 @@
                                                 </div>
                                             @endif
 
-                                            @if(auth()->user()->isFounder())
+                                            @if(auth()->user()->isSuperAdmin())
                                                 <div class="py-1">
                                                     <x-dropdown-item icon="delete" variant="danger" @click="confirmModalAction({
                                                         title: 'Hapus Unit Kavling/Rumah',

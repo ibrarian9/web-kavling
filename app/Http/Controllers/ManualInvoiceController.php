@@ -14,7 +14,7 @@ class ManualInvoiceController extends Controller
     public function streamPdf(string $uuid)
     {
         $user = auth()->user();
-        if (!$user || (!$user->isFounder() && !$user->isFinance())) {
+        if (!$user || (!$user->isAdminOrFounder() && !$user->isFinance())) {
             abort(403, 'Akses ditolak. Anda tidak memiliki hak akses mengunduh invoice manual.');
         }
 

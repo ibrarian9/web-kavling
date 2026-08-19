@@ -40,7 +40,7 @@
             </div>
             <div class="flex justify-between border-b border-slate-800 pb-2">
                 <span class="text-slate-400">Tanggal Bayar:</span>
-                <span class="font-bold text-slate-200">{{ $payment->payment_date ? $payment->payment_date->format('d M Y') : '-' }}</span>
+                <span class="font-bold text-slate-200">{{ format_id_full_date($payment->payment_date) }}</span>
             </div>
             <div class="flex justify-between border-b border-slate-800 pb-2">
                 <span class="text-slate-400">Metode Bayar:</span>

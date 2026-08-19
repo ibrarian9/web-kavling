@@ -26,10 +26,11 @@
             </div>
         </div>
 
-        <div>
-            <label class="block font-semibold text-slate-700 mb-1">Upload Bukti Transfer / Resi Setoran (Opsional)</label>
-            <input type="file" wire:model="pay_rec_photo" accept="image/*,.pdf" class="input-clean w-full">
-        </div>
+        <x-receipt-upload 
+            model="pay_rec_photo" 
+            :photo="$pay_rec_photo" 
+            label="Upload Bukti Transfer / Resi Setoran (Opsional)"
+        />
 
         <div>
             <label class="block font-semibold text-slate-700 mb-1">Catatan Setoran</label>
@@ -37,8 +38,8 @@
         </div>
 
         <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
-            <button type="button" wire:click="$set('showPayReceivableModal', false)" class="btn-secondary">Batal</button>
-            <button type="submit" class="btn-primary bg-emerald-600 hover:bg-emerald-700">Konfirmasi Setoran & Catat Kas Masuk</button>
+            <x-button type="button" variant="secondary" wire:click="$set('showPayReceivableModal', false)">Batal</x-button>
+            <x-button type="submit" variant="emerald">Konfirmasi Setoran & Catat Kas Masuk</x-button>
         </div>
     </form>
 </x-modal-dialog>

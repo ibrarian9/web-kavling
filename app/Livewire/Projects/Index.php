@@ -20,6 +20,11 @@ class Index extends Component
     public $base_price = 150000000.00;
     public $total_project_price = 0;
     public $editingProjectId = null;
+    public string $search = '';
+
+    protected $queryString = [
+        'search' => ['except' => ''],
+    ];
 
     // Pengawas Assignment Modal (Founder Only)
     public bool $showWorkerModal = false; // keep variable name for blade compatibility
@@ -121,8 +126,8 @@ class Index extends Component
     public function deleteProject($id)
     {
         $user = auth()->user();
-        if (!$user->isFounder()) {
-            session()->flash('error', 'Hanya Founder yang berhak menghapus proyek.');
+        if (!$user->isSuperAdmin()) {
+            session()->flash('error', 'Hanya Founder dan Supervisor yang berhak menghapus proyek.');
             return;
         }
 
@@ -131,7 +136,7 @@ class Index extends Component
 
         \App\Services\CascadeDeletionService::deleteProject($project);
 
-        \App\Services\ActivityLogger::log('PROJECT_DELETE', "Founder menghapus proyek {$projectName} beserta seluruh data terikatnya.");
+        \App\Services\ActivityLogger::log('PROJECT_DELETE', "Admin Utama ({$user->name}) menghapus proyek {$projectName} beserta seluruh data terikatnya.");
         $msg = "Proyek {$projectName} berhasil dihapus dari sistem!";
         session()->flash('success', $msg);
         $this->dispatch('notify', ['type' => 'success', 'title' => 'Berhasil!', 'message' => $msg]);
@@ -268,6 +273,14 @@ class Index extends Component
             $projectsQuery->whereIn('id', $assignedProjectIds);
         }
 
+        if ($this->search) {
+            $term = '%' . trim($this->search) . '%';
+            $projectsQuery->where(function ($q) use ($term) {
+                $q->where('name', 'like', $term)
+                  ->orWhere('location', 'like', $term);
+            });
+        }
+
         $projects = $projectsQuery->paginate(10);
 
         // Exclude Pengawas users who are already assigned to the selected modal project
@@ -296,6 +309,7 @@ class Index extends Component
             'selectedProjectForModal' => $selectedProjectForModal,
             'showModal' => $this->showModal,
             'showWorkerModal' => $this->showWorkerModal,
+            'search' => $this->search,
         ])->layout('components.layouts.app', ['title' => 'Manajemen Proyek Properti']);
     }
 }

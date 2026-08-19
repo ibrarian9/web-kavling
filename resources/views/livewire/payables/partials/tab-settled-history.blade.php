@@ -14,8 +14,8 @@
         <x-table :headers="['Tgl Lunas / Setoran', 'Kategori Navigasi', 'Rincian / Penjual / Supplier / Pekerja', 'Proyek & Unit / Metode', 'Nominal Terbayar', 'Status']" loadingTarget="setTab, search, his_page">
             @forelse($settledHistory as $sh)
                 <tr class="hover:bg-slate-50/80 transition">
-                    <td class="p-3 font-mono font-medium whitespace-nowrap">
-                        {{ $sh->date ? (is_string($sh->date) ? \Carbon\Carbon::parse($sh->date)->format('d/m/Y') : $sh->date->format('d/m/Y')) : '-' }}
+                    <td class="p-3 font-mono font-bold text-slate-700 whitespace-nowrap">
+                        {{ format_id_date($sh->date) }}
                     </td>
                     <td class="p-3">
                         <span class="px-2.5 py-1 rounded-full font-bold text-[10px] border whitespace-nowrap inline-flex items-center shrink-0 {{ $sh->badge_class }}">

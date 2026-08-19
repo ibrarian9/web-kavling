@@ -278,8 +278,8 @@
                 <tr>
                     <td style="text-align: center; font-weight: bold;">{{ $index + 1 }}</td>
                     <td style="font-family: monospace;">
-                        <strong>{{ $rep->report_date ? $rep->report_date->format('d/m/Y') : '-' }}</strong>
-                        <div style="font-size: 8px; color: #555555;">{{ $rep->created_at ? $rep->created_at->format('H:i') : '' }}</div>
+                        <strong>{{ format_id_date($rep->report_date) }}</strong>
+                        <div style="font-size: 8px; color: #555555;">{{ $rep->created_at ? $rep->created_at->format('H:i') . ' WIB' : '' }}</div>
                     </td>
                     <td>
                         <strong style="color: #000000;">{{ $rep->user->name ?? 'Marketing' }}</strong>
@@ -309,7 +309,7 @@
                         </span>
                         @if($rep->follow_up_date)
                             <div style="font-size: 7.5px; color: #333333; margin-top: 2px;">
-                                FU: {{ $rep->follow_up_date->format('d/m/Y') }}
+                                FU: {{ format_id_date($rep->follow_up_date) }}
                             </div>
                         @endif
                     </td>

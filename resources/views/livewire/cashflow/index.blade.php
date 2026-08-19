@@ -44,6 +44,9 @@
                 <input type="month" wire:model.live="filter_month" class="py-1.5 px-3 text-xs bg-slate-50 border border-slate-200 rounded-xl font-mono text-slate-800 font-bold focus:outline-none focus:border-emerald-500" />
                 <button wire:click="setCurrentMonth" class="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-xl transition">Bulan Ini</button>
                 <button wire:click="setAllTime" class="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-xl transition">Semua Waktu</button>
+                @if($filter_month || $filter_project_id || $filter_unit_id || $view_mode !== 'global')
+                    <x-reset-filter-button wire:click="$set('filter_month', ''); $set('filter_project_id', ''); $set('filter_unit_id', ''); $set('view_mode', 'global');" />
+                @endif
             </div>
         </div>
 
@@ -339,9 +342,9 @@
             @forelse($transactions as $trx)
                 <tr class="hover:bg-slate-50/70 transition duration-150">
                     <!-- Tanggal -->
-                    <td class="p-3.5 font-mono">
-                        <span class="font-bold text-slate-800 block text-xs">{{ $trx->transaction_date->format('d M Y') }}</span>
-                        <span class="text-[10px] text-slate-400 font-sans block">{{ $trx->transaction_date->locale('id')->isoFormat('dddd') }}</span>
+                    <td class="p-3.5 font-mono whitespace-nowrap">
+                        <span class="font-bold text-slate-800 block text-xs">{{ format_id_date($trx->transaction_date) }}</span>
+                        <span class="text-[10px] text-slate-400 font-sans block">{{ $trx->transaction_date ? $trx->transaction_date->locale('id')->isoFormat('dddd') : '' }}</span>
                     </td>
 
                     <!-- Proyek -->
@@ -401,7 +404,7 @@
                                         </button>
                                     @endif
 
-                                    @if(auth()->user()->isFounder() || auth()->user()->isFinance())
+                                    @if(auth()->user()->isAdminOrFounder() || auth()->user()->isFinance())
                                         <button type="button" wire:click="editTransaction({{ $trx->id }})" class="w-full text-left px-3.5 py-2 text-slate-700 hover:bg-slate-50 flex items-center gap-2 transition">
                                             <svg class="w-4 h-4 text-slate-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                                             <span>Edit Transaksi</span>
@@ -409,7 +412,7 @@
                                     @endif
                                 </div>
 
-                                @if(auth()->user()->isFounder())
+                                @if(auth()->user()->isSuperAdmin())
                                     <div class="py-1">
                                         <button type="button" 
                                                 @click="confirmModalAction({

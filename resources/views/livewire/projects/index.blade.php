@@ -72,6 +72,16 @@
         @endif
     </div>
 
+    <!-- Filters & Search Toolbar -->
+    <div class="card-clean p-4 border border-slate-200/80 rounded-3xl flex flex-col sm:flex-row items-center justify-between gap-3 shadow-2xs">
+        <div class="flex-1 w-full">
+            <x-search-input placeholder="Cari nama perumahan, proyek kavling, atau lokasi..." containerClass="w-full" />
+        </div>
+        @if($search)
+            <x-reset-filter-button wire:click="$set('search', '')" />
+        @endif
+    </div>
+
     <!-- Projects Table -->
     @php
         $headers = ['Nama Proyek & Lokasi', 'Pekerja Lapangan', 'Luas Standar (m²)'];
@@ -84,7 +94,7 @@
         $headers[] = ['label' => 'Aksi Proyek', 'class' => 'p-3.5 text-center'];
     @endphp
 
-    <x-table :headers="$headers" loadingTarget="page">
+    <x-table :headers="$headers" loadingTarget="search, page, gotoPage, nextPage, previousPage">
         @forelse($projects as $p)
             <tr class="hover:bg-slate-50/80 transition duration-150">
                 <td class="p-3.5">
@@ -141,39 +151,43 @@
                 </td>
                 <td class="p-3.5 text-center whitespace-nowrap">
                     <div class="inline-flex items-center justify-center gap-1.5 whitespace-nowrap">
-                        <x-button variant="outline" size="xs" href="{{ route('projects.show', $p->id) }}" wire:navigate.hover>
-                            Kelola Unit
+                        <x-button variant="outline" size="xs" href="{{ route('units.index', ['project_id' => $p->id]) }}" wire:navigate.hover title="Kelola Unit untuk Proyek {{ $p->name }}">
+                            <span>Kelola Unit</span>
                         </x-button>
 
-                        @if(auth()->user()->isAdminOrFounder() || auth()->user()->isSupervisor())
-                            <x-action-dropdown title="Menu Opsi Proyek" size="xs">
-                                <div class="py-1">
+                        <x-action-dropdown title="Menu Opsi Proyek" size="xs">
+                            <div class="py-1">
+                                <x-dropdown-item icon="detail" href="{{ route('projects.show', $p->id) }}" wire:navigate.hover>
+                                    Detail Dashboard
+                                </x-dropdown-item>
+
+                                @if(auth()->user()->isAdminOrFounder() || auth()->user()->isSupervisor())
                                     <x-dropdown-item icon="edit" wire:click="editProject({{ $p->id }})">
                                         Edit Parameter
                                     </x-dropdown-item>
-
-                                    @if(auth()->user()->isAdminOrFounder())
-                                        <x-dropdown-item icon="detail" variant="purple" wire:click="openWorkerModal({{ $p->id }})">
-                                            Kelola Pengawas
-                                        </x-dropdown-item>
-                                    @endif
-                                </div>
+                                @endif
 
                                 @if(auth()->user()->isAdminOrFounder())
-                                    <div class="py-1">
-                                        <x-dropdown-item icon="delete" variant="danger" @click="confirmModalAction({
-                                            title: 'Hapus Proyek',
-                                            message: 'Yakin ingin menghapus proyek {{ $p->name }}? Seluruh unit dan data terkait akan terhapus!',
-                                            confirmText: 'Hapus Proyek',
-                                            btnClass: 'px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5',
-                                            onConfirm: () => $wire.deleteProject({{ $p->id }})
-                                        })">
-                                            Hapus Proyek
-                                        </x-dropdown-item>
-                                    </div>
+                                    <x-dropdown-item icon="plus" variant="purple" wire:click="openWorkerModal({{ $p->id }})">
+                                        Kelola Pengawas
+                                    </x-dropdown-item>
                                 @endif
-                            </x-action-dropdown>
-                        @endif
+                            </div>
+
+                            @if(auth()->user()->isSuperAdmin())
+                                <div class="py-1">
+                                    <x-dropdown-item icon="delete" variant="danger" @click="confirmModalAction({
+                                        title: 'Hapus Proyek',
+                                        message: 'Yakin ingin menghapus proyek {{ $p->name }}? Seluruh unit dan data terkait akan terhapus!',
+                                        confirmText: 'Hapus Proyek',
+                                        btnClass: 'px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5',
+                                        onConfirm: () => $wire.deleteProject({{ $p->id }})
+                                    })">
+                                        Hapus Proyek
+                                    </x-dropdown-item>
+                                </div>
+                            @endif
+                        </x-action-dropdown>
                     </div>
                 </td>
             </tr>

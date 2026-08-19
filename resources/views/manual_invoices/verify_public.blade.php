@@ -43,7 +43,7 @@
             </div>
             <div class="sm:text-right">
                 <span class="text-xs text-slate-400 block uppercase tracking-wider font-semibold">Tanggal Invoice</span>
-                <span class="text-sm font-semibold text-slate-200">{{ $invoice->invoice_date ? $invoice->invoice_date->format('d M Y') : '-' }}</span>
+                <span class="text-sm font-semibold text-slate-200">{{ format_id_full_date($invoice->invoice_date) }}</span>
             </div>
         </div>
 

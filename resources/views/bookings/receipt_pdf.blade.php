@@ -145,7 +145,7 @@
                     <div style="font-size: 9px; font-family: monospace; color: #475569;">
                         No: INV-BKG/{{ $booking->created_at ? $booking->created_at->format('Y/m') : date('Y/m') }}/{{ str_pad($booking->id, 3, '0', STR_PAD_LEFT) }}
                     </div>
-                    <div style="font-size: 9px; color: #64748b;">Tgl: {{ $booking->booking_date ? $booking->booking_date->format('d/m/Y') : date('d/m/Y') }}</div>
+                    <div style="font-size: 9px; color: #64748b;">Tgl: {{ format_id_date($booking->booking_date) }}</div>
                 </td>
             </tr>
         </table>

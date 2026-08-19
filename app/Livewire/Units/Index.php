@@ -79,20 +79,30 @@ class Index extends Component
         }
     }
 
+    public function updatedLandLength()
+    {
+        $this->calculateLandPreview();
+    }
+
+    public function updatedLandWidth()
+    {
+        $this->calculateLandPreview();
+    }
+
     public function calculateLandPreview()
     {
-        if ($this->land_width > 0 && $this->land_length > 0 && ($this->land_area <= 0)) {
-            $this->land_area = $this->land_width * $this->land_length;
+        if ((float)$this->land_width > 0 && (float)$this->land_length > 0) {
+            $this->land_area = round((float)$this->land_width * (float)$this->land_length, 2);
         }
 
         if ($this->selected_project_id && $this->category !== 'infrastruktur') {
             $project = Project::find($this->selected_project_id);
             if ($project) {
-                $this->previewExcessArea = max(0, $this->land_area - $project->standard_land_area);
-                $this->previewExcessCost = $this->previewExcessArea * $project->excess_price_per_sqm;
-                $this->previewRecommendedHpp = $project->base_price + $this->previewExcessCost;
+                $this->previewExcessArea = max(0, (float)$this->land_area - (float)$project->standard_land_area);
+                $this->previewExcessCost = $this->previewExcessArea * (float)$project->excess_price_per_sqm;
+                $this->previewRecommendedHpp = (float)$project->base_price + $this->previewExcessCost;
                 
-                if (is_null($this->hpp) || $this->hpp == 0) {
+                if (is_null($this->hpp) || $this->hpp == 0 || $this->editingUnitId === null) {
                     $this->hpp = $this->previewRecommendedHpp;
                 }
             }
@@ -102,10 +112,12 @@ class Index extends Component
     public function openModal()
     {
         $this->resetInputFields();
-        if (Project::count() > 0) {
+        if ($this->project_id) {
+            $this->selected_project_id = $this->project_id;
+        } elseif (Project::count() > 0) {
             $this->selected_project_id = Project::first()->id;
-            $this->calculateLandPreview();
         }
+        $this->calculateLandPreview();
         $this->showModal = true;
     }
 
@@ -241,8 +253,8 @@ class Index extends Component
     public function deleteUnit($id)
     {
         $user = auth()->user();
-        if (!$user || !$user->isFounder()) {
-            session()->flash('error', 'Hanya Founder yang berhak menghapus unit dari sistem.');
+        if (!$user || !$user->isSuperAdmin()) {
+            session()->flash('error', 'Hanya Founder dan Supervisor yang berhak menghapus unit dari sistem.');
             return;
         }
 
@@ -251,7 +263,7 @@ class Index extends Component
 
         \App\Services\CascadeDeletionService::deleteUnit($unit);
 
-        \App\Services\ActivityLogger::log('UNIT_DELETED', "Founder menghapus Unit {$code} dari sistem.");
+        \App\Services\ActivityLogger::log('UNIT_DELETED', "Admin Utama ({$user->name}) menghapus Unit {$code} dari sistem.");
         session()->flash('success', 'Unit ' . $code . ' berhasil dihapus dari sistem!');
     }
 
@@ -330,20 +342,11 @@ class Index extends Component
 
     public function render()
     {
-        $query = Unit::with([
-            'project',
-            'creator',
-            'activeAssignments.worker',
-            'installment.payments',
-            'officialDocument.proposal',
-            'proposals',
-            'activeBooking',
-            'bookings',
-        ]);
+        $baseStatsQuery = Unit::query();
 
         if ($this->search) {
             $search = '%' . trim($this->search) . '%';
-            $query->where(function ($q) use ($search) {
+            $baseStatsQuery->where(function ($q) use ($search) {
                 $q->where('code', 'like', $search)
                   ->orWhere('type', 'like', $search)
                   ->orWhere('category', 'like', $search)
@@ -362,16 +365,34 @@ class Index extends Component
             $assignedProjectIds = WorkerAssignment::where('user_id', $user->id)
                 ->where('status', 'active')
                 ->pluck('project_id');
-            $query->whereIn('project_id', $assignedProjectIds);
+            $baseStatsQuery->whereIn('project_id', $assignedProjectIds);
         }
 
         if ($this->project_id) {
-            $query->where('project_id', $this->project_id);
+            $baseStatsQuery->where('project_id', $this->project_id);
         }
 
         if ($this->category_filter) {
-            $query->where('category', $this->category_filter);
+            $baseStatsQuery->where('category', $this->category_filter);
         }
+
+        // Computed dynamic statistics matching active filters (project, category, search, and user assignment)
+        $totalUnitsCount = (clone $baseStatsQuery)->count();
+        $availableUnitsCount = (clone $baseStatsQuery)->where('status', 'tersedia')->count();
+        $bookedUnitsCount = (clone $baseStatsQuery)->whereIn('status', ['booked', 'menunggu_persetujuan'])->count();
+        $soldUnitsCount = (clone $baseStatsQuery)->whereIn('status', ['disetujui', 'terjual', 'converted'])->count();
+
+        // Main Query with Status Filter & Relations
+        $query = (clone $baseStatsQuery)->with([
+            'project',
+            'creator',
+            'activeAssignments.worker',
+            'installment.payments',
+            'officialDocument.proposal',
+            'proposals',
+            'activeBooking',
+            'bookings',
+        ]);
 
         if ($this->status_filter) {
             if ($this->status_filter === 'terjual') {
@@ -444,6 +465,10 @@ class Index extends Component
             'units' => $units,
             'projects' => $projects,
             'unitPaymentsData' => $unitPaymentsData,
+            'totalUnitsCount' => $totalUnitsCount,
+            'availableUnitsCount' => $availableUnitsCount,
+            'bookedUnitsCount' => $bookedUnitsCount,
+            'soldUnitsCount' => $soldUnitsCount,
             'showModal' => $this->showModal,
             'showBookingModal' => $this->showBookingModal,
         ])->layout('components.layouts.app', ['title' => 'Manajemen Unit Kavling, Rumah & Infrastruktur']);

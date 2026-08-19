@@ -10,8 +10,12 @@
                 <x-status-badge :status="$unit->installment->status" />
             </h3>
 
-            @if(auth()->user()->isAdminOrFounder())
+            @if(auth()->user()->isAdminOrFounder() || auth()->user()->isFinance())
                 <div class="flex items-center gap-2 flex-wrap sm:flex-nowrap shrink-0">
+                    <x-button variant="outline" size="xs" wire:click="openViewerModal('pdf', '{{ route('installments.unit-statement-pdf', $unit->installment->id) }}', 'Pratinjau Rekapitulasi Cicilan Unit {{ $unit->code }} - {{ $unit->installment->buyer_name }}')" icon="pdf" title="Pratinjau Rekapitulasi & Kartu Pembayaran Cicilan PDF">
+                        <span>Rekap Cicilan PDF</span>
+                    </x-button>
+
                     @if(!in_array($unit->installment->status, ['lunas', 'konversi_cash']))
                         <x-button variant="emerald" size="xs" wire:click="openInstallmentPaymentModal" icon="plus" title="Input Setoran Cicilan Pembeli">
                             <span>Input Setoran</span>
@@ -21,16 +25,18 @@
                     <!-- Dropdown Opsi Skema -->
                     <x-action-dropdown title="Kelola Skema & Status Cicilan" label="Opsi Skema" icon="gear" variant="outline" size="xs">
                         <div class="py-1">
-                            <x-dropdown-item icon="edit" wire:click="openSetupInstallmentModal">
-                                Edit Skema & Tenor
-                            </x-dropdown-item>
-                            @if(!in_array($unit->installment->status, ['lunas', 'konversi_cash']))
-                                <x-dropdown-item icon="convert" variant="purple" wire:click="openConvertToCashModal">
-                                    Dialihkan ke Cash
+                            @if(auth()->user()->isAdminOrFounder())
+                                <x-dropdown-item icon="edit" wire:click="openSetupInstallmentModal">
+                                    Edit Skema & Tenor
                                 </x-dropdown-item>
+                                @if(!in_array($unit->installment->status, ['lunas', 'konversi_cash']))
+                                    <x-dropdown-item icon="convert" variant="purple" wire:click="openConvertToCashModal">
+                                        Dialihkan ke Cash
+                                    </x-dropdown-item>
+                                @endif
                             @endif
                         </div>
-                        @if(!in_array($unit->installment->status, ['lunas', 'konversi_cash']))
+                        @if(auth()->user()->isAdminOrFounder() && !in_array($unit->installment->status, ['lunas', 'konversi_cash']))
                             <div class="py-1">
                                 <x-dropdown-item icon="delete" variant="danger" @click="confirmModalAction({
                                     title: 'Hapus Skema Cicilan Pembeli',
@@ -91,7 +97,7 @@
                         <p class="text-[10px] text-slate-400 mt-0.5 italic">{{ $pay->notes ?: '-' }}</p>
                     </div>
                     <div class="flex items-center gap-2 shrink-0 self-start sm:self-center whitespace-nowrap flex-nowrap">
-                        <span class="font-mono text-slate-500 text-[11px] font-semibold">{{ $pay->payment_date ? (is_string($pay->payment_date) ? $pay->payment_date : $pay->payment_date->format('d/m/Y')) : '-' }}</span>
+                        <span class="font-mono text-slate-600 text-[11px] font-bold">{{ format_id_date($pay->payment_date) }}</span>
                         @if($pay->receipt_photo_path)
                             <x-button variant="outline" size="xs" wire:click="openViewerModal('image', '{{ asset('storage/' . $pay->receipt_photo_path) }}', 'Foto Resi Transfer Bank - Setoran Unit {{ $unit->code }}')" title="Buka Foto Struk / Resi Bukti Transfer Bank">
                                 <svg class="w-3.5 h-3.5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>

@@ -20,14 +20,16 @@
 
         <!-- Right Column: Proposals, SPP, Financials & Costs -->
         <div class="space-y-6 lg:col-span-2">
-            <!-- Proposal & Official Document (SPP) Status Card -->
-            @include('livewire.units.partials.section-proposals-spp')
+            @if($unit->category !== 'infrastruktur')
+                <!-- Proposal & Official Document (SPP) Status Card -->
+                @include('livewire.units.partials.section-proposals-spp')
 
-            <!-- Installment & Buyer Payments Card -->
-            @include('livewire.units.partials.section-installments')
+                <!-- Installment & Buyer Payments Card -->
+                @include('livewire.units.partials.section-installments')
 
-            <!-- Unit Seller Commission & Installments Card -->
-            @include('livewire.units.partials.section-commissions', ['unitCommissions' => $unitCommissions ?? collect()])
+                <!-- Unit Seller Commission & Installments Card -->
+                @include('livewire.units.partials.section-commissions', ['unitCommissions' => $unitCommissions ?? collect()])
+            @endif
 
             <!-- Unit Expenses & Material Purchases Combined Table Card -->
             @include('livewire.units.partials.section-expenses')
@@ -36,17 +38,20 @@
 
     <!-- Include Floating Modals -->
     @include('livewire.units.partials.modal-worker-assignment')
-    @include('livewire.units.partials.modal-booking')
     @include('livewire.units.partials.modal-payroll-setup')
     @include('livewire.units.partials.modal-payroll-payment')
     @include('livewire.units.partials.modal-material-purchase')
-    @include('livewire.units.partials.modal-installment-payment')
-    @include('livewire.units.partials.modal-setup-installment')
-    @include('livewire.units.partials.modal-commission')
-    @include('livewire.units.partials.modal-commission-payment')
     @include('livewire.units.partials.modal-viewer')
-    @include('livewire.units.partials.modal-convert-to-cash')
     @include('livewire.units.partials.modal-edit-unit')
-    @include('livewire.units.partials.modal-direct-spp')
-    @include('livewire.units.partials.modal-direct-proposal')
+
+    @if($unit->category !== 'infrastruktur')
+        @include('livewire.units.partials.modal-booking')
+        @include('livewire.units.partials.modal-installment-payment')
+        @include('livewire.units.partials.modal-setup-installment')
+        @include('livewire.units.partials.modal-commission')
+        @include('livewire.units.partials.modal-commission-payment')
+        @include('livewire.units.partials.modal-convert-to-cash')
+        @include('livewire.units.partials.modal-direct-spp')
+        @include('livewire.units.partials.modal-direct-proposal')
+    @endif
 </div>

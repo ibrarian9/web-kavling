@@ -123,6 +123,12 @@
             <td class="label">Nama Lengkap Pembeli</td>
             <td>: <strong>{{ $doc->buyer_name }}</strong></td>
         </tr>
+        @if($doc->effective_buyer_nik)
+        <tr>
+            <td class="label">No. KTP / NIK Pembeli</td>
+            <td>: {{ $doc->effective_buyer_nik }}</td>
+        </tr>
+        @endif
         <tr>
             <td class="label">Nomor Kontak / WA</td>
             <td>: {{ $doc->buyer_contact }}</td>
@@ -133,7 +139,7 @@
         </tr>
         <tr>
             <td class="label">Tanggal Diterbitkan</td>
-            <td>: {{ $doc->issued_at ? $doc->issued_at->translatedFormat('d F Y') : date('d F Y') }}</td>
+            <td>: {{ format_id_full_date($doc->issued_at) }}</td>
         </tr>
     </table>
 
@@ -161,7 +167,7 @@
                     @endif
                 </td>
                 <td style="font-family: monospace; font-weight: bold; font-size: 11pt; color: #047857;">
-                    Rp {{ number_format($proposal->proposed_price, 0, ',', '.') }}
+                    Rp {{ number_format($proposal ? $proposal->proposed_price : ($unit->final_selling_price ?: 0), 0, ',', '.') }}
                 </td>
             </tr>
         </tbody>

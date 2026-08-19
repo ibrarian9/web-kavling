@@ -13,6 +13,12 @@
             <option value="active">Aktif</option>
             <option value="inactive">Nonaktif</option>
         </select>
+
+        @if($search || $typeFilter || $statusFilter)
+            <x-reset-filter-button 
+                wire:click="$set('search', ''); $set('typeFilter', ''); $set('statusFilter', '');" 
+            />
+        @endif
     </div>
 
     <x-search-input placeholder="Cari nama, telepon, atau spesialisasi..." containerClass="w-full md:w-72" />

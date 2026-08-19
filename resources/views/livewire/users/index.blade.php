@@ -75,8 +75,8 @@
                         <x-status-badge status="ditolak" label="Nonaktif" />
                     @endif
                 </td>
-                <td class="px-5 py-4 font-mono text-slate-500 text-xs">
-                    {{ $u->created_at ? $u->created_at->format('d/m/Y H:i') : '-' }}
+                <td class="px-5 py-4 font-mono text-slate-600 text-xs">
+                    {{ format_id_datetime($u->created_at, false) }}
                 </td>
                 <td class="px-5 py-4 text-right whitespace-nowrap">
                     <div class="inline-flex items-center justify-end gap-1.5 whitespace-nowrap">

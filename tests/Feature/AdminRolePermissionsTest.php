@@ -16,6 +16,7 @@ beforeEach(function () {
     // Create roles
     Role::firstOrCreate(['name' => 'founder', 'guard_name' => 'web']);
     Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'web']);
+    Role::firstOrCreate(['name' => 'supervisor', 'guard_name' => 'web']);
     Role::firstOrCreate(['name' => 'marketing', 'guard_name' => 'web']);
 
     // Create Founder
@@ -27,6 +28,16 @@ beforeEach(function () {
         'is_active' => true,
     ]);
     $this->founder->assignRole('founder');
+
+    // Create Supervisor
+    $this->supervisor = User::create([
+        'name' => 'Supervisor User',
+        'email' => 'supervisor@test.com',
+        'password' => bcrypt('password'),
+        'role' => 'supervisor',
+        'is_active' => true,
+    ]);
+    $this->supervisor->assignRole('supervisor');
 
     // Create Admin
     $this->admin = User::create([
@@ -108,6 +119,23 @@ test('founder can access activity logs, user management, and employee salaries',
         ->assertStatus(200);
 });
 
+test('supervisor has main admin access to activity logs, user management, and employee salaries', function () {
+    $this->actingAs($this->supervisor);
+
+    expect($this->supervisor->isSupervisor())->toBeTrue();
+    expect($this->supervisor->isSuperAdmin())->toBeTrue();
+    expect($this->supervisor->isAdminOrFounder())->toBeTrue();
+
+    Livewire::test(\App\Livewire\ActivityLogs\Index::class)
+        ->assertStatus(200);
+
+    Livewire::test(\App\Livewire\Users\Index::class)
+        ->assertStatus(200);
+
+    Livewire::test(\App\Livewire\EmployeeSalaries\Index::class)
+        ->assertStatus(200);
+});
+
 test('admin can submit and approve proposals but cannot delete proposals', function () {
     $this->actingAs($this->admin);
 
@@ -136,15 +164,15 @@ test('admin can submit and approve proposals but cannot delete proposals', funct
 
     expect(PriceProposal::find($proposal->id))->not->toBeNull();
 
-    // Founder deletes proposal
-    $this->actingAs($this->founder);
+    // Supervisor deletes proposal
+    $this->actingAs($this->supervisor);
     Livewire::test(\App\Livewire\Proposals\Index::class)
         ->call('deleteProposal', $proposal->id);
 
     expect(PriceProposal::find($proposal->id))->toBeNull();
 });
 
-test('admin cannot delete official documents', function () {
+test('admin cannot delete official documents but supervisor can', function () {
     $proposal = PriceProposal::create([
         'unit_id' => $this->unit->id,
         'hpp_price' => 100000000,
@@ -173,8 +201,8 @@ test('admin cannot delete official documents', function () {
 
     expect(OfficialDocument::find($doc->id))->not->toBeNull();
 
-    // Founder deletes
-    $this->actingAs($this->founder);
+    // Supervisor deletes
+    $this->actingAs($this->supervisor);
     Livewire::test(\App\Livewire\Documents\Index::class)
         ->call('deleteDocument', $doc->id);
 

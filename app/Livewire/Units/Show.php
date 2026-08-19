@@ -68,20 +68,24 @@ class Show extends Component
     public string $payroll_payment_notes = '';
     public $payroll_active_worker_loan = 0;
 
-    // Modal Material Purchase (Catat Belanja Barang Unit)
+    // Modal Material Purchase (Catat Belanja Barang Unit) — Bulk Input Support
     public bool $showMaterialModal = false;
     public ?int $material_worker_id = null;
     public string $material_purchase_date = '';
-    public string $material_item_name = '';
     public string $material_store_name = '';
     public string $material_payment_status = 'lunas';
+    public $material_receipt_photo = null;
+    public string $material_notes = '';
+    public bool $material_is_deducted_from_loan = false;
+    public array $materialRows = [];
+    public $material_grand_total = 0;
+
+    // Legacy single-item properties kept for edit mode compatibility
+    public string $material_item_name = '';
     public $material_quantity = 1;
     public string $material_unit_measure = 'pcs';
     public $material_unit_price = 0;
     public $material_total_price = 0;
-    public $material_receipt_photo = null;
-    public string $material_notes = '';
-    public bool $material_is_deducted_from_loan = false;
 
     // Modal Buyer Installment Payment (Setoran Cicilan Pembeli)
     public bool $showInstallmentPaymentModal = false;
@@ -118,19 +122,24 @@ class Show extends Component
     public string $unit_pay_comm_notes = '';
     public $unit_pay_comm_photo = null;
 
-    // Modal Terbitkan SPP & SPJB PDF Direct (Founder / Admin)
+    // Modal Terbitkan / Edit SPP & SPJB PDF Direct (Founder / Admin)
     public bool $showDirectSppModal = false;
+    public ?int $editingSppId = null;
     public string $spp_buyer_name = '';
     public string $spp_buyer_nik = '';
     public string $spp_buyer_contact = '';
     public string $spp_buyer_address = '';
     public string $spp_seller_name = '';
     public string $spp_seller_nik = '';
+    public string $spp_price_mode = 'total'; // 'total' | 'per_sqm'
+    public $spp_price_per_sqm = 0;
     public $spp_cash_price = 0;
 
     public function openDirectSppModal(): void
     {
-        $unit = Unit::with(['installment', 'activeBooking', 'officialDocument'])->findOrFail($this->unitId);
+        $this->resetValidation();
+        $this->editingSppId = null;
+        $unit = Unit::with(['installment', 'activeBooking', 'officialDocument', 'project'])->findOrFail($this->unitId);
         $this->spp_buyer_name = $unit->activeBooking?->buyer_name ?? '';
         $this->spp_buyer_nik = '';
         $this->spp_buyer_contact = $unit->activeBooking?->buyer_phone ?? '';
@@ -138,24 +147,113 @@ class Show extends Component
 
         $founder = auth()->user()->isFounder() ? auth()->user() : User::where('role', 'founder')->first();
         $this->spp_seller_name = $founder?->name ?? 'Founder PT. Atlantik Perkasa Abadi';
-        $this->spp_seller_nik = '1471012304850001';
+        $this->spp_seller_nik = $founder?->nik ?? '1471012304850001';
 
         if ($unit->installment && (float)$unit->installment->total_price > 0) {
             $this->spp_cash_price = (float)$unit->installment->total_price;
         } elseif ($unit->final_selling_price && (float)$unit->final_selling_price > 0) {
             $this->spp_cash_price = (float)$unit->final_selling_price;
         } else {
-            $this->spp_cash_price = '';
+            $this->spp_cash_price = (float)($unit->hpp ? $unit->hpp * 1.3 : ($unit->project->base_price ?? 150000000));
         }
 
+        $this->spp_price_mode = 'total';
+        $this->spp_price_per_sqm = (float)($unit->land_area ?? 0) > 0 ? round((float)$this->spp_cash_price / (float)$unit->land_area) : 0;
+
         $this->showDirectSppModal = true;
+    }
+
+    public function editDirectSpp(int $id): void
+    {
+        $user = auth()->user();
+        if (!$user || (!$user->isAdminOrFounder() && !$user->isFinance())) {
+            $err = 'Hanya Founder dan Admin yang berhak mengedit dokumen SPP.';
+            session()->flash('error', $err);
+            $this->dispatch('notify', ['type' => 'error', 'title' => 'Akses Ditolak', 'message' => $err]);
+            return;
+        }
+
+        $doc = \App\Models\OfficialDocument::with(['unit', 'proposal'])->findOrFail($id);
+        $this->resetValidation();
+        $this->editingSppId = $doc->id;
+        $this->spp_buyer_name = $doc->buyer_name;
+        $this->spp_buyer_nik = $doc->buyer_nik ?? '';
+        $this->spp_buyer_contact = $doc->buyer_contact ?? '';
+        $this->spp_buyer_address = $doc->buyer_address ?? '';
+        $this->spp_seller_name = $doc->seller_name ?? '';
+        $this->spp_seller_nik = $doc->seller_nik ?? '';
+
+        $unit = $doc->unit;
+        $this->spp_cash_price = (float)($doc->proposal?->proposed_price ?: ($unit->final_selling_price ?: 0));
+        $this->spp_price_mode = 'total';
+        $this->spp_price_per_sqm = (float)($unit->land_area ?? 0) > 0 ? round((float)$this->spp_cash_price / (float)$unit->land_area) : 0;
+
+        $this->showDirectSppModal = true;
+    }
+
+    public function deleteDirectSpp(int $id): void
+    {
+        $user = auth()->user();
+        if (!$user || !$user->isAdminOrFounder()) {
+            $err = 'Hanya Founder dan Admin Utama yang berhak menghapus dokumen SPP.';
+            session()->flash('error', $err);
+            $this->dispatch('notify', ['type' => 'error', 'title' => 'Akses Ditolak', 'message' => $err]);
+            return;
+        }
+
+        $doc = \App\Models\OfficialDocument::with(['unit.activeBooking', 'unit.proposals', 'unit.installment'])->findOrFail($id);
+        $docNumber = $doc->document_number;
+        $unit = $doc->unit;
+
+        $doc->delete();
+
+        $statusMsg = '';
+        if ($unit) {
+            if ($unit->installment && $unit->installment->status === 'berjalan') {
+                $unit->update(['status' => 'disetujui']);
+                $statusMsg = "Status unit {$unit->code} dikembalikan ke 'Disetujui'.";
+            } elseif ($unit->activeBooking) {
+                $unit->update(['status' => 'booked']);
+                $statusMsg = "Status unit {$unit->code} dikembalikan ke 'Booked'.";
+            } elseif ($unit->proposals()->where('status', 'disetujui')->exists()) {
+                $unit->update(['status' => 'disetujui']);
+                $statusMsg = "Status unit {$unit->code} dikembalikan ke 'Disetujui'.";
+            } else {
+                $unit->update(['status' => 'tersedia']);
+                $statusMsg = "Status unit {$unit->code} dikembalikan ke 'Tersedia'.";
+            }
+        }
+
+        \App\Services\ActivityLogger::log('DOCUMENT_DELETED', "Dokumen SPP {$docNumber} (ID #{$id}) unit {$unit?->code} telah dihapus via Detail Unit oleh {$user->name}. {$statusMsg}");
+
+        $msg = 'Dokumen SPP ' . $docNumber . ' berhasil dihapus. ' . $statusMsg;
+        session()->flash('success', $msg);
+        $this->dispatch('notify', ['type' => 'success', 'title' => 'SPP Dihapus', 'message' => $msg]);
+    }
+
+    public function updatedSppPricePerSqm(): void
+    {
+        $unit = Unit::find($this->unitId);
+        $area = (float)($unit->land_area ?? 0);
+        if ($area > 0 && $this->spp_price_mode === 'per_sqm') {
+            $this->spp_cash_price = round($area * (float)$this->spp_price_per_sqm);
+        }
+    }
+
+    public function updatedSppCashPrice(): void
+    {
+        $unit = Unit::find($this->unitId);
+        $area = (float)($unit->land_area ?? 0);
+        if ($area > 0 && $this->spp_price_mode === 'total' && (float)$this->spp_cash_price > 0) {
+            $this->spp_price_per_sqm = round((float)$this->spp_cash_price / $area);
+        }
     }
 
     public function saveDirectSpp(): void
     {
         $user = auth()->user();
-        if (!$user->isFounder() && !$user->isFinance() && !$user->isAdmin()) {
-            session()->flash('error', 'Hanya Founder atau Admin yang berhak menerbitkan dokumen SPP.');
+        if (!$user->isAdminOrFounder() && !$user->isFinance()) {
+            session()->flash('error', 'Hanya Founder atau Admin yang berhak menerbitkan / mengedit dokumen SPP.');
             return;
         }
 
@@ -167,6 +265,42 @@ class Show extends Component
 
         $unit = Unit::with('project', 'proposals')->findOrFail($this->unitId);
 
+        if ($this->editingSppId) {
+            $doc = \App\Models\OfficialDocument::with('proposal')->findOrFail($this->editingSppId);
+            $doc->update([
+                'buyer_name' => $this->spp_buyer_name,
+                'buyer_nik' => $this->spp_buyer_nik ?: null,
+                'buyer_contact' => $this->spp_buyer_contact,
+                'buyer_address' => $this->spp_buyer_address ?: '-',
+                'seller_name' => $this->spp_seller_name ?: null,
+                'seller_nik' => $this->spp_seller_nik ?: null,
+            ]);
+
+            if ($doc->proposal) {
+                $hpp = (float)$doc->proposal->hpp_price;
+                $proposed = (float)$this->spp_cash_price;
+                $doc->proposal->update([
+                    'proposed_price' => $proposed,
+                    'margin' => $proposed - $hpp,
+                    'is_below_hpp' => $proposed < $hpp,
+                ]);
+            }
+
+            $unit->update([
+                'final_selling_price' => (float)$this->spp_cash_price,
+            ]);
+
+            \App\Services\ActivityLogger::log('DOCUMENT_UPDATED', "Dokumen SPP {$doc->document_number} (Unit {$unit->code}) diperbarui oleh {$user->name} via Detail Unit.");
+
+            $this->showDirectSppModal = false;
+            $this->editingSppId = null;
+            $msg = 'Dokumen SPP ' . $doc->document_number . ' berhasil diperbarui!';
+            session()->flash('success', $msg);
+            $this->dispatch('notify', ['type' => 'success', 'title' => 'SPP Diperbarui!', 'message' => $msg]);
+            return;
+        }
+
+        // CREATE NEW SPP
         $docNumber = 'SPP/' . strtoupper($unit->project->name) . '/' . date('Y/m') . '/' . str_pad(rand(1, 999), 3, '0', STR_PAD_LEFT);
         $proposal = $unit->proposals()->where('status', 'disetujui')->latest()->first();
 
@@ -220,8 +354,11 @@ class Show extends Component
 
     // Modal Direct Proposal State
     public bool $showDirectProposalModal = false;
+    public ?int $editingProposalId = null;
     public $prop_hpp_price = 0;
     public $prop_proposed_price = 0;
+    public string $prop_price_mode = 'total'; // 'total' | 'per_sqm'
+    public $prop_price_per_sqm = 0;
     public string $prop_notes = '';
 
     public function approveProposal(int $proposalId, string $decision): void
@@ -299,17 +436,90 @@ class Show extends Component
     {
         $unit = Unit::findOrFail($this->unitId);
         $this->resetValidation();
+        $this->editingProposalId = null;
         $this->prop_hpp_price = (float)$unit->hpp;
         $this->prop_proposed_price = (float)($unit->final_selling_price ?: ($unit->price ?: $unit->hpp * 1.3));
+        $this->prop_price_mode = 'total';
+        $this->prop_price_per_sqm = (float)($unit->land_area ?? 0) > 0 ? round((float)$this->prop_proposed_price / (float)$unit->land_area) : 0;
         $this->prop_notes = '';
         $this->showDirectProposalModal = true;
+    }
+
+    public function editDirectProposal(int $id): void
+    {
+        $user = auth()->user();
+        if (!$user || (!$user->isAdminOrFounder() && !$user->isMarketing())) {
+            $err = 'Hanya Admin, Founder, dan Marketing yang berhak mengedit proposal.';
+            session()->flash('error', $err);
+            $this->dispatch('notify', ['type' => 'error', 'title' => 'Akses Ditolak', 'message' => $err]);
+            return;
+        }
+
+        $proposal = \App\Models\PriceProposal::with('unit')->findOrFail($id);
+        $this->resetValidation();
+        $this->editingProposalId = $proposal->id;
+        $this->prop_hpp_price = (float)$proposal->hpp_price;
+        $this->prop_proposed_price = (float)$proposal->proposed_price;
+        $this->prop_price_mode = 'total';
+        $unit = $proposal->unit;
+        $this->prop_price_per_sqm = (float)($unit?->land_area ?? 0) > 0 ? round((float)$proposal->proposed_price / (float)$unit->land_area) : 0;
+        $this->prop_notes = $proposal->notes ?? '';
+        $this->showDirectProposalModal = true;
+    }
+
+    public function deleteDirectProposal(int $id): void
+    {
+        $user = auth()->user();
+        if (!$user || !$user->isAdminOrFounder()) {
+            $err = 'Hanya Founder dan Admin Utama yang berhak menghapus pengajuan harga.';
+            session()->flash('error', $err);
+            $this->dispatch('notify', ['type' => 'error', 'title' => 'Akses Ditolak', 'message' => $err]);
+            return;
+        }
+
+        $proposal = \App\Models\PriceProposal::with(['unit', 'approvals'])->findOrFail($id);
+        $unit = $proposal->unit;
+        $unitCode = $unit->code ?? 'Unit';
+
+        if ($unit && $unit->status === 'menunggu_persetujuan') {
+            $unit->update(['status' => 'tersedia']);
+        }
+
+        \App\Models\OfficialDocument::where('price_proposal_id', $proposal->id)->delete();
+        \App\Models\Approval::where('price_proposal_id', $proposal->id)->delete();
+
+        $proposal->delete();
+
+        \App\Services\ActivityLogger::log('PROPOSAL_DELETED', "Pengajuan harga unit {$unitCode} (ID #{$id}) telah dihapus via Detail Unit oleh {$user->name}.");
+
+        $msg = 'Pengajuan harga unit ' . $unitCode . ' berhasil dihapus.';
+        session()->flash('success', $msg);
+        $this->dispatch('notify', ['type' => 'success', 'title' => 'Proposal Dihapus', 'message' => $msg]);
+    }
+
+    public function updatedPropPricePerSqm(): void
+    {
+        $unit = Unit::find($this->unitId);
+        $area = (float)($unit->land_area ?? 0);
+        if ($area > 0 && $this->prop_price_mode === 'per_sqm') {
+            $this->prop_proposed_price = round($area * (float)$this->prop_price_per_sqm);
+        }
+    }
+
+    public function updatedPropProposedPrice(): void
+    {
+        $unit = Unit::find($this->unitId);
+        $area = (float)($unit->land_area ?? 0);
+        if ($area > 0 && $this->prop_price_mode === 'total' && (float)$this->prop_proposed_price > 0) {
+            $this->prop_price_per_sqm = round((float)$this->prop_proposed_price / $area);
+        }
     }
 
     public function saveDirectProposal(): void
     {
         $user = auth()->user();
         if (!$user->isMarketing() && !$user->isAdminOrFounder()) {
-            $err = 'Hanya Marketing, Admin, dan Founder yang berhak membuat pengajuan harga.';
+            $err = 'Hanya Marketing, Admin, dan Founder yang berhak membuat/mengedit pengajuan harga.';
             session()->flash('error', $err);
             $this->dispatch('notify', ['type' => 'error', 'title' => 'Gagal!', 'message' => $err]);
             return;
@@ -325,7 +535,30 @@ class Show extends Component
         $margin = $proposed - $hpp;
         $isBelowHpp = $proposed < $hpp;
 
-        $status = $user->isFounder() ? 'disetujui' : 'menunggu';
+        if ($this->editingProposalId) {
+            $proposal = \App\Models\PriceProposal::findOrFail($this->editingProposalId);
+            $proposal->update([
+                'proposed_price' => $proposed,
+                'margin' => $margin,
+                'is_below_hpp' => $isBelowHpp,
+                'notes' => $this->prop_notes,
+            ]);
+
+            if ($proposal->status === 'disetujui') {
+                $unit->update(['final_selling_price' => $proposed]);
+            }
+
+            \App\Services\ActivityLogger::log('PROPOSAL_UPDATED', "Pengajuan harga unit {$unit->code} (ID #{$proposal->id}) diperbarui via Detail Unit oleh {$user->name}.");
+
+            $this->showDirectProposalModal = false;
+            $this->editingProposalId = null;
+            $msg = 'Proposal harga unit ' . $unit->code . ' berhasil diperbarui!';
+            session()->flash('success', $msg);
+            $this->dispatch('notify', ['type' => 'success', 'title' => 'Berhasil!', 'message' => $msg]);
+            return;
+        }
+
+        $status = $user->isAdminOrFounder() ? 'disetujui' : 'menunggu';
 
         $proposal = \App\Models\PriceProposal::create([
             'unit_id' => $unit->id,
@@ -338,13 +571,13 @@ class Show extends Component
             'notes' => $this->prop_notes ?: 'Pengajuan harga langsung dari Detail Unit',
         ]);
 
-        if ($user->isFounder()) {
+        if ($user->isAdminOrFounder()) {
             \App\Models\Approval::create([
                 'price_proposal_id' => $proposal->id,
                 'approver_id' => auth()->id(),
-                'approver_role' => 'founder',
+                'approver_role' => $user->role ?? 'founder',
                 'decision' => 'disetujui',
-                'notes' => 'Persetujuan langsung oleh Founder di Detail Unit',
+                'notes' => 'Persetujuan langsung oleh ' . $user->name . ' di Detail Unit',
                 'decided_at' => now(),
             ]);
 
@@ -368,7 +601,7 @@ class Show extends Component
 
         \App\Services\ActivityLogger::log('PROPOSAL_CREATED', "Proposal harga Rp " . number_format($proposed, 0, ',', '.') . " diajukan untuk Unit {$unit->code} via Detail Unit.");
 
-        $msg = 'Proposal harga berhasil diajukan' . ($user->isFounder() ? ' & langsung disetujui!' : '!');
+        $msg = 'Proposal harga berhasil diajukan' . ($user->isAdminOrFounder() ? ' & langsung disetujui!' : '!');
         session()->flash('success', $msg);
         $this->dispatch('notify', ['type' => 'success', 'title' => 'Berhasil!', 'message' => $msg]);
         $this->showDirectProposalModal = false;
@@ -444,9 +677,41 @@ class Show extends Component
     public $edit_land_length = 0;
     public $edit_land_width = 0;
     public $edit_land_area = 0;
+    public $edit_excess_land_area = 0;
+    public $edit_excess_price_per_sqm = 0;
+    public $edit_excess_cost = 0;
     public $edit_building_area = 0;
     public $edit_final_selling_price = 0;
     public string $edit_specifications = '';
+
+    public function updatedEditLandLength(): void
+    {
+        if ((float)$this->edit_land_length > 0 && (float)$this->edit_land_width > 0) {
+            $this->edit_land_area = round((float)$this->edit_land_length * (float)$this->edit_land_width, 2);
+            $this->recalcEditExcessLand();
+        }
+    }
+
+    public function updatedEditLandWidth(): void
+    {
+        if ((float)$this->edit_land_length > 0 && (float)$this->edit_land_width > 0) {
+            $this->edit_land_area = round((float)$this->edit_land_length * (float)$this->edit_land_width, 2);
+            $this->recalcEditExcessLand();
+        }
+    }
+
+    public function updatedEditExcessPricePerSqm(): void
+    {
+        $this->edit_excess_cost = (float)$this->edit_excess_land_area * (float)$this->edit_excess_price_per_sqm;
+    }
+
+    protected function recalcEditExcessLand(): void
+    {
+        $unit = Unit::with('project')->find($this->unitId);
+        $standardLand = (float)($unit?->project->standard_land_area ?? 0);
+        $this->edit_excess_land_area = max(0, (float)$this->edit_land_area - $standardLand);
+        $this->edit_excess_cost = $this->edit_excess_land_area * (float)$this->edit_excess_price_per_sqm;
+    }
 
     public function openEditUnitModal(): void
     {
@@ -456,7 +721,7 @@ class Show extends Component
             $this->dispatch('notify', ['type' => 'error', 'title' => 'Akses Ditolak', 'message' => $err]);
             return;
         }
-        $unit = Unit::findOrFail($this->unitId);
+        $unit = Unit::with('project')->findOrFail($this->unitId);
         $this->resetValidation();
         $this->edit_unit_code = $unit->code;
         $this->edit_unit_category = $unit->category;
@@ -464,6 +729,10 @@ class Show extends Component
         $this->edit_land_length = $unit->land_length;
         $this->edit_land_width = $unit->land_width;
         $this->edit_land_area = $unit->land_area;
+        $standardLand = (float)($unit->project->standard_land_area ?? 0);
+        $this->edit_excess_land_area = max(0, (float)$unit->land_area - $standardLand);
+        $this->edit_excess_price_per_sqm = (float)($unit->project->excess_price_per_sqm ?? 1500000);
+        $this->edit_excess_cost = (float)($unit->excess_cost ?: ($this->edit_excess_land_area * $this->edit_excess_price_per_sqm));
         $this->edit_building_area = $unit->building_area ?? 0;
         $this->edit_final_selling_price = $unit->final_selling_price ?? 0;
         $this->edit_specifications = $unit->specifications ?? '';
@@ -480,9 +749,21 @@ class Show extends Component
             'edit_unit_code' => 'required|string|max:50',
             'edit_unit_category' => 'required|in:kavling,rumah,infrastruktur',
             'edit_unit_status' => 'required|string',
-            'edit_land_area' => 'required|numeric|min:1',
+            'edit_land_area' => 'required|numeric|min:0',
+            'edit_excess_cost' => 'nullable|numeric|min:0',
         ]);
-        $unit = Unit::findOrFail($this->unitId);
+        $unit = Unit::with('project')->findOrFail($this->unitId);
+        $excessLandArea = 0;
+        $excessCost = 0;
+        if ($unit->project && $this->edit_unit_category !== 'infrastruktur') {
+            $excessLandArea = max(0, (float)$this->edit_land_area - (float)$unit->project->standard_land_area);
+            if ($this->edit_excess_cost !== null && (float)$this->edit_excess_cost >= 0) {
+                $excessCost = (float)$this->edit_excess_cost;
+            } else {
+                $excessCost = $excessLandArea * (float)($this->edit_excess_price_per_sqm ?: $unit->project->excess_price_per_sqm);
+            }
+        }
+
         $unit->update([
             'code' => $this->edit_unit_code,
             'category' => $this->edit_unit_category,
@@ -490,10 +771,15 @@ class Show extends Component
             'land_length' => $this->edit_land_length,
             'land_width' => $this->edit_land_width,
             'land_area' => $this->edit_land_area,
+            'excess_land_area' => $excessLandArea,
+            'excess_cost' => $excessCost,
             'building_area' => $this->edit_building_area,
             'final_selling_price' => $this->edit_final_selling_price,
             'specifications' => $this->edit_specifications,
         ]);
+
+        \App\Services\ActivityLogger::log('UNIT_UPDATED', "Spesifikasi Unit {$unit->code} diperbarui oleh " . auth()->user()->name . " (Kelebihan tanah: {$excessLandArea} m², Biaya: Rp " . number_format($excessCost, 0, ',', '.') . ").");
+
         session()->flash('success', 'Spesifikasi & data unit ' . $unit->code . ' berhasil diperbarui!');
         $this->showEditUnitModal = false;
     }
@@ -573,6 +859,41 @@ class Show extends Component
     // Material Purchase Management
     public ?int $editingMaterialId = null;
 
+    protected function emptyMaterialRow(): array
+    {
+        return ['item_name' => '', 'quantity' => 1, 'unit_measure' => 'pcs', 'unit_price' => 0];
+    }
+
+    public function addMaterialRow(): void
+    {
+        $this->materialRows[] = $this->emptyMaterialRow();
+        $this->recalcMaterialGrandTotal();
+    }
+
+    public function removeMaterialRow(int $index): void
+    {
+        if (count($this->materialRows) <= 1) return;
+        unset($this->materialRows[$index]);
+        $this->materialRows = array_values($this->materialRows);
+        $this->recalcMaterialGrandTotal();
+    }
+
+    public function updatedMaterialRows(): void
+    {
+        $this->recalcMaterialGrandTotal();
+    }
+
+    protected function recalcMaterialGrandTotal(): void
+    {
+        $total = 0;
+        foreach ($this->materialRows as $row) {
+            $qty = is_numeric($row['quantity'] ?? 0) ? (float)$row['quantity'] : 0;
+            $price = is_numeric($row['unit_price'] ?? 0) ? (float)$row['unit_price'] : 0;
+            $total += $qty * $price;
+        }
+        $this->material_grand_total = $total;
+    }
+
     public function openMaterialModal(): void
     {
         $this->resetValidation();
@@ -584,6 +905,8 @@ class Show extends Component
         $this->material_unit_measure = 'pcs';
         $this->material_is_deducted_from_loan = false;
         $this->material_worker_id = Worker::where('status', 'active')->first()?->id;
+        $this->materialRows = [$this->emptyMaterialRow()];
+        $this->material_grand_total = 0;
         $this->showMaterialModal = true;
     }
 
@@ -607,6 +930,14 @@ class Show extends Component
         $this->material_total_price = $mat->total_price;
         $this->material_receipt_photo = null;
         $this->material_notes = $mat->notes ?? '';
+        // Edit mode: populate materialRows with the single existing item
+        $this->materialRows = [[
+            'item_name' => $mat->item_name,
+            'quantity' => $mat->quantity,
+            'unit_measure' => $mat->unit_measure,
+            'unit_price' => $mat->unit_price,
+        ]];
+        $this->material_grand_total = (float)$mat->total_price;
         $this->showMaterialModal = true;
     }
 
@@ -646,20 +977,22 @@ class Show extends Component
             session()->flash('error', 'Akses ditolak.');
             return;
         }
+
+        // Shared metadata validation
         $this->validate([
             'material_purchase_date' => 'required|date',
-            'material_item_name' => 'required|string|max:255',
             'material_store_name' => 'nullable|string|max:255',
             'material_payment_status' => 'required|in:lunas,belum_lunas',
-            'material_quantity' => 'required|numeric|min:0.01',
-            'material_unit_measure' => 'required|string|max:50',
-            'material_unit_price' => 'required|numeric|min:0',
             'material_receipt_photo' => 'nullable|file|mimes:jpg,jpeg,png,webp,heic,heif,pdf|max:2048',
             'material_notes' => 'nullable|string',
+            'materialRows' => 'required|array|min:1',
+            'materialRows.*.item_name' => 'required|string|max:255',
+            'materialRows.*.quantity' => 'required|numeric|min:0.01',
+            'materialRows.*.unit_measure' => 'required|string|max:50',
+            'materialRows.*.unit_price' => 'required|numeric|min:0',
         ]);
 
         $unit = Unit::findOrFail($this->unitId);
-        $totalPrice = (float)$this->material_quantity * (float)$this->material_unit_price;
 
         $photoPath = null;
         if ($this->material_receipt_photo) {
@@ -667,18 +1000,21 @@ class Show extends Component
         }
 
         if ($this->editingMaterialId) {
+            // EDIT MODE: Update single existing item from first row
+            $row = $this->materialRows[0];
+            $totalPrice = (float)$row['quantity'] * (float)$row['unit_price'];
             $mat = WeeklyMaterialPurchase::findOrFail($this->editingMaterialId);
             $finalPhoto = $photoPath ?: $mat->receipt_photo_path;
 
-            DB::transaction(function () use ($unit, $mat, $totalPrice, $finalPhoto) {
+            DB::transaction(function () use ($unit, $mat, $row, $totalPrice, $finalPhoto) {
                 $mat->update([
                     'worker_id' => $this->material_worker_id ?: $mat->worker_id,
                     'purchase_date' => $this->material_purchase_date,
-                    'item_name' => $this->material_item_name,
+                    'item_name' => $row['item_name'],
                     'store_name' => $this->material_store_name,
-                    'quantity' => $this->material_quantity,
-                    'unit_measure' => $this->material_unit_measure,
-                    'unit_price' => $this->material_unit_price,
+                    'quantity' => $row['quantity'],
+                    'unit_measure' => $row['unit_measure'],
+                    'unit_price' => $row['unit_price'],
                     'total_price' => $totalPrice,
                     'payment_status' => $this->material_payment_status,
                     'receipt_photo_path' => $finalPhoto,
@@ -695,7 +1031,7 @@ class Show extends Component
                         $cashflow->update([
                             'amount' => $totalPrice,
                             'transaction_date' => $this->material_purchase_date,
-                            'description' => "Pembelian Material Unit {$unit->code}{$storeInfo}: {$this->material_item_name} ({$this->material_quantity} {$this->material_unit_measure})",
+                            'description' => "Pembelian Material Unit {$unit->code}{$storeInfo}: {$row['item_name']} ({$row['quantity']} {$row['unit_measure']})",
                         ]);
                     } else {
                         CashflowTransaction::create([
@@ -704,7 +1040,7 @@ class Show extends Component
                             'category' => 'operasional',
                             'amount' => $totalPrice,
                             'transaction_date' => $this->material_purchase_date,
-                            'description' => "Pembelian Material Unit {$unit->code}{$storeInfo}: {$this->material_item_name} ({$this->material_quantity} {$this->material_unit_measure})",
+                            'description' => "Pembelian Material Unit {$unit->code}{$storeInfo}: {$row['item_name']} ({$row['quantity']} {$row['unit_measure']})",
                             'reference_type' => WeeklyMaterialPurchase::class,
                             'reference_id' => $mat->id,
                             'created_by' => Auth::id(),
@@ -718,43 +1054,61 @@ class Show extends Component
             });
             session()->flash('success', 'Belanja material unit ' . $unit->code . ' berhasil diperbarui!');
         } else {
-            DB::transaction(function () use ($unit, $totalPrice, $photoPath) {
-                $purchase = WeeklyMaterialPurchase::create([
-                    'project_id' => $unit->project_id,
-                    'unit_id' => $unit->id,
-                    'worker_id' => $this->material_worker_id ?: Worker::where('status', 'active')->first()?->id,
-                    'pengawas_id' => Auth::id(),
-                    'purchase_date' => $this->material_purchase_date,
-                    'item_name' => $this->material_item_name,
-                    'store_name' => $this->material_store_name,
-                    'quantity' => $this->material_quantity,
-                    'unit_measure' => $this->material_unit_measure,
-                    'unit_price' => $this->material_unit_price,
-                    'total_price' => $totalPrice,
-                    'payment_status' => $this->material_payment_status,
-                    'paid_at' => $this->material_payment_status === 'lunas' ? now() : null,
-                    'paid_by' => $this->material_payment_status === 'lunas' ? Auth::id() : null,
-                    'receipt_photo_path' => $photoPath,
-                    'notes' => $this->material_notes,
-                ]);
+            // CREATE MODE: Bulk insert from all materialRows
+            $itemCount = count($this->materialRows);
+            $grandTotal = 0;
 
-                if ($this->material_payment_status === 'lunas') {
-                    $storeInfo = $this->material_store_name ? " (Toko: {$this->material_store_name})" : '';
-                    CashflowTransaction::create([
+            DB::transaction(function () use ($unit, $photoPath, &$grandTotal) {
+                $workerId = $this->material_worker_id ?: Worker::where('status', 'active')->first()?->id;
+                $storeInfo = $this->material_store_name ? " (Toko: {$this->material_store_name})" : '';
+
+                foreach ($this->materialRows as $row) {
+                    $itemName = trim($row['item_name'] ?? '');
+                    if (empty($itemName)) continue;
+
+                    $qty = (float)($row['quantity'] ?? 0);
+                    $unitPrice = (float)($row['unit_price'] ?? 0);
+                    $totalPrice = $qty * $unitPrice;
+                    $grandTotal += $totalPrice;
+
+                    $purchase = WeeklyMaterialPurchase::create([
                         'project_id' => $unit->project_id,
-                        'type' => 'keluar',
-                        'category' => 'operasional',
-                        'amount' => $totalPrice,
-                        'transaction_date' => $this->material_purchase_date,
-                        'description' => "Pembelian Material Unit {$unit->code}{$storeInfo}: {$this->material_item_name} ({$this->material_quantity} {$this->material_unit_measure})",
-                        'reference_type' => WeeklyMaterialPurchase::class,
-                        'reference_id' => $purchase->id,
-                        'created_by' => Auth::id(),
+                        'unit_id' => $unit->id,
+                        'worker_id' => $workerId,
+                        'pengawas_id' => Auth::id(),
+                        'purchase_date' => $this->material_purchase_date,
+                        'item_name' => $itemName,
+                        'store_name' => $this->material_store_name,
+                        'quantity' => $qty,
+                        'unit_measure' => $row['unit_measure'] ?? 'pcs',
+                        'unit_price' => $unitPrice,
+                        'total_price' => $totalPrice,
+                        'payment_status' => $this->material_payment_status,
+                        'paid_at' => $this->material_payment_status === 'lunas' ? now() : null,
+                        'paid_by' => $this->material_payment_status === 'lunas' ? Auth::id() : null,
+                        'receipt_photo_path' => $photoPath,
+                        'notes' => $this->material_notes,
                     ]);
+
+                    if ($this->material_payment_status === 'lunas') {
+                        CashflowTransaction::create([
+                            'project_id' => $unit->project_id,
+                            'type' => 'keluar',
+                            'category' => 'operasional',
+                            'amount' => $totalPrice,
+                            'transaction_date' => $this->material_purchase_date,
+                            'description' => "Pembelian Material Unit {$unit->code}{$storeInfo}: {$itemName} ({$qty} {$row['unit_measure']})",
+                            'reference_type' => WeeklyMaterialPurchase::class,
+                            'reference_id' => $purchase->id,
+                            'created_by' => Auth::id(),
+                        ]);
+                    }
                 }
             });
-            \App\Services\ActivityLogger::log('MATERIAL_PURCHASE_RECORDED', "Pembelian material Unit {$unit->code} ({$this->material_item_name}) dicatat sebesar Rp " . number_format($totalPrice, 0, ',', '.') . " (" . strtoupper($this->material_payment_status) . ")");
-            session()->flash('success', 'Pembelian barang/material unit ' . $unit->code . ' berhasil dicatat!');
+
+            $itemNames = collect($this->materialRows)->pluck('item_name')->filter()->implode(', ');
+            \App\Services\ActivityLogger::log('MATERIAL_PURCHASE_RECORDED', "Pembelian {$itemCount} item material Unit {$unit->code} ({$itemNames}) dicatat sebesar Rp " . number_format($grandTotal, 0, ',', '.') . " (" . strtoupper($this->material_payment_status) . ")");
+            session()->flash('success', "{$itemCount} item belanja material unit {$unit->code} berhasil dicatat sekaligus!");
         }
 
         $this->showMaterialModal = false;
@@ -1413,8 +1767,8 @@ class Show extends Component
     public function deleteInstallmentScheme(): void
     {
         $user = auth()->user();
-        if (!$user || !$user->isFounder()) {
-            session()->flash('error', 'Hanya Founder yang berhak menghapus skema cicilan pembeli.');
+        if (!$user || !$user->isSuperAdmin()) {
+            session()->flash('error', 'Hanya Founder dan Supervisor yang berhak menghapus skema cicilan pembeli.');
             return;
         }
 
@@ -1702,8 +2056,8 @@ class Show extends Component
     public function deleteCommission(int $commissionId): void
     {
         $user = Auth::user();
-        if (!$user->isFounder()) {
-            session()->flash('error', 'Hanya Founder yang berhak menghapus catatan komisi.');
+        if (!$user->isSuperAdmin()) {
+            session()->flash('error', 'Hanya Founder dan Supervisor yang berhak menghapus catatan komisi.');
             return;
         }
 
@@ -1870,8 +2224,8 @@ class Show extends Component
     public function deleteUnit()
     {
         $user = auth()->user();
-        if (!$user || !$user->isFounder()) {
-            session()->flash('error', 'Hanya Founder yang berhak menghapus unit dari sistem.');
+        if (!$user || !$user->isSuperAdmin()) {
+            session()->flash('error', 'Hanya Founder dan Supervisor yang berhak menghapus unit dari sistem.');
             return;
         }
 

@@ -54,15 +54,29 @@
                         <span class="font-mono font-extrabold text-sm sm:text-base text-emerald-950">{{ $unit->officialDocument->document_number }}</span>
                         <span class="bg-emerald-700 text-white font-extrabold text-[10px] px-2.5 py-0.5 rounded-lg shadow-2xs">Resmi Terbit</span>
                     </div>
-                    <div class="flex items-center gap-2 flex-wrap shrink-0 self-start sm:self-center">
+                    <div class="flex items-center gap-1.5 flex-wrap shrink-0 self-start sm:self-center">
                         <x-button variant="blue" size="xs" wire:click="openViewerModal('pdf', '{{ route('documents.stream', ['id' => $unit->officialDocument->id]) }}', 'PDF Surat Pesanan Penjualan - {{ $unit->officialDocument->document_number }}')">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
                             <span>SPP PDF</span>
                         </x-button>
                         <x-button variant="emerald" size="xs" wire:click="openViewerModal('pdf', '{{ route('documents.spjb-pdf', ['id' => $unit->officialDocument->id]) }}', 'Pratinjau Surat Perjanjian Jual Beli (SPJB) - {{ $unit->code }}')">
                             <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                            <span>Cetak SPJB PDF</span>
+                            <span>SPJB PDF</span>
                         </x-button>
+
+                        @if(auth()->user()->isAdminOrFounder() || auth()->user()->isFinance())
+                            <x-button variant="outline" size="xs" wire:click="editDirectSpp({{ $unit->officialDocument->id }})" title="Edit Data Dokumen SPP">
+                                <svg class="w-3.5 h-3.5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                                <span>Edit SPP</span>
+                            </x-button>
+                        @endif
+
+                        @if(auth()->user()->isAdminOrFounder())
+                            <x-button variant="rose" size="xs" wire:click="deleteDirectSpp({{ $unit->officialDocument->id }})" wire:confirm="Yakin ingin menghapus dokumen SPP resmi ini? Status unit akan disesuaikan kembali." title="Hapus Dokumen SPP">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                <span>Hapus SPP</span>
+                            </x-button>
+                        @endif
                     </div>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-slate-700 pt-1">
@@ -92,7 +106,7 @@
         @else
             <div class="text-xs text-slate-500 bg-slate-50/80 p-4 rounded-2xl border border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 mt-3">
                 <span class="font-medium">Belum ada dokumen SPP resmi terbit untuk unit ini.</span>
-                @if(auth()->user()->isMarketing() || auth()->user()->isFinance() || auth()->user()->isFounder())
+                @if(auth()->user()->isMarketing() || auth()->user()->isFinance() || auth()->user()->isAdminOrFounder())
                     <x-button variant="emerald" size="xs" wire:click="openDirectSppModal" icon="plus">
                         <span>Terbitkan Dokumen SPP & SPJB PDF</span>
                     </x-button>
@@ -104,7 +118,7 @@
         <div class="pt-3 space-y-3">
             <div class="flex items-center justify-between gap-2">
                 <p class="text-xs font-extrabold text-slate-800">Riwayat Proposal Harga Jual:</p>
-                @if((auth()->user()->isMarketing() || auth()->user()->isFounder()) && $unit->category !== 'infrastruktur' && in_array($unit->status, ['tersedia', 'booked', 'ditolak']))
+                @if((auth()->user()->isMarketing() || auth()->user()->isAdminOrFounder()) && $unit->category !== 'infrastruktur' && in_array($unit->status, ['tersedia', 'booked', 'ditolak']))
                     <x-button variant="outline" size="xs" wire:click="openDirectProposalModal" icon="plus">
                         <span>Ajukan Proposal Baru</span>
                     </x-button>
@@ -118,16 +132,36 @@
                             <span class="text-slate-500 text-[10px] font-semibold ml-2">by {{ $prop->proposer->name ?? 'System' }}</span>
                             <p class="text-[10px] text-slate-500 mt-0.5 italic">Catatan: "{{ $prop->notes ?: '-' }}"</p>
                         </div>
-                        <div class="flex items-center gap-2 shrink-0 self-start sm:self-center">
+                        <div class="flex items-center gap-1.5 flex-wrap shrink-0 self-start sm:self-center">
                             <x-status-badge :status="$prop->status" />
-                            @if($prop->status === 'menunggu_persetujuan' && (auth()->user()->isFounder() || auth()->user()->isSupervisor()))
+
+                            @if($prop->status === 'menunggu_persetujuan' && (auth()->user()->isAdminOrFounder() || auth()->user()->isSupervisor()))
                                 <x-button variant="emerald" size="xs" wire:click="approveProposal({{ $prop->id }}, 'disetujui')" title="Disetujui Langsung oleh Founder/Supervisor">
                                     <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                                    <span>ACC Proposal</span>
+                                    <span>ACC</span>
                                 </x-button>
                                 <x-button variant="rose" size="xs" wire:click="approveProposal({{ $prop->id }}, 'ditolak')" title="Tolak Proposal Harga">
                                     <span>Tolak</span>
                                 </x-button>
+                            @endif
+
+                            @if(auth()->user()->isAdminOrFounder() || auth()->user()->isMarketing())
+                                <button type="button" 
+                                        wire:click="editDirectProposal({{ $prop->id }})" 
+                                        class="p-1.5 rounded-lg border border-slate-200 text-slate-600 hover:text-indigo-600 hover:border-indigo-200 bg-white transition-all" 
+                                        title="Edit Proposal">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                                </button>
+                            @endif
+
+                            @if(auth()->user()->isAdminOrFounder())
+                                <button type="button" 
+                                        wire:click="deleteDirectProposal({{ $prop->id }})" 
+                                        wire:confirm="Yakin ingin menghapus proposal harga ini?" 
+                                        class="p-1.5 rounded-lg border border-slate-200 text-slate-600 hover:text-rose-600 hover:border-rose-200 bg-white transition-all" 
+                                        title="Hapus Proposal">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                </button>
                             @endif
                         </div>
                     </div>

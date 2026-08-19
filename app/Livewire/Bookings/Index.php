@@ -10,6 +10,7 @@ use App\Services\ActivityLogger;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use App\Livewire\Traits\WithFileUploadValidation;
+use App\Traits\WithDatePeriodFilter;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Livewire\WithPagination;
@@ -19,11 +20,23 @@ class Index extends Component
     use WithPagination;
     use WithFileUploads;
     use WithFileUploadValidation;
+    use WithDatePeriodFilter;
 
     public ?int $projectFilter = null;
     public string $typeFilter = '';
     public string $statusFilter = '';
+    public string $search = '';
     public ?int $editingBookingId = null;
+
+    protected $queryString = [
+        'projectFilter' => ['except' => null],
+        'typeFilter' => ['except' => ''],
+        'statusFilter' => ['except' => ''],
+        'search' => ['except' => ''],
+        'datePeriod' => ['except' => 'all'],
+        'startDate' => ['except' => ''],
+        'endDate' => ['except' => ''],
+    ];
 
     // Viewer Modal (PDF Viewer)
     public bool $showViewerModal = false;
@@ -124,8 +137,8 @@ class Index extends Component
     public function editBooking($id): void
     {
         $user = Auth::user();
-        if (!$user->isFounder()) {
-            session()->flash('error', 'Hanya Founder yang berhak mengubah data booking.');
+        if (!$user->isAdminOrFounder() && !$user->isFinance()) {
+            session()->flash('error', 'Hanya Admin Utama dan Finance yang berhak mengubah data booking.');
             return;
         }
 
@@ -146,6 +159,11 @@ class Index extends Component
         $this->showModal = true;
     }
 
+    public function openEditModal($id): void
+    {
+        $this->editBooking($id);
+    }
+
     public function save(): void
     {
         $user = Auth::user();
@@ -155,8 +173,8 @@ class Index extends Component
         }
 
         if ($this->editingBookingId) {
-            if (!$user->isFounder()) {
-                session()->flash('error', 'Hanya Founder yang berhak mengedit data booking.');
+            if (!$user->isAdminOrFounder() && !$user->isFinance()) {
+                session()->flash('error', 'Hanya Admin Utama dan Finance yang berhak mengedit data booking.');
                 return;
             }
 
@@ -264,8 +282,8 @@ class Index extends Component
     public function deleteBooking($id): void
     {
         $user = Auth::user();
-        if (!$user->isFounder()) {
-            session()->flash('error', 'Hanya Founder yang berhak menghapus data booking.');
+        if (!$user->isSuperAdmin()) {
+            session()->flash('error', 'Hanya Founder dan Supervisor yang berhak menghapus data booking.');
             return;
         }
 
@@ -286,17 +304,22 @@ class Index extends Component
 
         $booking->delete();
 
-        ActivityLogger::log('BOOKING_DELETED', "Data booking atas nama {$buyerName} (ID #{$id}) telah dihapus oleh Founder.");
+        ActivityLogger::log('BOOKING_DELETED', "Data booking atas nama {$buyerName} (ID #{$id}) telah dihapus oleh " . $user->name);
 
-        session()->flash('success', 'Data booking atas nama ' . $buyerName . ' berhasil dihapus oleh Founder.');
+        session()->flash('success', 'Data booking atas nama ' . $buyerName . ' berhasil dihapus.');
     }
 
-    // In-System DP Approval Workflow for Finance & Founder (Req #2)
+    public function cancelBooking($id): void
+    {
+        $this->deleteBooking($id);
+    }
+
+    // In-System DP Approval Workflow for Finance & Founder / Supervisor (Req #2)
     public function approveDp(int $bookingId): void
     {
         $user = Auth::user();
-        if (!$user->isFinance() && !$user->isFounder()) {
-            session()->flash('error', 'Hanya Finance dan Founder yang berhak menyetujui Tanda Jadi booking.');
+        if (!$user->isFinance() && !$user->isAdminOrFounder()) {
+            session()->flash('error', 'Hanya Finance dan Admin Utama yang berhak menyetujui Tanda Jadi booking.');
             return;
         }
 
@@ -334,8 +357,8 @@ class Index extends Component
     public function rejectDp(int $bookingId): void
     {
         $user = Auth::user();
-        if (!$user->isFinance() && !$user->isFounder()) {
-            $err = 'Hanya Finance dan Founder yang berhak menolak Tanda Jadi booking.';
+        if (!$user->isFinance() && !$user->isAdminOrFounder()) {
+            $err = 'Hanya Finance dan Admin Utama yang berhak menolak Tanda Jadi booking.';
             session()->flash('error', $err);
             $this->dispatch('notify', ['type' => 'error', 'title' => 'Akses Ditolak', 'message' => $err]);
             return;
@@ -365,8 +388,8 @@ class Index extends Component
     public function cancelApprovedDp(int $bookingId): void
     {
         $user = Auth::user();
-        if (!$user->isFinance() && !$user->isFounder()) {
-            $err = 'Hanya Finance dan Founder yang berhak membatalkan atau merefund DP yang telah disetujui.';
+        if (!$user->isFinance() && !$user->isAdminOrFounder()) {
+            $err = 'Hanya Finance dan Admin Utama yang berhak membatalkan atau merefund DP yang telah disetujui.';
             session()->flash('error', $err);
             $this->dispatch('notify', ['type' => 'error', 'title' => 'Akses Ditolak', 'message' => $err]);
             return;
@@ -432,23 +455,46 @@ class Index extends Component
             $query->where('status', $this->statusFilter);
         }
 
+        if ($this->search) {
+            $term = '%' . trim($this->search) . '%';
+            $query->where(function ($q) use ($term) {
+                $q->where('buyer_name', 'like', $term)
+                  ->orWhere('buyer_phone', 'like', $term)
+                  ->orWhereHas('unit', function ($unitQ) use ($term) {
+                      $unitQ->where('code', 'like', $term);
+                  })
+                  ->orWhereHas('project', function ($projQ) use ($term) {
+                      $projQ->where('name', 'like', $term);
+                  });
+            });
+        }
+
+        if ($this->datePeriod !== 'all') {
+            $this->applyDatePeriodFilter($query, 'booking_date');
+        }
+
         $bookings = $query->latest('id')->paginate(10);
         $projects = Project::orderBy('name')->get();
         $units = $this->project_id ? Unit::where('project_id', $this->project_id)->orderBy('code')->get() : collect();
 
-        $totalBookingAmount = Booking::whereIn('status', ['active', 'converted'])->sum('booking_amount');
-        $totalDpAmount = Booking::where('status', 'converted')->sum('dp_amount');
+        $activeBookings = Booking::whereIn('status', ['active', 'converted']);
+        $totalBookingDpAmount = (float)$activeBookings->sum('booking_amount') + (float)Booking::where('status', 'converted')->sum('dp_amount');
+        $totalBookingCount = (clone $activeBookings)->count();
 
         return view('livewire.bookings.index', [
             'bookings' => $bookings,
             'projects' => $projects,
             'availableUnits' => $units,
-            'totalBookingAmount' => $totalBookingAmount,
-            'totalDpAmount' => $totalDpAmount,
+            'totalBookingDpAmount' => $totalBookingDpAmount,
+            'totalBookingCount' => $totalBookingCount,
             'showImageModal' => $this->showImageModal,
             'imageModalUrl' => $this->imageModalUrl,
             'imageModalTitle' => $this->imageModalTitle,
             'receipt_photo' => $this->receipt_photo,
+            'search' => $this->search,
+            'datePeriod' => $this->datePeriod,
+            'startDate' => $this->startDate,
+            'endDate' => $this->endDate,
         ])->layout('components.layouts.app', ['title' => 'Manajemen Booking & DP Pembeli']);
     }
 }

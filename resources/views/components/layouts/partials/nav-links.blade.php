@@ -106,7 +106,7 @@
                 @endif
             </a>
 
-            @if($isFO)
+            @if($isFO || $isFI)
                 <a href="{{ route('units.legacy-sale') }}" wire:navigate.hover @click="mobileMenuOpen = false" 
                    :title="!sidebarExpanded ? 'Input Penjualan Lalu' : ''"
                    :class="sidebarExpanded ? 'justify-between px-3 py-2' : 'justify-center p-2.5'"
@@ -342,7 +342,7 @@
                        class="flex items-center rounded-xl text-xs sm:text-sm font-medium transition-colors group {{ request()->routeIs('manual-invoices.*') ? 'bg-gradient-to-r from-emerald-500/20 to-teal-500/10 text-emerald-400 font-bold border-l-4 border-emerald-500 shadow-2xs' : 'text-slate-400 hover:bg-slate-800/80 hover:text-slate-100 hover:translate-x-0.5' }}">
                         <div class="flex items-center gap-3 min-w-0">
                             <div class="p-1.5 rounded-lg transition-colors {{ request()->routeIs('manual-invoices.*') ? 'bg-emerald-500/20 text-emerald-400' : 'bg-slate-800/60 text-slate-400 group-hover:text-slate-200 group-hover:bg-slate-700/60' }}">
-                                <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 01-2 2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                                <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                             </div>
                             <span x-show="sidebarExpanded" class="truncate">Invoice Manual</span>
                         </div>
@@ -350,6 +350,23 @@
                             <span x-show="sidebarExpanded" class="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-sm"></span>
                         @endif
                     </a>
+
+                    @if($isF || $isS || $isFI)
+                        <a href="{{ route('employee-salaries.index') }}" wire:navigate.hover @click="mobileMenuOpen = false" 
+                           :title="!sidebarExpanded ? 'Penggajian Karyawan' : ''"
+                           :class="sidebarExpanded ? 'justify-between px-3 py-2' : 'justify-center p-2.5'"
+                           class="flex items-center rounded-xl text-xs sm:text-sm font-medium transition-colors group {{ request()->routeIs('employee-salaries.*') ? 'bg-gradient-to-r from-emerald-500/20 to-teal-500/10 text-emerald-400 font-bold border-l-4 border-emerald-500 shadow-2xs' : 'text-slate-400 hover:bg-slate-800/80 hover:text-slate-100 hover:translate-x-0.5' }}">
+                            <div class="flex items-center gap-3 min-w-0">
+                                <div class="p-1.5 rounded-lg transition-colors {{ request()->routeIs('employee-salaries.*') ? 'bg-emerald-500/20 text-emerald-400' : 'bg-slate-800/60 text-slate-400 group-hover:text-slate-200 group-hover:bg-slate-700/60' }}">
+                                    <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                                </div>
+                                <span x-show="sidebarExpanded" class="truncate">Penggajian Karyawan</span>
+                            </div>
+                            @if(request()->routeIs('employee-salaries.*'))
+                                <span x-show="sidebarExpanded" class="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-sm"></span>
+                            @endif
+                        </a>
+                    @endif
                 @endif
             </div>
         </div>
@@ -358,7 +375,7 @@
     <!-- ========================================== -->
     <!-- SECTION 6: FOUNDER & ADMINISTRASI         -->
     <!-- ========================================== -->
-    @if($isFO)
+    @if($isFO || $isFI)
         <div class="space-y-1 pt-2 border-t border-slate-800/60">
             <!-- Accordion Header -->
             <button type="button" 
@@ -393,22 +410,7 @@
                     @endif
                 </a>
 
-                @if($isF)
-                    <a href="{{ route('employee-salaries.index') }}" wire:navigate.hover @click="mobileMenuOpen = false" 
-                       :title="!sidebarExpanded ? 'Penggajian Karyawan' : ''"
-                       :class="sidebarExpanded ? 'justify-between px-3 py-2' : 'justify-center p-2.5'"
-                       class="flex items-center rounded-xl text-xs sm:text-sm font-medium transition-colors group {{ request()->routeIs('employee-salaries.*') ? 'bg-gradient-to-r from-emerald-500/20 to-teal-500/10 text-emerald-400 font-bold border-l-4 border-emerald-500 shadow-2xs' : 'text-slate-400 hover:bg-slate-800/80 hover:text-slate-100 hover:translate-x-0.5' }}">
-                        <div class="flex items-center gap-3 min-w-0">
-                            <div class="p-1.5 rounded-lg transition-colors {{ request()->routeIs('employee-salaries.*') ? 'bg-emerald-500/20 text-emerald-400' : 'bg-slate-800/60 text-slate-400 group-hover:text-slate-200 group-hover:bg-slate-700/60' }}">
-                                <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 00-2 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-                            </div>
-                            <span x-show="sidebarExpanded" class="truncate">Penggajian Karyawan</span>
-                        </div>
-                        @if(request()->routeIs('employee-salaries.*'))
-                            <span x-show="sidebarExpanded" class="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-sm"></span>
-                        @endif
-                    </a>
-
+                @if($isF || $isS)
                     <a href="{{ route('users.index') }}" wire:navigate.hover @click="mobileMenuOpen = false" 
                        :title="!sidebarExpanded ? 'Manajemen User' : ''"
                        :class="sidebarExpanded ? 'justify-between px-3 py-2' : 'justify-center p-2.5'"

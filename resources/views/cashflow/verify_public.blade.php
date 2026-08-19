@@ -55,7 +55,7 @@
                 <span class="text-xs text-slate-400 block uppercase tracking-wider font-semibold">Periode Laporan</span>
                 <span class="font-bold text-slate-200">
                     @if($month)
-                        {{ \Carbon\Carbon::createFromFormat('Y-m', $month)->translatedFormat('F Y') }}
+                        {{ format_id_month_year($month) }}
                     @else
                         Semua Periode Transaksi
                     @endif
@@ -95,7 +95,7 @@
 
             <div class="pt-3 border-t border-slate-800 flex justify-between items-center text-xs text-slate-400">
                 <span>Sinkronisasi Terakhir</span>
-                <span class="font-mono text-slate-200 font-semibold">{{ $lastUpdated ? \Carbon\Carbon::parse($lastUpdated)->translatedFormat('d F Y H:i') : '-' }} WIB</span>
+                <span class="font-mono text-slate-200 font-semibold">{{ format_id_datetime($lastUpdated) }}</span>
             </div>
         </div>
 

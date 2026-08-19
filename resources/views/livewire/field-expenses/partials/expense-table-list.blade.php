@@ -1,36 +1,55 @@
-<!-- Filters Toolbar -->
-<div class="card-clean p-4 border border-slate-200/80 rounded-3xl flex flex-col md:flex-row items-center justify-between gap-3">
-    <div class="flex items-center gap-2.5 w-full md:w-auto flex-wrap">
-        <select wire:model.live="project_id" class="select-clean text-xs font-bold w-full md:w-56">
-            <option value="">Semua Proyek Kavling</option>
-            @foreach ($projects as $p)
-                <option value="{{ $p->id }}">{{ $p->name }}</option>
-            @endforeach
-        </select>
-
-        <select wire:model.live="unit_id" class="select-clean text-xs font-bold w-full md:w-48">
-            <option value="">Semua Unit</option>
-            @foreach ($availableUnits as $u)
-                <option value="{{ $u->id }}">Unit: {{ $u->code }}</option>
-            @endforeach
-        </select>
-
-        <select wire:model.live="category_filter" class="select-clean text-xs font-bold w-full md:w-48">
-            <option value="all">Semua Tipe Transaksi</option>
-            <option value="salary">Gaji Worker Saja</option>
-            <option value="material">Belanja Material Saja</option>
-        </select>
+<!-- Filters Toolbar (Top Search Bar, Bottom Filter Controls) -->
+<div class="card-clean p-4 border border-slate-200/80 rounded-3xl space-y-3 shadow-2xs">
+    <!-- Baris 1 (Atas): Full-Width Search Input -->
+    <div>
+        <x-search-input placeholder="Cari nama barang material, proyek, kode unit, catatan nota, atau nama pekerja worker..." containerClass="w-full" />
     </div>
 
-    <x-search-input placeholder="Cari unit, proyek, barang, atau worker..." containerClass="w-full md:w-72" />
+    <!-- Baris 2 (Bawah): Filter Kontrol (Filter Waktu/Periode, Proyek, Unit, Kategori) -->
+    <div class="flex items-center gap-2.5 flex-wrap justify-between pt-1 border-t border-slate-100/80">
+        <div class="flex items-center gap-2.5 flex-wrap flex-1">
+            <!-- Filter Periode Waktu Tanggal -->
+            <x-date-period-filter periodModel="datePeriod" startModel="startDate" endModel="endDate" :periodValue="$datePeriod" />
+
+            <!-- Filter Proyek Kavling -->
+            <select wire:model.live="project_id" class="select-clean text-xs font-bold w-full sm:w-auto min-w-[180px]">
+                <option value="">Semua Proyek Kavling</option>
+                @foreach ($projects as $p)
+                    <option value="{{ $p->id }}">{{ $p->name }}</option>
+                @endforeach
+            </select>
+
+            <!-- Filter Unit -->
+            <select wire:model.live="unit_id" class="select-clean text-xs font-bold w-full sm:w-auto min-w-[150px]">
+                <option value="">Semua Unit</option>
+                @foreach ($availableUnits as $u)
+                    <option value="{{ $u->id }}">Unit: {{ $u->code }}</option>
+                @endforeach
+            </select>
+
+            <!-- Filter Kategori / Tipe Pengeluaran -->
+            <select wire:model.live="category_filter" class="select-clean text-xs font-bold w-full sm:w-auto min-w-[170px]">
+                <option value="all">Semua Tipe Transaksi</option>
+                <option value="salary">Gaji Worker Saja</option>
+                <option value="material">Belanja Material Saja</option>
+            </select>
+        </div>
+
+        <!-- Tombol Reset Filter -->
+        @if($search || $project_id || $unit_id || $category_filter !== 'all' || $datePeriod !== 'all' || $startDate || $endDate)
+            <x-reset-filter-button 
+                wire:click="$set('search', ''); $set('project_id', ''); $set('unit_id', ''); $set('category_filter', 'all'); $set('datePeriod', 'all'); $set('startDate', ''); $set('endDate', '');" 
+            />
+        @endif
+    </div>
 </div>
 
 <!-- Table Expense List -->
-<x-table :headers="['Tgl Transaksi', 'Kategori / Tipe', 'Proyek & Unit', 'Nama Rincian Barang / Worker', 'Jumlah Qty & Harga Unit', ['label' => 'Total Biaya', 'class' => 'p-3.5 text-right'], ['label' => 'Bukti Resi', 'class' => 'p-3.5 text-center'], ['label' => 'Aksi', 'class' => 'p-3.5 text-right']]" loadingTarget="project_id, unit_id, category_filter, search">
+<x-table :headers="['Tgl Transaksi', 'Kategori / Tipe', 'Proyek & Unit', 'Nama Rincian Barang / Worker', 'Jumlah Qty & Harga Unit', ['label' => 'Total Biaya', 'class' => 'p-3.5 text-right'], ['label' => 'Bukti Resi', 'class' => 'p-3.5 text-center'], ['label' => 'Aksi', 'class' => 'p-3.5 text-right']]" loadingTarget="project_id, unit_id, category_filter, search, datePeriod, startDate, endDate">
     @forelse ($expenses as $item)
         <tr class="hover:bg-slate-50/60 transition-colors">
-            <td class="p-3.5 font-mono font-medium text-slate-600 text-xs whitespace-nowrap">
-                {{ \Carbon\Carbon::parse($item['date'])->format('d/m/Y') }}
+            <td class="p-3.5 font-mono font-bold text-slate-700 text-xs whitespace-nowrap">
+                {{ format_id_date($item['date']) }}
             </td>
             <td class="p-3.5 whitespace-nowrap">
                 @if ($item['type'] === 'salary')
@@ -82,7 +101,7 @@
                     @if (auth()->user()->isAdminOrFounder() || auth()->user()->isSupervisor() || auth()->user()->isFinance())
                         <x-action-dropdown title="Menu Opsi Biaya" size="xs">
                             <div class="py-1">
-                                <x-dropdown-item icon="edit" wire:click="editExpense('{{ $item['type'] }}', {{ $item['id'] }})">
+                                <x-dropdown-item icon="edit" wire:click="openEditModal('{{ $item['type'] }}', {{ $item['id'] }})">
                                     Edit Data Biaya
                                 </x-dropdown-item>
                             </div>

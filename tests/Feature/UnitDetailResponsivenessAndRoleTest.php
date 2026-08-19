@@ -65,6 +65,38 @@ class UnitDetailResponsivenessAndRoleTest extends TestCase
             ->assertDontSee('Total Kas Masuk (DP + Cicilan)');
     }
 
+    public function test_infrastructure_unit_detail_hides_booking_spp_commissions_and_buyer_installments(): void
+    {
+        $founder = User::where('role', 'founder')->firstOrFail();
+        $project = Project::firstOrFail();
+
+        $infraUnit = Unit::create([
+            'project_id' => $project->id,
+            'code' => 'INFRA-01',
+            'category' => 'infrastruktur',
+            'type' => 'Jalan & Drainase',
+            'land_width' => 10,
+            'land_length' => 50,
+            'land_area' => 500,
+            'hpp' => 50000000,
+            'status' => 'infrastruktur',
+            'created_by' => $founder->id,
+        ]);
+
+        $response = $this->actingAs($founder)->get(route('units.show', $infraUnit->id));
+
+        $response->assertStatus(200)
+            ->assertSee('UNIT INFRA-01')
+            ->assertSee('Infrastruktur Proyek')
+            ->assertSee('Realisasi Biaya Lapangan')
+            ->assertDontSee('Booking Fee / Tanda Jadi')
+            ->assertDontSee('Total Setoran Pembeli')
+            ->assertDontSee('Harga Jual Disetujui')
+            ->assertDontSee('Surat Pesanan Penjualan (SPP)')
+            ->assertDontSee('Skema Cicilan &amp; Pembayaran Pembeli', false)
+            ->assertDontSee('Komisi Penjual Unit');
+    }
+
     public function test_all_main_application_routes_return_200_ok(): void
     {
         $founder = User::where('role', 'founder')->firstOrFail();

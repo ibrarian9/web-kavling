@@ -164,8 +164,8 @@ class BookingRejectionAndHppVisibilityTest extends TestCase
         $this->actingAs($pengawas)->get(route('units.show', $unit->id))->assertDontSee('HPP Pokok Unit');
         $this->actingAs($pengawas)->get(route('units.index'))->assertDontSee('HPP Pokok:');
 
-        // 5. Supervisor CANNOT view HPP
-        $this->actingAs($supervisor)->get(route('units.show', $unit->id))->assertDontSee('HPP Pokok Unit');
-        $this->actingAs($supervisor)->get(route('units.index'))->assertDontSee('HPP Pokok:');
+        // 5. Supervisor CAN view HPP (Main Admin)
+        $this->actingAs($supervisor)->get(route('units.show', $unit->id))->assertSee('HPP Pokok Unit');
+        $this->actingAs($supervisor)->get(route('units.index'))->assertSee('HPP Pokok:');
     }
 }

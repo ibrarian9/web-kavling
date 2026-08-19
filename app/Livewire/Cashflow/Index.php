@@ -127,8 +127,8 @@ class Index extends Component
     public function deleteTransaction($id)
     {
         $user = auth()->user();
-        if (!$user || !$user->isFounder()) {
-            session()->flash('error', 'Hanya Founder yang berhak menghapus data transaksi arus kas.');
+        if (!$user || !$user->isSuperAdmin()) {
+            session()->flash('error', 'Hanya Founder dan Supervisor yang berhak menghapus data transaksi arus kas.');
             return;
         }
 
@@ -228,8 +228,8 @@ class Index extends Component
     public function editTransaction($id): void
     {
         $user = auth()->user();
-        if (!$user->isFounder() && !$user->isFinance()) {
-            session()->flash('error', 'Hanya Founder dan Finance yang berhak mengedit data transaksi arus kas.');
+        if (!$user->isAdminOrFounder() && !$user->isFinance()) {
+            session()->flash('error', 'Hanya Admin Utama dan Finance yang berhak mengedit data transaksi arus kas.');
             return;
         }
 
@@ -246,8 +246,8 @@ class Index extends Component
     public function updateTransaction(): void
     {
         $user = auth()->user();
-        if (!$user->isFounder() && !$user->isFinance()) {
-            session()->flash('error', 'Hanya Founder dan Finance yang berhak mengedit data transaksi arus kas.');
+        if (!$user->isAdminOrFounder() && !$user->isFinance()) {
+            session()->flash('error', 'Hanya Admin Utama dan Finance yang berhak mengedit data transaksi arus kas.');
             return;
         }
 

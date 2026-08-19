@@ -43,6 +43,11 @@ class User extends Authenticatable
         return $this->role === 'founder';
     }
 
+    public function isSuperAdmin(): bool
+    {
+        return $this->role === 'founder' || $this->role === 'supervisor';
+    }
+
     public function isAdmin(): bool
     {
         return $this->role === 'admin';
@@ -50,7 +55,7 @@ class User extends Authenticatable
 
     public function isAdminOrFounder(): bool
     {
-        return $this->isFounder() || $this->isAdmin();
+        return $this->isFounder() || $this->isAdmin() || $this->isSupervisor();
     }
 
     public function isPengawasProject(): bool
@@ -75,7 +80,7 @@ class User extends Authenticatable
 
     public function canViewHpp(): bool
     {
-        return $this->isFounder() || $this->isAdmin() || $this->isFinance();
+        return $this->isFounder() || $this->isAdmin() || $this->isSupervisor() || $this->isFinance();
     }
 
     public function assignedProjects()

@@ -9,9 +9,12 @@ uses(RefreshDatabase::class);
 
 beforeEach(function () {
     Role::findOrCreate('founder', 'web');
+    Role::findOrCreate('marketing', 'web');
+    Role::findOrCreate('finance', 'web');
+    Role::findOrCreate('supervisor', 'web');
 });
 
-test('authenticated user can access Tutorial System page and toggle between Founder and Umum mode', function () {
+test('authenticated user can access Tutorial page and switch between all 8 tabs and roles', function () {
     $user = User::create([
         'name' => 'Founder Tutorial',
         'email' => 'founder_tutorial@example.com',
@@ -24,17 +27,56 @@ test('authenticated user can access Tutorial System page and toggle between Foun
     $response = $this->actingAs($user)->get(route('tutorial.index'));
 
     $response->assertStatus(200);
-    $response->assertSee('Pusat Panduan');
-    $response->assertSee('Mode Founder');
-    $response->assertSee('Mode Umum');
-    $response->assertSee('Booking Fee / NUP');
-    $response->assertSee('Pembelian Cash');
-    $response->assertSee('Skema Cicilan');
+    $response->assertSee('Pusat Tutorial');
 
-    Livewire::actingAs($user)
+    $component = Livewire::actingAs($user)
         ->test(\App\Livewire\Tutorial\Index::class)
         ->assertSet('viewMode', 'founder')
-        ->call('setViewMode', 'umum')
-        ->assertSet('viewMode', 'umum')
-        ->assertSee('Mode Panduan Umum');
+        ->assertSet('activeTab', 'master_unit')
+        ->assertSee('Panduan Pengelolaan Proyek')
+        
+        // Tab 2: Booking
+        ->call('setTab', 'booking')
+        ->assertSet('activeTab', 'booking')
+        ->assertSee('Panduan Booking Fee')
+        
+        // Tab 3: Proposals
+        ->call('setTab', 'proposals')
+        ->assertSet('activeTab', 'proposals')
+        ->assertSee('Panduan Pengajuan')
+        
+        // Tab 4: Cash & Dokumen
+        ->call('setTab', 'cash_dokumen')
+        ->assertSet('activeTab', 'cash_dokumen')
+        ->assertSee('Panduan Pembelian Cash')
+        
+        // Tab 5: Cicilan
+        ->call('setTab', 'cicilan')
+        ->assertSet('activeTab', 'cicilan')
+        ->assertSee('Panduan Skema Pembelian Cicilan')
+        
+        // Tab 6: Operasional
+        ->call('setTab', 'operasional')
+        ->assertSet('activeTab', 'operasional')
+        ->assertSee('Panduan Belanja Material')
+        
+        // Tab 7: Keuangan
+        ->call('setTab', 'keuangan')
+        ->assertSet('activeTab', 'keuangan')
+        ->assertSee('Panduan Arus Kas')
+        
+        // Tab 8: FAQ
+        ->call('setTab', 'faq')
+        ->assertSet('activeTab', 'faq')
+        ->assertSee('Tanya Jawab Seputar Operasional')
+        
+        // Switch Role Modes
+        ->call('setViewMode', 'marketing')
+        ->assertSet('viewMode', 'marketing')
+        ->call('setViewMode', 'finance')
+        ->assertSet('viewMode', 'finance')
+        ->call('setViewMode', 'supervisor_pengawas')
+        ->assertSet('viewMode', 'supervisor_pengawas')
+        ->call('setViewMode', 'all')
+        ->assertSet('viewMode', 'all');
 });

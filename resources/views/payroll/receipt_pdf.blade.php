@@ -47,7 +47,7 @@
             <td style="width: 40%;" class="text-right">
                 <div class="doc-title">RESI GAJI</div>
                 <div class="doc-no">REF: {{ substr($payment->uuid, 0, 13) }}</div>
-                <div style="font-size: 9px; color: #64748b;">Tanggal: {{ $payment->payment_date ? $payment->payment_date->format('d/m/Y') : date('d/m/Y') }}</div>
+                <div style="font-size: 9px; color: #64748b;">Tanggal: {{ format_id_date($payment->payment_date) }}</div>
             </td>
         </tr>
     </table>

@@ -47,7 +47,7 @@
             <td style="width: 45%;" class="text-right">
                 <div class="doc-title">SURAT PERINTAH KERJA (SPK)</div>
                 <div class="doc-no">{{ $spkNumber }}</div>
-                <div style="font-size: 9px; color: #475569; margin-top: 2px;">Tanggal Terbit: {{ date('d F Y', strtotime($payroll->created_at)) }}</div>
+                <div style="font-size: 9px; color: #475569; margin-top: 2px;">Tanggal Terbit: {{ format_id_full_date($payroll->created_at) }}</div>
             </td>
         </tr>
     </table>

@@ -161,7 +161,7 @@
             <td style="width: 15%; font-weight: bold;">Periode Bulan:</td>
             <td style="width: 35%;">
                 @if($month)
-                    {{ \Carbon\Carbon::createFromFormat('Y-m', $month)->translatedFormat('F Y') }}
+                    {{ format_id_month_year($month) }}
                 @else
                     Semua Periode Transaksi
                 @endif
@@ -204,7 +204,7 @@
             @forelse($transactions as $index => $trx)
                 <tr>
                     <td style="text-align: center;">{{ $index + 1 }}</td>
-                    <td class="font-mono">{{ $trx->transaction_date ? $trx->transaction_date->format('d/m/Y') : '-' }}</td>
+                    <td class="font-mono">{{ format_id_date($trx->transaction_date) }}</td>
                     <td style="font-weight: bold;">{{ $trx->project->name ?? 'Global' }}</td>
                     <td>
                         @if($trx->type === 'masuk')

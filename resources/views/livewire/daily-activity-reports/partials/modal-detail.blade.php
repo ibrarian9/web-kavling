@@ -13,11 +13,11 @@
                             $detailDateFormatted = '-';
                             if ($selectedReport->report_date) {
                                 if ($selectedReport->report_date->isToday()) {
-                                    $detailDateFormatted = 'Hari ini, ' . $selectedReport->report_date->translatedFormat('d M Y');
+                                    $detailDateFormatted = 'Hari ini, ' . format_id_date($selectedReport->report_date);
                                 } elseif ($selectedReport->report_date->isYesterday()) {
-                                    $detailDateFormatted = 'Kemarin, ' . $selectedReport->report_date->translatedFormat('d M Y');
+                                    $detailDateFormatted = 'Kemarin, ' . format_id_date($selectedReport->report_date);
                                 } else {
-                                    $detailDateFormatted = $selectedReport->report_date->translatedFormat('d M Y');
+                                    $detailDateFormatted = format_id_date($selectedReport->report_date);
                                 }
                             }
                         @endphp
@@ -104,7 +104,7 @@
                             <svg class="w-3.5 h-3.5 text-amber-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                             <span>Tanggal Janji Follow Up:</span>
                         </span>
-                        <span class="font-mono font-bold">{{ $selectedReport->follow_up_date->translatedFormat('d M Y') }}</span>
+                        <span class="font-mono font-bold">{{ format_id_date($selectedReport->follow_up_date) }}</span>
                     </div>
                 @endif
             </div>

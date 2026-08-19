@@ -12,18 +12,19 @@
                 <option value="Cash / Tunai">Cash / Tunai</option>
             </select>
         </div>
-        <div>
-            <label class="block font-semibold text-slate-700 mb-1">Bukti Transfer / Resi Nota</label>
-            <input type="file" wire:model="settle_receipt_photo" accept="image/*,.pdf" class="input-clean w-full">
-        </div>
+        <x-receipt-upload 
+            model="settle_receipt_photo" 
+            :photo="$settle_receipt_photo" 
+            label="Bukti Transfer / Resi Nota (Opsional)"
+        />
         <div>
             <label class="block font-semibold text-slate-700 mb-1">Catatan</label>
             <input type="text" wire:model="settle_notes" class="input-clean w-full">
         </div>
 
         <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
-            <button type="button" wire:click="$set('showSettleModal', false)" class="btn-secondary">Batal</button>
-            <button type="submit" class="btn-primary bg-emerald-600 hover:bg-emerald-700">Pelunasan Lunas & Catat Kas Keluar</button>
+            <x-button type="button" variant="secondary" wire:click="$set('showSettleModal', false)">Batal</x-button>
+            <x-button type="submit" variant="emerald">Pelunasan Lunas & Catat Kas Keluar</x-button>
         </div>
     </form>
 </x-modal-dialog>

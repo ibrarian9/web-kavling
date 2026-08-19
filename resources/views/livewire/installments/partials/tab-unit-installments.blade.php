@@ -94,10 +94,9 @@
             </div>
 
             @if($search || $statusFilter || $projectIdFilter || $monthlyFilter !== 'all' || $datePeriod !== 'all')
-                <button wire:click="$set('search', ''); $set('statusFilter', ''); $set('projectIdFilter', ''); $set('monthlyFilter', 'all'); $set('datePeriod', 'all'); $set('startDate', ''); $set('endDate', '');" class="px-2.5 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 rounded-xl text-xs font-bold transition flex items-center gap-1 shadow-2xs">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-                    <span>Reset Filter</span>
-                </button>
+                <x-reset-filter-button 
+                    wire:click="$set('search', ''); $set('statusFilter', ''); $set('projectIdFilter', ''); $set('monthlyFilter', 'all'); $set('datePeriod', 'all'); $set('startDate', ''); $set('endDate', '');" 
+                />
             @endif
         </div>
     </div>
@@ -165,12 +164,12 @@
                 <td class="p-3.5 text-center whitespace-nowrap">
                     <div class="inline-flex items-center justify-center gap-1.5 whitespace-nowrap">
                         @if($inst->status === 'berjalan' && (auth()->user()->isFounder() || auth()->user()->isFinance()))
-                            <x-button variant="payment" size="xs" wire:click="openPaymentModal({{ $inst->id }})" title="Catat Pembayaran Setoran Cicilan">
-                                Setor
+                            <x-button variant="payment" icon="payment" size="xs" wire:click="openPaymentModal({{ $inst->id }})" title="Catat Pembayaran Setoran Cicilan">
+                                <span>Setor</span>
                             </x-button>
                         @else
-                            <x-button variant="detail" size="xs" wire:click="openDetailModal({{ $inst->id }})" title="Lihat Histori & Rincian Setoran">
-                                Detail
+                            <x-button variant="outline" icon="detail" size="xs" wire:click="openDetailModal({{ $inst->id }})" title="Lihat Histori & Rincian Setoran">
+                                <span>Detail</span>
                             </x-button>
                         @endif
 
@@ -180,14 +179,18 @@
                                     Detail Rincian
                                 </x-dropdown-item>
 
-                                @if(auth()->user()->isFounder() || auth()->user()->isAdmin())
+                                <x-dropdown-item icon="pdf" wire:click="openViewerModal('pdf', '{{ route('installments.unit-statement-pdf', $inst->id) }}', 'Pratinjau Rekapitulasi Cicilan Unit {{ $inst->unit->code }} - {{ $inst->buyer_name }}')">
+                                    Cetak Rekap PDF
+                                </x-dropdown-item>
+
+                                @if(auth()->user()->isAdminOrFounder())
                                     <x-dropdown-item icon="edit" wire:click="openSetupModal({{ $inst->id }})">
                                         Edit Skema
                                     </x-dropdown-item>
                                 @endif
                             </div>
 
-                            @if(auth()->user()->isFounder() || auth()->user()->isAdmin())
+                            @if(auth()->user()->isSuperAdmin())
                                 <div class="py-1">
                                     <x-dropdown-item icon="delete" variant="danger" @click="confirmModalAction({
                                         title: 'Hapus Skema Cicilan',

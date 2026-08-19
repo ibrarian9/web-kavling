@@ -1,5 +1,6 @@
 @props([
     'align' => 'right', // right, left
+    'dropup' => false,
     'width' => 'w-52',
     'title' => 'Menu Tindakan',
     'label' => null,
@@ -9,11 +10,6 @@
 ])
 
 @php
-    $alignmentClasses = match ($align) {
-        'left' => 'left-0 origin-top-left',
-        default => 'right-0 origin-top-right',
-    };
-
     $sizeClasses = match ($size) {
         'xs' => $label ? 'px-3 py-1.5 min-h-[32px] text-xs font-bold rounded-xl gap-1.5' : 'p-1.5 min-h-[32px] min-w-[32px] text-xs rounded-xl justify-center',
         'sm' => $label ? 'px-3.5 py-2 min-h-[36px] text-xs font-bold rounded-xl gap-2' : 'p-2 min-h-[36px] min-w-[36px] text-xs rounded-xl justify-center',
@@ -31,8 +27,25 @@
     };
 @endphp
 
-<div x-data="{ open: false }" @click.outside="open = false" @keydown.escape.window="open = false" class="relative inline-block text-left shrink-0">
-    <button @click="open = !open" 
+<div x-data="{ 
+         open: false, 
+         isDropup: {{ $dropup ? 'true' : 'false' }},
+         toggle() {
+             this.open = !this.open;
+             if (this.open && !{{ $dropup ? 'true' : 'false' }}) {
+                 this.$nextTick(() => {
+                     let rect = this.$el.getBoundingClientRect();
+                     let menuHeight = 160;
+                     let spaceBelow = window.innerHeight - rect.bottom;
+                     this.isDropup = spaceBelow < menuHeight && rect.top > menuHeight;
+                 });
+             }
+         }
+     }" 
+     @click.outside="open = false" 
+     @keydown.escape.window="open = false" 
+     class="relative inline-block text-left shrink-0">
+    <button @click="toggle()" 
             type="button" 
             title="{{ $title }}"
             {{ $attributes->merge(['class' => "inline-flex items-center transition-all duration-150 active:scale-[0.97] focus:outline-none whitespace-nowrap shrink-0 {$sizeClasses} {$variantClasses}"]) }}>
@@ -59,7 +72,8 @@
          x-transition:leave="transition ease-in duration-75"
          x-transition:leave-start="transform opacity-100 scale-100"
          x-transition:leave-end="transform opacity-0 scale-95"
-         class="absolute {{ $alignmentClasses }} mt-1.5 {{ $width }} rounded-2xl bg-white shadow-xl border border-slate-200/90 py-1.5 z-50 divide-y divide-slate-100 text-xs font-semibold"
+         class="absolute {{ $align === 'left' ? 'left-0' : 'right-0' }} {{ $width }} rounded-2xl bg-white shadow-xl border border-slate-200/90 py-1.5 z-50 divide-y divide-slate-100 text-xs font-semibold"
+         :class="isDropup ? 'bottom-full mb-1.5 origin-bottom-right' : 'top-full mt-1.5 origin-top-right'"
          style="display: none;">
         {{ $slot }}
     </div>

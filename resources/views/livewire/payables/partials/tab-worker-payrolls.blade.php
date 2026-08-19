@@ -39,7 +39,7 @@
                                 <span class="text-[11px] text-emerald-600 font-semibold whitespace-nowrap">Lunas</span>
                             @endif
 
-                            @if(auth()->user()->isFounder())
+                            @if(auth()->user()->isSuperAdmin())
                                 <x-button variant="delete" size="xs" @click="confirmModalAction({ title: 'Hapus Upah Pekerja', message: 'Apakah Anda yakin ingin menghapus kontrak upah worker ini secara permanen?', confirmText: 'Ya, Hapus Upah', btnClass: 'px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5', onConfirm: () => $wire.deleteWorkerPayroll({{ $w->id }}) })" title="Hapus Upah">
                                     <span>Hapus</span>
                                 </x-button>

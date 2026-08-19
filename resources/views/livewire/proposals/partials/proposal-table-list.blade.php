@@ -1,22 +1,40 @@
-<!-- Filters Toolbar -->
-<div class="card-clean p-4 border border-slate-200/80 rounded-3xl flex flex-col md:flex-row items-center justify-between gap-3">
-    <div class="flex items-center gap-2.5 w-full md:w-auto flex-wrap">
-        <select wire:model.live="projectIdFilter" class="select-clean text-xs font-bold w-full md:w-56">
-            <option value="">Semua Perumahan / Proyek</option>
-            @foreach ($projects as $proj)
-                <option value="{{ $proj->id }}">{{ $proj->name }}</option>
-            @endforeach
-        </select>
-
-        <select wire:model.live="statusFilter" class="select-clean text-xs font-bold w-full md:w-48">
-            <option value="all">Semua Status Approval</option>
-            <option value="menunggu">Menunggu ACC</option>
-            <option value="disetujui">Disetujui (ACC)</option>
-            <option value="ditolak">Ditolak</option>
-        </select>
+<!-- Filters Toolbar (Top Search Bar, Bottom Filter Controls) -->
+<div class="card-clean p-4 border border-slate-200/80 rounded-3xl space-y-3 shadow-2xs">
+    <!-- Baris 1 (Atas): Full-Width Search Input -->
+    <div>
+        <x-search-input placeholder="Cari kode unit kavling, nama perumahan/proyek, atau nama marketing pengaju..." containerClass="w-full" />
     </div>
 
-    <x-search-input placeholder="Cari kode unit, nama proyek, atau marketing..." containerClass="w-full md:w-72" />
+    <!-- Baris 2 (Bawah): Filter Kontrol (Filter Waktu/Periode, Proyek, Status Approval) -->
+    <div class="flex items-center gap-2.5 flex-wrap justify-between pt-1 border-t border-slate-100/80">
+        <div class="flex items-center gap-2.5 flex-wrap flex-1">
+            <!-- Filter Periode Waktu Tanggal Pengajuan -->
+            <x-date-period-filter periodModel="datePeriod" startModel="startDate" endModel="endDate" :periodValue="$datePeriod" />
+
+            <!-- Filter Proyek Kavling -->
+            <select wire:model.live="projectIdFilter" class="select-clean text-xs font-bold w-full sm:w-auto min-w-[180px]">
+                <option value="">Semua Perumahan / Proyek</option>
+                @foreach ($projects as $proj)
+                    <option value="{{ $proj->id }}">{{ $proj->name }}</option>
+                @endforeach
+            </select>
+
+            <!-- Filter Status Approval -->
+            <select wire:model.live="statusFilter" class="select-clean text-xs font-bold w-full sm:w-auto min-w-[170px]">
+                <option value="all">Semua Status Approval</option>
+                <option value="menunggu">Menunggu ACC</option>
+                <option value="disetujui">Disetujui (ACC)</option>
+                <option value="ditolak">Ditolak</option>
+            </select>
+        </div>
+
+        <!-- Tombol Reset Filter -->
+        @if($search || $projectIdFilter || $statusFilter !== 'all' || $datePeriod !== 'all' || $startDate || $endDate)
+            <x-reset-filter-button 
+                wire:click="$set('search', ''); $set('projectIdFilter', ''); $set('statusFilter', 'all'); $set('datePeriod', 'all'); $set('startDate', ''); $set('endDate', '');" 
+            />
+        @endif
+    </div>
 </div>
 
 <!-- Table Card -->
@@ -33,7 +51,7 @@
     $propHeaders[] = ['label' => 'Aksi', 'class' => 'p-3.5 text-right'];
 @endphp
 
-<x-table :headers="$propHeaders" loadingTarget="projectIdFilter, statusFilter, search, gotoPage, nextPage, previousPage">
+<x-table :headers="$propHeaders" loadingTarget="projectIdFilter, statusFilter, search, datePeriod, startDate, endDate, gotoPage, nextPage, previousPage">
     @forelse($proposals as $prop)
         @php
             $founderApp = $prop->approvals->where('approver_role', 'founder')->first();
@@ -47,7 +65,7 @@
             </td>
             <td class="p-3.5">
                 <p class="font-bold text-slate-800 text-xs">{{ $prop->proposer->name }}</p>
-                <p class="text-slate-400 text-[10px] font-mono">{{ $prop->created_at->format('d/m/Y H:i') }}</p>
+                <p class="text-slate-400 text-[10px] font-mono">{{ format_id_datetime($prop->created_at, false) }}</p>
             </td>
             @if(auth()->user()->canViewHpp())
                 <td class="p-3.5 font-mono font-medium text-slate-600 text-xs">Rp {{ number_format($prop->hpp_price, 0, ',', '.') }}</td>
@@ -124,14 +142,14 @@
                             $hasApproved = $prop->approvals->where('user_id', auth()->id())->first();
                         @endphp
 
-                        @if(!$hasApproved && ($userRole === 'founder' || ($userRole === 'supervisor' && !$founderApp)))
+                        @if(!$hasApproved && ($userRole === 'founder' || $userRole === 'supervisor' || $userRole === 'finance' || $userRole === 'admin'))
                             <x-button variant="emerald" size="xs" wire:click="openApprovalModal({{ $prop->id }})" title="Setujui atau Tolak Pengajuan Ini">
                                 Review & ACC
                             </x-button>
                         @endif
                     @endif
 
-                    @if(auth()->user()->isFounder())
+                    @if(auth()->user()->isSuperAdmin())
                         <x-action-dropdown title="Menu Opsi SPP" size="xs">
                             <div class="py-1">
                                 <x-dropdown-item icon="delete" variant="danger" @click="confirmModalAction({

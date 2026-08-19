@@ -43,7 +43,7 @@
             </div>
             <div class="sm:text-right">
                 <span class="text-xs text-slate-400 block">Tanggal Pembayaran</span>
-                <span class="text-sm font-semibold text-slate-200">{{ $payment->payment_date ? $payment->payment_date->format('d M Y') : '-' }}</span>
+                <span class="text-sm font-semibold text-slate-200">{{ format_id_full_date($payment->payment_date) }}</span>
             </div>
         </div>
 

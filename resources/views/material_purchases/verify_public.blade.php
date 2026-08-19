@@ -38,7 +38,7 @@
             </div>
             <div class="flex justify-between border-b border-slate-800 pb-2">
                 <span class="text-slate-400">Tanggal Pembelian:</span>
-                <strong class="font-mono text-slate-300">{{ $material->purchase_date ? $material->purchase_date->format('d F Y') : '-' }}</strong>
+                <strong class="font-mono text-slate-300">{{ format_id_full_date($material->purchase_date) }}</strong>
             </div>
             <div class="flex justify-between pt-1">
                 <span class="text-slate-300 font-bold">Total Pembelian:</span>

@@ -168,8 +168,14 @@
             <tr>
                 <td class="meta-label">Filter Tipe:</td>
                 <td class="meta-value" style="text-transform: uppercase;">{{ $categoryFilter === 'all' ? 'Semua Tipe Transaksi' : ($categoryFilter === 'salary' ? 'Gaji Worker Saja' : 'Belanja Barang Saja') }}</td>
+                <td class="meta-label">Periode Data:</td>
+                <td class="meta-value">{{ $periodInfo ?? 'Semua Periode' }}</td>
+            </tr>
+            <tr>
                 <td class="meta-label">Tanggal Cetak:</td>
-                <td class="meta-value">{{ date('d F Y') }}</td>
+                <td class="meta-value">{{ format_id_datetime(now()) }}</td>
+                <td class="meta-label">Status Dokumen:</td>
+                <td class="meta-value" style="color: #10b981;">RESMI & TEREKAP SISTEM</td>
             </tr>
         </table>
     </div>
@@ -189,7 +195,7 @@
             @forelse($expenses as $index => $item)
                 <tr>
                     <td style="text-align: center; color: #64748b;">{{ $index + 1 }}</td>
-                    <td style="font-family: monospace;">{{ $item->date }}</td>
+                    <td style="font-family: monospace;">{{ format_id_date($item->date) }}</td>
                     <td>
                         @if($item->type === 'material')
                             <span class="badge badge-material">Belanja Barang</span>

@@ -14,7 +14,7 @@ class InstallmentInvoiceController extends Controller
     public function streamInvoice(string $uuid)
     {
         $user = auth()->user();
-        if (!$user || (!$user->isFounder() && !$user->isFinance() && !$user->isAdmin())) {
+        if (!$user || (!$user->isAdminOrFounder() && !$user->isFinance())) {
             abort(403, 'Akses ditolak. Hanya Founder, Admin, dan Accounting yang berhak mencetak invoice cicilan.');
         }
 
@@ -56,6 +56,100 @@ class InstallmentInvoiceController extends Controller
 
         $invoiceNo = 'INVOICE-SETORAN-' . substr($payment->uuid, 0, 8);
         return $pdf->stream($invoiceNo . '.pdf');
+    }
+
+    /**
+     * Stream Full Statement / Rekapitulasi Kartu Kontrol Pembayaran Cicilan Unit PDF
+     */
+    public function streamStatementPdf(int $id)
+    {
+        $user = auth()->user();
+        if (!$user || (!$user->isAdminOrFounder() && !$user->isFinance())) {
+            abort(403, 'Akses ditolak. Hanya Founder, Admin, dan Accounting yang berhak mencetak rekap cicilan.');
+        }
+
+        $installment = \App\Models\UnitInstallment::with([
+            'unit.project',
+            'unit.activeBooking',
+            'unit.bookings',
+            'officialDocument.proposal',
+            'payments.creator',
+        ])->findOrFail($id);
+
+        $unit = $installment->unit;
+        $project = $unit->project;
+        $officialDoc = $installment->officialDocument;
+        $payments = $installment->payments()->with(['creator'])->orderBy('payment_date', 'asc')->orderBy('id', 'asc')->get();
+
+        $totalPrice = (float)$installment->total_price;
+        $downPayment = (float)$installment->down_payment;
+        $totalPaymentsPaid = (float)$payments->sum('amount_paid');
+        $totalPaid = $installment->total_paid;
+        $remainingBalance = $installment->remaining_balance;
+        $progressPercentage = $installment->progress_percentage;
+
+        $verifyUrl = route('verify.installment-statement', $installment->id);
+        $qrCodeUrl = $this->generateQrBase64($verifyUrl);
+        $terbilangTotalPaid = ucfirst(trim($this->terbilang((int)$totalPaid) . ' Rupiah'));
+        $terbilangRemaining = ucfirst(trim($this->terbilang((int)$remainingBalance) . ' Rupiah'));
+
+        $pdf = Pdf::setOption([
+            'isRemoteEnabled' => true,
+            'isHtml5ParserEnabled' => true,
+            'chroot' => public_path(),
+        ])->loadView('installments.statement_pdf', [
+            'installment' => $installment,
+            'unit' => $unit,
+            'project' => $project,
+            'officialDoc' => $officialDoc,
+            'payments' => $payments,
+            'totalPrice' => $totalPrice,
+            'downPayment' => $downPayment,
+            'totalPaymentsPaid' => $totalPaymentsPaid,
+            'totalPaid' => $totalPaid,
+            'remainingBalance' => $remainingBalance,
+            'progressPercentage' => $progressPercentage,
+            'verifyUrl' => $verifyUrl,
+            'qrCodeUrl' => $qrCodeUrl,
+            'terbilangTotalPaid' => $terbilangTotalPaid,
+            'terbilangRemaining' => $terbilangRemaining,
+            'generatedAt' => now()->locale('id')->isoFormat('DD MMMM YYYY HH:mm'),
+        ]);
+
+        $fileName = 'REKAP-CICILAN-UNIT-' . strtoupper($unit->code) . '-' . \Illuminate\Support\Str::slug($installment->buyer_name) . '.pdf';
+        return $pdf->stream($fileName);
+    }
+
+    /**
+     * Public Guest Verification Page for Installment Statement PDF (Tanpa Login)
+     */
+    public function verifyStatement(int $id)
+    {
+        $installment = \App\Models\UnitInstallment::with([
+            'unit.project',
+            'unit.activeBooking',
+            'unit.bookings',
+            'officialDocument.proposal',
+            'payments.creator',
+        ])->findOrFail($id);
+
+        $unit = $installment->unit;
+        $project = $unit->project;
+        $payments = $installment->payments()->with(['creator'])->orderBy('payment_date', 'asc')->orderBy('id', 'asc')->get();
+
+        $totalPrice = (float)$installment->total_price;
+        $totalPaid = $installment->total_paid;
+        $remainingBalance = $installment->remaining_balance;
+
+        return view('installments.verify_statement_public', [
+            'installment' => $installment,
+            'unit' => $unit,
+            'project' => $project,
+            'payments' => $payments,
+            'totalPrice' => $totalPrice,
+            'totalPaid' => $totalPaid,
+            'remainingBalance' => $remainingBalance,
+        ]);
     }
 
     /**

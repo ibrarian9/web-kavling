@@ -102,7 +102,7 @@
                 <td style="text-align: right; font-size: 8.5pt; color: #64748b;">
                     No. Invoice: <strong class="font-mono text-slate-800">{{ $invoice->invoice_number }}</strong><br>
                     Status: <strong style="color: {{ $invoice->status === 'lunas' ? '#16a34a' : '#d97706' }}; uppercase;">{{ strtoupper($invoice->status) }}</strong><br>
-                    Tgl Cetak: {{ now()->translatedFormat('d F Y H:i') }} WIB
+                    Tgl Cetak: {{ format_id_datetime(now()) }}
                 </td>
             </tr>
         </table>
@@ -132,7 +132,7 @@
                     {{ $invoice->unit ? ' - Unit ' . $invoice->unit->code : '' }}
                 </td>
                 <td style="font-weight: bold; color: #475569;">Tanggal Invoice:</td>
-                <td class="font-mono">{{ $invoice->invoice_date ? $invoice->invoice_date->format('d F Y') : '-' }}</td>
+                <td class="font-mono">{{ format_id_full_date($invoice->invoice_date) }}</td>
             </tr>
             <tr>
                 <td style="font-weight: bold; color: #475569;">Metode Pembayaran:</td>

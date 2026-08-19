@@ -64,27 +64,12 @@
             </div>
 
             <!-- Upload Foto Resi / Bukti Transfer -->
-            <div>
-                <label class="block text-xs font-extrabold uppercase tracking-wider text-slate-700 mb-1.5">
-                    Foto Resi / Bukti Transfer (Opsional)
-                </label>
-                <input type="file" wire:model="land_payment_receipt_photo" accept="image/*" class="w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-extrabold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 transition border border-slate-200 rounded-xl p-1 bg-slate-50">
-                @error('land_payment_receipt_photo') <span class="text-rose-500 text-xs mt-1 block font-semibold">{{ $message }}</span> @enderror
-
-                @if($land_payment_receipt_photo)
-                    <div class="mt-2 text-xs text-emerald-600 font-bold flex items-center gap-1.5">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                        <span>Foto siap diupload: {{ $land_payment_receipt_photo->getClientOriginalName() }}</span>
-                    </div>
-                @elseif($existing_land_receipt_photo_path)
-                    <div class="mt-2 text-xs text-slate-500">
-                        <a href="{{ asset('storage/' . $existing_land_receipt_photo_path) }}" target="_blank" class="text-sky-600 font-bold hover:underline flex items-center gap-1">
-                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-                            <span>Lihat Bukti Foto Saat Ini</span>
-                        </a>
-                    </div>
-                @endif
-            </div>
+            <x-receipt-upload 
+                model="land_payment_receipt_photo" 
+                :photo="$land_payment_receipt_photo" 
+                :existingPath="$existing_land_receipt_photo_path" 
+                label="Foto Resi / Bukti Transfer"
+            />
 
             <div class="pt-3 border-t border-slate-100 flex items-center justify-end gap-2">
                 <x-button type="button" variant="outline" size="sm" wire:click="closeLandPaymentModal">

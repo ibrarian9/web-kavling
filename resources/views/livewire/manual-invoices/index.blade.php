@@ -51,10 +51,13 @@
     </div>
 
     <!-- Filters & Search Bar -->
-    <div class="card-clean p-4 border border-slate-200/80 rounded-3xl flex flex-col sm:flex-row items-center justify-between gap-3">
-        <x-search-input placeholder="No. Inv, Penerima, Keterangan..." containerClass="w-full sm:w-72" />
+    <div class="card-clean p-4 border border-slate-200/80 rounded-3xl flex flex-col md:flex-row items-center justify-between gap-3">
+        <div class="flex items-center gap-2.5 w-full md:w-auto flex-wrap flex-1">
+            <!-- Filter Periode Waktu Tanggal -->
+            <x-date-period-filter periodModel="datePeriod" startModel="startDate" endModel="endDate" :periodValue="$datePeriod" />
 
-        <div class="flex items-center gap-2.5 w-full sm:w-auto justify-end flex-wrap">
+            <x-search-input placeholder="No. Inv, Penerima, Keterangan..." containerClass="w-full sm:w-64" />
+
             <select wire:model.live="statusFilter" class="select-clean text-xs font-bold">
                 <option value="">Semua Status</option>
                 <option value="lunas">Lunas</option>
@@ -75,16 +78,22 @@
                 @endforeach
             </select>
         </div>
+
+        @if($search || $statusFilter || $typeFilter || $projectFilter || $datePeriod !== 'all' || $startDate || $endDate)
+            <x-reset-filter-button 
+                wire:click="$set('search', ''); $set('statusFilter', ''); $set('typeFilter', ''); $set('projectFilter', ''); $set('datePeriod', 'all'); $set('startDate', ''); $set('endDate', '');" 
+            />
+        @endif
     </div>
 
     <!-- Invoice Table -->
-    <x-table :headers="['No', 'No. Invoice & Tanggal', 'Penerima / Klien', 'Proyek & Unit', 'Tipe & Kategori', ['label' => 'Nominal (Rp)', 'class' => 'p-3.5 text-right'], ['label' => 'Status', 'class' => 'p-3.5 text-center'], ['label' => 'Arus Kas', 'class' => 'p-3.5 text-center'], ['label' => 'Aksi', 'class' => 'p-3.5 text-center']]" loadingTarget="search, statusFilter, typeFilter, projectFilter, page">
+    <x-table :headers="['No', 'No. Invoice & Tanggal', 'Penerima / Klien', 'Proyek & Unit', 'Tipe & Kategori', ['label' => 'Nominal (Rp)', 'class' => 'p-3.5 text-right'], ['label' => 'Status', 'class' => 'p-3.5 text-center'], ['label' => 'Arus Kas', 'class' => 'p-3.5 text-center'], ['label' => 'Aksi', 'class' => 'p-3.5 text-center']]" loadingTarget="search, statusFilter, typeFilter, projectFilter, datePeriod, startDate, endDate, page">
         @forelse($invoices as $index => $inv)
             <tr class="hover:bg-slate-50/80 transition">
                 <td class="p-3.5 font-mono text-slate-500 font-semibold">{{ $invoices->firstItem() + $index }}</td>
                 <td class="p-3.5 font-mono">
                     <strong class="text-slate-900 block text-xs">{{ $inv->invoice_number }}</strong>
-                    <span class="text-slate-500 text-[11px]">{{ $inv->invoice_date ? $inv->invoice_date->format('d/m/Y') : '-' }}</span>
+                    <span class="text-slate-500 text-[11px]">{{ format_id_date($inv->invoice_date) }}</span>
                 </td>
                 <td class="p-3.5">
                     <span class="font-bold text-slate-800 block text-xs">{{ $inv->recipient_name }}</span>
@@ -142,17 +151,19 @@
                                     Edit Invoice
                                 </x-dropdown-item>
                             </div>
-                            <div class="py-1">
-                                <x-dropdown-item icon="delete" variant="danger" @click="confirmModalAction({
-                                     title: 'Hapus Invoice Manual',
-                                     message: 'Yakin ingin menghapus invoice manual ini beserta mutasi arus kas terkait?',
-                                     confirmText: 'Hapus Invoice',
-                                     btnClass: 'px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5',
-                                     onConfirm: () => $wire.deleteInvoice({{ $inv->id }})
-                                 })">
-                                     Hapus Invoice
-                                </x-dropdown-item>
-                            </div>
+                            @if(auth()->user()->isSuperAdmin())
+                                <div class="py-1">
+                                    <x-dropdown-item icon="delete" variant="danger" @click="confirmModalAction({
+                                         title: 'Hapus Invoice Manual',
+                                         message: 'Yakin ingin menghapus invoice manual ini beserta mutasi arus kas terkait?',
+                                         confirmText: 'Hapus Invoice',
+                                         btnClass: 'px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5',
+                                         onConfirm: () => $wire.deleteInvoice({{ $inv->id }})
+                                     })">
+                                         Hapus Invoice
+                                     </x-dropdown-item>
+                                </div>
+                            @endif
                         </x-action-dropdown>
                     </div>
                 </td>

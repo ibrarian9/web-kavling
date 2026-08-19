@@ -114,10 +114,14 @@ test('end to end construction workflow: worker registration -> project assignmen
         ->test(UnitShow::class, ['id' => $unit->id])
         ->call('openMaterialModal')
         ->set('material_worker_id', $worker->id)
-        ->set('material_item_name', 'Semen Tiga Roda')
-        ->set('material_quantity', 50)
-        ->set('material_unit_measure', 'sak')
-        ->set('material_unit_price', 65000)
+        ->set('materialRows', [
+            [
+                'item_name' => 'Semen Tiga Roda',
+                'quantity' => 50,
+                'unit_measure' => 'sak',
+                'unit_price' => 65000,
+            ]
+        ])
         ->set('material_purchase_date', now()->toDateString())
         ->set('material_notes', 'Pembelian semen pondasi unit GK-01')
         ->call('saveMaterialPurchase')

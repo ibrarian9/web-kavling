@@ -25,10 +25,10 @@ test('founder can delete project', function () {
     $this->assertDatabaseMissing('projects', ['id' => $project->id]);
 });
 
-test('non founder cannot delete project', function () {
+test('supervisor can delete project', function () {
     $supervisor = User::factory()->create(['role' => 'supervisor', 'is_active' => true]);
     $project = Project::create([
-        'name' => 'Proyek Tidak Boleh Hapus',
+        'name' => 'Proyek Tes Hapus Supervisor',
         'location' => 'Lokasi Tes',
         'standard_land_area' => 100,
         'excess_price_per_sqm' => 1500000,
@@ -39,6 +39,27 @@ test('non founder cannot delete project', function () {
     ]);
 
     Livewire::actingAs($supervisor)
+        ->test(\App\Livewire\Projects\Index::class)
+        ->call('deleteProject', $project->id)
+        ->assertStatus(200);
+
+    $this->assertDatabaseMissing('projects', ['id' => $project->id]);
+});
+
+test('marketing cannot delete project', function () {
+    $marketing = User::factory()->create(['role' => 'marketing', 'is_active' => true]);
+    $project = Project::create([
+        'name' => 'Proyek Tidak Boleh Hapus',
+        'location' => 'Lokasi Tes',
+        'standard_land_area' => 100,
+        'excess_price_per_sqm' => 1500000,
+        'base_price' => 150000000,
+        'total_project_price' => 1000000000,
+        'created_by' => $marketing->id,
+        'status' => 'aktif',
+    ]);
+
+    Livewire::actingAs($marketing)
         ->test(\App\Livewire\Projects\Index::class)
         ->call('deleteProject', $project->id)
         ->assertStatus(200);

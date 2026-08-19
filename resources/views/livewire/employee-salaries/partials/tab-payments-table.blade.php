@@ -6,11 +6,14 @@
             <p class="text-xs text-slate-500">Riwayat penggajian bulanan yang telah diproses dan penerbitan Slip Gaji PDF resmi.</p>
         </div>
 
-        <div class="flex items-center gap-2">
+        <div class="flex items-center gap-2 flex-wrap">
+            <!-- Filter Periode Waktu Tanggal Bayar -->
+            <x-date-period-filter periodModel="datePeriod" startModel="startDate" endModel="endDate" :periodValue="$datePeriod" />
+
             <select wire:model.live="selected_month" class="select-clean text-xs font-semibold">
                 <option value="">Semua Bulan</option>
                 @for($m = 1; $m <= 12; $m++)
-                    <option value="{{ $m }}">{{ date('F', mktime(0, 0, 0, $m, 1)) }}</option>
+                    <option value="{{ $m }}">{{ \Carbon\Carbon::create(null, $m, 1)->locale('id')->isoFormat('MMMM') }}</option>
                 @endfor
             </select>
 
@@ -19,10 +22,14 @@
                 <option value="2026">2026</option>
                 <option value="2025">2025</option>
             </select>
+
+            @if($selected_month || $selected_year || $datePeriod !== 'all' || $startDate || $endDate)
+                <x-reset-filter-button wire:click="$set('selected_month', ''); $set('selected_year', ''); $set('datePeriod', 'all'); $set('startDate', ''); $set('endDate', '');" />
+            @endif
         </div>
     </div>
 
-    <x-table :headers="['No. Slip Gaji', 'Nama Karyawan', 'Periode Gaji', 'Tgl Bayar', ['label' => 'Total Gaji Dibayar', 'class' => 'p-3.5 text-right'], 'Metode Bayar', ['label' => 'Cetak Slip & Aksi', 'class' => 'p-3.5 text-center']]" loadingTarget="selected_month, selected_year, gotoPage, nextPage, previousPage">
+    <x-table :headers="['No. Slip Gaji', 'Nama Karyawan', 'Periode Gaji', 'Tgl Bayar', ['label' => 'Total Gaji Dibayar', 'class' => 'p-3.5 text-right'], 'Metode Bayar', ['label' => 'Cetak Slip & Aksi', 'class' => 'p-3.5 text-center']]" loadingTarget="selected_month, selected_year, datePeriod, startDate, endDate, gotoPage, nextPage, previousPage">
         @forelse($payments as $pay)
             <tr class="hover:bg-slate-50 transition">
                 <td class="p-3.5 font-mono font-bold text-emerald-800 text-xs">
@@ -35,7 +42,7 @@
                 <td class="p-3.5 font-bold text-slate-800 text-xs">
                     {{ $pay->employeeSalary->getIndonesianMonth($pay->payroll_month) }} {{ $pay->payroll_year }}
                 </td>
-                <td class="p-3.5 font-mono text-xs">{{ \Carbon\Carbon::parse($pay->payment_date)->isoFormat('DD/MM/YYYY') }}</td>
+                <td class="p-3.5 font-mono text-xs">{{ format_id_date($pay->payment_date) }}</td>
                 <td class="p-3.5 text-right font-mono text-emerald-800 font-black text-sm">
                     Rp {{ number_format($pay->net_salary, 0, ',', '.') }}
                 </td>
@@ -52,19 +59,21 @@
                             </x-button>
                         </a>
 
-                        <x-action-dropdown title="Menu Opsi Berkas" size="xs">
-                            <div class="py-1">
-                                <x-dropdown-item icon="delete" variant="danger" @click="confirmModalAction({
-                                    title: 'Hapus Histori Penggajian',
-                                    message: 'Yakin ingin menghapus berkas penggajian ini dari sistem?',
-                                    confirmText: 'Hapus Berkas',
-                                    btnClass: 'px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5',
-                                    onConfirm: () => $wire.deletePaymentRecord({{ $pay->id }})
-                                })">
-                                    Hapus Berkas
-                                </x-dropdown-item>
-                            </div>
-                        </x-action-dropdown>
+                        @if(auth()->user()->isSuperAdmin())
+                            <x-action-dropdown title="Menu Opsi Berkas" size="xs">
+                                <div class="py-1">
+                                    <x-dropdown-item icon="delete" variant="danger" @click="confirmModalAction({
+                                        title: 'Hapus Histori Penggajian',
+                                        message: 'Yakin ingin menghapus berkas penggajian ini dari sistem?',
+                                        confirmText: 'Hapus Berkas',
+                                        btnClass: 'px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5',
+                                        onConfirm: () => $wire.deletePaymentRecord({{ $pay->id }})
+                                    })">
+                                        Hapus Berkas
+                                    </x-dropdown-item>
+                                </div>
+                            </x-action-dropdown>
+                        @endif
                     </div>
                 </td>
             </tr>

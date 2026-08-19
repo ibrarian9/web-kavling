@@ -14,13 +14,18 @@
                     </div>
                 </div>
                 <div class="flex items-center gap-1.5 shrink-0">
+                    <button type="button" wire:click="openViewerModal('pdf', '{{ route('installments.unit-statement-pdf', $selectedDetailInstallment->id) }}', 'Pratinjau Rekapitulasi Cicilan Unit {{ $selectedDetailInstallment->unit->code }} - {{ $selectedDetailInstallment->buyer_name }}')" class="px-2.5 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200/90 rounded-lg text-[11px] font-bold transition flex items-center gap-1 shadow-2xs" title="Pratinjau Rekapitulasi & Kartu Pembayaran Cicilan Unit PDF">
+                        <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                        <span>Rekap PDF</span>
+                    </button>
+
                     @if(auth()->user()->isAdminOrFounder() || auth()->user()->isFinance())
                         <button type="button" wire:click="openSetupModal({{ $selectedDetailInstallment->id }})" class="px-2.5 py-1 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200/90 rounded-lg text-[11px] font-bold transition flex items-center gap-1 shadow-2xs" title="Edit Nilai Deal, DP, & Tenor Skema">
                             <svg class="w-3.5 h-3.5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                             <span>Edit Skema</span>
                         </button>
                     @endif
-                    <button wire:click="closeDetailModal" class="text-slate-400 hover:text-slate-600 text-sm font-bold p-1">✕</button>
+                    <button wire:click="closeDetailModal" class="text-slate-400 hover:text-slate-600 text-sm font-bold p-1" title="Tutup">✕</button>
                 </div>
             </div>
 
@@ -83,49 +88,57 @@
 
                     @forelse($selectedDetailInstallment->payments as $pay)
                         <div class="p-3 bg-white border border-slate-200/80 rounded-xl flex items-center justify-between gap-3 text-xs shadow-2xs hover:bg-slate-50/50 transition">
-                            <div class="space-y-0.5">
+                            <div class="space-y-0.5 min-w-0">
                                 <div class="flex items-center gap-2 flex-wrap">
                                     <span class="font-mono font-extrabold text-emerald-700 text-sm">Rp {{ number_format($pay->amount_paid, 0, ',', '.') }}</span>
                                     <span class="bg-slate-100 text-slate-700 border border-slate-200 text-[10px] px-2 py-0.5 rounded-md font-semibold">{{ $pay->payment_method }}</span>
                                     <span class="text-[10px] text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200 inline-block">TERBAYAR</span>
                                 </div>
                                 <p class="text-[11px] text-slate-500">{{ $pay->notes ?: 'Setoran cicilan berkala' }}</p>
-                                <p class="text-[10px] text-slate-400 font-mono">Pencatat: {{ $pay->creator->name ?? 'Finance' }}</p>
-                            </div>
-                            <div class="text-right shrink-0 space-y-1">
-                                <span class="font-mono text-slate-600 font-semibold block text-[11px]">{{ $pay->payment_date ? \Carbon\Carbon::parse($pay->payment_date)->locale('id')->isoFormat('D MMM YYYY') : '-' }}</span>
-                                <div class="flex items-center justify-end gap-1.5 flex-wrap">
-                                    @if($pay->uuid)
-                                        <button type="button" wire:click="openViewerModal('pdf', '{{ route('installment.invoice', $pay->uuid) }}', 'Invoice Setoran Unit {{ $selectedDetailInstallment->unit->code }}')" class="px-2.5 py-1 bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200/90 rounded-lg text-[10px] font-bold transition flex items-center gap-1 shadow-2xs group" title="Buka / Cetak Invoice Resmi PDF Setoran">
-                                            <svg class="w-3.5 h-3.5 text-blue-600 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
-                                            <span>Invoice PDF</span>
-                                        </button>
-                                    @endif
-
-                                    @if($pay->receipt_photo_path)
-                                        <button type="button" wire:click="openViewerModal('image', '{{ asset('storage/' . $pay->receipt_photo_path) }}', 'Foto Resi Transfer Bank - Setoran Unit {{ $selectedDetailInstallment->unit->code }}')" class="px-2.5 py-1 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200/90 rounded-lg text-[10px] font-bold transition flex items-center gap-1 shadow-2xs group" title="Lihat Foto Struk / Resi Bukti Transfer">
-                                            <svg class="w-3.5 h-3.5 text-amber-600 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                                            <span>Struk TF</span>
-                                        </button>
-                                    @endif
-
-                                    @if(auth()->user()->isAdminOrFounder() || auth()->user()->isFinance())
-                                         <button type="button" wire:click="editInstallmentPayment({{ $pay->id }})" class="px-2 py-1 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200/90 rounded-lg text-[10px] font-bold transition flex items-center gap-1 shadow-2xs" title="Edit Setoran Ini">
-                                             <svg class="w-3.5 h-3.5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-                                             <span>Edit</span>
-                                         </button>
-                                         <button type="button" @click="confirmModalAction({
-                                             title: 'Hapus Setoran Cicilan',
-                                             message: 'Hapus pencatatan setoran cicilan ini?',
-                                             confirmText: 'Hapus Setoran',
-                                             btnClass: 'px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5',
-                                             onConfirm: () => $wire.deleteInstallmentPayment({{ $pay->id }})
-                                         })" class="px-2 py-1 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200/90 rounded-lg text-[10px] font-bold transition flex items-center gap-1 shadow-2xs" title="Hapus Setoran">
-                                             <svg class="w-3.5 h-3.5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                                             <span>Hapus</span>
-                                         </button>
-                                     @endif
+                                <div class="flex items-center gap-2 text-[10px] text-slate-400 font-mono flex-wrap">
+                                    <span>Pencatat: {{ $pay->creator->name ?? 'Finance' }}</span>
+                                    <span class="sm:hidden">• {{ format_id_date($pay->payment_date) }}</span>
                                 </div>
+                            </div>
+                            <div class="flex items-center gap-2.5 shrink-0">
+                                <div class="text-right hidden sm:block">
+                                    <span class="font-mono text-slate-600 font-semibold block text-[11px]">
+                                        {{ format_id_date($pay->payment_date) }}
+                                    </span>
+                                </div>
+
+                                <x-action-dropdown title="Menu Opsi Setoran" size="xs">
+                                    <div class="py-1">
+                                        @if($pay->uuid)
+                                            <x-dropdown-item icon="pdf" variant="blue" wire:click="openViewerModal('pdf', '{{ route('installment.invoice', $pay->uuid) }}', 'Invoice Setoran Unit {{ $selectedDetailInstallment->unit->code }}')">
+                                                Cetak Invoice PDF
+                                            </x-dropdown-item>
+                                        @endif
+
+                                        @if($pay->receipt_photo_path)
+                                            <x-dropdown-item icon="detail" variant="amber" wire:click="openViewerModal('image', '{{ asset('storage/' . $pay->receipt_photo_path) }}', 'Foto Resi Transfer Bank - Setoran Unit {{ $selectedDetailInstallment->unit->code }}')">
+                                                Lihat Foto Resi
+                                            </x-dropdown-item>
+                                        @endif
+
+                                        @if(auth()->user()->isAdminOrFounder() || auth()->user()->isFinance())
+                                            <x-dropdown-item icon="edit" wire:click="editInstallmentPayment({{ $pay->id }})">
+                                                Edit Setoran
+                                            </x-dropdown-item>
+                                        @endif
+                                        @if(auth()->user()->isSuperAdmin())
+                                            <x-dropdown-item icon="delete" variant="rose" @click="confirmModalAction({
+                                                title: 'Hapus Setoran Cicilan',
+                                                message: 'Hapus pencatatan setoran cicilan ini?',
+                                                confirmText: 'Hapus Setoran',
+                                                btnClass: 'px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5',
+                                                onConfirm: () => $wire.deleteInstallmentPayment({{ $pay->id }})
+                                            })">
+                                                Hapus Setoran
+                                            </x-dropdown-item>
+                                        @endif
+                                    </div>
+                                </x-action-dropdown>
                             </div>
                         </div>
                     @empty

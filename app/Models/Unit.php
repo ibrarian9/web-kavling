@@ -165,9 +165,9 @@ class Unit extends Model
             }
         }
 
-        return $this->officialDocument?->buyer_name 
-            ?? $this->activeBooking?->buyer_name 
-            ?? $this->bookings()->latest('id')->first()?->buyer_name 
+        return $this->officialDocument()->value('buyer_name') 
+            ?? $this->activeBooking()->value('buyer_name') 
+            ?? $this->bookings()->latest('id')->value('buyer_name') 
             ?? 'Konsumen Pembeli';
     }
 
@@ -188,8 +188,8 @@ class Unit extends Model
             }
         }
 
-        return $this->officialDocument?->buyer_contact 
-            ?? $this->activeBooking?->buyer_phone 
-            ?? $this->bookings()->latest('id')->first()?->buyer_phone;
+        return $this->officialDocument()->value('buyer_contact') 
+            ?? $this->activeBooking()->value('buyer_phone') 
+            ?? $this->bookings()->latest('id')->value('buyer_phone');
     }
 }

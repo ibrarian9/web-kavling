@@ -14,7 +14,7 @@
         <x-table :headers="['Tanggal Beli', 'Proyek & Unit', 'Toko / Supplier', 'Barang / Uraian', 'Total Nominal', 'Status', ['label' => 'Aksi', 'class' => 'p-3 text-center']]" loadingTarget="setTab, filter_project_id, filter_status, search, page">
             @forelse($materialBills as $m)
                 <tr class="hover:bg-slate-50/80 transition">
-                    <td class="p-3 font-mono font-medium">{{ \Carbon\Carbon::parse($m->purchase_date)->format('d/m/Y') }}</td>
+                    <td class="p-3 font-mono font-bold text-slate-700 whitespace-nowrap">{{ format_id_date($m->purchase_date) }}</td>
                     <td class="p-3">
                         <span class="font-bold text-slate-800 block">{{ $m->project->name ?? 'Operasional Umum' }}</span>
                         <span class="text-[10px] text-slate-500 font-mono">Unit: {{ $m->unit ? $m->unit->code : '-' }}</span>
@@ -40,7 +40,7 @@
                                 <span class="text-[11px] text-emerald-600 font-semibold whitespace-nowrap">Terbayar</span>
                             @endif
 
-                            @if(auth()->user()->isFounder())
+                            @if(auth()->user()->isSuperAdmin())
                                 <x-button variant="delete" size="xs" @click="confirmModalAction({ title: 'Hapus Tagihan Material', message: 'Apakah Anda yakin ingin menghapus catatan tagihan material toko ini secara permanen?', confirmText: 'Ya, Hapus Tagihan', btnClass: 'px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5', onConfirm: () => $wire.deleteMaterialPurchase({{ $m->id }}) })" title="Hapus Tagihan">
                                     <span>Hapus</span>
                                 </x-button>

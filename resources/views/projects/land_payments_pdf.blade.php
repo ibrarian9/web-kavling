@@ -178,7 +178,7 @@
             @forelse($payments as $index => $pay)
                 <tr>
                     <td style="text-align: center; color: #64748b;">{{ $index + 1 }}</td>
-                    <td style="font-family: monospace; font-weight: bold;">{{ $pay->payment_date ? $pay->payment_date->format('d/m/Y') : '-' }}</td>
+                    <td style="font-family: monospace; font-weight: bold;">{{ format_id_date($pay->payment_date) }}</td>
                     <td>{{ $pay->payment_method }}</td>
                     <td>{{ $pay->notes ?: '-' }}</td>
                     <td style="text-align: right; font-family: monospace; font-weight: bold; color: #7e22ce;">

@@ -38,37 +38,43 @@
         </div>
     </div>
 
-    <!-- Control & Filter Bar -->
-    <div class="card-clean p-4 border border-slate-200/80 rounded-3xl space-y-4">
-        <div class="flex flex-col md:flex-row items-center justify-between gap-4">
-            
-            <!-- Tabs Switcher -->
-            <div class="flex items-center gap-2 bg-slate-100 p-1.5 rounded-2xl w-full md:w-auto overflow-x-auto">
-                <button wire:click="setTab('database')" type="button" class="px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 shrink-0 {{ $activeTab === 'database' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-500 hover:text-slate-800' }}">
-                    <svg class="w-4 h-4 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"/></svg>
-                    <span>Operasional & Keuangan</span>
-                    <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-slate-100 text-slate-700 border border-slate-200">{{ $operationalCount }}</span>
-                </button>
+    <!-- Unified Control Bar: Tabs Switcher, Searching & Filtering in ONE Card -->
+    <div class="card-clean p-4 border border-slate-200/80 rounded-3xl space-y-3.5 shadow-2xs">
+        <!-- Baris 1: Tabs Switcher -->
+        <div class="flex items-center gap-2 bg-slate-100 p-1.5 rounded-2xl w-full md:w-auto overflow-x-auto">
+            <button wire:click="setTab('database')" type="button" class="px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 shrink-0 {{ $activeTab === 'database' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-500 hover:text-slate-800' }}">
+                <svg class="w-4 h-4 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"/></svg>
+                <span>Operasional & Keuangan</span>
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-slate-100 text-slate-700 border border-slate-200">{{ $operationalCount }}</span>
+            </button>
 
-                <button wire:click="setTab('notifications')" type="button" class="px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 shrink-0 {{ $activeTab === 'notifications' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-500 hover:text-slate-800' }}">
-                    <svg class="w-4 h-4 text-blue-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
-                    <span>Notifikasi Terkirim</span>
-                    <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-blue-100 text-blue-800 border border-blue-200">{{ $notificationCount }}</span>
-                </button>
+            <button wire:click="setTab('notifications')" type="button" class="px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 shrink-0 {{ $activeTab === 'notifications' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-500 hover:text-slate-800' }}">
+                <svg class="w-4 h-4 text-blue-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+                <span>Notifikasi Terkirim</span>
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-blue-100 text-blue-800 border border-blue-200">{{ $notificationCount }}</span>
+            </button>
 
-                <button wire:click="setTab('file')" type="button" class="px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 shrink-0 {{ $activeTab === 'file' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-500 hover:text-slate-800' }}">
-                    <svg class="w-4 h-4 text-purple-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                    <span>File Server (`laravel.log`)</span>
-                </button>
-            </div>
+            <button wire:click="setTab('file')" type="button" class="px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 shrink-0 {{ $activeTab === 'file' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-500 hover:text-slate-800' }}">
+                <svg class="w-4 h-4 text-purple-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                <span>File Server (`laravel.log`)</span>
+            </button>
+        </div>
 
-            <!-- Search & Filters -->
-            <div class="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
-                <x-search-input placeholder="Cari user, aksi, IP..." containerClass="w-full sm:w-64" />
+        <!-- Baris 2 (Atas): Full-Width Search Input -->
+        <div class="pt-1 border-t border-slate-100/80">
+            <x-search-input placeholder="Cari nama pengguna, peran, jenis aksi, keterangan detail log, atau IP address..." containerClass="w-full" />
+        </div>
 
+        <!-- Baris 3 (Bawah): Filter Kontrol (Filter Waktu/Periode, Jenis Aksi) -->
+        <div class="flex items-center gap-2.5 flex-wrap justify-between pt-1 border-t border-slate-100/80">
+            <div class="flex items-center gap-2.5 flex-wrap flex-1">
                 @if(in_array($activeTab, ['database', 'notifications']))
-                    <select wire:model.live="actionFilter" class="select-clean text-xs font-bold w-full sm:w-48">
-                        <option value="">Semua Aksi</option>
+                    <!-- Filter Periode Waktu Tanggal -->
+                    <x-date-period-filter periodModel="datePeriod" startModel="startDate" endModel="endDate" :periodValue="$datePeriod" />
+
+                    <!-- Filter Jenis Aksi / Event -->
+                    <select wire:model.live="actionFilter" class="select-clean text-xs font-bold w-full sm:w-auto min-w-[200px]">
+                        <option value="">Semua Jenis Aksi</option>
                         @foreach($availableActions as $act)
                             <option value="{{ $act }}">{{ $act }}</option>
                         @endforeach
@@ -76,18 +82,24 @@
                 @endif
             </div>
 
+            <!-- Tombol Reset Filter -->
+            @if($search || $actionFilter || $datePeriod !== 'all' || $startDate || $endDate)
+                <x-reset-filter-button 
+                    wire:click="$set('search', ''); $set('actionFilter', ''); $set('datePeriod', 'all'); $set('startDate', ''); $set('endDate', '');" 
+                />
+            @endif
         </div>
     </div>
 
     <!-- TAB 1 & 2: Database Audit Logs (Operational or Notifications) -->
     @if(in_array($activeTab, ['database', 'notifications']))
         <div class="space-y-4">
-            <x-table :headers="['Waktu Presisi', 'Pengguna / Peran', 'Jenis Event / Aksi', 'Detail Log Aktivitas / Notifikasi', 'IP & Client Device']" loadingTarget="search, actionFilter, gotoPage, nextPage, previousPage">
+            <x-table :headers="['Waktu Presisi', 'Pengguna / Peran', 'Jenis Event / Aksi', 'Detail Log Aktivitas / Notifikasi', 'IP & Client Device']" loadingTarget="search, actionFilter, datePeriod, startDate, endDate, gotoPage, nextPage, previousPage">
                 @forelse($databaseLogs as $log)
                     <tr class="hover:bg-slate-50/80 transition">
                         <td class="p-3.5 font-mono text-[11px] text-slate-600 whitespace-nowrap">
-                            <div class="font-bold text-slate-800">{{ $log->created_at->format('d M Y') }}</div>
-                            <div class="text-[10px] text-slate-400">{{ $log->created_at->format('H:i:s') }} ({{ $log->created_at->diffForHumans() }})</div>
+                            <div class="font-bold text-slate-800">{{ format_id_date($log->created_at) }}</div>
+                            <div class="text-[10px] text-slate-400">{{ $log->created_at->format('H:i:s') }} ({{ format_id_diff($log->created_at) }})</div>
                         </td>
                         <td class="p-3.5">
                             <div class="flex items-center gap-2">

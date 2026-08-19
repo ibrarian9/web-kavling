@@ -15,7 +15,7 @@
             @forelse($companyReceivables as $r)
                 @php $sisaRec = max(0, (float)$r->amount - (float)$r->paid_amount); @endphp
                 <tr class="hover:bg-slate-50/80 transition">
-                    <td class="p-3 font-mono font-medium">{{ \Carbon\Carbon::parse($r->loan_date)->format('d/m/Y') }}</td>
+                    <td class="p-3 font-mono font-bold text-slate-700 whitespace-nowrap">{{ format_id_date($r->loan_date) }}</td>
                     <td class="p-3 font-bold text-slate-900">
                         {{ $r->debtor_name }}
                         @if($r->notes)
@@ -40,7 +40,7 @@
                                 <span class="text-[11px] text-emerald-600 font-semibold whitespace-nowrap">Lunas</span>
                             @endif
 
-                            @if(auth()->user()->isFounder())
+                            @if(auth()->user()->isSuperAdmin())
                                 <x-button variant="delete" size="xs" @click="confirmModalAction({ title: 'Hapus Piutang Staf', message: 'Apakah Anda yakin ingin menghapus catatan piutang / kasbon staf ini secara permanen?', confirmText: 'Ya, Hapus Piutang', btnClass: 'px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5', onConfirm: () => $wire.deleteReceivable({{ $r->id }}) })" title="Hapus Piutang">
                                     <span>Hapus</span>
                                 </x-button>

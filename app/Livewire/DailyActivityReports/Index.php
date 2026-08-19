@@ -7,12 +7,14 @@ use App\Models\Project;
 use App\Models\Unit;
 use App\Models\User;
 use App\Services\ActivityLogger;
+use App\Traits\WithDatePeriodFilter;
 use Livewire\Component;
 use Livewire\WithPagination;
 
 class Index extends Component
 {
     use WithPagination;
+    use WithDatePeriodFilter;
 
     // Filters
     public string $search = '';
@@ -22,6 +24,17 @@ class Index extends Component
     public string $filter_lead_source = '';
     public string $filter_start_date = '';
     public string $filter_end_date = '';
+
+    protected $queryString = [
+        'search' => ['except' => ''],
+        'filter_user_id' => ['except' => null],
+        'filter_project_id' => ['except' => null],
+        'filter_lead_stage' => ['except' => ''],
+        'filter_lead_source' => ['except' => ''],
+        'datePeriod' => ['except' => 'all'],
+        'startDate' => ['except' => ''],
+        'endDate' => ['except' => ''],
+    ];
 
     // Modal Form & Detail State
     public bool $showReportModal = false;
@@ -112,14 +125,6 @@ class Index extends Component
     public string $notes = '';
     public string $follow_up_date = '';
 
-    protected $queryString = [
-        'search' => ['except' => ''],
-        'filter_user_id' => ['except' => null],
-        'filter_project_id' => ['except' => null],
-        'filter_lead_stage' => ['except' => ''],
-        'filter_lead_source' => ['except' => ''],
-    ];
-
     public function mount(): void
     {
         $user = auth()->user();
@@ -145,6 +150,9 @@ class Index extends Component
         $this->filter_lead_source = '';
         $this->filter_start_date = '';
         $this->filter_end_date = '';
+        $this->datePeriod = 'all';
+        $this->startDate = '';
+        $this->endDate = '';
         $this->resetPage();
     }
 
@@ -326,12 +334,15 @@ class Index extends Component
             $query->where('lead_source', $this->filter_lead_source);
         }
 
-        if ($this->filter_start_date) {
-            $query->whereDate('report_date', '>=', $this->filter_start_date);
-        }
-
-        if ($this->filter_end_date) {
-            $query->whereDate('report_date', '<=', $this->filter_end_date);
+        if ($this->datePeriod !== 'all') {
+            $this->applyDatePeriodFilter($query, 'report_date');
+        } elseif ($this->filter_start_date || $this->filter_end_date) {
+            if ($this->filter_start_date) {
+                $query->whereDate('report_date', '>=', $this->filter_start_date);
+            }
+            if ($this->filter_end_date) {
+                $query->whereDate('report_date', '<=', $this->filter_end_date);
+            }
         }
 
         $reports = $query->latest('report_date')->latest('id')->paginate(15);

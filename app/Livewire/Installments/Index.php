@@ -250,7 +250,7 @@ class Index extends Component
     public function editInstallmentPayment($paymentId): void
     {
         $user = auth()->user();
-        if (!$user || (!$user->isFounder() && !$user->isAdmin() && !$user->isFinance())) {
+        if (!$user || (!$user->isAdminOrFounder() && !$user->isFinance())) {
             $err = 'Akses ditolak. Hanya Tim Finance, Admin, dan Founder yang berhak mengedit setoran.';
             session()->flash('error', $err);
             $this->dispatch('notify', ['type' => 'error', 'title' => 'Gagal!', 'message' => $err]);
@@ -327,7 +327,7 @@ class Index extends Component
     public function openConvertToCashModal($installmentId): void
     {
         $user = auth()->user();
-        if (!$user->isFounder() && !$user->isFinance()) {
+        if (!$user->isAdminOrFounder() && !$user->isFinance()) {
             $err = 'Hanya Founder dan Tim Accounting/Finance yang berhak membatalkan cicilan dan menggantinya ke Cash.';
             session()->flash('error', $err);
             $this->dispatch('notify', ['type' => 'error', 'title' => 'Gagal!', 'message' => $err]);
@@ -346,7 +346,7 @@ class Index extends Component
     public function submitConvertToCash(ConvertInstallmentToCashAction $action): void
     {
         $user = auth()->user();
-        if (!$user->isFounder() && !$user->isFinance()) {
+        if (!$user->isAdminOrFounder() && !$user->isFinance()) {
             $err = 'Hanya Founder dan Tim Accounting/Finance yang berhak membatalkan cicilan dan menggantinya ke Cash.';
             session()->flash('error', $err);
             $this->dispatch('notify', ['type' => 'error', 'title' => 'Gagal!', 'message' => $err]);
@@ -393,8 +393,8 @@ class Index extends Component
     public function deleteInstallment($id, DeleteInstallmentSchemeAction $action): void
     {
         $user = auth()->user();
-        if (!$user || (!$user->isFounder() && !$user->isAdmin())) {
-            session()->flash('error', 'Hanya Admin dan Founder yang berhak menghapus skema cicilan pembeli.');
+        if (!$user || !$user->isSuperAdmin()) {
+            session()->flash('error', 'Hanya Founder dan Supervisor yang berhak menghapus skema cicilan pembeli.');
             return;
         }
 
@@ -410,8 +410,8 @@ class Index extends Component
     public function deleteInstallmentPayment($paymentId, DeleteInstallmentPaymentAction $action): void
     {
         $user = auth()->user();
-        if (!$user || (!$user->isFounder() && !$user->isAdmin() && !$user->isFinance())) {
-            session()->flash('error', 'Hanya Tim Finance, Admin, dan Founder yang berhak menghapus setoran cicilan pembeli.');
+        if (!$user || !$user->isSuperAdmin()) {
+            session()->flash('error', 'Hanya Founder dan Supervisor yang berhak menghapus setoran cicilan pembeli.');
             return;
         }
 
@@ -430,7 +430,7 @@ class Index extends Component
     public function openLandPaymentModal($paymentId = null): void
     {
         $user = auth()->user();
-        if (!$user || (!$user->isFounder() && !$user->isAdmin() && !$user->isFinance())) {
+        if (!$user || (!$user->isAdminOrFounder() && !$user->isFinance())) {
             session()->flash('error', 'Hanya Founder, Admin, dan Tim Finance yang berhak mencatat pembayaran lahan.');
             return;
         }
@@ -471,7 +471,7 @@ class Index extends Component
     public function submitLandPayment(RecordLandPaymentAction $action): void
     {
         $user = auth()->user();
-        if (!$user || (!$user->isFounder() && !$user->isAdmin() && !$user->isFinance())) {
+        if (!$user || (!$user->isAdminOrFounder() && !$user->isFinance())) {
             session()->flash('error', 'Hanya Founder, Admin, dan Tim Finance yang berhak mencatat pembayaran lahan.');
             return;
         }
@@ -511,8 +511,8 @@ class Index extends Component
     public function deleteLandPayment($paymentId, DeleteLandPaymentAction $action): void
     {
         $user = auth()->user();
-        if (!$user || (!$user->isFounder() && !$user->isFinance())) {
-            session()->flash('error', 'Hanya Founder dan Tim Finance yang berhak menghapus catatan pembayaran lahan proyek.');
+        if (!$user || !$user->isSuperAdmin()) {
+            session()->flash('error', 'Hanya Founder dan Supervisor yang berhak menghapus catatan pembayaran lahan proyek.');
             return;
         }
 
@@ -600,7 +600,7 @@ class Index extends Component
         $currentYear = now()->year;
 
         // Query Unit Installments
-        $query = UnitInstallment::with(['unit.project', 'unit.activeBooking', 'unit.bookings', 'officialDocument', 'payments']);
+        $query = UnitInstallment::with(['unit.project', 'unit.activeBooking', 'unit.bookings', 'unit.officialDocument', 'officialDocument', 'payments']);
 
         if ($this->search) {
             $search = $this->search;

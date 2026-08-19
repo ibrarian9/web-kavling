@@ -40,32 +40,11 @@
                 required
             />
 
-            <div>
-                <label class="block font-semibold text-slate-700 mb-1 text-xs uppercase tracking-wider">
-                    Upload Foto Struk Transfer {{ $payroll_payment_method === 'tunai' ? '(Opsional)' : '(Rekomendasi)' }} <span class="text-emerald-700 font-bold lowercase text-[10px] bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">(Maks. 2MB)</span>
-                </label>
-                <input type="file" wire:model="payroll_receipt_photo" accept="image/*,.heic,.heif,.pdf" class="input-clean w-full text-xs">
-                @error('payroll_receipt_photo') <span class="text-rose-500 text-[10px] block mt-1 font-medium">{{ $message }}</span> @enderror
-                @if($payroll_receipt_photo)
-                    <div class="mt-3 text-center bg-slate-50 p-3 rounded-2xl border border-slate-200 space-y-2">
-                        <div class="flex items-center justify-between text-xs text-slate-700 font-semibold">
-                            <span class="text-emerald-600 flex items-center gap-1">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                                <span>Struk Terpilih ({{ $payroll_receipt_photo->getClientOriginalName() }}):</span>
-                            </span>
-                            <button type="button" wire:click="$set('payroll_receipt_photo', null)" class="text-rose-500 hover:text-rose-700 text-[10px] underline font-bold">Hapus</button>
-                        </div>
-                        @if (method_exists($payroll_receipt_photo, 'isPreviewable') && $payroll_receipt_photo->isPreviewable())
-                            <img src="{{ $payroll_receipt_photo->temporaryUrl() }}" class="max-h-48 mx-auto rounded-xl border border-slate-200 shadow-md">
-                        @else
-                            <div class="p-3 bg-amber-50 border border-amber-200/80 rounded-xl text-amber-800 text-xs font-semibold flex items-center justify-center gap-2 text-left">
-                                <svg class="w-4 h-4 text-amber-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                <span>Format berkas ({{ strtoupper($payroll_receipt_photo->getClientOriginalExtension()) }}) tidak mendukung pratinjau langsung di browser, namun berkas tetap siap diunggah.</span>
-                            </div>
-                        @endif
-                    </div>
-                @endif
-            </div>
+            <x-receipt-upload 
+                model="payroll_receipt_photo" 
+                :photo="$payroll_receipt_photo" 
+                label="Foto Struk / Bukti Transfer Gaji"
+            />
 
             <div>
                 <label class="block font-semibold text-slate-700 mb-1 text-xs uppercase tracking-wider">Catatan Pembayaran</label>

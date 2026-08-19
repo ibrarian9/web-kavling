@@ -59,7 +59,7 @@
 
             <div class="flex items-center justify-between">
                 <span class="text-slate-400 font-semibold uppercase text-[10px]">Tanggal Terbit SPK</span>
-                <span class="font-mono text-slate-300">{{ date('d F Y', strtotime($payroll->created_at)) }}</span>
+                <span class="font-mono text-slate-300">{{ format_id_full_date($payroll->created_at) }}</span>
             </div>
         </div>
 

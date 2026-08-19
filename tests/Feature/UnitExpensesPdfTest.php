@@ -85,7 +85,7 @@ test('authenticated user can stream unit expenses summary pdf and material purch
     $responseVerifyMaterial->assertSee('Semen Gresik 50 Sak');
 });
 
-test('cannot generate unit expenses pdf when unit has no expense records', function () {
+test('can generate unit expenses pdf even when unit has no expense records yet', function () {
     $founder = User::create([
         'name' => 'Founder Empty Test',
         'email' => 'founder_empty@example.com',
@@ -118,6 +118,6 @@ test('cannot generate unit expenses pdf when unit has no expense records', funct
     ]);
 
     $response = $this->actingAs($founder)->get(route('units.expenses-pdf', $emptyUnit->id));
-    $response->assertRedirect(route('units.show', $emptyUnit->id));
-    $response->assertSessionHas('error');
+    $response->assertStatus(200);
+    $response->assertHeader('content-type', 'application/pdf');
 });

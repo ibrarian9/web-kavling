@@ -54,7 +54,7 @@
             <td style="width: 45%;" class="text-right">
                 <div class="doc-title">SURAT PERJANJIAN JUAL BELI</div>
                 <div class="doc-no">{{ $spjbNumber }}</div>
-                <div style="font-size: 8.5px; color: #475569; margin-top: 2px;">Tanggal Terbit: {{ date('d F Y', strtotime($doc->issued_at ?? $doc->created_at)) }}</div>
+                <div style="font-size: 8.5px; color: #475569; margin-top: 2px;">Tanggal Terbit: {{ format_id_full_date($doc->issued_at ?? $doc->created_at) }}</div>
             </td>
         </tr>
     </table>
@@ -68,7 +68,7 @@
     <!-- PASAL I: IDENTITAS PARA PIHAK -->
     <div class="pasal-header">PASAL 1: IDENTITAS PARA PIHAK KESEPAKATAN JUAL BELI</div>
     <p style="font-size: 9px; margin-top: 2px; margin-bottom: 6px; color: #334155;">
-        Pada hari ini, <strong>{{ date('d F Y', strtotime($doc->issued_at ?? $doc->created_at)) }}</strong>, telah disepakati Perjanjian Jual Beli antara Pihak-Pihak berikut:
+        Pada hari ini, <strong>{{ format_id_full_date($doc->issued_at ?? $doc->created_at) }}</strong>, telah disepakati Perjanjian Jual Beli antara Pihak-Pihak berikut:
     </p>
     <table class="info-table">
         <tr>
@@ -115,7 +115,9 @@
                 <td>
                     Panjang {{ $unit->land_length ?? '-' }}m x Lebar {{ $unit->land_width ?? '-' }}m &bull; 
                     <strong>Luas Total: {{ number_format($unit->land_area, 0, ',', '.') }} m²</strong>
-                    @if($unit->excess_land_area > 0) (Kelebihan Tanah: {{ number_format($unit->excess_land_area, 0, ',', '.') }} m²) @endif
+                    @if($unit->excess_land_area > 0) 
+                        (Kelebihan Tanah: {{ number_format($unit->excess_land_area, 0, ',', '.') }} m² @if($unit->excess_cost > 0) - Biaya Rp {{ number_format($unit->excess_cost, 0, ',', '.') }} @endif) 
+                    @endif
                 </td>
             </tr>
             @if($unit->category === 'rumah' || $unit->building_area)

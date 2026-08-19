@@ -92,8 +92,11 @@
                     </button>
                 </div>
 
-                <!-- Right: Dropdown Filters -->
-                <div class="flex items-center gap-2">
+                <!-- Right: Dropdown Filters & Date Filter -->
+                <div class="flex items-center gap-2 flex-wrap">
+                    <!-- Filter Periode Waktu Tanggal -->
+                    <x-date-period-filter periodModel="datePeriod" startModel="startDate" endModel="endDate" :periodValue="$datePeriod" />
+
                     @if($activeTab !== 'company_receivables' && $activeTab !== 'settled_history')
                         <select wire:model.live="filter_project_id" class="select-clean text-xs font-semibold">
                             <option value="">Semua Proyek</option>
@@ -109,6 +112,12 @@
                             <option value="lunas">LUNAS / TERBAYAR</option>
                             <option value="all">SEMUA STATUS</option>
                         </select>
+                    @endif
+
+                    @if($search || $filter_project_id || $filter_status !== 'belum_lunas' || $datePeriod !== 'all' || $startDate || $endDate)
+                        <x-reset-filter-button 
+                            wire:click="$set('search', ''); $set('filter_project_id', ''); $set('filter_status', 'belum_lunas'); $set('datePeriod', 'all'); $set('startDate', ''); $set('endDate', '');" 
+                        />
                     @endif
                 </div>
             </div>

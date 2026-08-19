@@ -80,7 +80,7 @@ class PengawasManagementTest extends TestCase
 
         $this->assertTrue($founder->canViewHpp());
         $this->assertFalse($pengawas->canViewHpp());
-        $this->assertFalse($supervisor->canViewHpp());
+        $this->assertTrue($supervisor->canViewHpp());
 
         $projects = Project::take(2)->get();
         $projectA = $projects[0];

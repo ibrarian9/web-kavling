@@ -168,7 +168,7 @@
         <tr>
             <td class="label">Tanggal Bayar</td>
             <td class="colon">:</td>
-            <td class="value">{{ \Carbon\Carbon::parse($payment->payment_date)->isoFormat('DD MMMM YYYY') }}</td>
+            <td class="value">{{ format_id_full_date($payment->payment_date) }}</td>
         </tr>
         <tr>
             <td class="label">Metode Bayar</td>
@@ -231,7 +231,7 @@
                 <div><strong>({{ $salary->employee_name }})</strong></div>
             </td>
             <td>
-                <div>Pekanbaru, {{ \Carbon\Carbon::parse($payment->payment_date)->isoFormat('DD MMMM YYYY') }}</div>
+                <div>Pekanbaru, {{ format_id_full_date($payment->payment_date) }}</div>
                 <div>Pemberi Gaji (Founder / Direktur Utama),</div>
                 <div class="signature-space"></div>
                 <div><strong>(Founder PT. Atlantik Perkasa Abadi)</strong></div>

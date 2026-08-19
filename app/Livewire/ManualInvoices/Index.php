@@ -8,17 +8,29 @@ use App\Models\Project;
 use App\Models\Unit;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use App\Traits\WithDatePeriodFilter;
 use Livewire\Component;
 use Livewire\WithPagination;
 
 class Index extends Component
 {
     use WithPagination;
+    use WithDatePeriodFilter;
 
     public string $search = '';
     public string $statusFilter = '';
     public string $typeFilter = '';
     public string $projectFilter = '';
+
+    protected $queryString = [
+        'search' => ['except' => ''],
+        'statusFilter' => ['except' => ''],
+        'typeFilter' => ['except' => ''],
+        'projectFilter' => ['except' => ''],
+        'datePeriod' => ['except' => 'all'],
+        'startDate' => ['except' => ''],
+        'endDate' => ['except' => ''],
+    ];
 
     // Modal Form State
     public bool $showModal = false;
@@ -48,7 +60,7 @@ class Index extends Component
     public function mount(): void
     {
         $user = auth()->user();
-        if (!$user || (!$user->isFounder() && !$user->isFinance())) {
+        if (!$user || (!$user->isAdminOrFounder() && !$user->isFinance())) {
             abort(403, 'Akses ditolak. Anda tidak memiliki hak akses menu Invoice Manual.');
         }
 
@@ -134,8 +146,8 @@ class Index extends Component
     public function saveInvoice(): void
     {
         $user = auth()->user();
-        if (!$user->isFounder() && !$user->isFinance()) {
-            session()->flash('error', 'Hanya Founder dan Accounting yang berhak menyimpan invoice manual.');
+        if (!$user->isAdminOrFounder() && !$user->isFinance()) {
+            session()->flash('error', 'Hanya Founder, Supervisor, dan Accounting yang berhak menyimpan invoice manual.');
             return;
         }
 
@@ -241,8 +253,8 @@ class Index extends Component
     public function deleteInvoice(int $id): void
     {
         $user = auth()->user();
-        if (!$user->isFounder() && !$user->isFinance()) {
-            $err = 'Hanya Founder dan Accounting yang berhak menghapus invoice manual.';
+        if (!$user->isSuperAdmin()) {
+            $err = 'Hanya Founder dan Supervisor yang berhak menghapus invoice manual.';
             session()->flash('error', $err);
             $this->dispatch('notify', ['type' => 'error', 'title' => 'Gagal!', 'message' => $err]);
             return;
@@ -304,6 +316,10 @@ class Index extends Component
 
         if ($this->projectFilter) {
             $query->where('project_id', $this->projectFilter);
+        }
+
+        if ($this->datePeriod !== 'all') {
+            $this->applyDatePeriodFilter($query, 'invoice_date');
         }
 
         $invoices = $query->latest('invoice_date')->latest('id')->paginate(15);

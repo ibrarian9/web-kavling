@@ -14,7 +14,7 @@
         <x-table :headers="['Tgl Catat', 'Proyek & Unit', 'Penjual / Marketing', 'Persenan (%)', 'Nominal Komisi', 'Status', ['label' => 'Aksi', 'class' => 'p-3 text-center']]" loadingTarget="setTab, filter_project_id, filter_status, search, com_page">
             @forelse($unitCommissions as $c)
                 <tr class="hover:bg-slate-50/80 transition">
-                    <td class="p-3 font-mono font-medium">{{ $c->created_at->format('d/m/Y') }}</td>
+                    <td class="p-3 font-mono font-bold text-slate-700 whitespace-nowrap">{{ format_id_date($c->created_at) }}</td>
                     <td class="p-3">
                         <span class="font-bold text-slate-800 block">{{ $c->project->name ?? 'Non-Proyek' }}</span>
                         <span class="text-[10px] text-slate-500 font-mono">Unit: {{ $c->unit ? $c->unit->code : '-' }}</span>
@@ -42,7 +42,7 @@
                                 <span class="text-[11px] text-emerald-600 font-semibold whitespace-nowrap">Lunas</span>
                             @endif
 
-                            @if(auth()->user()->isFounder())
+                            @if(auth()->user()->isSuperAdmin())
                                 <x-button variant="delete" size="xs" @click="confirmModalAction({ title: 'Hapus Komisi Penjual', message: 'Apakah Anda yakin ingin menghapus catatan komisi penjual ini secara permanen?', confirmText: 'Ya, Hapus Komisi', btnClass: 'px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5', onConfirm: () => $wire.deleteCommission({{ $c->id }}) })" title="Hapus Komisi">
                                     <span>Hapus</span>
                                 </x-button>

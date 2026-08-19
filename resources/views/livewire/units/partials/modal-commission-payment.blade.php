@@ -32,11 +32,11 @@
                 </div>
             </div>
 
-            <div>
-                <label class="block font-bold text-slate-700 mb-1">Upload Bukti Transfer / Resi (Opsional)</label>
-                <input type="file" wire:model="unit_pay_comm_photo" class="input-clean w-full text-xs">
-                @error('unit_pay_comm_photo') <span class="text-red-500 text-[11px] mt-0.5 block">{{ $message }}</span> @enderror
-            </div>
+            <x-receipt-upload 
+                model="unit_pay_comm_photo" 
+                :photo="$unit_pay_comm_photo" 
+                label="Upload Bukti Transfer / Resi (Opsional)"
+            />
 
             <div>
                 <label class="block font-bold text-slate-700 mb-1">Catatan / Keterangan</label>

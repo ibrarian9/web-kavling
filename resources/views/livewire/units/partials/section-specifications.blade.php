@@ -18,10 +18,19 @@
             <span class="font-mono text-slate-700">{{ number_format($unit->project->standard_land_area, 0, ',', '.') }} m²</span>
         </div>
 
-        @if($unit->excess_land_area > 0)
+        @if($unit->category !== 'infrastruktur' && $unit->excess_land_area > 0)
             <div class="flex items-center justify-between py-2 bg-amber-50/90 px-3 rounded-xl border border-amber-200/80 text-amber-900 font-semibold shadow-2xs">
                 <span class="text-[11px]">Kelebihan Tanah:</span>
                 <span class="font-mono font-extrabold text-xs text-amber-800">+{{ number_format($unit->excess_land_area, 0, ',', '.') }} m² (+Rp {{ number_format($unit->excess_cost, 0, ',', '.') }})</span>
+            </div>
+        @endif
+
+        @if($unit->category === 'infrastruktur' && $unit->specifications)
+            <div class="pt-2 mt-2 border-t border-sky-100 space-y-1.5">
+                <p class="font-extrabold text-sky-900 text-[11px] uppercase tracking-wider">Catatan Teknis Fasum:</p>
+                <div class="text-slate-700 text-xs bg-sky-50/60 p-2.5 rounded-xl border border-sky-200/70 leading-relaxed">
+                    {{ $unit->specifications }}
+                </div>
             </div>
         @endif
 

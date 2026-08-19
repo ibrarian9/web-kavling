@@ -42,7 +42,7 @@
 
             <div class="flex justify-between border-b border-slate-800 pb-2">
                 <span class="text-slate-400">Tanggal Diterbitkan:</span>
-                <span class="font-mono text-slate-300">{{ $doc->issued_at ? $doc->issued_at->format('d F Y') : '-' }}</span>
+                <span class="font-mono text-slate-300">{{ format_id_full_date($doc->issued_at) }}</span>
             </div>
 
             <div class="flex justify-between border-b border-slate-800 pb-2">

@@ -39,6 +39,7 @@ Route::get('/verify-payroll/{uuid}', [PayrollVerificationController::class, 'ver
 Route::get('/verify-land-payment/{uuid}', [LandPaymentReceiptController::class, 'verify'])->name('verify.land-payment');
 Route::get('/verify-cashflow', [\App\Http\Controllers\CashflowVerificationController::class, 'verify'])->name('verify.cashflow');
 Route::get('/verify-installment/{uuid}', [\App\Http\Controllers\InstallmentInvoiceController::class, 'verify'])->name('verify.installment');
+Route::get('/verify-installment-statement/{id}', [\App\Http\Controllers\InstallmentInvoiceController::class, 'verifyStatement'])->name('verify.installment-statement');
 Route::get('/verify-manual-invoice/{uuid}', [\App\Http\Controllers\ManualInvoiceController::class, 'verify'])->name('verify.manual-invoice');
 Route::get('/verify-material-purchase/{id}', [\App\Http\Controllers\MaterialPurchaseReceiptController::class, 'verify'])->name('verify.material-purchase');
 Route::get('/verify-unit-expenses/{id}', [\App\Http\Controllers\UnitExpensesReportController::class, 'verify'])->name('verify.unit-expenses');
@@ -88,6 +89,7 @@ Route::middleware(['auth', \App\Http\Middleware\EnsureUserIsActive::class])->gro
 
     // Keuangan & Pembayaran
     Route::get('/installments', InstallmentsIndex::class)->name('installments.index');
+    Route::get('/installments/{id}/statement-pdf', [\App\Http\Controllers\InstallmentInvoiceController::class, 'streamStatementPdf'])->name('installments.unit-statement-pdf');
     Route::get('/installments/unpaid-pdf', [\App\Http\Controllers\UnpaidInstallmentReportController::class, 'exportPdf'])->name('installments.unpaid-pdf');
     Route::get('/verify-unpaid-installments', [\App\Http\Controllers\UnpaidInstallmentReportController::class, 'verify'])->name('verify.unpaid-installments');
     Route::get('/cashflow', CashflowIndex::class)->name('cashflow.index');

@@ -3,6 +3,7 @@
 namespace App\Livewire\ActivityLogs;
 
 use App\Models\ActivityLog;
+use App\Traits\WithDatePeriodFilter;
 use Illuminate\Support\Facades\File;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -10,22 +11,25 @@ use Livewire\WithPagination;
 class Index extends Component
 {
     use WithPagination;
+    use WithDatePeriodFilter;
 
     public $activeTab = 'database'; // 'database' (operational), 'notifications', or 'file'
     public $search = '';
     public $actionFilter = '';
-    public $dateFilter = '';
 
     protected $queryString = [
         'activeTab' => ['except' => 'database'],
         'search' => ['except' => ''],
         'actionFilter' => ['except' => ''],
+        'datePeriod' => ['except' => 'all'],
+        'startDate' => ['except' => ''],
+        'endDate' => ['except' => ''],
     ];
 
     public function mount()
     {
-        if (!auth()->user() || !auth()->user()->isFounder()) {
-            abort(403, 'Akses khusus untuk Founder Executive.');
+        if (!auth()->user() || !auth()->user()->isSuperAdmin()) {
+            abort(403, 'Akses khusus untuk Admin Utama / Supervisor.');
         }
     }
 
@@ -47,41 +51,41 @@ class Index extends Component
 
     public function clearDatabaseLogs()
     {
-        if (!auth()->user()->isFounder()) return;
+        if (!auth()->user()->isSuperAdmin()) return;
         
         ActivityLog::query()->delete();
-        \App\Services\ActivityLogger::log('SYSTEM_CLEAR_LOGS', 'Founder membersihkan seluruh riwayat Log Aktivitas Sistem di database.');
+        \App\Services\ActivityLogger::log('SYSTEM_CLEAR_LOGS', auth()->user()->name . ' membersihkan seluruh riwayat Log Aktivitas Sistem di database.');
         session()->flash('success', 'Riwayat Log Aktivitas Database berhasil dibersihkan.');
     }
 
     public function clearFileLog()
     {
-        if (!auth()->user()->isFounder()) return;
+        if (!auth()->user()->isSuperAdmin()) return;
 
         $logPath = storage_path('logs/laravel.log');
         if (File::exists($logPath)) {
             File::put($logPath, '');
-            \App\Services\ActivityLogger::log('SYSTEM_CLEAR_FILE_LOG', 'Founder membersihkan isi file laravel.log.');
+            \App\Services\ActivityLogger::log('SYSTEM_CLEAR_FILE_LOG', auth()->user()->name . ' membersihkan isi file laravel.log.');
             session()->flash('success', 'File storage/logs/laravel.log berhasil dikosongkan.');
         }
     }
 
     public function clearDeprecationLog()
     {
-        if (!auth()->user()->isFounder()) return;
+        if (!auth()->user()->isSuperAdmin()) return;
 
         $depPath = storage_path('logs/php-deprecation-warnings.log');
         if (File::exists($depPath)) {
             File::put($depPath, '');
-            \App\Services\ActivityLogger::log('SYSTEM_CLEAR_DEP_LOG', 'Founder membersihkan isi file log deprecations.');
+            \App\Services\ActivityLogger::log('SYSTEM_CLEAR_DEP_LOG', auth()->user()->name . ' membersihkan isi file log deprecations.');
             session()->flash('success', 'File storage/logs/php-deprecation-warnings.log berhasil dikosongkan.');
         }
     }
 
     public function render()
     {
-        if (!auth()->user() || !auth()->user()->isFounder()) {
-            abort(403, 'Akses khusus untuk Founder Executive.');
+        if (!auth()->user() || !auth()->user()->isSuperAdmin()) {
+            abort(403, 'Akses khusus untuk Admin Utama / Supervisor.');
         }
 
         $operationalCount = ActivityLog::where('action', 'not like', 'NOTIF_%')->where('action', 'not like', 'NOTIFICATION_%')->count();
@@ -116,6 +120,10 @@ class Index extends Component
 
         if ($this->actionFilter) {
             $logsQuery->where('action', $this->actionFilter);
+        }
+
+        if ($this->datePeriod !== 'all') {
+            $this->applyDatePeriodFilter($logsQuery, 'created_at');
         }
 
         $databaseLogs = $logsQuery->paginate(25);
@@ -183,6 +191,9 @@ class Index extends Component
             'availableActions' => $availableActions,
             'operationalCount' => $operationalCount,
             'notificationCount' => $notificationCount,
+            'datePeriod' => $this->datePeriod,
+            'startDate' => $this->startDate,
+            'endDate' => $this->endDate,
         ])->layout('components.layouts.app', ['title' => 'System Log & Audit Trail - Founder']);
     }
 }

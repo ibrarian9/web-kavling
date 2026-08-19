@@ -4,15 +4,25 @@ namespace App\Livewire\Documents;
 
 use App\Models\OfficialDocument;
 use App\Services\ActivityLogger;
+use App\Traits\WithDatePeriodFilter;
 use Livewire\Component;
 use Livewire\WithPagination;
 
 class Index extends Component
 {
     use WithPagination;
+    use WithDatePeriodFilter;
 
     public string $search = '';
     public ?int $project_id = null;
+
+    protected $queryString = [
+        'search' => ['except' => ''],
+        'project_id' => ['except' => null],
+        'datePeriod' => ['except' => 'all'],
+        'startDate' => ['except' => ''],
+        'endDate' => ['except' => ''],
+    ];
 
     // Viewer Modal (PDF Viewer)
     public bool $showViewerModal = false;
@@ -192,8 +202,8 @@ class Index extends Component
     public function deleteDocument($id): void
     {
         $user = auth()->user();
-        if (!$user->isFounder()) {
-            session()->flash('error', 'Hanya Founder yang berhak menghapus dokumen SPP.');
+        if (!$user->isSuperAdmin()) {
+            session()->flash('error', 'Hanya Admin Utama / Supervisor yang berhak menghapus dokumen SPP.');
             return;
         }
 
@@ -244,6 +254,10 @@ class Index extends Component
                       $uQ->where('code', 'like', '%' . $this->search . '%');
                   });
             });
+        }
+
+        if ($this->datePeriod !== 'all') {
+            $this->applyDatePeriodFilter($query, 'issued_at');
         }
 
         $documents = $query->latest('id')->paginate(10);

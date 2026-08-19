@@ -1,7 +1,7 @@
 <!-- Filter & Search Bar -->
 <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-xs space-y-4">
     <!-- Header Section for Filter Bar -->
-    <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+    <div class="flex items-center justify-between pb-3 border-b border-slate-100 flex-wrap gap-2">
         <div class="flex items-center gap-2">
             <div class="p-1.5 rounded-lg bg-teal-50 text-teal-700">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/></svg>
@@ -9,16 +9,16 @@
             <h3 class="font-extrabold text-slate-800 text-xs sm:text-sm">Filter & Pencarian Aktivitas</h3>
         </div>
 
-        @if($search || $filter_user_id || $filter_project_id || $filter_lead_stage || $filter_lead_source || $filter_start_date || $filter_end_date)
-            <button wire:click="resetFilters" class="px-2.5 py-1 bg-rose-50 hover:bg-rose-100 text-rose-700 rounded-lg text-xs font-bold transition flex items-center gap-1">
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-                <span>Reset Filter</span>
-            </button>
+        @if($search || $filter_user_id || $filter_project_id || $filter_lead_stage || $filter_lead_source || $filter_start_date || $filter_end_date || $datePeriod !== 'all' || $startDate || $endDate)
+            <x-reset-filter-button wire:click="resetFilters" />
         @endif
     </div>
 
-    <!-- Main Search Bar -->
-    <x-search-input placeholder="Cari nama klien, nomor telepon, atau catatan aktivitas..." containerClass="relative w-full" />
+    <!-- Main Search Bar & Date Period Filter Toolbar -->
+    <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+        <x-search-input placeholder="Cari nama klien, nomor telepon, atau catatan aktivitas..." containerClass="relative flex-1" />
+        <x-date-period-filter periodModel="datePeriod" startModel="startDate" endModel="endDate" :periodValue="$datePeriod" />
+    </div>
 
     <!-- Dropdown Filter Controls -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs pt-1">

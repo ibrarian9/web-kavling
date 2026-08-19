@@ -26,8 +26,8 @@ class Index extends Component
 
     public function mount()
     {
-        if (!auth()->user()->isFounder()) {
-            abort(403, 'Akses khusus Founder untuk manajemen user.');
+        if (!auth()->user()->isSuperAdmin()) {
+            abort(403, 'Akses khusus Admin Utama / Supervisor untuk manajemen user.');
         }
     }
 
@@ -58,8 +58,8 @@ class Index extends Component
 
     public function saveUser()
     {
-        if (!auth()->user()->isFounder()) {
-            session()->flash('error', 'Hanya Founder yang berhak mengelola akun pengguna.');
+        if (!auth()->user()->isSuperAdmin()) {
+            session()->flash('error', 'Hanya Admin Utama / Supervisor yang berhak mengelola akun pengguna.');
             return;
         }
 
@@ -92,10 +92,11 @@ class Index extends Component
         $user = User::updateOrCreate(['id' => $this->editingUserId], $data);
         $user->syncRoles([$this->role]);
 
+        $actor = auth()->user()->name;
         if ($this->editingUserId) {
-            \App\Services\ActivityLogger::log('USER_UPDATED', "Akun user {$this->name} ({$this->email} - Role: {$this->role}) diperbarui oleh Founder.");
+            \App\Services\ActivityLogger::log('USER_UPDATED', "Akun user {$this->name} ({$this->email} - Role: {$this->role}) diperbarui oleh {$actor}.");
         } else {
-            \App\Services\ActivityLogger::log('USER_CREATED', "Akun user baru {$this->name} ({$this->email} - Role: {$this->role}) dibuat oleh Founder.");
+            \App\Services\ActivityLogger::log('USER_CREATED', "Akun user baru {$this->name} ({$this->email} - Role: {$this->role}) dibuat oleh {$actor}.");
         }
 
         $msg = 'Data akun user berhasil ' . ($this->editingUserId ? 'diperbarui' : 'ditambahkan') . '!';
@@ -106,8 +107,8 @@ class Index extends Component
 
     public function toggleStatus(int $id)
     {
-        if (!auth()->user()->isFounder()) {
-            $err = 'Hanya Founder yang berhak mengubah status user.';
+        if (!auth()->user()->isSuperAdmin()) {
+            $err = 'Hanya Admin Utama / Supervisor yang berhak mengubah status user.';
             session()->flash('error', $err);
             $this->dispatch('notify', ['type' => 'error', 'title' => 'Gagal!', 'message' => $err]);
             return;
@@ -115,7 +116,7 @@ class Index extends Component
 
         $user = User::findOrFail($id);
         if ($user->id === auth()->id()) {
-            $err = 'Anda tidak dapat menonaktifkan akun Founder Anda sendiri.';
+            $err = 'Anda tidak dapat menonaktifkan akun Anda sendiri.';
             session()->flash('error', $err);
             $this->dispatch('notify', ['type' => 'error', 'title' => 'Gagal!', 'message' => $err]);
             return;
@@ -123,7 +124,7 @@ class Index extends Component
 
         $user->update(['is_active' => !$user->is_active]);
         $statusStr = $user->is_active ? 'Aktif' : 'Nonaktif';
-        \App\Services\ActivityLogger::log('USER_STATUS_TOGGLED', "Status akun user {$user->name} diubah menjadi {$statusStr} oleh Founder.");
+        \App\Services\ActivityLogger::log('USER_STATUS_TOGGLED', "Status akun user {$user->name} diubah menjadi {$statusStr} oleh " . auth()->user()->name . ".");
 
         $msg = 'Status akun ' . $user->name . ' berhasil diubah menjadi ' . ($user->is_active ? 'Aktif' : 'Nonaktif') . '!';
         session()->flash('success', $msg);
@@ -132,8 +133,8 @@ class Index extends Component
 
     public function deleteUser(int $id)
     {
-        if (!auth()->user()->isFounder()) {
-            $err = 'Hanya Founder yang berhak menghapus akun pengguna.';
+        if (!auth()->user()->isSuperAdmin()) {
+            $err = 'Hanya Admin Utama / Supervisor yang berhak menghapus akun pengguna.';
             session()->flash('error', $err);
             $this->dispatch('notify', ['type' => 'error', 'title' => 'Gagal!', 'message' => $err]);
             return;
@@ -141,7 +142,7 @@ class Index extends Component
 
         $user = User::findOrFail($id);
         if ($user->id === auth()->id()) {
-            $err = 'Anda tidak dapat menghapus akun Founder Anda sendiri.';
+            $err = 'Anda tidak dapat menghapus akun Anda sendiri.';
             session()->flash('error', $err);
             $this->dispatch('notify', ['type' => 'error', 'title' => 'Gagal!', 'message' => $err]);
             return;

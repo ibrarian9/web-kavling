@@ -155,6 +155,26 @@ class Index extends Component
         $this->showAssignModal = false;
     }
 
+    public function delete(Worker $worker): void
+    {
+        $user = auth()->user();
+        if (!$user || !$user->isAdminOrFounder()) {
+            $err = 'Hanya Founder & Admin yang berhak menghapus data pekerja.';
+            session()->flash('error', $err);
+            $this->dispatch('notify', ['type' => 'error', 'title' => 'Gagal!', 'message' => $err]);
+            return;
+        }
+
+        $workerName = $worker->name;
+        $workerType = $worker->type;
+        $worker->delete();
+
+        \App\Services\ActivityLogger::log('WORKER_DELETED', "Data pekerja {$workerName} ({$workerType}) telah dihapus oleh {$user->name}.");
+        $msg = "Data pekerja {$workerName} berhasil dihapus.";
+        session()->flash('success', $msg);
+        $this->dispatch('notify', ['type' => 'success', 'title' => 'Berhasil!', 'message' => $msg]);
+    }
+
     public function render()
     {
         $query = Worker::query()

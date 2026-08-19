@@ -99,7 +99,7 @@
                 </td>
                 <td style="text-align: right; font-size: 8.5pt; color: #64748b;">
                     No. Ref: <strong class="font-mono text-slate-800">{{ substr($payment->uuid, 0, 8) }}</strong><br>
-                    Tanggal Cetak: {{ now()->translatedFormat('d F Y H:i') }} WIB
+                    Tanggal Cetak: {{ format_id_datetime(now()) }}
                 </td>
             </tr>
         </table>
@@ -122,7 +122,7 @@
                 <td style="font-weight: bold; color: #475569;">Proyek:</td>
                 <td>{{ $project->name }}</td>
                 <td style="font-weight: bold; color: #475569;">Tanggal Pembayaran:</td>
-                <td class="font-mono">{{ $payment->payment_date ? $payment->payment_date->format('d F Y') : '-' }}</td>
+                <td class="font-mono">{{ format_id_full_date($payment->payment_date) }}</td>
             </tr>
             <tr>
                 <td style="font-weight: bold; color: #475569;">Metode Bayar:</td>
@@ -150,7 +150,7 @@
                         <br><span style="font-size: 8pt; color: #64748b; font-weight: normal;">Catatan: {{ $payment->notes }}</span>
                     @endif
                 </td>
-                <td class="font-mono">{{ $payment->payment_date ? $payment->payment_date->format('d/m/Y') : '-' }}</td>
+                <td class="font-mono">{{ format_id_date($payment->payment_date) }}</td>
                 <td style="text-align: right; font-size: 11pt; color: #16a34a;" class="font-mono">
                     Rp {{ number_format($payment->amount_paid, 0, ',', '.') }}
                 </td>

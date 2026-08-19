@@ -16,7 +16,7 @@
                         <label class="block font-bold text-slate-700 mb-1">Bulan Gaji *</label>
                         <select wire:model="payroll_month" class="input-clean w-full font-bold">
                             @for($m = 1; $m <= 12; $m++)
-                                <option value="{{ $m }}">{{ date('F', mktime(0, 0, 0, $m, 1)) }}</option>
+                                <option value="{{ $m }}">{{ \Carbon\Carbon::create(null, $m, 1)->locale('id')->isoFormat('MMMM') }}</option>
                             @endfor
                         </select>
                     </div>
@@ -83,10 +83,11 @@
                     </div>
                 </div>
 
-                <div>
-                    <label class="block font-semibold text-slate-700 mb-1">Foto Struk / Bukti Transfer (Opsional)</label>
-                    <input type="file" wire:model="receipt_photo" accept="image/*,.pdf" class="w-full text-xs text-slate-600">
-                </div>
+                <x-receipt-upload 
+                    model="receipt_photo" 
+                    :photo="$receipt_photo" 
+                    label="Foto Struk / Bukti Transfer (Opsional)"
+                />
 
                 <div class="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
                     <x-button variant="secondary" size="md" type="button" wire:click="$set('showPaymentModal', false)">Batal</x-button>

@@ -21,10 +21,11 @@
                 <option value="Cash / Tunai">Cash / Tunai</option>
             </select>
         </div>
-        <div>
-            <label class="block font-semibold text-slate-700 mb-1">Bukti Transfer / Kuitansi</label>
-            <input type="file" wire:model="settle_comm_photo" accept="image/*,.pdf" class="input-clean w-full">
-        </div>
+        <x-receipt-upload 
+            model="settle_comm_photo" 
+            :photo="$settle_comm_photo" 
+            label="Bukti Transfer / Kuitansi (Opsional)"
+        />
         <div>
             <label class="block font-semibold text-slate-700 mb-1">Catatan</label>
             <input type="text" wire:model="settle_comm_notes" class="input-clean w-full">

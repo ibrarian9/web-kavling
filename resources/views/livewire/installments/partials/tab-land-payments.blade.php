@@ -159,10 +159,9 @@
                 </select>
 
                 @if($landSearch || $landProjectIdFilter || $landDatePeriod !== 'all')
-                    <button wire:click="$set('landSearch', ''); $set('landProjectIdFilter', ''); $set('landDatePeriod', 'all'); $set('landStartDate', ''); $set('landEndDate', '');" class="px-2.5 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 rounded-xl text-xs font-bold transition flex items-center gap-1 shadow-2xs">
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-                        <span>Reset Filter</span>
-                    </button>
+                    <x-reset-filter-button 
+                        wire:click="$set('landSearch', ''); $set('landProjectIdFilter', ''); $set('landDatePeriod', 'all'); $set('landStartDate', ''); $set('landEndDate', '');" 
+                    />
                 @endif
             </div>
 
@@ -179,7 +178,7 @@
         @forelse($landPayments as $pay)
             <tr class="hover:bg-slate-50/80 transition duration-150">
                 <td class="p-3.5 font-mono font-bold text-slate-900 text-xs">
-                    {{ $pay->payment_date ? $pay->payment_date->format('d M Y') : '-' }}
+                    {{ format_id_date($pay->payment_date) }}
                 </td>
                 <td class="p-3.5">
                     <a href="{{ route('projects.show', $pay->project_id) }}" class="font-bold text-slate-900 text-xs hover:text-emerald-600 block">

@@ -12,8 +12,8 @@
 
     <div class="flex flex-wrap items-center gap-2">
         @if(count($expenses) > 0)
-            <x-button variant="emerald" size="sm" wire:click="openViewer('Pratinjau Laporan Belanja & Gaji Worker', 'pdf', '{{ route('field-expenses.export-pdf', ['project_id' => $project_id, 'unit_id' => $unit_id, 'category_filter' => $category_filter, 'search' => $search]) }}')" icon="pdf">
-                <span>Lihat PDF Rekap</span>
+            <x-button variant="rose" size="sm" wire:click="openViewer('Pratinjau Laporan Belanja & Gaji Worker', 'pdf', '{{ route('field-expenses.export-pdf', ['project_id' => $project_id, 'unit_id' => $unit_id, 'category_filter' => $category_filter, 'search' => $search, 'date_period' => $datePeriod, 'start_date' => $startDate, 'end_date' => $endDate]) }}')" icon="pdf">
+                <span>Cetak PDF Rekap</span>
             </x-button>
         @else
             <x-button variant="outline" size="sm" disabled icon="pdf" title="Belum ada data transaksi pengeluaran/belanja untuk digenerate PDF" class="opacity-50 cursor-not-allowed">

@@ -3,7 +3,7 @@
     <div class="card-clean p-5 space-y-1 bg-white border border-slate-200/80">
         <span class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Total Beban Gaji Terbayar (Bulan Ini)</span>
         <p class="text-2xl font-black text-emerald-700 font-mono">Rp {{ number_format($totalMonthlySalaryPaid, 0, ',', '.') }}</p>
-        <p class="text-[10px] text-slate-400">Pencatatan penggajian periode {{ date('F Y') }}</p>
+        <p class="text-[10px] text-slate-400">Pencatatan penggajian periode {{ now()->locale('id')->isoFormat('MMMM Y') }}</p>
     </div>
 
     <div class="card-clean p-5 space-y-1 bg-white border border-slate-200/80">

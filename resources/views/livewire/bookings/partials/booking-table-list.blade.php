@@ -1,36 +1,47 @@
 <!-- Filters Toolbar -->
 <div class="card-clean p-4 border border-slate-200/80 rounded-3xl flex flex-col md:flex-row items-center justify-between gap-3">
-    <div class="flex items-center gap-2.5 w-full md:w-auto flex-wrap">
-        <select wire:model.live="projectFilter" class="select-clean text-xs font-bold w-full md:w-60">
+    <div class="flex items-center gap-2.5 w-full md:w-auto flex-wrap flex-1">
+        <!-- Filter Periode Waktu Tanggal -->
+        <x-date-period-filter periodModel="datePeriod" startModel="startDate" endModel="endDate" :periodValue="$datePeriod" />
+
+        <select wire:model.live="projectFilter" class="select-clean text-xs font-bold w-full sm:w-auto min-w-[180px]">
             <option value="">Semua Perumahan / Proyek</option>
             @foreach ($projects as $proj)
                 <option value="{{ $proj->id }}">{{ $proj->name }}</option>
             @endforeach
         </select>
 
-        <select wire:model.live="typeFilter" class="select-clean text-xs font-bold w-full md:w-48">
+        <select wire:model.live="typeFilter" class="select-clean text-xs font-bold w-full sm:w-auto min-w-[150px]">
             <option value="">Semua Tingkat Booking</option>
             <option value="unit">Per Unit Spesifik</option>
             <option value="project">Per Proyek Perumahan</option>
         </select>
 
-        <select wire:model.live="statusFilter" class="select-clean text-xs font-bold w-full md:w-48">
+        <select wire:model.live="statusFilter" class="select-clean text-xs font-bold w-full sm:w-auto min-w-[140px]">
             <option value="">Semua Status</option>
             <option value="active">Aktif (Booked)</option>
             <option value="converted">DP ACC / Terjual</option>
             <option value="cancelled">Batal</option>
         </select>
+
+        <x-search-input placeholder="Cari nama pembeli, telp, unit..." containerClass="w-full sm:w-60" />
     </div>
+
+    @if($search || $projectFilter || $typeFilter || $statusFilter || $datePeriod !== 'all' || $startDate || $endDate)
+        <x-reset-filter-button 
+            wire:click="$set('search', ''); $set('projectFilter', null); $set('typeFilter', ''); $set('statusFilter', ''); $set('datePeriod', 'all'); $set('startDate', ''); $set('endDate', '');" 
+        />
+    @endif
 </div>
 
 <!-- Table Card -->
-<x-table :headers="['Tgl Pemesanan', 'Nama Pemesan', 'Perumahan & Unit', 'Tingkat Booking', ['label' => 'Nominal Tanda Jadi', 'class' => 'p-3.5 text-right'], ['label' => 'Status', 'class' => 'p-3.5 text-center'], ['label' => 'Foto Resi & Invoice', 'class' => 'p-3.5 text-center'], ['label' => 'Aksi', 'class' => 'p-3.5 text-center']]" loadingTarget="projectFilter, typeFilter, statusFilter, gotoPage, nextPage, previousPage">
+<x-table :headers="['Tgl Pemesanan', 'Nama Pemesan', 'Perumahan & Unit', 'Tingkat Booking', ['label' => 'Nominal Tanda Jadi', 'class' => 'p-3.5 text-right'], ['label' => 'Status', 'class' => 'p-3.5 text-center'], ['label' => 'Foto Resi & Invoice', 'class' => 'p-3.5 text-center'], ['label' => 'Aksi', 'class' => 'p-3.5 text-center']]" loadingTarget="search, projectFilter, typeFilter, statusFilter, datePeriod, startDate, endDate, gotoPage, nextPage, previousPage">
     @forelse ($bookings as $b)
         <tr class="hover:bg-slate-50/60 transition-colors">
             <td class="p-3.5 font-mono font-medium text-slate-700 text-xs">
-                {{ $b->booking_date ? $b->booking_date->format('d/m/Y') : '-' }}
+                <span class="font-bold text-slate-800">{{ format_id_date($b->booking_date) }}</span>
                 @if ($b->expiry_date)
-                    <span class="block text-[10px] text-slate-400">s/d {{ $b->expiry_date->format('d/m/Y') }}</span>
+                    <span class="block text-[10px] text-slate-400">s/d {{ format_id_date($b->expiry_date) }}</span>
                 @endif
             </td>
             <td class="p-3.5 font-bold text-slate-900 text-xs">
@@ -88,21 +99,23 @@
                         @if (auth()->user()->isAdminOrFounder() || auth()->user()->isMarketing() || auth()->user()->isSupervisor() || auth()->user()->isFinance())
                             <x-action-dropdown title="Menu Opsi Booking" size="xs">
                                 <div class="py-1">
-                                    <x-dropdown-item icon="edit" wire:click="openEditModal({{ $b->id }})">
+                                    <x-dropdown-item icon="edit" wire:click="editBooking({{ $b->id }})">
                                         Edit Data
                                     </x-dropdown-item>
                                 </div>
-                                <div class="py-1">
-                                    <x-dropdown-item icon="delete" variant="danger" @click="confirmModalAction({
-                                        title: 'Batalkan Booking',
-                                        message: 'Batalkan pemesanan {{ $b->buyer_name }} ini? Status unit akan kembali tersedia.',
-                                        confirmText: 'Batalkan Booking',
-                                        btnClass: 'px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5',
-                                        onConfirm: () => $wire.cancelBooking({{ $b->id }})
-                                    })">
-                                        Batalkan Booking
-                                    </x-dropdown-item>
-                                </div>
+                                @if (auth()->user()->isSuperAdmin())
+                                    <div class="py-1">
+                                        <x-dropdown-item icon="delete" variant="danger" @click="confirmModalAction({
+                                            title: 'Batalkan Booking',
+                                            message: 'Batalkan pemesanan {{ $b->buyer_name }} ini? Status unit akan kembali tersedia.',
+                                            confirmText: 'Batalkan Booking',
+                                            btnClass: 'px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5',
+                                            onConfirm: () => $wire.deleteBooking({{ $b->id }})
+                                        })">
+                                            Batalkan Booking
+                                        </x-dropdown-item>
+                                    </div>
+                                @endif
                             </x-action-dropdown>
                         @endif
                     @else

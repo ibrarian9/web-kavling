@@ -18,6 +18,9 @@ class FieldExpensesReportController extends Controller
         $unitId = $request->query('unit_id');
         $categoryFilter = $request->query('category_filter', 'all');
         $search = $request->query('search');
+        $datePeriod = $request->query('date_period', 'all');
+        $startDate = $request->query('start_date');
+        $endDate = $request->query('end_date');
 
         $salaryQuery = WorkerSalaryPayment::with(['payroll.worker', 'payroll.unit', 'payroll.project']);
         if ($projectId) {
@@ -29,6 +32,9 @@ class FieldExpensesReportController extends Controller
             $salaryQuery->whereHas('payroll', function ($q) use ($unitId) {
                 $q->where('unit_id', $unitId);
             });
+        }
+        if ($datePeriod !== 'all') {
+            $this->applyDateFilter($salaryQuery, 'payment_date', $datePeriod, $startDate, $endDate);
         }
         if ($search) {
             $salaryQuery->whereHas('payroll.worker', function ($q) use ($search) {
@@ -42,6 +48,9 @@ class FieldExpensesReportController extends Controller
         }
         if ($unitId) {
             $materialQuery->where('unit_id', $unitId);
+        }
+        if ($datePeriod !== 'all') {
+            $this->applyDateFilter($materialQuery, 'purchase_date', $datePeriod, $startDate, $endDate);
         }
         if ($search) {
             $materialQuery->where(function ($q) use ($search) {
@@ -97,6 +106,17 @@ class FieldExpensesReportController extends Controller
         $projectInfo = $projectId ? Project::find($projectId)?->name : 'Semua Proyek';
         $unitInfo = $unitId ? Unit::find($unitId)?->code : 'Semua Unit';
 
+        $periodInfo = match($datePeriod) {
+            'today' => 'Hari Ini (' . now()->format('d/m/Y') . ')',
+            'yesterday' => 'Kemarin (' . now()->subDay()->format('d/m/Y') . ')',
+            'this_week' => 'Minggu Ini (' . now()->startOfWeek()->format('d/m/Y') . ' - ' . now()->endOfWeek()->format('d/m/Y') . ')',
+            'this_month' => 'Bulan Ini (' . now()->locale('id')->isoFormat('MMMM Y') . ')',
+            'last_month' => 'Bulan Lalu (' . now()->subMonth()->locale('id')->isoFormat('MMMM Y') . ')',
+            'this_year' => 'Tahun Ini (' . now()->year . ')',
+            'custom' => ($startDate && $endDate ? \Carbon\Carbon::parse($startDate)->format('d/m/Y') . ' s/d ' . \Carbon\Carbon::parse($endDate)->format('d/m/Y') : ($startDate ? 'Sejak ' . \Carbon\Carbon::parse($startDate)->format('d/m/Y') : ($endDate ? 'Sampai ' . \Carbon\Carbon::parse($endDate)->format('d/m/Y') : 'Rentang Custom'))),
+            default => 'Semua Periode Tanggal',
+        };
+
         $verifyUrl = route('verify.field-expenses');
         $qrCodeUrl = $this->generateQrBase64($verifyUrl);
 
@@ -112,11 +132,47 @@ class FieldExpensesReportController extends Controller
             'projectInfo' => $projectInfo,
             'unitInfo' => $unitInfo,
             'categoryFilter' => $categoryFilter,
+            'periodInfo' => $periodInfo,
             'verifyUrl' => $verifyUrl,
             'qrCodeUrl' => $qrCodeUrl,
         ]);
 
         return $pdf->stream('LAPORAN-BELANJA-DAN-GAJI-WORKER.pdf');
+    }
+
+    private function applyDateFilter($query, string $column, string $period, ?string $start, ?string $end)
+    {
+        switch ($period) {
+            case 'today':
+                return $query->whereDate($column, \Carbon\Carbon::today());
+            case 'yesterday':
+                return $query->whereDate($column, \Carbon\Carbon::yesterday());
+            case 'this_week':
+                return $query->whereBetween($column, [
+                    \Carbon\Carbon::now()->startOfWeek()->toDateString(),
+                    \Carbon\Carbon::now()->endOfWeek()->toDateString(),
+                ]);
+            case 'this_month':
+                return $query->whereMonth($column, \Carbon\Carbon::now()->month)
+                             ->whereYear($column, \Carbon\Carbon::now()->year);
+            case 'last_month':
+                $lastMonth = \Carbon\Carbon::now()->subMonth();
+                return $query->whereMonth($column, $lastMonth->month)
+                             ->whereYear($column, $lastMonth->year);
+            case 'this_year':
+                return $query->whereYear($column, \Carbon\Carbon::now()->year);
+            case 'custom':
+                if (!empty($start) && !empty($end)) {
+                    return $query->whereBetween($column, [min($start, $end), max($start, $end)]);
+                } elseif (!empty($start)) {
+                    return $query->whereDate($column, '>=', $start);
+                } elseif (!empty($end)) {
+                    return $query->whereDate($column, '<=', $end);
+                }
+                return $query;
+            default:
+                return $query;
+        }
     }
 
     public function verify()

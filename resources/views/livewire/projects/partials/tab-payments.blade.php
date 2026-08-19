@@ -38,7 +38,7 @@
                     <div class="flex items-center justify-between">
                         <div class="flex items-center gap-2">
                             <span class="w-6 h-6 rounded-full bg-purple-100 text-purple-800 text-[10px] font-bold flex items-center justify-center">{{ $index + 1 }}</span>
-                            <span class="font-mono font-bold text-slate-800 text-xs">{{ $pay->payment_date ? $pay->payment_date->format('d M Y') : '-' }}</span>
+                            <span class="font-mono font-bold text-slate-800 text-xs">{{ format_id_date($pay->payment_date) }}</span>
                         </div>
                         <span class="font-mono font-extrabold text-rose-700 text-sm">- Rp {{ number_format($pay->amount_paid, 0, ',', '.') }}</span>
                     </div>
@@ -81,6 +81,8 @@
                             <x-button variant="edit" size="xs" wire:click="editProjectPayment({{ $pay->id }})" title="Edit">
                                 <span>Edit</span>
                             </x-button>
+                        @endif
+                        @if(auth()->user()->isSuperAdmin())
                             <x-button variant="delete" size="xs" @click="confirmModalAction({
                                 title: 'Hapus Pembayaran Lahan',
                                 message: 'Hapus pencatatan pembayaran lahan ini?',
@@ -123,7 +125,7 @@
                         <tr class="hover:bg-slate-50/80">
                             <td class="px-4 py-3.5 font-mono text-slate-500 font-semibold">{{ $index + 1 }}</td>
                             <td class="px-4 py-3.5 font-mono font-bold text-slate-800">
-                                {{ $pay->payment_date ? $pay->payment_date->format('d M Y') : '-' }}
+                                {{ format_id_date($pay->payment_date) }}
                             </td>
                             <td class="px-4 py-3.5 font-semibold text-slate-700">
                                 <span class="px-2 py-0.5 rounded bg-slate-100 border border-slate-200 text-[10px]">
@@ -181,17 +183,19 @@
                                                     Edit Pembayaran
                                                 </x-dropdown-item>
                                             </div>
-                                            <div class="py-1">
-                                                <x-dropdown-item icon="delete" variant="danger" @click="confirmModalAction({
-                                                    title: 'Hapus Pembayaran Lahan',
-                                                    message: 'Hapus pencatatan pembayaran lahan ini?',
-                                                    confirmText: 'Hapus Pembayaran',
-                                                    btnClass: 'px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5',
-                                                    onConfirm: () => $wire.deleteProjectPayment({{ $pay->id }})
-                                                })">
-                                                    Hapus Pembayaran
-                                                </x-dropdown-item>
-                                            </div>
+                                            @if(auth()->user()->isSuperAdmin())
+                                                <div class="py-1">
+                                                    <x-dropdown-item icon="delete" variant="danger" @click="confirmModalAction({
+                                                        title: 'Hapus Pembayaran Lahan',
+                                                        message: 'Hapus pencatatan pembayaran lahan ini?',
+                                                        confirmText: 'Hapus Pembayaran',
+                                                        btnClass: 'px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5',
+                                                        onConfirm: () => $wire.deleteProjectPayment({{ $pay->id }})
+                                                    })">
+                                                        Hapus Pembayaran
+                                                    </x-dropdown-item>
+                                                </div>
+                                            @endif
                                         </x-action-dropdown>
                                     @endif
                                 </div>

@@ -44,19 +44,31 @@
 
     <!-- Filters & Search Toolbar -->
     <div class="card-clean p-4 border border-slate-200/80 rounded-3xl flex flex-col md:flex-row items-center justify-between gap-3">
-        <div class="w-full md:w-64">
-            <select wire:model.live="project_id" class="select-clean text-xs font-bold w-full">
-                <option value="">Semua Perumahan / Proyek</option>
-                @foreach ($projects as $proj)
-                    <option value="{{ $proj->id }}">{{ $proj->name }}</option>
-                @endforeach
-            </select>
+        <div class="flex items-center gap-2.5 w-full md:w-auto flex-wrap flex-1">
+            <!-- Filter Periode Waktu Tanggal -->
+            <x-date-period-filter periodModel="datePeriod" startModel="startDate" endModel="endDate" :periodValue="$datePeriod" />
+
+            <div class="w-full sm:w-60">
+                <select wire:model.live="project_id" class="select-clean text-xs font-bold w-full">
+                    <option value="">Semua Perumahan / Proyek</option>
+                    @foreach ($projects as $proj)
+                        <option value="{{ $proj->id }}">{{ $proj->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+
+            <x-search-input placeholder="Cari no. SPP, nama pembeli, no. HP, atau kode unit..." containerClass="w-full sm:w-72" />
         </div>
-        <x-search-input placeholder="Cari no. SPP, nama pembeli, no. HP, atau kode unit..." containerClass="w-full md:w-80" />
+
+        @if($project_id || $search || $datePeriod !== 'all' || $startDate || $endDate)
+            <x-reset-filter-button 
+                wire:click="$set('project_id', null); $set('search', ''); $set('datePeriod', 'all'); $set('startDate', ''); $set('endDate', '');" 
+            />
+        @endif
     </div>
 
     <!-- Documents Table -->
-    <x-table :headers="['No. Invoice Pemesanan', 'Nama Pembeli', 'Unit & Proyek', ['label' => 'Harga Jual Final', 'class' => 'p-3.5 text-right'], 'Diterbitkan Oleh', 'Tgl Terbit', ['label' => 'Dokumen Resi', 'class' => 'p-3.5 text-center'], ['label' => 'Aksi', 'class' => 'p-3.5 text-right']]" loadingTarget="project_id, search, gotoPage, nextPage, previousPage">
+    <x-table :headers="['No. Invoice Pemesanan', 'Nama Pembeli', 'Unit & Proyek', ['label' => 'Harga Jual Final', 'class' => 'p-3.5 text-right'], 'Diterbitkan Oleh', 'Tgl Terbit', ['label' => 'Dokumen Resi', 'class' => 'p-3.5 text-center'], ['label' => 'Aksi', 'class' => 'p-3.5 text-right']]" loadingTarget="project_id, search, datePeriod, startDate, endDate, gotoPage, nextPage, previousPage">
         @forelse($documents as $doc)
             <tr class="hover:bg-slate-50/60 transition duration-150">
                 <td class="p-3.5 font-mono font-bold text-slate-900 text-xs whitespace-nowrap">
@@ -78,8 +90,8 @@
                 <td class="p-3.5 font-medium text-slate-700 text-xs">
                     {{ $doc->issuer->name ?? 'Sistem' }}
                 </td>
-                <td class="p-3.5 text-slate-600 font-mono text-xs whitespace-nowrap">
-                    {{ $doc->issued_at ? $doc->issued_at->format('d/m/Y H:i') : '-' }}
+                <td class="p-3.5 text-slate-700 font-mono text-xs whitespace-nowrap">
+                    {{ format_id_datetime($doc->issued_at, false) }}
                 </td>
                 <td class="p-3.5 text-center whitespace-nowrap">
                     <div class="inline-flex items-center justify-center gap-1.5 flex-wrap">
@@ -99,7 +111,7 @@
                             </x-button>
                         @endif
 
-                        @if (auth()->user()->isFounder())
+                        @if (auth()->user()->isSuperAdmin())
                             <x-action-dropdown title="Menu Opsi Dokumen" size="xs">
                                 <div class="py-1">
                                     <button type="button" wire:click="editDocument({{ $doc->id }})" class="w-full text-left px-3.5 py-2 text-slate-700 hover:bg-slate-50 flex items-center gap-2 transition">

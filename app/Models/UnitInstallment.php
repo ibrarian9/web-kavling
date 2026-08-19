@@ -46,6 +46,10 @@ class UnitInstallment extends Model
 
     public function getTotalPaidAttribute(): float
     {
+        if (in_array($this->status, ['lunas', 'konversi_cash'])) {
+            return (float) $this->total_price;
+        }
+
         $paid = $this->relationLoaded('payments') 
             ? (float) $this->payments->sum('amount_paid') 
             : (float) $this->payments()->sum('amount_paid');
@@ -55,7 +59,24 @@ class UnitInstallment extends Model
 
     public function getRemainingBalanceAttribute(): float
     {
+        if (in_array($this->status, ['lunas', 'konversi_cash'])) {
+            return 0.0;
+        }
+
         return max(0, (float) $this->total_price - $this->total_paid);
+    }
+
+    public function getProgressPercentageAttribute(): float
+    {
+        if (in_array($this->status, ['lunas', 'konversi_cash'])) {
+            return 100.0;
+        }
+
+        if ((float) $this->total_price <= 0) {
+            return 0.0;
+        }
+
+        return min(100.0, round(((float) $this->total_paid / (float) $this->total_price) * 100, 1));
     }
 
     public function getBuyerNameAttribute(): string
@@ -68,8 +89,8 @@ class UnitInstallment extends Model
             return $this->unit->buyer_name;
         }
 
-        return $this->officialDocument?->buyer_name 
-            ?? $this->unit?->buyer_name 
+        return $this->officialDocument()->value('buyer_name') 
+            ?? $this->unit()->first()?->buyer_name 
             ?? 'Konsumen Pembeli';
     }
 
@@ -83,7 +104,7 @@ class UnitInstallment extends Model
             return $this->unit->buyer_phone;
         }
 
-        return $this->officialDocument?->buyer_contact 
-            ?? $this->unit?->buyer_phone;
+        return $this->officialDocument()->value('buyer_contact') 
+            ?? $this->unit()->first()?->buyer_phone;
     }
 }

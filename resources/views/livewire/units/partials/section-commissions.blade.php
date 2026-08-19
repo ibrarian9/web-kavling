@@ -114,7 +114,7 @@
                                 @foreach($comm->payments as $p)
                                     <div class="flex items-center justify-between bg-white px-3 py-2 rounded-xl border border-slate-100 text-xs">
                                         <div class="flex items-center gap-2">
-                                            <span class="font-semibold text-slate-700">{{ $p->payment_date ? $p->payment_date->format('d/m/Y') : '-' }}</span>
+                                            <span class="font-semibold text-slate-700">{{ format_id_date($p->payment_date) }}</span>
                                             <span class="text-slate-400">•</span>
                                             <span class="text-slate-600">{{ $p->payment_method }}</span>
                                             @if($p->notes)

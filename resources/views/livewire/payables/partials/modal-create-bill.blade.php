@@ -80,10 +80,11 @@
             <input type="date" wire:model="new_purchase_date" required class="input-clean w-full font-mono">
         </div>
 
-        <div>
-            <label class="block font-semibold text-slate-700 mb-1">Upload Bukti Nota / Foto (Opsional)</label>
-            <input type="file" wire:model="new_receipt_photo" accept="image/*,.pdf" class="input-clean w-full">
-        </div>
+        <x-receipt-upload 
+            model="new_receipt_photo" 
+            :photo="$new_receipt_photo" 
+            label="Upload Bukti Nota / Foto (Opsional)"
+        />
 
         <div>
             <label class="block font-semibold text-slate-700 mb-1">Catatan / Keterangan</label>

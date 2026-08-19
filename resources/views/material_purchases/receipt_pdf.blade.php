@@ -142,7 +142,7 @@
                 <td class="meta-label">Nomor Transaksi:</td>
                 <td class="meta-value">RESI-MAT-{{ $material->id }}</td>
                 <td class="meta-label">Tanggal Pembelian:</td>
-                <td class="meta-value">{{ $material->purchase_date ? $material->purchase_date->format('d F Y') : '-' }}</td>
+                <td class="meta-value">{{ format_id_full_date($material->purchase_date) }}</td>
             </tr>
             <tr>
                 <td class="meta-label">Proyek / Unit:</td>

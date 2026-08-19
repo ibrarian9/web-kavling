@@ -13,9 +13,25 @@ uses(RefreshDatabase::class);
 beforeEach(function () {
     Role::findOrCreate('founder', 'web');
     Role::findOrCreate('supervisor', 'web');
+    Role::findOrCreate('marketing', 'web');
 });
 
-test('non founder is denied access to employee salaries page', function () {
+test('unauthorized user is denied access to employee salaries page', function () {
+    $marketing = User::create([
+        'name' => 'Marketing User',
+        'email' => 'marketing_sal@example.com',
+        'password' => bcrypt('password'),
+        'role' => 'marketing',
+        'is_active' => true,
+    ]);
+    $marketing->assignRole('marketing');
+
+    $this->actingAs($marketing)
+        ->get(route('employee-salaries.index'))
+        ->assertStatus(403);
+});
+
+test('supervisor can access employee salaries page', function () {
     $supervisor = User::create([
         'name' => 'Supervisor User',
         'email' => 'supervisor_sal@example.com',
@@ -27,7 +43,7 @@ test('non founder is denied access to employee salaries page', function () {
 
     $this->actingAs($supervisor)
         ->get(route('employee-salaries.index'))
-        ->assertStatus(403);
+        ->assertStatus(200);
 });
 
 test('founder can access employee salaries page and manage salary standards', function () {

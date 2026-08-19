@@ -141,7 +141,7 @@
                     <div class="company-sub">Pengembang Properti & Perumahan Kavling</div>
                 </td>
                 <td style="width: 30%; text-align: right; font-size: 9pt; color: #64748b;">
-                    Tanggal Cetak: {{ date('d/m/Y H:i') }}
+                    Tanggal Cetak: {{ format_id_datetime(now(), false) }}
                 </td>
             </tr>
         </table>
@@ -159,7 +159,7 @@
         </tr>
         <tr>
             <td class="label">Tanggal Pembayaran</td>
-            <td class="value">{{ $payment->payment_date ? $payment->payment_date->format('d F Y') : '-' }}</td>
+            <td class="value">{{ format_id_full_date($payment->payment_date) }}</td>
         </tr>
         <tr>
             <td class="label">Metode Pembayaran</td>
@@ -195,7 +195,7 @@
         <div class="sign-box" style="border: 1px solid #e2e8f0; padding: 10px; border-radius: 8px; background-color: #faf5ff;">
             <div style="font-size: 9pt; font-weight: bold; color: #581c87; text-transform: uppercase;">DOKUMEN TERVERIFIKASI DIGITAL</div>
             <div style="font-size: 8pt; color: #64748b; margin-top: 4px;">PT. ATLANTIK PERKASA ABADI</div>
-            <div style="font-size: 8pt; color: #475569; margin-top: 8px;">Pekanbaru, {{ date('d F Y') }}</div>
+            <div style="font-size: 8pt; color: #475569; margin-top: 8px;">Pekanbaru, {{ format_id_full_date(now()) }}</div>
             <div style="font-size: 8pt; color: #64748b; margin-top: 4px;">Pencatat: <strong>{{ $payment->creator->name ?? 'Bagian Keuangan' }}</strong></div>
             <div style="font-size: 7.5pt; color: #7e22ce; margin-top: 6px; font-style: italic;">Sah secara digital via QR Code tanpa tanda tangan basah</div>
         </div>

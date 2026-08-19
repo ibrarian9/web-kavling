@@ -45,17 +45,19 @@
                                     Edit Standar Gaji
                                 </x-dropdown-item>
                             </div>
-                            <div class="py-1">
-                                <x-dropdown-item icon="delete" variant="danger" @click="confirmModalAction({
-                                    title: 'Hapus Standar Gaji Karyawan',
-                                    message: 'Yakin ingin menghapus standar gaji {{ $sal->employee_name }} dari sistem?',
-                                    confirmText: 'Hapus Standar',
-                                    btnClass: 'px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5',
-                                    onConfirm: () => $wire.deleteSalaryStandard({{ $sal->id }})
-                                })">
-                                    Hapus Standar
-                                </x-dropdown-item>
-                            </div>
+                            @if(auth()->user()->isSuperAdmin())
+                                <div class="py-1">
+                                    <x-dropdown-item icon="delete" variant="danger" @click="confirmModalAction({
+                                        title: 'Hapus Standar Gaji Karyawan',
+                                        message: 'Yakin ingin menghapus standar gaji {{ $sal->employee_name }} dari sistem?',
+                                        confirmText: 'Hapus Standar',
+                                        btnClass: 'px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5',
+                                        onConfirm: () => $wire.deleteSalaryStandard({{ $sal->id }})
+                                    })">
+                                        Hapus Standar
+                                    </x-dropdown-item>
+                                </div>
+                            @endif
                         </x-action-dropdown>
                     </div>
                 </td>

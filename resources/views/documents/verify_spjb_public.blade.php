@@ -27,7 +27,7 @@
             </div>
             <div class="flex justify-between items-center border-b border-slate-800 pb-2.5">
                 <span class="text-slate-400 font-medium">Tanggal Diterbitkan:</span>
-                <span class="font-bold text-slate-200">{{ date('d F Y', strtotime($doc->issued_at ?? $doc->created_at)) }}</span>
+                <span class="font-bold text-slate-200">{{ format_id_full_date($doc->issued_at ?? $doc->created_at) }}</span>
             </div>
             <div class="flex justify-between items-center border-b border-slate-800 pb-2.5">
                 <span class="text-slate-400 font-medium">Proyek & Unit:</span>

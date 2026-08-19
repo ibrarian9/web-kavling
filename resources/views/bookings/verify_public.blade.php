@@ -101,7 +101,7 @@
 
             <div class="flex justify-between border-b border-slate-800 pb-2">
                 <span class="text-slate-400">Tanggal Booking:</span>
-                <span class="font-mono text-slate-300">{{ $booking->booking_date ? $booking->booking_date->format('d/m/Y') : '-' }}</span>
+                <span class="font-mono text-slate-300">{{ format_id_full_date($booking->booking_date) }}</span>
             </div>
 
             <div class="flex justify-between">

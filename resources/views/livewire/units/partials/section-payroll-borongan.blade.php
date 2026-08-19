@@ -36,20 +36,27 @@
                     <div class="flex items-center gap-2 shrink-0">
                         <x-status-badge :status="$up->status" />
                         @if(auth()->user()->isFounder())
-                            <div class="flex items-center gap-1">
-                                <button wire:click="editPayrollSetup({{ $up->id }})" class="p-1 text-slate-400 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition" title="Edit Penetapan Gaji">
-                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-                                </button>
-                                <button type="button" @click="confirmModalAction({
-                                    title: 'Hapus Penetapan Gaji',
-                                    message: 'Yakin ingin menghapus penetapan gaji unit ini beserta riwayat pembayarannya?',
-                                    confirmText: 'Hapus Penetapan Gaji',
-                                    btnClass: 'px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5',
-                                    onConfirm: () => $wire.deletePayrollSetup({{ $up->id }})
-                                })" class="p-1 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition" title="Hapus Penetapan Gaji">
-                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                                </button>
-                            </div>
+                            <x-action-dropdown size="xs" icon="dots" title="Menu Opsi Gaji">
+                                <div class="py-1">
+                                    <x-dropdown-item icon="edit" wire:click="editPayrollSetup({{ $up->id }})">
+                                        Edit Penetapan Gaji
+                                    </x-dropdown-item>
+                                    <x-dropdown-item icon="pdf" wire:click="openViewerModal('pdf', '{{ route('units.payroll.spk-pdf', $up->id) }}', 'Pratinjau Surat Perintah Kerja (SPK) - {{ $up->worker->name }}')">
+                                        Cetak SPK PDF
+                                    </x-dropdown-item>
+                                </div>
+                                <div class="py-1">
+                                    <x-dropdown-item icon="delete" variant="danger" @click="confirmModalAction({
+                                        title: 'Hapus Penetapan Gaji',
+                                        message: 'Yakin ingin menghapus penetapan gaji unit ini beserta riwayat pembayarannya?',
+                                        confirmText: 'Hapus Penetapan Gaji',
+                                        btnClass: 'px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5',
+                                        onConfirm: () => $wire.deletePayrollSetup({{ $up->id }})
+                                    })">
+                                        Hapus Penetapan Gaji
+                                    </x-dropdown-item>
+                                </div>
+                            </x-action-dropdown>
                         @endif
                     </div>
                 </div>

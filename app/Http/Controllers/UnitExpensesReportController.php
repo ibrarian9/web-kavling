@@ -30,6 +30,18 @@ class UnitExpensesReportController extends Controller
 
         $combinedExpenses = collect();
 
+        foreach ($unitPayrolls as $up) {
+            $combinedExpenses->push((object)[
+                'id' => $up->id,
+                'source_type' => 'payroll_setup',
+                'date' => $up->created_at,
+                'category_badge' => 'Kontrak Gaji',
+                'description' => 'Kontrak Borongan Gaji ' . ($up->worker->name ?? 'Pekerja Lapangan') . ' (' . strtoupper($up->status) . ' - Terbayar Rp ' . number_format($up->paid_amount, 0, ',', '.') . ' / Total Rp ' . number_format($up->agreed_salary, 0, ',', '.') . ')',
+                'amount' => $up->agreed_salary,
+                'created_at' => $up->created_at,
+            ]);
+        }
+
         foreach ($salaryPayments as $sp) {
             $combinedExpenses->push((object)[
                 'id' => $sp->id,
@@ -58,12 +70,9 @@ class UnitExpensesReportController extends Controller
             return ($item->date ? $item->date->format('Y-m-d') : '0000-00-00') . '_' . $item->id;
         })->values();
 
-        if ($combinedExpenses->isEmpty()) {
-            return redirect()->route('units.show', $unit->id)->with('error', 'Belum ada data pengeluaran atau belanja material pada unit ini untuk digenerate PDF.');
-        }
-
         $totalMaterialCost = $materialPurchases->sum('total_price');
         $totalSalaryCost = $salaryPayments->sum('amount_paid');
+        $totalPayrollContractCost = $unitPayrolls->sum('agreed_salary');
         $totalExpenses = $totalMaterialCost + $totalSalaryCost;
 
         $verifyUrl = route('verify.unit-expenses', $unit->id);
@@ -79,6 +88,7 @@ class UnitExpensesReportController extends Controller
             'combinedExpenses' => $combinedExpenses,
             'totalMaterialCost' => $totalMaterialCost,
             'totalSalaryCost' => $totalSalaryCost,
+            'totalPayrollContractCost' => $totalPayrollContractCost,
             'totalExpenses' => $totalExpenses,
             'verifyUrl' => $verifyUrl,
             'qrCodeUrl' => $qrCodeUrl,
@@ -93,8 +103,9 @@ class UnitExpensesReportController extends Controller
         $unit = Unit::with(['project'])->findOrFail($id);
 
         $materialPurchases = WeeklyMaterialPurchase::where('unit_id', $unit->id)->get();
-        $unitPayrolls = WorkerUnitPayroll::where('unit_id', $unit->id)->pluck('id')->toArray();
-        $salaryPayments = WorkerSalaryPayment::whereIn('worker_unit_payroll_id', $unitPayrolls)->get();
+        $unitPayrolls = WorkerUnitPayroll::where('unit_id', $unit->id)->get();
+        $unitPayrollIds = $unitPayrolls->pluck('id')->toArray();
+        $salaryPayments = WorkerSalaryPayment::whereIn('worker_unit_payroll_id', $unitPayrollIds)->get();
 
         $totalMaterialCost = $materialPurchases->sum('total_price');
         $totalSalaryCost = $salaryPayments->sum('amount_paid');
@@ -108,6 +119,7 @@ class UnitExpensesReportController extends Controller
             'totalExpenses' => $totalExpenses,
             'materialCount' => $materialPurchases->count(),
             'salaryCount' => $salaryPayments->count(),
+            'payrollCount' => $unitPayrolls->count(),
         ]);
     }
 
@@ -122,7 +134,11 @@ class UnitExpensesReportController extends Controller
         } catch (\Throwable $e) {
         }
 
-        $svg = QrCode::size(150)->margin(1)->generate($url);
-        return 'data:image/svg+xml;base64,' . base64_encode($svg);
+        try {
+            $svg = QrCode::size(150)->margin(1)->generate($url);
+            return 'data:image/svg+xml;base64,' . base64_encode($svg);
+        } catch (\Throwable $e) {
+            return '';
+        }
     }
 }

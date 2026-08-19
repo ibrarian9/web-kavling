@@ -64,7 +64,7 @@
                 <div class="p-4 space-y-2">
                     <div class="flex items-center justify-between">
                         <div class="flex items-center gap-2">
-                            <span class="font-mono text-slate-600 text-xs">{{ $tx->transaction_date ? $tx->transaction_date->format('d/m/Y') : '-' }}</span>
+                            <span class="font-mono text-slate-700 text-xs font-bold">{{ format_id_date($tx->transaction_date) }}</span>
                             @if($tx->type === 'masuk')
                                 <span class="px-2 py-0.5 text-[10px] font-bold bg-emerald-100 text-emerald-800 rounded-full border border-emerald-200">MASUK</span>
                             @else
@@ -90,7 +90,7 @@
                             <span>Detail</span>
                         </x-button>
 
-                        @if(auth()->user()->isAdminOrFounder() || auth()->user()->isFinance())
+                        @if(auth()->user()->isSuperAdmin())
                             <x-button variant="delete" size="xs" @click="confirmModalAction({
                                 title: 'Hapus Mutasi Kas',
                                 message: 'Yakin ingin menghapus catatan transaksi mutasi kas ini?',
@@ -128,7 +128,7 @@
                 <tbody class="divide-y divide-slate-100">
                     @forelse($cashflowTransactions as $tx)
                         <tr class="hover:bg-slate-50/80">
-                            <td class="px-4 py-3 font-mono text-slate-600 whitespace-nowrap">{{ $tx->transaction_date ? $tx->transaction_date->format('d/m/Y') : '-' }}</td>
+                            <td class="px-4 py-3 font-mono text-slate-700 font-bold whitespace-nowrap">{{ format_id_date($tx->transaction_date) }}</td>
                             <td class="px-4 py-3 whitespace-nowrap">
                                 <x-category-badge :category="$tx->category" />
                             </td>
@@ -155,7 +155,7 @@
                                         <span>Detail</span>
                                     </x-button>
 
-                                    @if(auth()->user()->isAdminOrFounder() || auth()->user()->isFinance())
+                                    @if(auth()->user()->isSuperAdmin())
                                         <x-action-dropdown title="Menu Opsi Kas" size="xs">
                                             <div class="py-1">
                                                 <x-dropdown-item icon="delete" variant="danger" @click="confirmModalAction({

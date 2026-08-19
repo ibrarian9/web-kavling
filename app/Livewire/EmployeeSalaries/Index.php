@@ -8,6 +8,7 @@ use App\Models\EmployeeSalary;
 use App\Models\User;
 use App\Models\Worker;
 use App\Services\ActivityLogger;
+use App\Traits\WithDatePeriodFilter;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -17,6 +18,7 @@ class Index extends Component
 {
     use WithPagination;
     use WithFileUploads;
+    use WithDatePeriodFilter;
 
     public string $activeTab = 'salaries'; // 'salaries', 'payments'
     public string $search = '';
@@ -57,12 +59,20 @@ class Index extends Component
     public string $payment_notes = '';
     public $receipt_photo = null;
 
-    protected $queryString = ['activeTab', 'search', 'selected_month', 'selected_year'];
+    protected $queryString = [
+        'activeTab' => ['except' => 'salaries'],
+        'search' => ['except' => ''],
+        'selected_month' => ['except' => ''],
+        'selected_year' => ['except' => ''],
+        'datePeriod' => ['except' => 'all'],
+        'startDate' => ['except' => ''],
+        'endDate' => ['except' => ''],
+    ];
 
     public function mount(): void
     {
-        if (!auth()->user()->isFounder()) {
-            abort(403, 'Akses menu penggajian karyawan khusus untuk Founder.');
+        if (!auth()->user()->isSuperAdmin() && !auth()->user()->isFinance()) {
+            abort(403, 'Akses menu penggajian karyawan khusus untuk Admin Utama, Supervisor, dan Tim Finance.');
         }
 
         $this->payroll_month = (int) date('n');
@@ -203,6 +213,11 @@ class Index extends Component
 
     public function deleteSalaryStandard($id): void
     {
+        if (!auth()->user()->isSuperAdmin()) {
+            session()->flash('error', 'Hanya Founder dan Supervisor yang berhak menghapus standar gaji.');
+            return;
+        }
+
         $sal = EmployeeSalary::findOrFail($id);
         $name = $sal->employee_name;
         $pos = $sal->position ?? '-';
@@ -242,7 +257,8 @@ class Index extends Component
             'pay_allowance' => 'nullable|numeric|min:0',
             'pay_bonus' => 'nullable|numeric|min:0',
             'pay_deductions' => 'nullable|numeric|min:0',
-            'receipt_photo' => 'nullable|image|max:2048',
+            'payment_method' => 'required|string',
+            'receipt_photo' => 'nullable|image|mimes:jpg,jpeg,png,webp,heic,heif|max:2048',
         ]);
 
         $sal = EmployeeSalary::findOrFail($this->paymentSalaryId);
@@ -251,22 +267,27 @@ class Index extends Component
         $allowance = (float) $this->pay_allowance;
         $bonus = (float) $this->pay_bonus;
         $deductions = (float) $this->pay_deductions;
-        $netSalary = max(0, $basic + $allowance + $bonus - $deductions);
+        $netSalary = ($basic + $allowance + $bonus) - $deductions;
 
-        $receiptPath = null;
-        if ($this->receipt_photo) {
-            $receiptPath = $this->receipt_photo->store('receipts/employee_salaries', 'public');
+        if ($netSalary <= 0) {
+            session()->flash('error', 'Gaji bersih (take-home pay) tidak boleh kurang dari atau sama dengan 0.');
+            return;
         }
 
-        DB::transaction(function () use ($sal, $basic, $allowance, $bonus, $deductions, $netSalary, $receiptPath) {
+        DB::transaction(function () use ($sal, $basic, $allowance, $bonus, $deductions, $netSalary) {
+            $receiptPath = null;
+            if ($this->receipt_photo) {
+                $receiptPath = \App\Services\ImageCompressor::compressAndStore($this->receipt_photo, 'receipts/employee_salaries');
+            }
+
             // Auto Record into Cashflow Transaction
             $cashflow = CashflowTransaction::create([
-                'project_id' => null, // Global Office Expense
                 'type' => 'keluar',
                 'category' => 'operasional',
                 'amount' => $netSalary,
                 'transaction_date' => $this->payment_date,
-                'description' => "Beban Gaji Karyawan: {$sal->employee_name} ({$sal->position}) - Periode " . $this->getIndonesianMonth($this->payroll_month) . " {$this->payroll_year}",
+                'description' => "Penggajian Karyawan ({$sal->employee_name} - Bulan {$this->getIndonesianMonth($this->payroll_month)} {$this->payroll_year})",
+                'reference_type' => EmployeePayrollPayment::class,
                 'payment_method' => $this->payment_method,
                 'receipt_photo_path' => $receiptPath,
                 'created_by' => auth()->id(),
@@ -302,6 +323,11 @@ class Index extends Component
 
     public function deletePaymentRecord($id): void
     {
+        if (!auth()->user()->isSuperAdmin()) {
+            session()->flash('error', 'Hanya Founder dan Supervisor yang berhak menghapus histori penggajian.');
+            return;
+        }
+
         $payment = EmployeePayrollPayment::with('employeeSalary')->findOrFail($id);
         $empName = $payment->employeeSalary->employee_name ?? 'Karyawan';
         $period = $this->getIndonesianMonth($payment->payroll_month) . ' ' . $payment->payroll_year;
@@ -357,6 +383,10 @@ class Index extends Component
 
         if ($this->selected_year) {
             $paymentsQuery->where('payroll_year', (int) $this->selected_year);
+        }
+
+        if ($this->datePeriod !== 'all') {
+            $this->applyDatePeriodFilter($paymentsQuery, 'payment_date');
         }
 
         $payments = $paymentsQuery->latest()->paginate(15);

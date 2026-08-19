@@ -7,12 +7,14 @@ use App\Models\OfficialDocument;
 use App\Models\PriceProposal;
 use App\Models\Unit;
 use App\Services\ActivityLogger;
+use App\Traits\WithDatePeriodFilter;
 use Livewire\Component;
 use Livewire\WithPagination;
 
 class Index extends Component
 {
     use WithPagination;
+    use WithDatePeriodFilter;
 
     public $create_unit_id = null;
     public $editingProposalId = null;
@@ -61,7 +63,15 @@ class Index extends Component
         $this->viewerTitle = '';
     }
 
-    protected $queryString = ['create_unit_id'];
+    protected $queryString = [
+        'create_unit_id' => ['except' => null],
+        'projectIdFilter' => ['except' => ''],
+        'statusFilter' => ['except' => 'all'],
+        'search' => ['except' => ''],
+        'datePeriod' => ['except' => 'all'],
+        'startDate' => ['except' => ''],
+        'endDate' => ['except' => ''],
+    ];
 
     public function mount()
     {
@@ -181,8 +191,8 @@ class Index extends Component
             return;
         }
 
-        if (!$user->isMarketing() && !$user->isAdminOrFounder()) {
-            session()->flash('error', 'Hanya Marketing, Admin, dan Founder yang berhak membuat pengajuan harga baru.');
+        if (!$user->isMarketing() && !$user->isAdminOrFounder() && !$user->isFinance()) {
+            session()->flash('error', 'Hanya Marketing, Finance, Admin, dan Founder yang berhak membuat pengajuan harga baru.');
             return;
         }
 
@@ -225,8 +235,8 @@ class Index extends Component
     public function deleteProposal($id)
     {
         $user = auth()->user();
-        if (!$user->isFounder()) {
-            session()->flash('error', 'Hanya Founder yang berhak menghapus pengajuan harga.');
+        if (!$user->isSuperAdmin()) {
+            session()->flash('error', 'Hanya Founder dan Supervisor yang berhak menghapus pengajuan harga.');
             return;
         }
 
@@ -242,9 +252,9 @@ class Index extends Component
 
         $proposal->delete();
 
-        ActivityLogger::log('PROPOSAL_DELETED', "Pengajuan harga unit {$unitCode} (ID #{$id}) telah dihapus oleh Founder.");
+        ActivityLogger::log('PROPOSAL_DELETED', "Pengajuan harga unit {$unitCode} (ID #{$id}) telah dihapus oleh " . $user->name);
 
-        session()->flash('success', 'Pengajuan harga unit ' . $unitCode . ' berhasil dihapus oleh Founder.');
+        session()->flash('success', 'Pengajuan harga unit ' . $unitCode . ' berhasil dihapus.');
     }
 
     public function openApprovalModal($proposalId)
@@ -264,8 +274,8 @@ class Index extends Component
     public function submitApproval()
     {
         $user = auth()->user();
-        if (!$user->isAdminOrFounder() && !$user->isSupervisor()) {
-            session()->flash('error', 'Hanya Admin, Founder, dan Supervisor yang berhak mengesahkan approval harga.');
+        if (!$user->isAdminOrFounder() && !$user->isFinance()) {
+            session()->flash('error', 'Hanya Admin, Founder, Supervisor, dan Tim Finance yang berhak mengesahkan approval harga.');
             return;
         }
 
@@ -429,6 +439,10 @@ class Index extends Component
             });
         }
 
+        if ($this->datePeriod !== 'all') {
+            $this->applyDatePeriodFilter($query, 'created_at');
+        }
+
         $proposals = $query->latest()->paginate(10);
 
         $projects = \App\Models\Project::orderBy('name')->get();
@@ -438,6 +452,9 @@ class Index extends Component
             'proposals' => $proposals,
             'projects' => $projects,
             'availableUnits' => $availableUnits,
+            'datePeriod' => $this->datePeriod,
+            'startDate' => $this->startDate,
+            'endDate' => $this->endDate,
         ])->layout('components.layouts.app', ['title' => 'Pengajuan & Approval Harga Jual']);
     }
 }

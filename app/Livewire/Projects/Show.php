@@ -299,8 +299,8 @@ class Show extends Component
     public function deleteUnit($unitId)
     {
         $user = auth()->user();
-        if (!$user || !$user->isFounder()) {
-            session()->flash('error', 'Hanya Founder yang berhak menghapus unit dari sistem.');
+        if (!$user || !$user->isSuperAdmin()) {
+            session()->flash('error', 'Hanya Founder dan Supervisor yang berhak menghapus unit dari sistem.');
             return;
         }
 
@@ -609,8 +609,8 @@ class Show extends Component
     public function deleteProjectPayment($paymentId)
     {
         $user = auth()->user();
-        if (!$user->isFounder() && !$user->isFinance()) {
-            session()->flash('error', 'Hanya Founder dan Finance yang berhak menghapus catatan pembayaran proyek.');
+        if (!$user || !$user->isSuperAdmin()) {
+            session()->flash('error', 'Hanya Founder dan Supervisor yang berhak menghapus catatan pembayaran proyek.');
             return;
         }
 
@@ -636,8 +636,8 @@ class Show extends Component
     public function deleteTransaction($id)
     {
         $user = auth()->user();
-        if (!$user || (!$user->isFounder() && !$user->isFinance())) {
-            session()->flash('error', 'Hanya Founder dan Finance yang berhak menghapus transaksi arus kas.');
+        if (!$user || !$user->isSuperAdmin()) {
+            session()->flash('error', 'Hanya Founder dan Supervisor yang berhak menghapus transaksi arus kas.');
             return;
         }
 
