@@ -47,6 +47,11 @@ class Index extends Component
 
     public function setTab(string $tab): void
     {
+        $user = auth()->user();
+        if ($tab === 'land_payments' && $user && $user->isAdmin()) {
+            $this->activeTab = 'unit_installments';
+            return;
+        }
         $this->activeTab = $tab;
         $this->resetPage();
     }
@@ -127,6 +132,9 @@ class Index extends Component
 
     public function mount(): void
     {
+        if (auth()->user()?->isAdmin() && $this->activeTab === 'land_payments') {
+            $this->activeTab = 'unit_installments';
+        }
         $this->start_date = date('Y-m-d');
         $this->payment_date = date('Y-m-d');
         $this->land_payment_date = date('Y-m-d');
@@ -430,8 +438,8 @@ class Index extends Component
     public function openLandPaymentModal($paymentId = null): void
     {
         $user = auth()->user();
-        if (!$user || (!$user->isAdminOrFounder() && !$user->isFinance())) {
-            session()->flash('error', 'Hanya Founder, Admin, dan Tim Finance yang berhak mencatat pembayaran lahan.');
+        if (!$user || (!$user->isFounder() && !$user->isFinance() && !$user->isSupervisor())) {
+            session()->flash('error', 'Hanya Founder, Supervisor, dan Tim Finance yang berhak mencatat pembayaran lahan.');
             return;
         }
 
@@ -471,8 +479,8 @@ class Index extends Component
     public function submitLandPayment(RecordLandPaymentAction $action): void
     {
         $user = auth()->user();
-        if (!$user || (!$user->isAdminOrFounder() && !$user->isFinance())) {
-            session()->flash('error', 'Hanya Founder, Admin, dan Tim Finance yang berhak mencatat pembayaran lahan.');
+        if (!$user || (!$user->isFounder() && !$user->isFinance() && !$user->isSupervisor())) {
+            session()->flash('error', 'Hanya Founder, Supervisor, dan Tim Finance yang berhak mencatat pembayaran lahan.');
             return;
         }
 

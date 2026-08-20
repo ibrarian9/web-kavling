@@ -42,6 +42,7 @@ class GlobalSearch extends Component
         $q = trim($this->query);
 
         // Predefined App Menus
+        $u = auth()->user();
         $allMenus = [
             ['title' => 'Dashboard Utama', 'category' => 'Menu', 'url' => route('dashboard'), 'icon' => 'home'],
             ['title' => 'Proyek Properti', 'category' => 'Menu', 'url' => route('projects.index'), 'icon' => 'office-building'],
@@ -50,11 +51,15 @@ class GlobalSearch extends Component
             ['title' => 'Pengajuan & Approval Proposal', 'category' => 'Menu', 'url' => route('proposals.index'), 'icon' => 'clipboard-check'],
             ['title' => 'Surat Resmi SPP (PDF)', 'category' => 'Menu', 'url' => route('documents.index'), 'icon' => 'document-text'],
             ['title' => 'Cicilan Pembeli & Skema', 'category' => 'Menu', 'url' => route('installments.index'), 'icon' => 'credit-card'],
-            ['title' => 'Arus Kas Global & Konsolidasi', 'category' => 'Menu', 'url' => route('cashflow.index'), 'icon' => 'chart-bar'],
-            ['title' => 'Invoice Manual', 'category' => 'Menu', 'url' => route('manual-invoices.index'), 'icon' => 'receipt'],
+            ...($u && ($u->isFounder() || $u->isFinance()) ? [
+                ['title' => 'Arus Kas Global & Konsolidasi', 'category' => 'Menu', 'url' => route('cashflow.index'), 'icon' => 'chart-bar'],
+                ['title' => 'Invoice Manual', 'category' => 'Menu', 'url' => route('manual-invoices.index'), 'icon' => 'receipt'],
+            ] : []),
             ['title' => 'Mandor & Tukang Lapangan', 'category' => 'Menu', 'url' => route('workers.index'), 'icon' => 'user-group'],
             ['title' => 'Laporan Belanja & Upah', 'category' => 'Menu', 'url' => route('field-expenses.index'), 'icon' => 'shopping-cart'],
-            ['title' => 'Penggajian Karyawan & Slip Gaji', 'category' => 'Menu', 'url' => route('employee-salaries.index'), 'icon' => 'banknotes'],
+            ...($u && ($u->isFounder() || $u->isFinance() || $u->isSupervisor()) ? [
+                ['title' => 'Penggajian Karyawan & Slip Gaji', 'category' => 'Menu', 'url' => route('employee-salaries.index'), 'icon' => 'banknotes'],
+            ] : []),
             ['title' => 'Profil', 'category' => 'Menu', 'url' => route('profile.index'), 'icon' => 'user'],
             ['title' => 'Tutorial & Panduan Sistem', 'category' => 'Menu', 'url' => route('tutorial.index'), 'icon' => 'academic-cap'],
         ];

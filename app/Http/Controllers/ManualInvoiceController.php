@@ -37,7 +37,8 @@ class ManualInvoiceController extends Controller
             'terbilang' => $terbilang,
         ]);
 
-        $fileName = 'Invoice-Manual-' . $invoice->invoice_number . '.pdf';
+        $cleanInvoiceNo = preg_replace('/[^A-Za-z0-9_-]/', '-', $invoice->invoice_number);
+        $fileName = 'Invoice-Manual-' . $cleanInvoiceNo . '.pdf';
         return $pdf->stream($fileName);
     }
 

@@ -28,7 +28,8 @@ class DocumentPdfController extends Controller
             'qrCodeUrl' => $qrCodeUrl,
         ]);
 
-        return $pdf->stream('Invoice-Pembayaran-' . $doc->unit->code . '.pdf');
+        $cleanUnitCode = preg_replace('/[^A-Za-z0-9_-]/', '-', $doc->unit->code);
+        return $pdf->stream('Invoice-Pembayaran-' . $cleanUnitCode . '.pdf');
     }
 
     public function streamSpjbPdf($id)
@@ -69,9 +70,11 @@ class DocumentPdfController extends Controller
             'qrCodeUrl' => $qrCodeUrl,
         ]);
 
+        $cleanUnitCode = preg_replace('/[^A-Za-z0-9_-]/', '-', $unit->code);
+        $cleanBuyerName = preg_replace('/[^A-Za-z0-9_-]/', '-', $doc->buyer_name);
         return response($pdf->output(), 200, [
             'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'inline; filename="SPJB-Perjanjian-Jual-Beli-' . $unit->code . '-' . str_replace(' ', '-', $doc->buyer_name) . '.pdf"',
+            'Content-Disposition' => 'inline; filename="SPJB-Perjanjian-Jual-Beli-' . $cleanUnitCode . '-' . $cleanBuyerName . '.pdf"',
         ]);
     }
 

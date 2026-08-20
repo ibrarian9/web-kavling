@@ -337,18 +337,18 @@
             </div>
         </div>
 
-        <!-- Table Data Content -->
+        <!-- Unified Table of Cashflow Transactions with CSS Table-to-Card Transformation -->
         <x-table :headers="['Tanggal', 'Proyek Properti', 'Tipe & Kategori', 'Keterangan Transaksi', 'Petugas Pencatat', ['label' => 'Nominal (Rp)', 'class' => 'p-3.5 text-right'], ['label' => 'Aksi & Resi', 'class' => 'p-3.5 text-center']]" loadingTarget="search, typeFilter, categoryFilter, filter_month, filter_project_id, filter_unit_id, page">
             @forelse($transactions as $trx)
                 <tr class="hover:bg-slate-50/70 transition duration-150">
                     <!-- Tanggal -->
-                    <td class="p-3.5 font-mono whitespace-nowrap">
+                    <td data-label="Tanggal" class="p-3.5 font-mono whitespace-nowrap">
                         <span class="font-bold text-slate-800 block text-xs">{{ format_id_date($trx->transaction_date) }}</span>
                         <span class="text-[10px] text-slate-400 font-sans block">{{ $trx->transaction_date ? $trx->transaction_date->locale('id')->isoFormat('dddd') : '' }}</span>
                     </td>
 
                     <!-- Proyek -->
-                    <td class="p-3.5 font-bold text-slate-800 text-xs">
+                    <td data-label="Proyek" class="p-3.5 font-bold text-slate-800 text-xs">
                         <div class="flex items-center gap-1.5">
                             <svg class="w-4 h-4 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5m3 0h1m-1-4h.01M9 16h.01M9 12h.01M9 8h.01M15 16h.01M15 12h.01M15 8h.01M12 16h.01M12 12h.01M12 8h.01"/></svg>
                             <span>{{ $trx->project->name ?? 'Non-Proyek / Kantor Pusat' }}</span>
@@ -356,7 +356,7 @@
                     </td>
 
                     <!-- Tipe & Kategori -->
-                    <td class="p-3.5">
+                    <td data-label="Tipe & Kategori" class="p-3.5">
                         <div class="space-y-1.5 flex flex-col items-start">
                             @if($trx->type === 'masuk')
                                 <x-status-badge status="kas_masuk" label="KAS MASUK" />
@@ -368,7 +368,7 @@
                     </td>
 
                     <!-- Keterangan Transaksi -->
-                    <td class="p-3.5 max-w-xs">
+                    <td data-label="Keterangan" class="p-3.5 max-w-xs">
                         <p class="font-bold text-slate-800 leading-relaxed text-xs">{{ $trx->description }}</p>
                         @if($trx->reference_type)
                             <span class="text-[10px] font-mono text-purple-700 bg-purple-50 px-2 py-0.5 rounded border border-purple-200 mt-1 inline-block">
@@ -378,18 +378,18 @@
                     </td>
 
                     <!-- Pencatat -->
-                    <td class="p-3.5">
+                    <td data-label="Pencatat" class="p-3.5">
                         <p class="font-bold text-slate-700 text-xs">{{ $trx->creator->name ?? 'System' }}</p>
                         <span class="text-[10px] text-slate-400 font-mono uppercase">{{ $trx->creator->role ?? 'System' }}</span>
                     </td>
 
                     <!-- Nominal -->
-                    <td class="p-3.5 text-right font-mono font-extrabold text-sm {{ $trx->type === 'masuk' ? 'text-emerald-600' : 'text-rose-600' }}">
+                    <td data-label="Nominal" class="p-3.5 text-right font-mono font-extrabold text-sm {{ $trx->type === 'masuk' ? 'text-emerald-600' : 'text-rose-600' }}">
                         <span>Rp {{ number_format($trx->amount, 0, ',', '.') }}</span>
                     </td>
 
                     <!-- Aksi -->
-                    <td class="p-3.5 text-center whitespace-nowrap">
+                    <td data-card-action class="p-3.5 text-center whitespace-nowrap">
                         <div class="inline-flex items-center justify-center gap-1.5 whitespace-nowrap">
                             <x-button variant="outline" size="xs" wire:click="openDetailModal({{ $trx->id }})" title="Audit Trail Detail Transaksi">
                                 Detail
@@ -433,13 +433,7 @@
                     </td>
                 </tr>
             @empty
-                <tr>
-                    <td colspan="7" class="p-12 text-center text-slate-400">
-                        <svg class="w-12 h-12 mx-auto text-slate-300 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                        <p class="font-semibold text-slate-600">Belum Ada Mutasi Transaksi Kas Ditemukan</p>
-                        <p class="text-xs text-slate-400 mt-1">Coba sesuaikan kata kunci pencarian atau catat transaksi kas baru.</p>
-                    </td>
-                </tr>
+                <x-table-empty colspan="7" title="Belum Ada Mutasi Transaksi Kas Ditemukan" message="Coba sesuaikan kata kunci pencarian atau catat transaksi kas baru." />
             @endforelse
         </x-table>
         

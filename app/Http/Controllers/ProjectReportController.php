@@ -44,7 +44,8 @@ class ProjectReportController extends Controller
             'printedAt' => now()->translatedFormat('d F Y H:i'),
         ]);
 
-        $fileName = 'REKAP-PEMBAYARAN-LAHAN-' . str_replace(' ', '-', strtoupper($project->name)) . '.pdf';
+        $cleanProjectName = preg_replace('/[^A-Za-z0-9_-]/', '-', strtoupper($project->name));
+        $fileName = 'REKAP-PEMBAYARAN-LAHAN-' . $cleanProjectName . '.pdf';
         \App\Services\ActivityLogger::log('PDF_EXPORT_LAND_PAYMENTS', "Pengguna " . auth()->user()->name . " mencetak / mengunduh Rekapitulasi Pembayaran Lahan Proyek {$project->name} PDF.");
         return $pdf->stream($fileName);
     }
@@ -160,7 +161,8 @@ class ProjectReportController extends Controller
             'printedAt' => now()->translatedFormat('d F Y H:i'),
         ]);
 
-        $fileName = 'REKAP-PENJUALAN-PROFIT-' . str_replace(' ', '-', strtoupper($project->name)) . '.pdf';
+        $cleanProjectName = preg_replace('/[^A-Za-z0-9_-]/', '-', strtoupper($project->name));
+        $fileName = 'REKAP-PENJUALAN-PROFIT-' . $cleanProjectName . '.pdf';
         \App\Services\ActivityLogger::log('PDF_EXPORT_SALES_PROFIT', "Pengguna " . auth()->user()->name . " mencetak / mengunduh Rekapitulasi Penjualan & Profit Proyek {$project->name} PDF.");
         return $pdf->stream($fileName);
     }

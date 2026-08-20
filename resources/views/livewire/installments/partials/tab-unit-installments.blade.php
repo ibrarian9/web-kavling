@@ -101,7 +101,7 @@
         </div>
     </div>
 
-    <!-- Installment Table -->
+    <!-- Unified Table of Unit Installments with CSS Table-to-Card Transformation -->
     <x-table :headers="['Unit & Proyek', 'Nama Konsumen / Pembeli', 'Harga Kesepakatan', 'Uang Muka (DP)', 'Progres & Terbayar', 'Sisa Piutang', 'Status', ['label' => 'Aksi', 'class' => 'p-3.5 text-center']]" loadingTarget="search, statusFilter, projectIdFilter, monthlyFilter, datePeriod, startDate, endDate, page">
         @forelse($installments as $inst)
             @php
@@ -113,13 +113,13 @@
                 $buyerName = $inst->officialDocument->buyer_name ?? ($inst->unit->activeBooking->buyer_name ?? ($inst->unit->bookings->first()->buyer_name ?? 'Pembeli Kavling'));
             @endphp
             <tr class="hover:bg-slate-50/80 transition duration-150">
-                <td class="p-3.5">
+                <td data-label="Unit & Proyek" class="p-3.5">
                     <a href="{{ route('units.show', $inst->unit_id) }}" class="font-bold text-slate-900 text-sm hover:text-emerald-600 block">
                         {{ $inst->unit->code ?? '-' }}
                     </a>
                     <span class="text-[10px] text-slate-500 font-medium">{{ $inst->unit->project->name ?? '-' }}</span>
                 </td>
-                <td class="p-3.5">
+                <td data-label="Nama Konsumen" class="p-3.5">
                     <p class="font-bold text-slate-800 text-xs">{{ $buyerName }}</p>
                     <div class="flex items-center gap-1 mt-0.5">
                         @if($inst->status === 'berjalan')
@@ -131,13 +131,13 @@
                         @endif
                     </div>
                 </td>
-                <td class="p-3.5 font-mono font-bold text-slate-900 text-xs">
+                <td data-label="Harga Kesepakatan" class="p-3.5 font-mono font-bold text-slate-900 text-xs">
                     Rp {{ number_format($inst->total_price, 0, ',', '.') }}
                 </td>
-                <td class="p-3.5 font-mono font-bold text-slate-700 text-xs">
+                <td data-label="Uang Muka (DP)" class="p-3.5 font-mono font-bold text-slate-700 text-xs">
                     Rp {{ number_format($inst->down_payment, 0, ',', '.') }}
                 </td>
-                <td class="p-3.5">
+                <td data-label="Progres Terbayar" class="p-3.5">
                     <div class="space-y-1">
                         <div class="flex items-center justify-between text-[10px] font-bold font-mono">
                             <span class="text-emerald-700">Rp {{ number_format($inst->total_paid, 0, ',', '.') }}</span>
@@ -149,10 +149,10 @@
                         <p class="text-[9px] text-slate-400 font-mono">{{ $inst->payments->count() }}x setoran tercatat</p>
                     </div>
                 </td>
-                <td class="p-3.5 font-mono font-bold text-xs {{ $inst->remaining_balance > 0 ? 'text-amber-700' : 'text-emerald-700' }}">
+                <td data-label="Sisa Piutang" class="p-3.5 font-mono font-bold text-xs {{ $inst->remaining_balance > 0 ? 'text-amber-700' : 'text-emerald-700' }}">
                     Rp {{ number_format($inst->remaining_balance, 0, ',', '.') }}
                 </td>
-                <td class="p-3.5">
+                <td data-label="Status" class="p-3.5">
                     @if($inst->status === 'lunas')
                         <x-status-badge status="lunas" label="LUNAS" />
                     @elseif($inst->status === 'konversi_cash')
@@ -161,7 +161,7 @@
                         <x-status-badge status="berjalan" label="BERJALAN" />
                     @endif
                 </td>
-                <td class="p-3.5 text-center whitespace-nowrap">
+                <td data-card-action class="p-3.5 text-center whitespace-nowrap">
                     <div class="inline-flex items-center justify-center gap-1.5 whitespace-nowrap">
                         @if($inst->status === 'berjalan' && (auth()->user()->isFounder() || auth()->user()->isFinance()))
                             <x-button variant="payment" icon="payment" size="xs" wire:click="openPaymentModal({{ $inst->id }})" title="Catat Pembayaran Setoran Cicilan">
@@ -208,13 +208,7 @@
                 </td>
             </tr>
         @empty
-            <tr>
-                <td colspan="8" class="p-12 text-center text-slate-400">
-                    <svg class="w-12 h-12 mx-auto text-slate-300 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 01-2 2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                    <p class="font-bold text-slate-600">Belum Ada Skema Cicilan Pembeli</p>
-                    <p class="text-xs text-slate-400 mt-1">Gunakan tombol "Setup Skema Cicilan Baru" untuk mendaftarkan unit terjual.</p>
-                </td>
-            </tr>
+            <x-table-empty colspan="8" title="Belum Ada Skema Cicilan Pembeli" message="Gunakan tombol 'Setup Skema Cicilan Baru' untuk mendaftarkan unit terjual." />
         @endforelse
     </x-table>
     <div>{{ $installments->links() }}</div>

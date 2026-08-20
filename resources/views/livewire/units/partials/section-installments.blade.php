@@ -11,7 +11,7 @@
             </h3>
 
             @if(auth()->user()->isAdminOrFounder() || auth()->user()->isFinance())
-                <div class="flex items-center gap-2 flex-wrap sm:flex-nowrap shrink-0">
+                <div class="flex items-center gap-2 flex-wrap">
                     <x-button variant="outline" size="xs" wire:click="openViewerModal('pdf', '{{ route('installments.unit-statement-pdf', $unit->installment->id) }}', 'Pratinjau Rekapitulasi Cicilan Unit {{ $unit->code }} - {{ $unit->installment->buyer_name }}')" icon="pdf" title="Pratinjau Rekapitulasi & Kartu Pembayaran Cicilan PDF">
                         <span>Rekap Cicilan PDF</span>
                     </x-button>

@@ -261,7 +261,7 @@ class Index extends Component
 
     public function render()
     {
-        $projectsQuery = Project::with(['units', 'assignments.user'])
+        $projectsQuery = Project::with(['units', 'assignments.user', 'assignments.worker'])
             ->withCount('units')
             ->latest();
 

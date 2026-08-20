@@ -30,24 +30,27 @@
             </div>
         </div>
 
-        <div class="text-xs border-t md:border-t-0 md:border-l border-slate-800 pt-2 md:pt-0 md:pl-4">
-            <span class="text-slate-400 block text-[10px] uppercase font-bold tracking-wider mb-1">Mandor / Pekerja Bertugas</span>
+        <div class="text-xs border-t md:border-t-0 md:border-l border-slate-800 pt-2 md:pt-0 md:pl-4 min-w-[200px]">
+            <span class="text-slate-400 block text-[10px] uppercase font-bold tracking-wider mb-1.5">Pengawas & Mandor Bertugas</span>
             @php
                 $projActiveAssignments = $project->assignments->where('status', 'active');
-                $firstProjWorker = $projActiveAssignments->first();
-                $projWorkerCount = $projActiveAssignments->count();
             @endphp
-            <div class="flex items-center gap-1">
-                @if($firstProjWorker && $firstProjWorker->worker)
-                    <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded text-[10px] font-bold bg-emerald-500 text-white border border-emerald-500/30 max-w-[200px] truncate" title="{{ $firstProjWorker->worker->name }} ({{ ucfirst($firstProjWorker->worker->type) }})">
-                        <span class="truncate">{{ $firstProjWorker->worker->name }} ({{ ucfirst($firstProjWorker->worker->type) }})</span>
-                        @if($projWorkerCount > 1)
-                            <span class="font-bold shrink-0 text-emerald-200">...</span>
-                        @endif
-                    </span>
-                @else
-                    <span class="text-slate-500 text-[11px] italic">Belum ada pekerja ditugaskan</span>
-                @endif
+            <div class="flex flex-wrap items-center gap-1.5">
+                @forelse($projActiveAssignments as $pa)
+                    @if($pa->user)
+                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-extrabold bg-purple-900/80 text-purple-200 border border-purple-700/80 shadow-2xs" title="Pengawas Project: {{ $pa->user->name }}">
+                            <svg class="w-3.5 h-3.5 text-purple-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                            <span>{{ $pa->user->name }} (Pengawas)</span>
+                        </span>
+                    @elseif($pa->worker)
+                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-extrabold bg-emerald-900/80 text-emerald-200 border border-emerald-700/80 shadow-2xs" title="{{ ucfirst($pa->worker->type) }}: {{ $pa->worker->name }}">
+                            <svg class="w-3.5 h-3.5 text-emerald-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                            <span>{{ $pa->worker->name }} ({{ ucfirst($pa->worker->type) }})</span>
+                        </span>
+                    @endif
+                @empty
+                    <span class="text-slate-500 text-[11px] italic">Belum ada pekerja / pengawas ditugaskan</span>
+                @endforelse
             </div>
         </div>
     </div>

@@ -67,33 +67,33 @@
         @endif
     </div>
 
-    <!-- Documents Table -->
+    <!-- Unified Table of Documents with CSS Table-to-Card Transformation -->
     <x-table :headers="['No. Invoice Pemesanan', 'Nama Pembeli', 'Unit & Proyek', ['label' => 'Harga Jual Final', 'class' => 'p-3.5 text-right'], 'Diterbitkan Oleh', 'Tgl Terbit', ['label' => 'Dokumen Resi', 'class' => 'p-3.5 text-center'], ['label' => 'Aksi', 'class' => 'p-3.5 text-right']]" loadingTarget="project_id, search, datePeriod, startDate, endDate, gotoPage, nextPage, previousPage">
         @forelse($documents as $doc)
             <tr class="hover:bg-slate-50/60 transition duration-150">
-                <td class="p-3.5 font-mono font-bold text-slate-900 text-xs whitespace-nowrap">
+                <td data-label="No. Invoice" class="p-3.5 font-mono font-bold text-slate-900 text-xs whitespace-nowrap">
                     {{ $doc->document_number }}
                 </td>
-                <td class="p-3.5">
+                <td data-label="Nama Pembeli" class="p-3.5">
                     <p class="font-bold text-slate-900 text-xs">{{ $doc->buyer_name }}</p>
                     <p class="text-slate-400 text-[10px] font-mono">{{ $doc->buyer_contact }}</p>
                 </td>
-                <td class="p-3.5 font-medium text-slate-800 text-xs">
+                <td data-label="Unit & Proyek" class="p-3.5 font-medium text-slate-800 text-xs">
                     <a href="{{ route('units.show', $doc->unit_id) }}" wire:navigate.hover class="font-bold text-slate-900 font-mono text-sm block hover:underline hover:text-emerald-700 transition" title="Ke Detail Unit {{ $doc->unit->code }}">
                         {{ $doc->unit->code }}
                     </a>
                     <p class="text-emerald-700 font-semibold text-[10px] mt-0.5">{{ $doc->unit->project->name }}</p>
                 </td>
-                <td class="p-3.5 text-right font-mono font-extrabold text-emerald-700 text-xs whitespace-nowrap">
+                <td data-label="Harga Jual Final" class="p-3.5 text-right font-mono font-extrabold text-emerald-700 text-xs whitespace-nowrap">
                     Rp {{ number_format($doc->proposal->proposed_price ?? $doc->unit->final_selling_price, 0, ',', '.') }}
                 </td>
-                <td class="p-3.5 font-medium text-slate-700 text-xs">
+                <td data-label="Diterbitkan Oleh" class="p-3.5 font-medium text-slate-700 text-xs">
                     {{ $doc->issuer->name ?? 'Sistem' }}
                 </td>
-                <td class="p-3.5 text-slate-700 font-mono text-xs whitespace-nowrap">
+                <td data-label="Tgl Terbit" class="p-3.5 text-slate-700 font-mono text-xs whitespace-nowrap">
                     {{ format_id_datetime($doc->issued_at, false) }}
                 </td>
-                <td class="p-3.5 text-center whitespace-nowrap">
+                <td data-label="Dokumen Resi" class="p-3.5 text-center whitespace-nowrap">
                     <div class="inline-flex items-center justify-center gap-1.5 flex-wrap">
                         <x-button variant="outline" size="xs" wire:click="openViewerModal('pdf', '{{ route('documents.stream', $doc->id) }}', 'Pratinjau Dokumen SPP - {{ $doc->document_number }}')" title="Lihat Dokumen SPP PDF">
                             SPP PDF
@@ -103,7 +103,7 @@
                         </x-button>
                     </div>
                 </td>
-                <td class="p-3.5 text-right whitespace-nowrap">
+                <td data-card-action class="p-3.5 text-right whitespace-nowrap">
                     <div class="inline-flex items-center justify-end gap-1.5 whitespace-nowrap">
                         @if ($doc->unit_id)
                             <x-button variant="outline" size="xs" href="{{ route('units.show', $doc->unit_id) }}" wire:navigate.hover title="Lihat Detail Unit {{ $doc->unit->code }}">
@@ -114,23 +114,21 @@
                         @if (auth()->user()->isSuperAdmin())
                             <x-action-dropdown title="Menu Opsi Dokumen" size="xs">
                                 <div class="py-1">
-                                    <button type="button" wire:click="editDocument({{ $doc->id }})" class="w-full text-left px-3.5 py-2 text-slate-700 hover:bg-slate-50 flex items-center gap-2 transition">
-                                        <svg class="w-4 h-4 text-amber-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-                                        <span>Edit Dokumen</span>
-                                    </button>
+                                    <x-dropdown-item icon="edit" wire:click="editDocument({{ $doc->id }})">
+                                        Edit Dokumen
+                                    </x-dropdown-item>
                                 </div>
 
                                 <div class="py-1">
-                                    <button type="button" @click="confirmModalAction({
+                                    <x-dropdown-item icon="delete" variant="danger" @click="confirmModalAction({
                                         title: 'Hapus Dokumen SPP',
                                         message: 'Yakin ingin MENGHAPUS dokumen SPP {{ $doc->document_number }} ini?',
                                         confirmText: 'Hapus Dokumen',
                                         btnClass: 'px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5',
                                         onConfirm: () => $wire.deleteDocument({{ $doc->id }})
-                                    })" class="w-full text-left px-3.5 py-2 text-rose-600 hover:bg-rose-50 flex items-center gap-2 transition">
-                                        <svg class="w-4 h-4 text-rose-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                                        <span>Hapus Dokumen</span>
-                                    </button>
+                                    })">
+                                        Hapus Dokumen
+                                    </x-dropdown-item>
                                 </div>
                             </x-action-dropdown>
                         @endif
@@ -138,13 +136,7 @@
                 </td>
             </tr>
         @empty
-            <tr>
-                <td colspan="8" class="p-12 text-center text-slate-400">
-                    <svg class="w-12 h-12 mx-auto text-slate-300 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                    <p class="font-bold text-slate-600">Belum Ada Dokumen Surat Pemesanan Properti (SPP)</p>
-                    <p class="text-xs text-slate-400 mt-1">Klik tombol "Generate SPP PDF Baru" di atas untuk menerbitkan dokumen resmi.</p>
-                </td>
-            </tr>
+            <x-table-empty colspan="8" title="Belum Ada Dokumen Surat Pemesanan Properti (SPP)" message="Klik tombol 'Generate SPP PDF Baru' di atas untuk menerbitkan dokumen resmi." />
         @endforelse
     </x-table>
 

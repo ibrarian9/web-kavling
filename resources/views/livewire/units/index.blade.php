@@ -37,9 +37,9 @@
 
         <!-- Filter Controls Container (Responsive Grid / Flex) -->
         <div class="flex items-center gap-2.5 flex-wrap">
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2.5 flex-1">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 flex-1">
                 <!-- Search Bar -->
-                <x-search-input placeholder="Cari kode unit, mandor..." containerClass="relative w-full sm:col-span-2 md:col-span-1" />
+                <x-search-input placeholder="Cari kode unit, mandor..." containerClass="relative w-full sm:col-span-2 lg:col-span-1" />
 
                 <!-- Filter Status Unit -->
                 <div class="w-full">
@@ -89,7 +89,7 @@
     <div wire:loading.class="opacity-50 pointer-events-none transition-opacity duration-200" wire:target="search, status_filter, category_filter, project_id, viewMode">
     
     <!-- Summary KPI Cards Grid -->
-    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4 mb-6">
         <div class="kpi-card-blue">
             <div class="flex items-center justify-between">
                 <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Total Stok Unit</span>
@@ -297,7 +297,7 @@
                             @if($unit->excess_land_area > 0)
                                 <div class="flex justify-between text-amber-700 font-medium pt-1.5 border-t border-slate-200/80">
                                     <span>Kelebihan Luas:</span>
-                                    <span class="font-mono font-bold">+{{ number_format($unit->excess_land_area, 0, ',', '.') }} m² (+Rp {{ number_format($unit->excess_cost, 0, ',', '.') }})</span>
+                                    <span class="font-mono font-bold">+{{ number_format($unit->excess_land_area, 0, ',', '.') }} m²</span>
                                 </div>
                             @else
                                 <div class="text-[11px] text-slate-400 pt-1 border-t border-slate-200/80">
@@ -318,11 +318,24 @@
                     ];
                 @endphp
                 <div class="mt-4 pt-3 border-t border-slate-100 space-y-1.5 text-xs">
-                    @if(auth()->user()->canViewHpp())
+                    @if($unit->category === 'infrastruktur')
                         <div class="flex justify-between items-baseline">
-                            <span class="text-slate-500 font-medium">{{ $unit->category === 'infrastruktur' ? 'Anggaran / HPP Infra:' : 'HPP Pokok:' }}</span>
+                            <span class="text-slate-500 font-medium">Anggaran Infra:</span>
                             <span class="font-mono font-bold text-slate-800">
                                 {{ $unit->hpp ? 'Rp ' . number_format($unit->hpp, 0, ',', '.') : 'Belum Diset' }}
+                            </span>
+                        </div>
+                    @else
+                        <div class="flex justify-between items-baseline">
+                            <span class="text-slate-500 font-medium">Harga Jual:</span>
+                            <span class="font-mono font-bold text-slate-800">
+                                Rp {{ number_format($unit->project->base_price ?? $unit->base_price, 0, ',', '.') }}
+                            </span>
+                        </div>
+                        <div class="flex justify-between items-baseline text-slate-900 font-extrabold pt-0.5 border-t border-slate-100">
+                            <span class="text-slate-700">Harga Total:</span>
+                            <span class="font-mono text-emerald-700 font-bold">
+                                Rp {{ number_format($unit->total_price, 0, ',', '.') }}
                             </span>
                         </div>
                     @endif
@@ -530,29 +543,33 @@
 
                 @if($selected_project_id && $category !== 'infrastruktur')
                     <div class="bg-emerald-50 border border-emerald-200/80 rounded-2xl p-3.5 space-y-1.5 text-emerald-900">
-                        <p class="font-bold text-[11px] uppercase tracking-wider text-emerald-800">Kalkulasi Otomatis Kelebihan Tanah:</p>
+                        <p class="font-bold text-[11px] uppercase tracking-wider text-emerald-800">Kalkulasi Otomatis Harga Unit:</p>
                         <div class="flex justify-between text-xs">
-                            <span>Kelebihan Luas:</span>
+                            <span>Harga Jual Standar:</span>
+                            <span class="font-mono font-bold">Rp {{ number_format($previewBasePrice, 0, ',', '.') }}</span>
+                        </div>
+                        <div class="flex justify-between text-xs">
+                            <span>Kelebihan Luas Tanah:</span>
                             <span class="font-mono font-bold">{{ number_format($previewExcessArea, 0, ',', '.') }} m²</span>
                         </div>
                         <div class="flex justify-between text-xs">
-                            <span>Biaya Kelebihan Tanah:</span>
+                            <span>Harga Kelebihan Luas Tanah:</span>
                             <span class="font-mono font-bold">Rp {{ number_format($previewExcessCost, 0, ',', '.') }}</span>
                         </div>
-                        <div class="flex justify-between text-xs font-bold pt-1.5 border-t border-emerald-200/80">
-                            <span>Rekomendasi HPP Final:</span>
-                            <span class="font-mono text-emerald-700">Rp {{ number_format($previewRecommendedHpp, 0, ',', '.') }}</span>
+                        <div class="flex justify-between text-xs font-bold pt-1.5 border-t border-emerald-200/80 text-emerald-950">
+                            <span>Harga Total (Harga Jual + Kelebihan):</span>
+                            <span class="font-mono text-emerald-700 text-sm font-extrabold">Rp {{ number_format($previewRecommendedHpp, 0, ',', '.') }}</span>
                         </div>
                     </div>
                 @endif
 
                 @if(auth()->user()->canViewHpp())
                     <x-currency-input 
-                        label="HPP Pokok Final (Rp)" 
+                        label="Harga Total Unit (Rp)" 
                         model="hpp" 
                         :value="$hpp" 
                         placeholder="{{ number_format($previewRecommendedHpp, 0, ',', '.') }}" 
-                        helpText="*HPP dapat disesuaikan ulang oleh bagian Finance."
+                        helpText="*Harga Total = Harga Jual + Harga Kelebihan Luas Tanah (dapat disesuaikan jika diperlukan)."
                     />
                 @endif
 
@@ -570,17 +587,23 @@
                         title="Booking Unit {{ $bookingUnitCode }}" 
                         subTitle="Pencatatan booking unit & bukti DP langsung di dalam sistem" 
                         maxWidth="max-w-md">
-            <form wire:submit.prevent="saveBooking" class="space-y-4 text-xs">
+            <form wire:submit.prevent="saveBooking" class="space-y-4.5 sm:space-y-5 text-xs sm:text-sm">
                 <div>
-                    <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider">Nama Pembeli</label>
-                    <input type="text" wire:model="buyer_name" required placeholder="Contoh: Bpk. H. Hendra Wijaya" class="input-clean w-full font-bold">
-                    @error('buyer_name') <span class="text-rose-500 text-[10px] mt-1 block">{{ $message }}</span> @enderror
+                    <label class="block font-semibold text-slate-700 mb-1.5 text-xs uppercase tracking-wider">Nama Pembeli <span class="text-rose-500">*</span></label>
+                    <input type="text" wire:model="buyer_name" required placeholder="Contoh: Bpk. H. Hendra Wijaya" class="input-clean w-full font-bold text-xs sm:text-sm h-10.5">
+                    @error('buyer_name') <span class="text-rose-500 text-[10px] mt-1.5 block font-medium">{{ $message }}</span> @enderror
                 </div>
 
                 <div>
-                    <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider">Nomor HP / WhatsApp Pembeli</label>
-                    <input type="text" wire:model="buyer_phone" required placeholder="081234567890" class="input-clean w-full font-mono">
-                    @error('buyer_phone') <span class="text-rose-500 text-[10px] mt-1 block">{{ $message }}</span> @enderror
+                    <label class="block font-semibold text-slate-700 mb-1.5 text-xs uppercase tracking-wider">Nomor HP / WhatsApp Pembeli <span class="text-rose-500">*</span></label>
+                    <input type="text" wire:model="buyer_phone" required placeholder="081234567890" class="input-clean w-full font-mono text-xs sm:text-sm h-10.5">
+                    @error('buyer_phone') <span class="text-rose-500 text-[10px] mt-1.5 block font-medium">{{ $message }}</span> @enderror
+                </div>
+
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1.5 text-xs uppercase tracking-wider">Tgl Pembayaran / Booking <span class="text-rose-500">*</span></label>
+                    <input type="date" wire:model="booking_date" required class="input-clean w-full font-mono text-xs sm:text-sm h-10.5">
+                    @error('booking_date') <span class="text-rose-500 text-[10px] mt-1.5 block font-medium">{{ $message }}</span> @enderror
                 </div>
 
                 <div>
@@ -592,12 +615,12 @@
                         badgeColor="teal"
                         required 
                     />
-                    @error('booking_amount') <span class="text-rose-500 text-[10px] mt-1 block">{{ $message }}</span> @enderror
+                    @error('booking_amount') <span class="text-rose-500 text-[10px] mt-1.5 block font-medium">{{ $message }}</span> @enderror
                 </div>
 
                 <div>
-                    <label class="block font-semibold text-slate-700 mb-1 uppercase tracking-wider">Catatan Pembayaran & Bukti DP</label>
-                    <textarea wire:model="booking_notes" rows="2" placeholder="Informasi bukti transfer DP, skema pelunasan, dll." class="input-clean w-full"></textarea>
+                    <label class="block font-semibold text-slate-700 mb-1.5 text-xs uppercase tracking-wider">Catatan Pembayaran & Bukti DP</label>
+                    <textarea wire:model="booking_notes" rows="2" placeholder="Informasi bukti transfer DP, skema pelunasan, dll." class="input-clean w-full text-xs sm:text-sm"></textarea>
                 </div>
 
                 <x-receipt-upload 
@@ -606,11 +629,11 @@
                     label="Foto Struk / Bukti Transfer DP"
                 />
 
-                <div class="p-3 bg-blue-50 border border-blue-200/80 rounded-xl text-blue-900 text-[11px] space-y-1">
+                <div class="p-3.5 bg-blue-50 border border-blue-200/80 rounded-2xl text-blue-900 text-[11px] leading-relaxed">
                     <span class="font-bold">Info Verifikasi:</span> Setelah disimpan, unit otomatis menjadi status <strong>Booked</strong> dan data transaksi akan dikirim ke menu Booking untuk diverifikasi & disetujui DP-nya oleh Finance / Founder.
                 </div>
 
-                <div class="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2 pt-3 border-t border-slate-100">
+                <div class="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2 sm:gap-3 pt-4 border-t border-slate-100">
                     <x-button type="button" variant="secondary" wire:click="$set('showBookingModal', false)">Batal</x-button>
                     <x-button type="submit" variant="primary" loadingTarget="saveBooking">Proses Booking Unit</x-button>
                 </div>

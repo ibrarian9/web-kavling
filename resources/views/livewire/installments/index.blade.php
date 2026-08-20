@@ -57,22 +57,24 @@
             </span>
         </button>
 
-        <!-- Tab 2: Pembayaran Lahan Proyek -->
-        <button type="button" 
-                wire:click="setTab('land_payments')" 
-                class="px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-extrabold flex items-center gap-2 transition-all shrink-0 {{ $activeTab === 'land_payments' ? 'bg-slate-900 text-white shadow-md shadow-slate-900/20 ring-2 ring-slate-900/10' : 'bg-white text-slate-600 hover:bg-slate-100 hover:text-slate-900 border border-slate-200/80' }}">
-            <svg class="w-4 h-4 {{ $activeTab === 'land_payments' ? 'text-emerald-400' : 'text-slate-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5m0 0h5m-5 0v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
-            </svg>
-            <span>Pembayaran Lahan Proyek</span>
-            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold {{ $activeTab === 'land_payments' ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-600' }}">
-                {{ $totalLandTransactions }} Transaksi
-            </span>
-        </button>
+        {{-- Tab 2: Pembayaran Lahan Proyek (Founder, Supervisor, & Finance Only) --}}
+        @if(!auth()->user()->isAdmin())
+            <button type="button" 
+                    wire:click="setTab('land_payments')" 
+                    class="px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-extrabold flex items-center gap-2 transition-all shrink-0 {{ $activeTab === 'land_payments' ? 'bg-slate-900 text-white shadow-md shadow-slate-900/20 ring-2 ring-slate-900/10' : 'bg-white text-slate-600 hover:bg-slate-100 hover:text-slate-900 border border-slate-200/80' }}">
+                <svg class="w-4 h-4 {{ $activeTab === 'land_payments' ? 'text-emerald-400' : 'text-slate-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5m0 0h5m-5 0v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                </svg>
+                <span>Pembayaran Lahan Proyek</span>
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold {{ $activeTab === 'land_payments' ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-600' }}">
+                    {{ $totalLandTransactions }} Transaksi
+                </span>
+            </button>
+        @endif
     </div>
 
     <!-- Active Tab Content -->
-    @if($activeTab === 'unit_installments')
+    @if($activeTab === 'unit_installments' || auth()->user()->isAdmin())
         @include('livewire.installments.partials.tab-unit-installments')
     @else
         @include('livewire.installments.partials.tab-land-payments')
@@ -90,11 +92,13 @@
     <!-- Modal Detail Rincian Skema Cicilan & Riwayat Setoran -->
     @include('livewire.installments.partials.modal-installment-detail')
 
-    <!-- Modal Catat / Edit Pembayaran Lahan ke Penjual Tanah -->
-    @include('livewire.installments.partials.modal-land-payment')
+    @if(!auth()->user()->isAdmin())
+        {{-- Modal Catat / Edit Pembayaran Lahan ke Penjual Tanah --}}
+        @include('livewire.installments.partials.modal-land-payment')
 
-    <!-- Modal Detail Lengkap Pembayaran Lahan Proyek -->
-    @include('livewire.installments.partials.modal-detail-land-payment')
+        {{-- Modal Detail Lengkap Pembayaran Lahan Proyek --}}
+        @include('livewire.installments.partials.modal-detail-land-payment')
+    @endif
 
     <!-- Modal Viewer PDF & Media Laporan -->
     <x-media-viewer-modal 

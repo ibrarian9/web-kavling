@@ -72,10 +72,16 @@
                         @endif
 
                         @if(auth()->user()->isAdminOrFounder())
-                            <x-button variant="rose" size="xs" wire:click="deleteDirectSpp({{ $unit->officialDocument->id }})" wire:confirm="Yakin ingin menghapus dokumen SPP resmi ini? Status unit akan disesuaikan kembali." title="Hapus Dokumen SPP">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                            <button type="button" @click="confirmModalAction({
+                                title: 'Hapus Dokumen SPP & SPJB',
+                                message: 'Yakin ingin menghapus dokumen SPP resmi ini? Status unit akan disesuaikan kembali.',
+                                confirmText: 'Hapus Dokumen',
+                                btnClass: 'px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5',
+                                onConfirm: () => $wire.deleteDirectSpp({{ $unit->officialDocument->id }})
+                            })" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200 text-xs font-bold transition shadow-2xs" title="Hapus Dokumen SPP">
+                                <svg class="w-3.5 h-3.5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                                 <span>Hapus SPP</span>
-                            </x-button>
+                            </button>
                         @endif
                     </div>
                 </div>
@@ -156,8 +162,13 @@
 
                             @if(auth()->user()->isAdminOrFounder())
                                 <button type="button" 
-                                        wire:click="deleteDirectProposal({{ $prop->id }})" 
-                                        wire:confirm="Yakin ingin menghapus proposal harga ini?" 
+                                        @click="confirmModalAction({
+                                            title: 'Hapus Proposal Harga',
+                                            message: 'Yakin ingin menghapus proposal harga ini?',
+                                            confirmText: 'Hapus Proposal',
+                                            btnClass: 'px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5',
+                                            onConfirm: () => $wire.deleteDirectProposal({{ $prop->id }})
+                                        })" 
                                         class="p-1.5 rounded-lg border border-slate-200 text-slate-600 hover:text-rose-600 hover:border-rose-200 bg-white transition-all" 
                                         title="Hapus Proposal">
                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>

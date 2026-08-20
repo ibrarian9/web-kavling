@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Models\Booking;
 use App\Models\CashflowTransaction;
+use App\Models\EmployeeSalary;
 use App\Models\PriceProposal;
 use App\Models\Project;
 use App\Models\Unit;
@@ -85,8 +86,26 @@ class Dashboard extends Component
             $chartKeluar[] = (float)$mKeluar;
         }
 
+        // 7. Employee Salary Info for Non-Founder Users
+        $userSalary = null;
+        $latestSalaryPayment = null;
+        if (!$user->isFounder()) {
+            $userSalary = EmployeeSalary::with(['payrollPayments' => fn($q) => $q->latest('payment_date')])
+                ->where(function ($q) use ($user) {
+                    $q->where('user_id', $user->id)
+                      ->orWhere('employee_name', $user->name);
+                })
+                ->first();
+
+            if ($userSalary) {
+                $latestSalaryPayment = $userSalary->payrollPayments->first();
+            }
+        }
+
         return view('livewire.dashboard', [
             'user' => $user,
+            'userSalary' => $userSalary,
+            'latestSalaryPayment' => $latestSalaryPayment,
             'totalProjects' => $totalProjects,
             'totalUnits' => $totalUnits,
             'availableUnits' => $availableUnits,

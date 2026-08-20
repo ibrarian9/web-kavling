@@ -653,6 +653,7 @@ class Show extends Component
     {
         $project = Project::with([
             'creator',
+            'assignments.user',
             'assignments.worker',
             'units.proposals',
             'units.officialDocument',

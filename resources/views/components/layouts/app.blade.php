@@ -62,11 +62,11 @@
                   this.openSections['property'] = true;
               } else if (path.includes('/workers') || path.includes('/field-expenses')) {
                   this.openSections['field'] = true;
-              } else if (path.includes('/daily-activity-reports') || path.includes('/bookings') || path.includes('/proposals') || path.includes('/documents')) {
+              } else if (path.includes('/daily-activity-reports') || path.includes('/proposals') || path.includes('/documents')) {
                   this.openSections['sales'] = true;
-              } else if (path.includes('/installments') || path.includes('/cashflow') || path.includes('/payables') || path.includes('/manual-invoices')) {
+              } else if (path.includes('/bookings') || path.includes('/installments') || path.includes('/cashflow') || path.includes('/payables') || path.includes('/manual-invoices') || path.includes('/employee-salaries')) {
                   this.openSections['finance'] = true;
-              } else if (path.includes('/profile') || path.includes('/employee-salaries') || path.includes('/users') || path.includes('/activity-logs')) {
+              } else if (path.includes('/profile') || path.includes('/users') || path.includes('/activity-logs')) {
                   this.openSections['admin'] = true;
               }
           }
@@ -88,7 +88,7 @@
             @include('components.layouts.partials.header')
 
             <!-- Main Page Content Slot -->
-            <main class="p-6 lg:p-8 flex-1">
+            <main class="p-4 sm:p-6 lg:p-8 flex-1 w-full max-w-full overflow-x-hidden">
                 {{ $slot }}
             </main>
         </div>

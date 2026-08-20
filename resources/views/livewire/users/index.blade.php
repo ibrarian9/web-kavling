@@ -26,11 +26,11 @@
         </div>
     </div>
 
-    <!-- Table Card -->
+    <!-- Unified Table of Users with CSS Table-to-Card Transformation -->
     <x-table :headers="['Pengguna & Email', 'Peran / Role Akses', ['label' => 'Status Akun', 'class' => 'px-5 py-3.5 text-center'], 'Tanggal Terdaftar', ['label' => 'Aksi Manajemen', 'class' => 'px-5 py-3.5 text-right']]" loadingTarget="search, roleFilter, page">
         @forelse($users as $u)
             <tr class="hover:bg-slate-50/60 transition duration-150">
-                <td class="px-5 py-4">
+                <td data-label="Pengguna" class="px-5 py-4">
                     <div class="flex items-center gap-3">
                         <div class="w-8 h-8 rounded-full bg-slate-900 text-white font-bold flex items-center justify-center text-xs shrink-0">
                             {{ strtoupper(substr($u->name, 0, 1)) }}
@@ -41,7 +41,7 @@
                         </div>
                     </div>
                 </td>
-                <td class="px-5 py-4">
+                <td data-label="Peran / Role" class="px-5 py-4">
                     @if($u->role === 'founder')
                         <span class="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-amber-50 text-amber-800 border border-amber-200 uppercase">
                             Founder Executive
@@ -68,17 +68,17 @@
                         </span>
                     @endif
                 </td>
-                <td class="px-5 py-4 text-center">
+                <td data-label="Status" class="px-5 py-4 text-center">
                     @if($u->is_active)
                         <x-status-badge status="lunas" label="Aktif" />
                     @else
                         <x-status-badge status="ditolak" label="Nonaktif" />
                     @endif
                 </td>
-                <td class="px-5 py-4 font-mono text-slate-600 text-xs">
+                <td data-label="Terdaftar" class="px-5 py-4 font-mono text-slate-600 text-xs">
                     {{ format_id_datetime($u->created_at, false) }}
                 </td>
-                <td class="px-5 py-4 text-right whitespace-nowrap">
+                <td data-card-action class="px-5 py-4 text-right whitespace-nowrap">
                     <div class="inline-flex items-center justify-end gap-1.5 whitespace-nowrap">
                         <x-button variant="edit" size="xs" wire:click="openEditModal({{ $u->id }})">
                             <span>Edit</span>
@@ -115,13 +115,7 @@
                 </td>
             </tr>
         @empty
-            <tr>
-                <td colspan="5" class="px-6 py-12 text-center text-slate-400">
-                    <svg class="w-12 h-12 mx-auto text-slate-300 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
-                    <p class="font-semibold text-slate-600">Tidak Ada Akun User Ditemukan</p>
-                    <p class="text-xs text-slate-400 mt-1">Coba ganti filter kata kunci pencarian atau tambah user baru.</p>
-                </td>
-            </tr>
+            <x-table-empty colspan="5" title="Tidak Ada Akun User Ditemukan" message="Coba ganti filter kata kunci pencarian atau tambah user baru." />
         @endforelse
     </x-table>
 

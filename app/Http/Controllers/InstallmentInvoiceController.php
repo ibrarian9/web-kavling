@@ -116,7 +116,8 @@ class InstallmentInvoiceController extends Controller
             'generatedAt' => now()->locale('id')->isoFormat('DD MMMM YYYY HH:mm'),
         ]);
 
-        $fileName = 'REKAP-CICILAN-UNIT-' . strtoupper($unit->code) . '-' . \Illuminate\Support\Str::slug($installment->buyer_name) . '.pdf';
+        $cleanUnitCode = preg_replace('/[^A-Za-z0-9_-]/', '-', $unit->code);
+        $fileName = 'REKAP-CICILAN-UNIT-' . strtoupper($cleanUnitCode) . '-' . \Illuminate\Support\Str::slug($installment->buyer_name) . '.pdf';
         return $pdf->stream($fileName);
     }
 

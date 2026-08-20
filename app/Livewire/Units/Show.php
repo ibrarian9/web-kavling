@@ -45,6 +45,8 @@ class Show extends Component
     public string $buyer_phone = '';
     public $booking_amount = 5000000;
     public $dp_amount = 25000000;
+    public ?string $booking_date = null;
+    public ?string $expiry_date = null;
     public string $booking_notes = '';
     public $receipt_photo = null;
 
@@ -154,7 +156,7 @@ class Show extends Component
         } elseif ($unit->final_selling_price && (float)$unit->final_selling_price > 0) {
             $this->spp_cash_price = (float)$unit->final_selling_price;
         } else {
-            $this->spp_cash_price = (float)($unit->hpp ? $unit->hpp * 1.3 : ($unit->project->base_price ?? 150000000));
+            $this->spp_cash_price = (float)($unit->total_price ?: ($unit->project?->base_price ?? 0));
         }
 
         $this->spp_price_mode = 'total';
@@ -437,8 +439,8 @@ class Show extends Component
         $unit = Unit::findOrFail($this->unitId);
         $this->resetValidation();
         $this->editingProposalId = null;
-        $this->prop_hpp_price = (float)$unit->hpp;
-        $this->prop_proposed_price = (float)($unit->final_selling_price ?: ($unit->price ?: $unit->hpp * 1.3));
+        $this->prop_hpp_price = (float)$unit->total_price;
+        $this->prop_proposed_price = (float)($unit->final_selling_price ?: ($unit->price ?: $unit->total_price));
         $this->prop_price_mode = 'total';
         $this->prop_price_per_sqm = (float)($unit->land_area ?? 0) > 0 ? round((float)$this->prop_proposed_price / (float)$unit->land_area) : 0;
         $this->prop_notes = '';
@@ -881,6 +883,15 @@ class Show extends Component
     public function updatedMaterialRows(): void
     {
         $this->recalcMaterialGrandTotal();
+        if (isset($this->materialRows[0])) {
+            $this->material_item_name = $this->materialRows[0]['item_name'] ?? null;
+            $this->material_quantity = $this->materialRows[0]['quantity'] ?? null;
+            $this->material_unit_measure = $this->materialRows[0]['unit_measure'] ?? null;
+            $this->material_unit_price = $this->materialRows[0]['unit_price'] ?? null;
+            $qty = is_numeric($this->material_quantity) ? (float)$this->material_quantity : 0;
+            $price = is_numeric($this->material_unit_price) ? (float)$this->material_unit_price : 0;
+            $this->material_total_price = $qty * $price;
+        }
     }
 
     protected function recalcMaterialGrandTotal(): void
@@ -957,18 +968,40 @@ class Show extends Component
         session()->flash('success', 'Pencatatan belanja material berhasil dihapus!');
     }
 
-    public function updatedMaterialQuantity(): void
+    public function updatedMaterialItemName($value): void
     {
-        $qty = is_numeric($this->material_quantity) ? (float)$this->material_quantity : 0;
-        $price = is_numeric($this->material_unit_price) ? (float)$this->material_unit_price : 0;
-        $this->material_total_price = $qty * $price;
+        if (isset($this->materialRows[0])) {
+            $this->materialRows[0]['item_name'] = $value;
+        }
     }
 
-    public function updatedMaterialUnitPrice(): void
+    public function updatedMaterialQuantity($value = null): void
     {
         $qty = is_numeric($this->material_quantity) ? (float)$this->material_quantity : 0;
         $price = is_numeric($this->material_unit_price) ? (float)$this->material_unit_price : 0;
         $this->material_total_price = $qty * $price;
+        if (isset($this->materialRows[0])) {
+            $this->materialRows[0]['quantity'] = $qty;
+        }
+        $this->recalcMaterialGrandTotal();
+    }
+
+    public function updatedMaterialUnitPrice($value = null): void
+    {
+        $qty = is_numeric($this->material_quantity) ? (float)$this->material_quantity : 0;
+        $price = is_numeric($this->material_unit_price) ? (float)$this->material_unit_price : 0;
+        $this->material_total_price = $qty * $price;
+        if (isset($this->materialRows[0])) {
+            $this->materialRows[0]['unit_price'] = $price;
+        }
+        $this->recalcMaterialGrandTotal();
+    }
+
+    public function updatedMaterialUnitMeasure($value): void
+    {
+        if (isset($this->materialRows[0])) {
+            $this->materialRows[0]['unit_measure'] = $value;
+        }
     }
 
     public function saveMaterialPurchase(): void
@@ -976,6 +1009,15 @@ class Show extends Component
         if (!$this->canManageOperational()) {
             session()->flash('error', 'Akses ditolak.');
             return;
+        }
+
+        if (empty($this->materialRows)) {
+            $this->materialRows = [[
+                'item_name' => $this->material_item_name ?? '',
+                'quantity' => $this->material_quantity ?? 1,
+                'unit_measure' => $this->material_unit_measure ?? 'pcs',
+                'unit_price' => $this->material_unit_price ?? 0,
+            ]];
         }
 
         // Shared metadata validation
@@ -1668,7 +1710,7 @@ class Show extends Component
             $this->setup_start_date = $unit->installment->start_date ? $unit->installment->start_date->format('Y-m-d') : now()->toDateString();
         } else {
             $approvedProp = $unit->proposals->where('status', 'disetujui')->first();
-            $defaultPrice = $unit->final_selling_price ?: ($unit->officialDocument->proposal->proposed_price ?? ($approvedProp->proposed_price ?? ($unit->proposals->first()?->proposed_price ?? 0)));
+            $defaultPrice = $unit->final_selling_price ?: ($unit->officialDocument?->proposal?->proposed_price ?? ($approvedProp?->proposed_price ?? ($unit->proposals->first()?->proposed_price ?? $unit->total_price)));
             $this->setup_total_price = (float)$defaultPrice;
             $this->setup_down_payment = $alreadyPaid > 0 ? $alreadyPaid : ($this->setup_total_price * 0.20);
             $this->setup_installment_count = 12;
@@ -1820,6 +1862,8 @@ class Show extends Component
         $this->buyer_phone = '';
         $this->booking_amount = 5000000;
         $this->dp_amount = 0;
+        $this->booking_date = now()->toDateString();
+        $this->expiry_date = now()->addDays(14)->toDateString();
         $this->booking_notes = 'Booking unit ' . $unit->code . ' via Halaman Detail Unit.';
         $this->receipt_photo = null;
         $this->showBookingModal = true;
@@ -1848,6 +1892,8 @@ class Show extends Component
             'buyer_name' => 'required|string|max:255',
             'buyer_phone' => 'required|string|max:50',
             'booking_amount' => 'required|numeric|min:1000',
+            'booking_date' => 'required|date',
+            'expiry_date' => 'nullable|date|after_or_equal:booking_date',
             'receipt_photo' => 'nullable|image|max:2048',
         ]);
 
@@ -1866,8 +1912,8 @@ class Show extends Component
             'booking_type' => 'unit',
             'booking_amount' => $this->booking_amount,
             'dp_amount' => 0,
-            'booking_date' => now()->toDateString(),
-            'expiry_date' => now()->addDays(14)->toDateString(),
+            'booking_date' => $this->booking_date,
+            'expiry_date' => $this->expiry_date ?: \Carbon\Carbon::parse($this->booking_date)->addDays(14)->toDateString(),
             'status' => 'active',
             'notes' => $this->booking_notes,
             'receipt_photo_path' => $receiptPath,

@@ -1,4 +1,4 @@
-<!-- Mobile Sidebar Drawer Overlay -->
+<!-- Mobile & Tablet Sidebar Drawer Overlay -->
 <div x-show="mobileMenuOpen" 
      x-transition:enter="transition ease-out duration-200" 
      x-transition:enter-start="opacity-0" 
@@ -7,9 +7,9 @@
      x-transition:leave-start="opacity-100" 
      x-transition:leave-end="opacity-0" 
      @click="mobileMenuOpen = false" 
-     class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-40 md:hidden"></div>
+     class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-40 lg:hidden"></div>
 
-<!-- Mobile Sidebar Drawer Content -->
+<!-- Mobile & Tablet Sidebar Drawer Content -->
 <aside x-data="{ sidebarExpanded: true }"
        x-show="mobileMenuOpen" 
        x-transition:enter="transition ease-out duration-300 transform" 
@@ -18,7 +18,7 @@
        x-transition:leave="transition ease-in duration-200 transform" 
        x-transition:leave-start="translate-x-0" 
        x-transition:leave-end="-translate-x-full" 
-       class="fixed inset-y-0 left-0 w-72 bg-slate-900 text-slate-300 z-50 flex flex-col justify-between md:hidden shadow-2xl overflow-y-auto">
+       class="fixed inset-y-0 left-0 w-72 sm:w-80 bg-slate-900 text-slate-300 z-50 flex flex-col justify-between lg:hidden shadow-2xl overflow-y-auto">
     <div>
         <div class="h-16 px-5 flex items-center justify-between border-b border-slate-800/80 bg-slate-950/40">
             <div class="flex items-center gap-3">

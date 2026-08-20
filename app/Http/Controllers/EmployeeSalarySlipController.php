@@ -21,6 +21,7 @@ class EmployeeSalarySlipController extends Controller
 
         $pdf->setPaper('a4', 'portrait');
 
-        return $pdf->stream("SLIP_GAJI_{$payment->employeeSalary->employee_name}_{$payment->payroll_month}_{$payment->payroll_year}.pdf");
+        $cleanEmpName = preg_replace('/[^A-Za-z0-9_-]/', '-', $payment->employeeSalary->employee_name);
+        return $pdf->stream("SLIP_GAJI_{$cleanEmpName}_{$payment->payroll_month}_{$payment->payroll_year}.pdf");
     }
 }

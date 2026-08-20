@@ -11,26 +11,27 @@
             </div>
         </div>
 
+        <!-- Unified Table of Unit Commissions with CSS Table-to-Card Transformation -->
         <x-table :headers="['Tgl Catat', 'Proyek & Unit', 'Penjual / Marketing', 'Persenan (%)', 'Nominal Komisi', 'Status', ['label' => 'Aksi', 'class' => 'p-3 text-center']]" loadingTarget="setTab, filter_project_id, filter_status, search, com_page">
             @forelse($unitCommissions as $c)
                 <tr class="hover:bg-slate-50/80 transition">
-                    <td class="p-3 font-mono font-bold text-slate-700 whitespace-nowrap">{{ format_id_date($c->created_at) }}</td>
-                    <td class="p-3">
+                    <td data-label="Tgl Catat" class="p-3 font-mono font-bold text-slate-700 whitespace-nowrap">{{ format_id_date($c->created_at) }}</td>
+                    <td data-label="Proyek & Unit" class="p-3">
                         <span class="font-bold text-slate-800 block">{{ $c->project->name ?? 'Non-Proyek' }}</span>
                         <span class="text-[10px] text-slate-500 font-mono">Unit: {{ $c->unit ? $c->unit->code : '-' }}</span>
                     </td>
-                    <td class="p-3 font-bold text-purple-900">
+                    <td data-label="Penjual / Marketing" class="p-3 font-bold text-purple-900">
                         {{ $c->seller_name }}
                         @if($c->seller_phone)
                             <span class="block text-[10px] text-slate-500 font-mono font-normal">{{ $c->seller_phone }}</span>
                         @endif
                     </td>
-                    <td class="p-3 font-mono font-bold text-slate-700">{{ $c->percentage > 0 ? $c->percentage . '%' : '-' }}</td>
-                    <td class="p-3 font-mono font-bold text-purple-700 text-sm">Rp {{ number_format($c->commission_amount, 0, ',', '.') }}</td>
-                    <td class="p-3">
+                    <td data-label="Persenan (%)" class="p-3 font-mono font-bold text-slate-700">{{ $c->percentage > 0 ? $c->percentage . '%' : '-' }}</td>
+                    <td data-label="Nominal Komisi" class="p-3 font-mono font-bold text-purple-700 text-sm">Rp {{ number_format($c->commission_amount, 0, ',', '.') }}</td>
+                    <td data-label="Status" class="p-3">
                         <x-status-badge :status="$c->status" />
                     </td>
-                    <td class="p-3 text-center">
+                    <td data-card-action class="p-3 text-center">
                         <div class="flex items-center justify-center gap-1.5 whitespace-nowrap">
                             @if($c->status !== 'lunas')
                                 @if(auth()->user()->isFounder() || auth()->user()->isFinance())
@@ -51,9 +52,7 @@
                     </td>
                 </tr>
             @empty
-                <tr>
-                    <td colspan="7" class="p-8 text-center text-slate-400">Tidak ada catatan hutang komisi penjual.</td>
-                </tr>
+                <x-table-empty colspan="7" title="Tidak Ada Data Komisi" message="Tidak ada catatan hutang komisi penjual." />
             @endforelse
         </x-table>
         <div>{{ $unitCommissions->links() }}</div>

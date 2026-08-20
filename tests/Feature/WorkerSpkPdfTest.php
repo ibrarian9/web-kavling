@@ -126,8 +126,64 @@ test('public guest can verify Surat Perintah Kerja (SPK) via public QR code veri
 
     $response = $this->get(route('verify.worker-spk', $payroll->id));
 
-    $response->assertStatus(200);
     $response->assertSee('SURAT PERINTAH KERJA (SPK)');
     $response->assertSee('Tukang Slamet');
     $response->assertSee('UNIT QR-01');
+});
+
+test('spk pdf streams successfully even when unit code or worker name contains slashes', function () {
+    $founder = User::create([
+        'name' => 'Founder Slash Test',
+        'email' => 'founder_slash@example.com',
+        'password' => bcrypt('password'),
+        'role' => 'founder',
+        'is_active' => true,
+    ]);
+
+    $project = Project::create([
+        'name' => 'Proyek Cluster/Grand',
+        'location' => 'Jl. Slash No. 9',
+        'standard_land_area' => 100,
+        'excess_price_per_sqm' => 1500000,
+        'base_price' => 150000000,
+        'total_project_price' => 1000000000,
+        'status' => 'aktif',
+        'created_by' => $founder->id,
+    ]);
+
+    $unit = Unit::create([
+        'project_id' => $project->id,
+        'code' => 'KAV/16',
+        'category' => 'rumah',
+        'type' => 'Type 36/60',
+        'land_area' => 60,
+        'building_area' => 36,
+        'hpp' => 120000000,
+        'final_selling_price' => 200000000,
+        'status' => 'tersedia',
+        'created_by' => $founder->id,
+    ]);
+
+    $worker = Worker::create([
+        'name' => 'Mandor/Tukang Asep\Budi',
+        'type' => 'mandor',
+        'specialty' => 'Struktur',
+        'status' => 'active',
+    ]);
+
+    $payroll = WorkerUnitPayroll::create([
+        'worker_id' => $worker->id,
+        'project_id' => $project->id,
+        'unit_id' => $unit->id,
+        'agreed_salary' => 15000000,
+        'paid_amount' => 0,
+        'payment_frequency' => 'mingguan',
+        'status' => 'berjalan',
+        'created_by' => $founder->id,
+    ]);
+
+    $response = $this->actingAs($founder)->get(route('units.payroll.spk-pdf', $payroll->id));
+
+    $response->assertStatus(200);
+    $response->assertHeader('content-type', 'application/pdf');
 });

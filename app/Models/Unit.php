@@ -123,6 +123,19 @@ class Unit extends Model
         }
     }
 
+    public function getBasePriceAttribute(): float
+    {
+        return (float) ($this->project?->base_price ?? 0);
+    }
+
+    public function getTotalPriceAttribute(): float
+    {
+        if ($this->hpp > 0) {
+            return (float) $this->hpp;
+        }
+        return (float) ($this->base_price + (float)$this->excess_cost);
+    }
+
     public function getIsSoldAttribute(): bool
     {
         return \App\Enums\UnitStatus::isSold($this->status);

@@ -24,102 +24,96 @@
     <x-search-input placeholder="Cari nama, telepon, atau spesialisasi..." containerClass="w-full md:w-72" />
 </div>
 
-<!-- Table Card -->
-<x-table :headers="['Nama Pekerja', 'Tipe & Spesialisasi', 'Penugasan Bertugas', 'No. Telepon', ['label' => 'Status', 'class' => 'p-3.5 text-center'], ['label' => 'Aksi', 'class' => 'p-3.5 text-right']]" loadingTarget="search, typeFilter, statusFilter, gotoPage, nextPage, previousPage">
-    @forelse ($workers as $worker)
-        @php
-            $activeAssign = $worker->activeAssignments->first();
-        @endphp
-        <tr class="hover:bg-slate-50/60 transition-colors">
-            <td class="p-3.5">
-                <span class="font-bold text-slate-900 text-xs block">{{ $worker->name }}</span>
-                <div class="text-[10px] text-slate-400 font-normal mt-0.5">{{ $worker->address ?? 'Alamat belum terisi' }}</div>
-            </td>
-            <td class="p-3.5">
-                <div class="flex items-center gap-1.5 mb-1">
-                    @if ($worker->type === 'mandor')
-                        <span class="bg-amber-50 text-amber-800 border border-amber-200 font-semibold px-2 py-0.5 rounded-full text-[10px]">
-                            Mandor
-                        </span>
-                    @elseif ($worker->type === 'kontraktor')
-                        <span class="bg-purple-50 text-purple-800 border border-purple-200 font-semibold px-2 py-0.5 rounded-full text-[10px]">
-                            Kontraktor
+    <!-- Unified Table of Workers with CSS Table-to-Card Transformation -->
+    <x-table :headers="['Nama Pekerja', 'Tipe & Spesialisasi', 'Penugasan Bertugas', 'No. Telepon', ['label' => 'Status', 'class' => 'p-3.5 text-center'], ['label' => 'Aksi', 'class' => 'p-3.5 text-right']]" loadingTarget="search, typeFilter, statusFilter, gotoPage, nextPage, previousPage">
+        @forelse ($workers as $worker)
+            @php
+                $activeAssign = $worker->activeAssignments->first();
+            @endphp
+            <tr class="hover:bg-slate-50/60 transition-colors">
+                <td data-label="Nama Pekerja" class="p-3.5">
+                    <span class="font-bold text-slate-900 text-xs block">{{ $worker->name }}</span>
+                    <div class="text-[10px] text-slate-400 font-normal mt-0.5">{{ $worker->address ?? 'Alamat belum terisi' }}</div>
+                </td>
+                <td data-label="Tipe & Spesialisasi" class="p-3.5">
+                    <div class="flex items-center gap-1.5 mb-1">
+                        @if ($worker->type === 'mandor')
+                            <span class="bg-amber-50 text-amber-800 border border-amber-200 font-semibold px-2 py-0.5 rounded-full text-[10px]">
+                                Mandor
+                            </span>
+                        @elseif ($worker->type === 'kontraktor')
+                            <span class="bg-purple-50 text-purple-800 border border-purple-200 font-semibold px-2 py-0.5 rounded-full text-[10px]">
+                                Kontraktor
+                            </span>
+                        @else
+                            <span class="bg-sky-50 text-sky-800 border border-sky-200 font-semibold px-2 py-0.5 rounded-full text-[10px]">
+                                Tukang
+                            </span>
+                        @endif
+                    </div>
+                    <span class="text-slate-600 text-[11px] font-medium">{{ $worker->specialty ?: '-' }}</span>
+                </td>
+                <td data-label="Penugasan Bertugas" class="p-3.5">
+                    @if($activeAssign)
+                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200">
+                            <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5m0 0h5m-5 0v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                            <span>{{ $activeAssign->project->name }} {{ $activeAssign->unit ? '(Unit ' . $activeAssign->unit->code . ')' : '(Seluruh Proyek)' }}</span>
                         </span>
                     @else
-                        <span class="bg-sky-50 text-sky-800 border border-sky-200 font-semibold px-2 py-0.5 rounded-full text-[10px]">
-                            Tukang
-                        </span>
+                        <span class="text-slate-400 italic text-[10px]">Belum Ditugaskan</span>
                     @endif
-                </div>
-                <span class="text-slate-600 text-[11px] font-medium">{{ $worker->specialty ?: '-' }}</span>
-            </td>
-            <td class="p-3.5">
-                @if($activeAssign)
-                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200">
-                        <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5m0 0h5m-5 0v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
-                        <span>{{ $activeAssign->project->name }} {{ $activeAssign->unit ? '(Unit ' . $activeAssign->unit->code . ')' : '(Seluruh Proyek)' }}</span>
-                    </span>
-                @else
-                    <span class="text-slate-400 italic text-[10px]">Belum Ditugaskan</span>
-                @endif
-            </td>
-            <td class="p-3.5 font-mono text-xs text-slate-700">
-                {{ $worker->phone ?: '-' }}
-            </td>
-            <td class="p-3.5 text-center">
-                @if ($worker->status === 'active')
-                    <x-status-badge status="aktif" label="Aktif" />
-                @else
-                    <x-status-badge status="nonaktif" label="Nonaktif" />
-                @endif
-            </td>
-            <td class="p-3.5 text-right whitespace-nowrap">
-                <div class="inline-flex items-center justify-end gap-2.5 whitespace-nowrap">
-                    <x-button variant="assign" size="sm" wire:click="openAssignModal({{ $worker->id }})" title="Tugaskan Pekerja ke Proyek / Unit">
-                        <span>Tugaskan</span>
-                    </x-button>
+                </td>
+                <td data-label="No. Telepon" class="p-3.5 font-mono text-xs text-slate-700">
+                    {{ $worker->phone ?: '-' }}
+                </td>
+                <td data-label="Status" class="p-3.5 text-center">
+                    @if ($worker->status === 'active')
+                        <x-status-badge status="aktif" label="Aktif" />
+                    @else
+                        <x-status-badge status="nonaktif" label="Nonaktif" />
+                    @endif
+                </td>
+                <td data-card-action class="p-3.5 text-right whitespace-nowrap">
+                    <div class="inline-flex items-center justify-end gap-2.5 whitespace-nowrap">
+                        <x-button variant="assign" size="sm" wire:click="openAssignModal({{ $worker->id }})" title="Tugaskan Pekerja ke Proyek / Unit">
+                            <span>Tugaskan</span>
+                        </x-button>
 
-                    <x-action-dropdown title="Menu Opsi Pekerja" size="sm">
-                        <div class="py-1">
-                            <x-dropdown-item icon="edit" wire:click="edit({{ $worker->id }})">
-                                Edit Data
-                            </x-dropdown-item>
+                        <x-action-dropdown title="Menu Opsi Pekerja" size="sm">
+                            <div class="py-1">
+                                <x-dropdown-item icon="edit" wire:click="edit({{ $worker->id }})">
+                                    Edit Data
+                                </x-dropdown-item>
 
-                            <x-dropdown-item icon="toggle" :variant="$worker->status === 'active' ? 'warning' : 'success'" @click="confirmModalAction({
-                                title: '{{ $worker->status === 'active' ? 'Nonaktifkan Status Pekerja' : 'Aktifkan Status Pekerja' }}',
-                                message: '{{ $worker->status === 'active' ? 'Yakin ingin menonaktifkan status pekerja ' . $worker->name . '?' : 'Yakin ingin mengaktifkan kembali status pekerja ' . $worker->name . '?' }}',
-                                confirmText: '{{ $worker->status === 'active' ? 'Nonaktifkan' : 'Aktifkan' }}',
-                                btnClass: 'px-4 py-2 {{ $worker->status === 'active' ? 'bg-amber-600 hover:bg-amber-700' : 'bg-emerald-600 hover:bg-emerald-700' }} text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5',
-                                onConfirm: () => $wire.toggleStatus({{ $worker->id }})
-                            })">
-                                {{ $worker->status === 'active' ? 'Nonaktifkan' : 'Aktifkan' }}
-                            </x-dropdown-item>
-                        </div>
+                                <x-dropdown-item icon="toggle" :variant="$worker->status === 'active' ? 'warning' : 'success'" @click="confirmModalAction({
+                                    title: '{{ $worker->status === 'active' ? 'Nonaktifkan Status Pekerja' : 'Aktifkan Status Pekerja' }}',
+                                    message: '{{ $worker->status === 'active' ? 'Yakin ingin menonaktifkan status pekerja ' . $worker->name . '?' : 'Yakin ingin mengaktifkan kembali status pekerja ' . $worker->name . '?' }}',
+                                    confirmText: '{{ $worker->status === 'active' ? 'Nonaktifkan' : 'Aktifkan' }}',
+                                    btnClass: 'px-4 py-2 {{ $worker->status === 'active' ? 'bg-amber-600 hover:bg-amber-700' : 'bg-emerald-600 hover:bg-emerald-700' }} text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5',
+                                    onConfirm: () => $wire.toggleStatus({{ $worker->id }})
+                                })">
+                                    {{ $worker->status === 'active' ? 'Nonaktifkan' : 'Aktifkan' }}
+                                </x-dropdown-item>
+                            </div>
 
-                        <div class="py-1">
-                            <x-dropdown-item icon="delete" variant="danger" @click="confirmModalAction({
-                                title: 'Hapus Pekerja',
-                                message: 'Yakin ingin menghapus permanen data pekerja {{ $worker->name }}? Seluruh riwayat penugasan dan catatan gaji pekerja ini akan dihapus.',
-                                confirmText: 'Hapus Pekerja',
-                                btnClass: 'px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5',
-                                onConfirm: () => $wire.delete({{ $worker->id }})
-                            })">
-                                Hapus Pekerja
-                            </x-dropdown-item>
-                        </div>
-                    </x-action-dropdown>
-                </div>
-            </td>
-        </tr>
-    @empty
-        <tr>
-            <td colspan="6" class="p-12 text-center text-slate-400">
-                <svg class="w-12 h-12 mx-auto text-slate-300 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-                <p class="font-semibold text-slate-600">Belum Ada Data Pekerja</p>
-                <p class="text-xs text-slate-400 mt-1">Gunakan tombol "Tambah Pekerja Baru" untuk mendaftarkan mandor atau tukang.</p>
-            </td>
-        </tr>
-    @endforelse
-</x-table>
+                            <div class="py-1">
+                                <x-dropdown-item icon="delete" variant="danger" @click="confirmModalAction({
+                                    title: 'Hapus Pekerja',
+                                    message: 'Yakin ingin menghapus permanen data pekerja {{ $worker->name }}? Seluruh riwayat penugasan dan catatan gaji pekerja ini akan dihapus.',
+                                    confirmText: 'Hapus Pekerja',
+                                    btnClass: 'px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5',
+                                    onConfirm: () => $wire.delete({{ $worker->id }})
+                                })">
+                                    Hapus Pekerja
+                                </x-dropdown-item>
+                            </div>
+                        </x-action-dropdown>
+                    </div>
+                </td>
+            </tr>
+        @empty
+            <x-table-empty colspan="6" title="Belum Ada Data Pekerja" message="Gunakan tombol 'Tambah Pekerja Baru' untuk mendaftarkan mandor atau tukang." />
+        @endforelse
+    </x-table>
 
 <div>{{ $workers->links() }}</div>

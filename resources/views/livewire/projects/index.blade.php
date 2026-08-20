@@ -94,10 +94,14 @@
         $headers[] = ['label' => 'Aksi Proyek', 'class' => 'p-3.5 text-center'];
     @endphp
 
+    <!-- Unified Responsive Projects Table -->
     <x-table :headers="$headers" loadingTarget="search, page, gotoPage, nextPage, previousPage">
         @forelse($projects as $p)
+            @php
+                $activeAssignments = $p->assignments->where('status', 'active');
+            @endphp
             <tr class="hover:bg-slate-50/80 transition duration-150">
-                <td class="p-3.5">
+                <td data-label="Nama Proyek & Lokasi" class="p-3.5">
                     <a href="{{ route('projects.show', $p->id) }}" wire:navigate.hover class="font-bold text-slate-900 text-sm hover:text-emerald-600 transition block">
                         {{ $p->name }}
                     </a>
@@ -106,50 +110,54 @@
                         {{ $p->location }}
                     </p>
                 </td>
-                <td class="p-3.5">
-                    @php
-                        $pengawasAssign = $p->assignments->where('status', 'active')->filter(fn($a) => $a->user_id !== null);
-                    @endphp
-                    <div class="space-y-1">
-                        @forelse($pengawasAssign as $pa)
-                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-extrabold bg-purple-100 text-purple-800 border border-purple-200/80 shadow-2xs group" title="Pengawas Project System">
-                                <svg class="w-3.5 h-3.5 text-purple-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-                                <span>{{ $pa->user->name ?? 'Pengawas' }}</span>
-                                @if(auth()->user()->isAdminOrFounder())
-                                     <button type="button" @click="confirmModalAction({
-                                         title: 'Copot Pengawas Proyek',
-                                         message: 'Yakin ingin mencopot Pengawas {{ $pa->user->name ?? 'ini' }} dari proyek {{ $p->name }}?',
-                                         confirmText: 'Copot Pengawas',
-                                         btnClass: 'px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5',
-                                         onConfirm: () => $wire.removePengawasAssignment({{ $pa->id }})
-                                     })" class="ml-1 text-purple-400 hover:text-rose-600 transition font-bold" title="Copot Pengawas dari Proyek ini">
-                                         ✕
-                                     </button>
-                                @endif
-                            </span>
+                <td data-label="Pekerja & Pengawas" class="p-3.5">
+                    <div class="flex flex-wrap gap-1.5 max-w-xs">
+                        @forelse($activeAssignments as $pa)
+                            @if($pa->user)
+                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-extrabold bg-purple-100 text-purple-800 border border-purple-200/80 shadow-2xs group" title="Pengawas Project System">
+                                    <svg class="w-3.5 h-3.5 text-purple-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                                    <span>{{ $pa->user->name ?? 'Pengawas' }} (Pengawas)</span>
+                                    @if(auth()->user()->isAdminOrFounder())
+                                         <button type="button" @click="confirmModalAction({
+                                             title: 'Copot Pengawas Proyek',
+                                             message: 'Yakin ingin mencopot Pengawas {{ $pa->user->name ?? 'ini' }} dari proyek {{ $p->name }}?',
+                                             confirmText: 'Copot Pengawas',
+                                             btnClass: 'px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5',
+                                             onConfirm: () => $wire.removePengawasAssignment({{ $pa->id }})
+                                         })" class="ml-1 text-purple-400 hover:text-rose-600 transition font-bold" title="Copot Pengawas dari Proyek ini">
+                                             ✕
+                                         </button>
+                                     @endif
+                                </span>
+                            @elseif($pa->worker)
+                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-extrabold bg-emerald-100 text-emerald-800 border border-emerald-200/80 shadow-2xs group" title="{{ ucfirst($pa->worker->type) }} Lapangan">
+                                    <svg class="w-3.5 h-3.5 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                                    <span>{{ $pa->worker->name }} ({{ ucfirst($pa->worker->type) }})</span>
+                                </span>
+                            @endif
                         @empty
-                            <span class="text-[10px] text-slate-400 italic">Belum ada pengawas</span>
+                            <span class="text-[10px] text-slate-400 italic">Belum ada pekerja / pengawas</span>
                         @endforelse
                     </div>
                 </td>
-                <td class="p-3.5 font-mono font-medium text-slate-700">{{ number_format($p->standard_land_area, 0, ',', '.') }} m²</td>
+                <td data-label="Luas Standar" class="p-3.5 font-mono font-medium text-slate-700">{{ number_format($p->standard_land_area, 0, ',', '.') }} m²</td>
                 @if(auth()->user()->canViewHpp())
-                    <td class="p-3.5 font-mono text-purple-700 font-bold">
+                    <td data-label="Beli Lahan" class="p-3.5 font-mono text-purple-700 font-bold">
                         @if($p->total_project_price > 0)
                             Rp {{ number_format($p->total_project_price, 0, ',', '.') }}
                         @else
                             <span class="text-slate-400 font-normal italic">-</span>
                         @endif
                     </td>
-                    <td class="p-3.5 font-mono text-emerald-700 font-bold">Rp {{ number_format($p->base_price, 0, ',', '.') }}</td>
+                    <td data-label="Harga Dasar (HPP)" class="p-3.5 font-mono text-emerald-700 font-bold">Rp {{ number_format($p->base_price, 0, ',', '.') }}</td>
                 @endif
-                <td class="p-3.5 font-mono text-slate-700">Rp {{ number_format($p->excess_price_per_sqm, 0, ',', '.') }} / m²</td>
-                <td class="p-3.5 font-bold text-slate-800 whitespace-nowrap">
+                <td data-label="Tarif Kelebihan" class="p-3.5 font-mono text-slate-700">Rp {{ number_format($p->excess_price_per_sqm, 0, ',', '.') }} / m²</td>
+                <td data-label="Jumlah Unit" class="p-3.5 font-bold text-slate-800 whitespace-nowrap">
                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700 border border-slate-200 text-xs font-semibold whitespace-nowrap">
                         {{ $p->units_count }} Unit
                     </span>
                 </td>
-                <td class="p-3.5 text-center whitespace-nowrap">
+                <td data-card-action class="p-3.5 text-center whitespace-nowrap">
                     <div class="inline-flex items-center justify-center gap-1.5 whitespace-nowrap">
                         <x-button variant="outline" size="xs" href="{{ route('units.index', ['project_id' => $p->id]) }}" wire:navigate.hover title="Kelola Unit untuk Proyek {{ $p->name }}">
                             <span>Kelola Unit</span>
@@ -192,13 +200,7 @@
                 </td>
             </tr>
         @empty
-            <tr>
-                <td colspan="8" class="p-12 text-center text-slate-400">
-                    <svg class="w-12 h-12 mx-auto text-slate-300 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5m0 0h5m-5 0v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
-                    <p class="font-semibold text-slate-600">Belum Ada Proyek Properti Dibuat</p>
-                    <p class="text-xs text-slate-400 mt-1">Gunakan tombol "Tambah Proyek Baru" di atas untuk mendaftarkan proyek kavling.</p>
-                </td>
-            </tr>
+            <x-table-empty colspan="8" title="Belum Ada Proyek Properti Dibuat" message="Gunakan tombol 'Tambah Proyek Baru' di atas untuk mendaftarkan proyek kavling." />
         @endforelse
     </x-table>
 

@@ -11,24 +11,25 @@
             </div>
         </div>
 
+        <!-- Unified Table of Material Bills with CSS Table-to-Card Transformation -->
         <x-table :headers="['Tanggal Beli', 'Proyek & Unit', 'Toko / Supplier', 'Barang / Uraian', 'Total Nominal', 'Status', ['label' => 'Aksi', 'class' => 'p-3 text-center']]" loadingTarget="setTab, filter_project_id, filter_status, search, page">
             @forelse($materialBills as $m)
                 <tr class="hover:bg-slate-50/80 transition">
-                    <td class="p-3 font-mono font-bold text-slate-700 whitespace-nowrap">{{ format_id_date($m->purchase_date) }}</td>
-                    <td class="p-3">
+                    <td data-label="Tanggal Beli" class="p-3 font-mono font-bold text-slate-700 whitespace-nowrap">{{ format_id_date($m->purchase_date) }}</td>
+                    <td data-label="Proyek & Unit" class="p-3">
                         <span class="font-bold text-slate-800 block">{{ $m->project->name ?? 'Operasional Umum' }}</span>
                         <span class="text-[10px] text-slate-500 font-mono">Unit: {{ $m->unit ? $m->unit->code : '-' }}</span>
                     </td>
-                    <td class="p-3 font-semibold text-slate-700">{{ $m->store_name ?: '-' }}</td>
-                    <td class="p-3 font-bold text-slate-900">
+                    <td data-label="Toko / Supplier" class="p-3 font-semibold text-slate-700">{{ $m->store_name ?: '-' }}</td>
+                    <td data-label="Barang / Uraian" class="p-3 font-bold text-slate-900">
                         {{ $m->item_name }}
                         <span class="block text-[10px] font-normal text-slate-500 font-mono">{{ $m->quantity }} {{ $m->unit_measure }} @ Rp {{ number_format($m->unit_price, 0, ',', '.') }}</span>
                     </td>
-                    <td class="p-3 font-mono font-bold text-rose-700 text-sm">Rp {{ number_format($m->total_price, 0, ',', '.') }}</td>
-                    <td class="p-3">
+                    <td data-label="Total Nominal" class="p-3 font-mono font-bold text-rose-700 text-sm">Rp {{ number_format($m->total_price, 0, ',', '.') }}</td>
+                    <td data-label="Status" class="p-3">
                         <x-status-badge :status="$m->payment_status" />
                     </td>
-                    <td class="p-3 text-center">
+                    <td data-card-action class="p-3 text-center">
                         <div class="flex items-center justify-center gap-1.5 whitespace-nowrap">
                             @if($m->payment_status !== 'lunas')
                                 @if(auth()->user()->isFounder() || auth()->user()->isFinance())
@@ -49,9 +50,7 @@
                     </td>
                 </tr>
             @empty
-                <tr>
-                    <td colspan="7" class="p-8 text-center text-slate-400">Tidak ada data tagihan toko material.</td>
-                </tr>
+                <x-table-empty colspan="7" title="Tidak Ada Data Tagihan" message="Tidak ada data tagihan toko material." />
             @endforelse
         </x-table>
         <div>{{ $materialBills->links() }}</div>

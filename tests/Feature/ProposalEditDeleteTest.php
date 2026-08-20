@@ -84,3 +84,17 @@ test('founder can delete proposal data and revert unit status', function () {
     expect(PriceProposal::find($proposal->id))->toBeNull();
     expect($this->unit->fresh()->status)->toBe('tersedia');
 });
+
+test('proposal index renders create modal with available units without lazy loading violations', function () {
+    $this->unit->update(['status' => 'tersedia']);
+
+    $this->actingAs($this->founder);
+
+    Livewire::test(\App\Livewire\Proposals\Index::class)
+        ->call('openCreateModal')
+        ->assertSet('showCreateModal', true)
+        ->assertSee($this->unit->code)
+        ->assertSee($this->project->name)
+        ->assertHasNoErrors();
+});
+

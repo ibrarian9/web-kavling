@@ -446,7 +446,7 @@ class Index extends Component
         $proposals = $query->latest()->paginate(10);
 
         $projects = \App\Models\Project::orderBy('name')->get();
-        $availableUnits = Unit::where('status', 'tersedia')->where('category', '!=', 'infrastruktur')->get();
+        $availableUnits = Unit::with('project')->where('status', 'tersedia')->where('category', '!=', 'infrastruktur')->orderBy('code')->get();
 
         return view('livewire.proposals.index', [
             'proposals' => $proposals,

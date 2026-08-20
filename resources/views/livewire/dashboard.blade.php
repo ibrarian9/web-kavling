@@ -25,6 +25,8 @@
                 <p class="text-slate-300 text-xs sm:text-sm max-w-3xl leading-relaxed">
                     @if($user->isFounder())
                         Akses Executive Founder: Pemantauan arus kas global, rincian ketersediaan unit kavling, dan persetujuan pengajuan harga.
+                    @elseif($user->isAdmin())
+                        Administrasi Sistem: Pengelolaan data proyek perumahan, stok unit kavling, penerbitan surat pesanan resmi, dan monitoring operasional.
                     @elseif($user->role === 'pengawas_project')
                         Pengawasan Lapangan: Monitoring pekerja mandor/tukang, pencatatan belanja material, dan evaluasi progres unit.
                     @elseif($user->isSupervisor())
@@ -39,7 +41,7 @@
 
             <!-- Quick Action Shortcut Buttons inside Header Banner -->
             <div class="flex flex-wrap items-center gap-2.5 shrink-0">
-                @if($user->isAdminOrFounder() || $user->isFinance())
+                @if($user->isFounder() || $user->isFinance())
                     <a href="{{ route('cashflow.index') }}" wire:navigate.hover class="px-4 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded-xl text-xs shadow-lg shadow-emerald-900/40 transition flex items-center gap-2">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                         <span>Arus Kas</span>
@@ -87,6 +89,136 @@
         </div>
     @endif
 
+    <!-- Informasi Penetapan Gaji Karyawan dari Founder (Khusus Karyawan / Non-Founder) -->
+    @if(!$user->isFounder())
+        <div class="card-clean p-5 sm:p-6 border border-slate-200/90 shadow-sm relative overflow-hidden bg-gradient-to-br from-white via-slate-50/40 to-emerald-50/30">
+            <!-- Header Section -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+                <div class="flex items-center gap-3">
+                    <div class="p-3 bg-emerald-600 text-white rounded-2xl shadow-md shadow-emerald-600/20">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <h3 class="font-extrabold text-slate-900 text-base sm:text-lg">Informasi Penetapan Gaji Anda</h3>
+                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
+                                Ditetapkan Founder
+                            </span>
+                        </div>
+                        <p class="text-xs text-slate-500 mt-0.5">Rincian gaji pokok, tunjangan, dan hak keuangan bulanan yang terdaftar pada akun Anda</p>
+                    </div>
+                </div>
+
+                @if($latestSalaryPayment)
+                    <a href="{{ route('employee-salary.slip-pdf', $latestSalaryPayment->uuid) }}" 
+                       target="_blank" 
+                       class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow-xs transition flex items-center justify-center gap-2 self-start sm:self-auto shrink-0">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                        <span>Cetak Slip Gaji ({{ $userSalary?->getIndonesianMonth($latestSalaryPayment->payroll_month) }} {{ $latestSalaryPayment->payroll_year }})</span>
+                    </a>
+                @endif
+            </div>
+
+            @if($userSalary)
+                <!-- Salary Breakdown Grid -->
+                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3.5 mt-5">
+                    <!-- Gaji Pokok -->
+                    <div class="p-3.5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs">
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1">Gaji Pokok</span>
+                        <p class="text-base sm:text-lg font-black text-slate-800 font-mono">Rp {{ number_format($userSalary->basic_salary, 0, ',', '.') }}</p>
+                        <span class="text-[10px] text-slate-400">Dasar ketetapan</span>
+                    </div>
+
+                    <!-- Tunjangan -->
+                    <div class="p-3.5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs">
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-teal-600 block mb-1">Tunjangan (+)</span>
+                        <p class="text-base sm:text-lg font-black text-teal-700 font-mono">Rp {{ number_format($userSalary->allowance, 0, ',', '.') }}</p>
+                        <span class="text-[10px] text-teal-600/80">Transport & fungsional</span>
+                    </div>
+
+                    <!-- Bonus / Insentif -->
+                    <div class="p-3.5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs">
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-blue-600 block mb-1">Bonus/Insentif (+)</span>
+                        <p class="text-base sm:text-lg font-black text-blue-700 font-mono">Rp {{ number_format($userSalary->bonus, 0, ',', '.') }}</p>
+                        <span class="text-[10px] text-blue-600/80">Kinerja operasional</span>
+                    </div>
+
+                    <!-- Potongan -->
+                    <div class="p-3.5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs">
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-rose-500 block mb-1">Potongan (-)</span>
+                        <p class="text-base sm:text-lg font-black text-rose-600 font-mono">Rp {{ number_format($userSalary->deductions, 0, ',', '.') }}</p>
+                        <span class="text-[10px] text-rose-500/80">PPh / administrasi</span>
+                    </div>
+
+                    <!-- Total Gaji Bersih (THP) -->
+                    <div class="col-span-2 sm:col-span-1 p-3.5 rounded-2xl bg-gradient-to-br from-emerald-600 to-teal-700 text-white shadow-md shadow-emerald-700/20">
+                        <span class="text-[10px] font-extrabold uppercase tracking-wider text-emerald-100 block mb-1">Take Home Pay</span>
+                        <p class="text-lg sm:text-xl font-black font-mono">Rp {{ number_format($userSalary->net_salary, 0, ',', '.') }}</p>
+                        <span class="text-[10px] text-emerald-100/90 font-medium">Gaji Bersih / Bulan</span>
+                    </div>
+                </div>
+
+                <!-- Account & Metadata Information -->
+                <div class="mt-4 pt-4 border-t border-slate-100 grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+                    <div class="flex items-center gap-2 text-slate-600 bg-white p-2.5 rounded-xl border border-slate-100">
+                        <div class="w-7 h-7 rounded-lg bg-slate-100 flex items-center justify-center text-slate-500 shrink-0">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                        </div>
+                        <div>
+                            <span class="text-[10px] font-bold text-slate-400 uppercase block">Posisi / Jabatan</span>
+                            <span class="font-bold text-slate-800">{{ $userSalary->position ?: ($user->position ?: ucfirst($user->role)) }}</span>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2 text-slate-600 bg-white p-2.5 rounded-xl border border-slate-100">
+                        <div class="w-7 h-7 rounded-lg bg-slate-100 flex items-center justify-center text-slate-500 shrink-0">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+                        </div>
+                        <div>
+                            <span class="text-[10px] font-bold text-slate-400 uppercase block">Rekening Payroll</span>
+                            <span class="font-bold text-slate-800 font-mono">
+                                {{ $userSalary->bank_name ? $userSalary->bank_name . ' - ' . $userSalary->bank_account_number : 'Belum Didaftarkan' }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2 text-slate-600 bg-white p-2.5 rounded-xl border border-slate-100">
+                        <div class="w-7 h-7 rounded-lg bg-slate-100 flex items-center justify-center text-slate-500 shrink-0">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        </div>
+                        <div>
+                            <span class="text-[10px] font-bold text-slate-400 uppercase block">Status Payroll</span>
+                            @if($latestSalaryPayment)
+                                <span class="font-bold text-emerald-700">Terbayar: Periode {{ $userSalary->getIndonesianMonth($latestSalaryPayment->payroll_month) }} {{ $latestSalaryPayment->payroll_year }}</span>
+                            @else
+                                <span class="font-bold text-amber-700">Aktif Terdaftar (Menunggu Payroll)</span>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+
+                @if($userSalary->notes)
+                    <div class="mt-3 p-3 bg-slate-100/70 border border-slate-200/60 rounded-xl text-[11px] text-slate-600 flex items-start gap-2">
+                        <svg class="w-4 h-4 text-slate-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <div>
+                            <span class="font-bold text-slate-700">Catatan Founder:</span> {{ $userSalary->notes }}
+                        </div>
+                    </div>
+                @endif
+            @else
+                <div class="mt-4 p-4 bg-amber-50/80 border border-amber-200/80 rounded-2xl text-amber-900 text-xs flex items-center gap-3">
+                    <div class="p-2 bg-amber-500 text-white rounded-xl shrink-0">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    </div>
+                    <div>
+                        <p class="font-bold">Informasi Gaji Belum Ditetapkan</p>
+                        <p class="text-amber-700 text-[11px] mt-0.5">Penetapan gaji pokok dan tunjangan untuk akun Anda belum dikonfigurasi di sistem oleh Founder. Silakan hubungi Founder atau Manajemen Keuangan.</p>
+                    </div>
+                </div>
+            @endif
+        </div>
+    @endif
+
     <!-- KPI Metric Cards Grid (4 Top Metric Cards) -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         <!-- Stat Card 1: Proyek Aktif -->
@@ -129,35 +261,53 @@
             </div>
         </div>
 
-        <!-- Stat Card 3: Booking Fee & Total DP -->
-        <div class="kpi-card-amber flex flex-col justify-between">
-            <div class="flex items-center justify-between">
-                <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Total Booking Fee & DP</span>
-                <div class="p-2.5 rounded-xl bg-amber-50 text-amber-600 border border-amber-100 shadow-2xs">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                </div>
-            </div>
-            <div class="mt-3">
-                <p class="text-2xl font-extrabold text-amber-700 font-mono">Rp {{ number_format($totalBookingAmount, 0, ',', '.') }}</p>
-                <p class="text-[11px] text-slate-500 mt-1">Terverifikasi dari {{ $totalBookingsCount }} pemesanan konsumen</p>
-            </div>
-        </div>
-
-        <!-- Stat Card 4: Saldo Arus Kas Global (Non-Marketing) / Daily Activity (Marketing) -->
-        @if(!$user->isMarketing())
-            <div class="kpi-card-dark flex flex-col justify-between">
+        <!-- Stat Card 3: Booking Fee & Total DP (Non-Admin) / Total Pemesanan Unit (Admin) -->
+        @if(!$user->isAdmin())
+            <div class="kpi-card-amber flex flex-col justify-between">
                 <div class="flex items-center justify-between">
-                    <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Saldo Kas Bersih Global</span>
-                    <div class="p-2.5 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                    <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Total Booking Fee & DP</span>
+                    <div class="p-2.5 rounded-xl bg-amber-50 text-amber-600 border border-amber-100 shadow-2xs">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                     </div>
                 </div>
                 <div class="mt-3">
-                    <p class="text-2xl font-extrabold text-white font-mono">Rp {{ number_format($netCashflow, 0, ',', '.') }}</p>
-                    <p class="text-[11px] text-emerald-400 mt-1 font-mono">Pemasukan: Rp {{ number_format($totalCashIn, 0, ',', '.') }}</p>
+                    <p class="text-2xl font-extrabold text-amber-700 font-mono">Rp {{ number_format($totalBookingAmount, 0, ',', '.') }}</p>
+                    <p class="text-[11px] text-slate-500 mt-1">Terverifikasi dari {{ $totalBookingsCount }} pemesanan konsumen</p>
                 </div>
             </div>
         @else
+            <div class="kpi-card-amber flex flex-col justify-between">
+                <div class="flex items-center justify-between">
+                    <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Pemesanan & Booking</span>
+                    <div class="p-2.5 rounded-xl bg-amber-50 text-amber-600 border border-amber-100 shadow-2xs">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <p class="text-2xl font-extrabold text-amber-700 font-mono">{{ $totalBookingsCount }} Pemesanan</p>
+                    <p class="text-[11px] text-slate-500 mt-1">Total booking & pemesanan unit kavling konsumen</p>
+                </div>
+            </div>
+        @endif
+
+        <!-- Stat Card 4: Saldo Arus Kas Global (Executive/Finance) / Daily Activity (Marketing) / Pekerja Mandor (Admin) -->
+        @if($user->isAdmin())
+            <div class="kpi-card-dark flex flex-col justify-between">
+                <div class="flex items-center justify-between">
+                    <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Pekerja Mandor & Tukang</span>
+                    <div class="p-2.5 rounded-xl bg-slate-800 text-amber-400 border border-slate-700 shadow-2xs">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <p class="text-2xl font-extrabold text-white font-mono">{{ $activeWorkersCount }} Pekerja</p>
+                    <p class="text-[11px] text-slate-400 mt-1 flex items-center gap-1">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                        <span>Mandor & tukang aktif di lapangan</span>
+                    </p>
+                </div>
+            </div>
+        @elseif($user->isMarketing())
             <div class="kpi-card-dark flex flex-col justify-between">
                 <div class="flex items-center justify-between">
                     <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Daily Activity & Hot Deals</span>
@@ -170,11 +320,24 @@
                     <p class="text-[11px] text-teal-300 mt-1 font-semibold">{{ $marketingHotDealsCount ?? 0 }} Prospek Hot Deal / Closing</p>
                 </div>
             </div>
+        @else
+            <div class="kpi-card-dark flex flex-col justify-between">
+                <div class="flex items-center justify-between">
+                    <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Saldo Kas Bersih Global</span>
+                    <div class="p-2.5 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <p class="text-2xl font-extrabold text-white font-mono">Rp {{ number_format($netCashflow, 0, ',', '.') }}</p>
+                    <p class="text-[11px] text-emerald-400 mt-1 font-mono">Pemasukan: Rp {{ number_format($totalCashIn, 0, ',', '.') }}</p>
+                </div>
+            </div>
         @endif
     </div>
 
-    <!-- Visual Analytics: Grafik Real-Time Tren Arus Kas (Non-Marketing Only) -->
-    @if(!$user->isMarketing())
+    <!-- Visual Analytics: Grafik Real-Time Tren Arus Kas (Non-Marketing & Non-Admin Only) -->
+    @if(!$user->isMarketing() && !$user->isAdmin())
         <div class="card-clean p-5 sm:p-6 space-y-4">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
                 <div>
@@ -392,82 +555,84 @@
         </div>
     </div>
 
-    <!-- Script Chart Real-time Trend ApexCharts -->
-    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            initDashboardChart();
-        });
-
-        document.addEventListener('livewire:navigated', function () {
-            initDashboardChart();
-        });
-
-        Livewire.hook('commit', ({ succeed }) => {
-            succeed(() => {
-                setTimeout(() => {
-                    initDashboardChart();
-                }, 100);
+    <!-- Script Chart Real-time Trend ApexCharts (Non-Marketing & Non-Admin Only) -->
+    @if(!$user->isMarketing() && !$user->isAdmin())
+        <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                initDashboardChart();
             });
-        });
 
-        function initDashboardChart() {
-            const chartEl = document.getElementById('dashboardTrendChart');
-            if (!chartEl) return;
+            document.addEventListener('livewire:navigated', function () {
+                initDashboardChart();
+            });
 
-            chartEl.innerHTML = '';
+            Livewire.hook('commit', ({ succeed }) => {
+                succeed(() => {
+                    setTimeout(() => {
+                        initDashboardChart();
+                    }, 100);
+                });
+            });
 
-            const options = {
-                series: [{
-                    name: 'Kas Masuk (Penjualan & Booking)',
-                    data: @json($chartMasuk)
-                }, {
-                    name: 'Kas Keluar (Operasional & Material)',
-                    data: @json($chartKeluar)
-                }],
-                chart: {
-                    type: 'area',
-                    height: 300,
-                    toolbar: { show: false },
-                    fontFamily: 'Inter, sans-serif'
-                },
-                colors: ['#10b981', '#f43f5e'],
-                fill: {
-                    type: 'gradient',
-                    gradient: {
-                        shadeIntensity: 1,
-                        opacityFrom: 0.4,
-                        opacityTo: 0.05,
-                        stops: [0, 90, 100]
-                    }
-                },
-                dataLabels: { enabled: false },
-                stroke: { curve: 'smooth', width: 3 },
-                xaxis: {
-                    categories: @json($chartLabels),
-                    labels: { style: { colors: '#64748b', fontSize: '11px', fontWeight: 600 } }
-                },
-                yaxis: {
-                    labels: {
-                        style: { colors: '#64748b', fontSize: '11px' },
-                        formatter: function (val) {
-                            return 'Rp ' + (val / 1000000).toFixed(0) + ' Jt';
+            function initDashboardChart() {
+                const chartEl = document.getElementById('dashboardTrendChart');
+                if (!chartEl) return;
+
+                chartEl.innerHTML = '';
+
+                const options = {
+                    series: [{
+                        name: 'Kas Masuk (Penjualan & Booking)',
+                        data: @json($chartMasuk)
+                    }, {
+                        name: 'Kas Keluar (Operasional & Material)',
+                        data: @json($chartKeluar)
+                    }],
+                    chart: {
+                        type: 'area',
+                        height: 300,
+                        toolbar: { show: false },
+                        fontFamily: 'Inter, sans-serif'
+                    },
+                    colors: ['#10b981', '#f43f5e'],
+                    fill: {
+                        type: 'gradient',
+                        gradient: {
+                            shadeIntensity: 1,
+                            opacityFrom: 0.4,
+                            opacityTo: 0.05,
+                            stops: [0, 90, 100]
                         }
-                    }
-                },
-                tooltip: {
-                    y: {
-                        formatter: function (val) {
-                            return 'Rp ' + new Intl.NumberFormat('id-ID').format(val);
+                    },
+                    dataLabels: { enabled: false },
+                    stroke: { curve: 'smooth', width: 3 },
+                    xaxis: {
+                        categories: @json($chartLabels),
+                        labels: { style: { colors: '#64748b', fontSize: '11px', fontWeight: 600 } }
+                    },
+                    yaxis: {
+                        labels: {
+                            style: { colors: '#64748b', fontSize: '11px' },
+                            formatter: function (val) {
+                                return 'Rp ' + (val / 1000000).toFixed(0) + ' Jt';
+                            }
                         }
-                    }
-                },
-                grid: { borderColor: '#f1f5f9' },
-                legend: { position: 'top', horizontalAlign: 'right', fontWeight: 600 }
-            };
+                    },
+                    tooltip: {
+                        y: {
+                            formatter: function (val) {
+                                return 'Rp ' + new Intl.NumberFormat('id-ID').format(val);
+                            }
+                        }
+                    },
+                    grid: { borderColor: '#f1f5f9' },
+                    legend: { position: 'top', horizontalAlign: 'right', fontWeight: 600 }
+                };
 
-            const chart = new ApexCharts(chartEl, options);
-            chart.render();
-        }
-    </script>
+                const chart = new ApexCharts(chartEl, options);
+                chart.render();
+            }
+        </script>
+    @endif
 </div>

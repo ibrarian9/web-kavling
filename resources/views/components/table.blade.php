@@ -3,21 +3,22 @@
     'loadingTarget' => null,
     'emptyText' => 'Tidak ada data ditemukan.',
     'emptyColspan' => null,
-    'wrapperClass' => 'overflow-x-auto sm:overflow-visible relative min-h-[160px]',
+    'responsive' => true,
+    'wrapperClass' => 'overflow-x-auto relative min-h-[160px] custom-scrollbar',
 ])
 
 @php
     $colspan = $emptyColspan ?? (count($headers) > 0 ? count($headers) : 1);
 @endphp
 
-<div class="relative card-clean border border-slate-200/80 rounded-3xl shadow-xs bg-white">
+<div class="relative {{ $responsive ? 'bg-transparent border-0 shadow-none sm:card-clean sm:border sm:border-slate-200/80 sm:rounded-3xl sm:shadow-xs sm:bg-white sm:overflow-hidden' : 'card-clean border border-slate-200/80 rounded-3xl shadow-xs bg-white overflow-hidden' }}">
     @if($loadingTarget)
         <x-table-loading :target="$loadingTarget" />
     @endif
 
     <div class="{{ $wrapperClass }}">
         <table 
-            {{ $attributes->merge(['class' => 'w-full text-left text-xs text-slate-600']) }}
+            {{ $attributes->merge(['class' => ($responsive ? 'table-responsive-card ' : '') . 'w-full text-left text-xs text-slate-600']) }}
             @if($loadingTarget)
                 wire:loading.class="opacity-30 pointer-events-none transition-opacity duration-300"
                 wire:target="{{ $loadingTarget }}"

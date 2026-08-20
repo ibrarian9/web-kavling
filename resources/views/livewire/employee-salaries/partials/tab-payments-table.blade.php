@@ -29,29 +29,30 @@
         </div>
     </div>
 
+    <!-- Unified Table of Payments with CSS Table-to-Card Transformation -->
     <x-table :headers="['No. Slip Gaji', 'Nama Karyawan', 'Periode Gaji', 'Tgl Bayar', ['label' => 'Total Gaji Dibayar', 'class' => 'p-3.5 text-right'], 'Metode Bayar', ['label' => 'Cetak Slip & Aksi', 'class' => 'p-3.5 text-center']]" loadingTarget="selected_month, selected_year, datePeriod, startDate, endDate, gotoPage, nextPage, previousPage">
         @forelse($payments as $pay)
             <tr class="hover:bg-slate-50 transition">
-                <td class="p-3.5 font-mono font-bold text-emerald-800 text-xs">
+                <td data-label="No. Slip Gaji" class="p-3.5 font-mono font-bold text-emerald-800 text-xs">
                     SLIP/PAY/{{ strtoupper(substr($pay->uuid, 0, 8)) }}
                 </td>
-                <td class="p-3.5">
+                <td data-label="Nama Karyawan" class="p-3.5">
                     <div class="font-bold text-slate-900 text-sm">{{ $pay->employeeSalary->employee_name ?? 'Karyawan' }}</div>
                     <div class="text-[11px] text-slate-500">{{ $pay->employeeSalary->position ?? '-' }}</div>
                 </td>
-                <td class="p-3.5 font-bold text-slate-800 text-xs">
+                <td data-label="Periode Gaji" class="p-3.5 font-bold text-slate-800 text-xs">
                     {{ $pay->employeeSalary->getIndonesianMonth($pay->payroll_month) }} {{ $pay->payroll_year }}
                 </td>
-                <td class="p-3.5 font-mono text-xs">{{ format_id_date($pay->payment_date) }}</td>
-                <td class="p-3.5 text-right font-mono text-emerald-800 font-black text-sm">
+                <td data-label="Tgl Bayar" class="p-3.5 font-mono text-xs">{{ format_id_date($pay->payment_date) }}</td>
+                <td data-label="Total Gaji Dibayar" class="p-3.5 text-right font-mono text-emerald-800 font-black text-sm">
                     Rp {{ number_format($pay->net_salary, 0, ',', '.') }}
                 </td>
-                <td class="p-3.5">
+                <td data-label="Metode Bayar" class="p-3.5">
                     <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-slate-100 text-slate-800 border border-slate-200">
                         {{ strtoupper($pay->payment_method) }}
                     </span>
                 </td>
-                <td class="p-3.5 text-center whitespace-nowrap">
+                <td data-card-action class="p-3.5 text-center whitespace-nowrap">
                     <div class="inline-flex items-center justify-center gap-1.5 whitespace-nowrap">
                         <a href="{{ route('employee-salary.slip-pdf', $pay->uuid) }}" target="_blank">
                             <x-button variant="emerald" size="xs" title="Buka / Stream Slip Gaji PDF Resmi">
@@ -78,12 +79,7 @@
                 </td>
             </tr>
         @empty
-            <tr>
-                <td colspan="7" class="p-12 text-center text-slate-400">
-                    <svg class="w-12 h-12 mx-auto text-slate-300 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                    <p class="font-bold text-slate-600">Belum Ada Histori Transaksi Pembayaran Gaji</p>
-                </td>
-            </tr>
+            <x-table-empty colspan="7" title="Belum Ada Histori Transaksi Pembayaran Gaji" message="Riwayat penggajian bulanan yang telah diproses akan ditampilkan di sini." />
         @endforelse
     </x-table>
 

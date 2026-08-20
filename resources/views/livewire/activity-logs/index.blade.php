@@ -41,7 +41,7 @@
     <!-- Unified Control Bar: Tabs Switcher, Searching & Filtering in ONE Card -->
     <div class="card-clean p-4 border border-slate-200/80 rounded-3xl space-y-3.5 shadow-2xs">
         <!-- Baris 1: Tabs Switcher -->
-        <div class="flex items-center gap-2 bg-slate-100 p-1.5 rounded-2xl w-full md:w-auto overflow-x-auto">
+        <div class="flex items-center gap-2 bg-slate-100 p-1.5 rounded-2xl w-full md:w-auto overflow-x-auto custom-scrollbar">
             <button wire:click="setTab('database')" type="button" class="px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 shrink-0 {{ $activeTab === 'database' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-500 hover:text-slate-800' }}">
                 <svg class="w-4 h-4 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"/></svg>
                 <span>Operasional & Keuangan</span>
@@ -94,14 +94,25 @@
     <!-- TAB 1 & 2: Database Audit Logs (Operational or Notifications) -->
     @if(in_array($activeTab, ['database', 'notifications']))
         <div class="space-y-4">
+            <!-- Unified Table of Database Logs with CSS Table-to-Card Transformation -->
             <x-table :headers="['Waktu Presisi', 'Pengguna / Peran', 'Jenis Event / Aksi', 'Detail Log Aktivitas / Notifikasi', 'IP & Client Device']" loadingTarget="search, actionFilter, datePeriod, startDate, endDate, gotoPage, nextPage, previousPage">
                 @forelse($databaseLogs as $log)
+                    @php
+                        $isNotif = str_starts_with($log->action, 'NOTIF_') || str_starts_with($log->action, 'NOTIFICATION_');
+                        $badgeClass = match(true) {
+                            $isNotif => 'bg-blue-50 text-blue-700 border-blue-200',
+                            str_contains($log->action, 'LOGIN') || str_contains($log->action, 'AUTH') => 'bg-emerald-50 text-emerald-700 border-emerald-200',
+                            str_contains($log->action, 'CLEAR') || str_contains($log->action, 'DELETE') => 'bg-rose-50 text-rose-700 border-rose-200',
+                            str_contains($log->action, 'CREATE') || str_contains($log->action, 'ADD') => 'bg-sky-50 text-sky-700 border-sky-200',
+                            default => 'bg-purple-50 text-purple-700 border-purple-200',
+                        };
+                    @endphp
                     <tr class="hover:bg-slate-50/80 transition">
-                        <td class="p-3.5 font-mono text-[11px] text-slate-600 whitespace-nowrap">
+                        <td data-label="Waktu" class="p-3.5 font-mono text-[11px] text-slate-600 whitespace-nowrap">
                             <div class="font-bold text-slate-800">{{ format_id_date($log->created_at) }}</div>
                             <div class="text-[10px] text-slate-400">{{ $log->created_at->format('H:i:s') }} ({{ format_id_diff($log->created_at) }})</div>
                         </td>
-                        <td class="p-3.5">
+                        <td data-label="Pengguna" class="p-3.5">
                             <div class="flex items-center gap-2">
                                 <div class="w-7 h-7 rounded-full {{ $activeTab === 'notifications' ? 'bg-blue-100 text-blue-700' : 'bg-purple-100 text-purple-700' }} font-extrabold flex items-center justify-center text-xs shrink-0">
                                     {{ strtoupper(substr($log->user_name, 0, 1)) }}
@@ -114,25 +125,15 @@
                                 </div>
                             </div>
                         </td>
-                        <td class="p-3.5 whitespace-nowrap">
-                            @php
-                                $isNotif = str_starts_with($log->action, 'NOTIF_') || str_starts_with($log->action, 'NOTIFICATION_');
-                                $badgeClass = match(true) {
-                                    $isNotif => 'bg-blue-50 text-blue-700 border-blue-200',
-                                    str_contains($log->action, 'LOGIN') || str_contains($log->action, 'AUTH') => 'bg-emerald-50 text-emerald-700 border-emerald-200',
-                                    str_contains($log->action, 'CLEAR') || str_contains($log->action, 'DELETE') => 'bg-rose-50 text-rose-700 border-rose-200',
-                                    str_contains($log->action, 'CREATE') || str_contains($log->action, 'ADD') => 'bg-sky-50 text-sky-700 border-sky-200',
-                                    default => 'bg-purple-50 text-purple-700 border-purple-200',
-                                };
-                            @endphp
+                        <td data-label="Jenis Event" class="p-3.5 whitespace-nowrap">
                             <span class="px-2.5 py-1 rounded-lg border text-[10px] font-extrabold font-mono uppercase tracking-wider {{ $badgeClass }}">
                                 {{ $log->action }}
                             </span>
                         </td>
-                        <td class="p-3.5 text-slate-700 font-medium text-xs max-w-md">
+                        <td data-label="Keterangan" class="p-3.5 text-slate-700 font-medium text-xs max-w-md">
                             {{ $log->description }}
                         </td>
-                        <td class="p-3.5 text-[11px] font-mono text-slate-500 whitespace-nowrap">
+                        <td data-label="IP / Device" class="p-3.5 text-[11px] font-mono text-slate-500 whitespace-nowrap">
                             <div>{{ $log->ip_address ?: '127.0.0.1' }}</div>
                             <div class="text-[9px] text-slate-400 max-w-xs truncate" title="{{ $log->user_agent }}">
                                 {{ $log->user_agent ? Str::limit($log->user_agent, 30) : '-' }}
@@ -140,15 +141,10 @@
                         </td>
                     </tr>
                 @empty
-                    <tr>
-                        <td colspan="5" class="p-12 text-center text-slate-400">
-                            <svg class="w-12 h-12 mx-auto text-slate-300 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                            <p class="font-semibold text-slate-600">Belum ada riwayat {{ $activeTab === 'notifications' ? 'log notifikasi terkirim' : 'aktivitas operasional' }} tercatat</p>
-                            <p class="text-xs text-slate-400 mt-1">Seluruh log terikat akan ditampilkan di sini.</p>
-                        </td>
-                    </tr>
+                    <x-table-empty colspan="5" :title="'Belum ada riwayat ' . ($activeTab === 'notifications' ? 'log notifikasi terkirim' : 'aktivitas operasional')" message="Seluruh log terikat akan ditampilkan di sini." />
                 @endforelse
             </x-table>
+        </div>
 
             <div>{{ $databaseLogs->links() }}</div>
         </div>

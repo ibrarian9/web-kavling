@@ -1,6 +1,6 @@
 <!-- Desktop Sidebar Navigation (Sticky & Mini/Expanded Collapsible) -->
 <aside :class="sidebarExpanded ? 'w-64' : 'w-20'"
-       class="sticky top-0 h-screen bg-slate-900 border-r border-slate-800/80 text-slate-300 flex flex-col justify-between shrink-0 hidden md:flex shadow-xl z-30 transition-[width] duration-200 ease-in-out select-none">
+       class="sticky top-0 h-screen bg-slate-900 border-r border-slate-800/80 text-slate-300 flex flex-col justify-between shrink-0 hidden lg:flex shadow-xl z-30 transition-[width] duration-200 ease-in-out select-none">
     
     <!-- Brand Top Header (Fixed at top of sidebar) -->
     <div class="h-16 px-4 flex items-center justify-between border-b border-slate-800/80 bg-slate-950/40 shrink-0">

@@ -46,7 +46,9 @@ class WorkerSpkController extends Controller
             'terbilang' => ucfirst(trim($terbilang)),
         ]);
 
-        $fileName = 'SPK-BORONGAN-' . $unit->code . '-' . str_replace(' ', '-', $worker->name) . '.pdf';
+        $cleanUnitCode = preg_replace('/[^A-Za-z0-9_-]/', '-', $unit->code);
+        $cleanWorkerName = preg_replace('/[^A-Za-z0-9_-]/', '-', $worker->name);
+        $fileName = 'SPK-BORONGAN-' . $cleanUnitCode . '-' . $cleanWorkerName . '.pdf';
         return $pdf->stream($fileName);
     }
 

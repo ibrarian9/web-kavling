@@ -49,10 +49,13 @@ class Index extends Component
     public $buyer_phone = '';
     public $booking_amount = 5000000;
     public $dp_amount = 25000000;
+    public ?string $booking_date = null;
+    public ?string $expiry_date = null;
     public $booking_notes = '';
     public $receipt_photo = null;
 
     // Computed preview properties for auto calculation
+    public $previewBasePrice = 0;
     public $previewExcessArea = 0;
     public $previewExcessCost = 0;
     public $previewRecommendedHpp = 0;
@@ -98,9 +101,10 @@ class Index extends Component
         if ($this->selected_project_id && $this->category !== 'infrastruktur') {
             $project = Project::find($this->selected_project_id);
             if ($project) {
+                $this->previewBasePrice = (float)$project->base_price;
                 $this->previewExcessArea = max(0, (float)$this->land_area - (float)$project->standard_land_area);
                 $this->previewExcessCost = $this->previewExcessArea * (float)$project->excess_price_per_sqm;
-                $this->previewRecommendedHpp = (float)$project->base_price + $this->previewExcessCost;
+                $this->previewRecommendedHpp = $this->previewBasePrice + $this->previewExcessCost;
                 
                 if (is_null($this->hpp) || $this->hpp == 0 || $this->editingUnitId === null) {
                     $this->hpp = $this->previewRecommendedHpp;
@@ -141,6 +145,7 @@ class Index extends Component
         $this->land_area = 100.00;
         $this->hpp = null;
         $this->editingUnitId = null;
+        $this->previewBasePrice = 0;
         $this->previewExcessArea = 0;
         $this->previewExcessCost = 0;
         $this->previewRecommendedHpp = 0;
@@ -282,6 +287,8 @@ class Index extends Component
         $this->buyer_phone = '';
         $this->booking_amount = 5000000;
         $this->dp_amount = 0;
+        $this->booking_date = now()->toDateString();
+        $this->expiry_date = now()->addDays(14)->toDateString();
         $this->booking_notes = 'Booking unit ' . $unit->code . ' via sistem.';
         $this->receipt_photo = null;
         $this->showBookingModal = true;
@@ -306,6 +313,8 @@ class Index extends Component
             'buyer_name' => 'required|string|max:255',
             'buyer_phone' => 'required|string|max:50',
             'booking_amount' => 'required|numeric|min:1000',
+            'booking_date' => 'required|date',
+            'expiry_date' => 'nullable|date|after_or_equal:booking_date',
             'receipt_photo' => 'nullable|image|max:2048',
         ]);
 
@@ -324,8 +333,8 @@ class Index extends Component
             'booking_type' => 'unit',
             'booking_amount' => $this->booking_amount,
             'dp_amount' => 0,
-            'booking_date' => now()->toDateString(),
-            'expiry_date' => now()->addDays(14)->toDateString(),
+            'booking_date' => $this->booking_date,
+            'expiry_date' => $this->expiry_date ?: \Carbon\Carbon::parse($this->booking_date)->addDays(14)->toDateString(),
             'status' => 'active',
             'notes' => $this->booking_notes,
             'receipt_photo_path' => $receiptPath,

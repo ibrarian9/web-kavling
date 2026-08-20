@@ -86,28 +86,28 @@
         @endif
     </div>
 
-    <!-- Invoice Table -->
+    <!-- Unified Table of Manual Invoices with CSS Table-to-Card Transformation -->
     <x-table :headers="['No', 'No. Invoice & Tanggal', 'Penerima / Klien', 'Proyek & Unit', 'Tipe & Kategori', ['label' => 'Nominal (Rp)', 'class' => 'p-3.5 text-right'], ['label' => 'Status', 'class' => 'p-3.5 text-center'], ['label' => 'Arus Kas', 'class' => 'p-3.5 text-center'], ['label' => 'Aksi', 'class' => 'p-3.5 text-center']]" loadingTarget="search, statusFilter, typeFilter, projectFilter, datePeriod, startDate, endDate, page">
         @forelse($invoices as $index => $inv)
             <tr class="hover:bg-slate-50/80 transition">
-                <td class="p-3.5 font-mono text-slate-500 font-semibold">{{ $invoices->firstItem() + $index }}</td>
-                <td class="p-3.5 font-mono">
+                <td data-label="No" class="p-3.5 font-mono text-slate-500 font-semibold">{{ $invoices->firstItem() + $index }}</td>
+                <td data-label="No. Invoice" class="p-3.5 font-mono">
                     <strong class="text-slate-900 block text-xs">{{ $inv->invoice_number }}</strong>
                     <span class="text-slate-500 text-[11px]">{{ format_id_date($inv->invoice_date) }}</span>
                 </td>
-                <td class="p-3.5">
+                <td data-label="Penerima / Klien" class="p-3.5">
                     <span class="font-bold text-slate-800 block text-xs">{{ $inv->recipient_name }}</span>
                     @if($inv->recipient_phone)
                         <span class="text-slate-400 text-[10px]">Telp: {{ $inv->recipient_phone }}</span>
                     @endif
                 </td>
-                <td class="p-3.5 text-slate-700 text-xs">
+                <td data-label="Proyek & Unit" class="p-3.5 text-slate-700 text-xs">
                     <span class="font-semibold block">{{ $inv->project->name ?? 'Global' }}</span>
                     @if($inv->unit)
                         <span class="text-teal-700 font-mono text-[11px]">Unit {{ $inv->unit->code }}</span>
                     @endif
                 </td>
-                <td class="p-3.5">
+                <td data-label="Tipe & Kategori" class="p-3.5">
                     <div class="space-y-1.5 flex flex-col items-start">
                         @if($inv->type === 'masuk')
                             <x-status-badge status="kas_masuk" label="KAS MASUK" />
@@ -117,10 +117,10 @@
                         <x-category-badge :category="$inv->category" />
                     </div>
                 </td>
-                <td class="p-3.5 text-right font-mono font-extrabold text-xs {{ $inv->type === 'masuk' ? 'text-emerald-700' : 'text-rose-700' }}">
+                <td data-label="Nominal (Rp)" class="p-3.5 text-right font-mono font-extrabold text-xs {{ $inv->type === 'masuk' ? 'text-emerald-700' : 'text-rose-700' }}">
                     {{ $inv->type === 'masuk' ? '+' : '-' }} Rp {{ number_format($inv->amount, 0, ',', '.') }}
                 </td>
-                <td class="p-3.5 text-center">
+                <td data-label="Status" class="p-3.5 text-center">
                     @if($inv->status === 'lunas')
                         <x-status-badge status="lunas" label="LUNAS" />
                     @elseif($inv->status === 'pending')
@@ -129,7 +129,7 @@
                         <x-status-badge status="draf" label="DRAF" />
                     @endif
                 </td>
-                <td class="p-3.5 text-center">
+                <td data-label="Arus Kas" class="p-3.5 text-center">
                     @if($inv->record_cashflow && $inv->status === 'lunas')
                         <span class="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full" title="Tersinkronisasi ke Mutasi Arus Kas">
                             <svg class="w-3 h-3 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
@@ -139,7 +139,7 @@
                         <span class="text-slate-400 text-[10px] italic">-</span>
                     @endif
                 </td>
-                <td class="p-3.5 text-center whitespace-nowrap">
+                <td data-card-action class="p-3.5 text-center whitespace-nowrap">
                     <div class="inline-flex items-center justify-center gap-1.5 whitespace-nowrap">
                         <x-button variant="pdf" size="xs" wire:click="openPdfPreview('{{ $inv->uuid }}')" title="Pratinjau Invoice PDF" icon="pdf">
                             <span>PDF</span>
@@ -169,13 +169,7 @@
                 </td>
             </tr>
         @empty
-            <tr>
-                <td colspan="9" class="p-12 text-center text-slate-400">
-                    <svg class="w-12 h-12 mx-auto text-slate-300 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 01-2 2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                    <p class="font-semibold text-slate-600">Belum Ada Invoice Manual Dicatat</p>
-                    <p class="text-xs text-slate-400 mt-1">Klik tombol "+ Buat Invoice Manual" untuk membuat invoice khusus yang langsung terhubung ke Arus Kas.</p>
-                </td>
-            </tr>
+            <x-table-empty colspan="9" title="Belum Ada Invoice Manual Dicatat" message="Klik tombol '+ Buat Invoice Manual' untuk membuat invoice khusus yang langsung terhubung ke Arus Kas." />
         @endforelse
     </x-table>
 

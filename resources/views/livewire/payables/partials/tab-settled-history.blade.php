@@ -11,33 +11,32 @@
             </div>
         </div>
 
+        <!-- Unified Table of Settled History with CSS Table-to-Card Transformation -->
         <x-table :headers="['Tgl Lunas / Setoran', 'Kategori Navigasi', 'Rincian / Penjual / Supplier / Pekerja', 'Proyek & Unit / Metode', 'Nominal Terbayar', 'Status']" loadingTarget="setTab, search, his_page">
             @forelse($settledHistory as $sh)
                 <tr class="hover:bg-slate-50/80 transition">
-                    <td class="p-3 font-mono font-bold text-slate-700 whitespace-nowrap">
+                    <td data-label="Tgl Lunas" class="p-3 font-mono font-bold text-slate-700 whitespace-nowrap">
                         {{ format_id_date($sh->date) }}
                     </td>
-                    <td class="p-3">
+                    <td data-label="Kategori" class="p-3">
                         <span class="px-2.5 py-1 rounded-full font-bold text-[10px] border whitespace-nowrap inline-flex items-center shrink-0 {{ $sh->badge_class }}">
                             {{ $sh->category_name }}
                         </span>
                     </td>
-                    <td class="p-3 font-bold text-slate-900">
+                    <td data-label="Rincian" class="p-3 font-bold text-slate-900">
                         {{ $sh->title }}
                         @if($sh->notes)
                             <span class="block text-[10px] text-slate-500 font-normal italic">{{ $sh->notes }}</span>
                         @endif
                     </td>
-                    <td class="p-3 text-slate-700 font-medium">{{ $sh->sub_info }}</td>
-                    <td class="p-3 font-mono font-bold text-emerald-700 text-sm whitespace-nowrap">Rp {{ number_format($sh->amount, 0, ',', '.') }}</td>
-                    <td class="p-3">
+                    <td data-label="Proyek & Unit" class="p-3 text-slate-700 font-medium">{{ $sh->sub_info }}</td>
+                    <td data-label="Nominal Terbayar" class="p-3 font-mono font-bold text-emerald-700 text-sm whitespace-nowrap">Rp {{ number_format($sh->amount, 0, ',', '.') }}</td>
+                    <td data-label="Status" class="p-3">
                         <x-status-badge status="lunas" :label="$sh->status_label" />
                     </td>
                 </tr>
             @empty
-                <tr>
-                    <td colspan="6" class="p-8 text-center text-slate-400">Belum ada riwayat lunas hutang & piutang.</td>
-                </tr>
+                <x-table-empty colspan="6" title="Belum Ada Riwayat" message="Belum ada riwayat lunas hutang & piutang." />
             @endforelse
         </x-table>
         <div>{{ $settledHistory->links() }}</div>

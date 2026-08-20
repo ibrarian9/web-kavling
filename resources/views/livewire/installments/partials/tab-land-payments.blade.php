@@ -173,31 +173,31 @@
         </div>
     </div>
 
-    <!-- Table of Land Payments -->
+    <!-- Unified Table of Land Payments with CSS Table-to-Card Transformation -->
     <x-table :headers="['Tanggal', 'Proyek Properti', 'Jumlah Pembayaran', 'Metode Bayar', 'Keterangan / Catatan', 'Resi & Dokumen', 'Dicatat Oleh', ['label' => 'Aksi', 'class' => 'p-3.5 text-center']]" loadingTarget="landSearch, landProjectIdFilter, landDatePeriod, landStartDate, landEndDate, land_page">
         @forelse($landPayments as $pay)
             <tr class="hover:bg-slate-50/80 transition duration-150">
-                <td class="p-3.5 font-mono font-bold text-slate-900 text-xs">
+                <td data-label="Tanggal" class="p-3.5 font-mono font-bold text-slate-900 text-xs">
                     {{ format_id_date($pay->payment_date) }}
                 </td>
-                <td class="p-3.5">
+                <td data-label="Proyek Properti" class="p-3.5">
                     <a href="{{ route('projects.show', $pay->project_id) }}" class="font-bold text-slate-900 text-xs hover:text-emerald-600 block">
                         {{ $pay->project->name ?? '-' }}
                     </a>
                     <span class="text-[10px] text-slate-400">{{ $pay->project->location ?? '' }}</span>
                 </td>
-                <td class="p-3.5 font-mono font-bold text-rose-700 text-xs">
+                <td data-label="Jumlah Pembayaran" class="p-3.5 font-mono font-bold text-rose-700 text-xs">
                     Rp {{ number_format($pay->amount_paid, 0, ',', '.') }}
                 </td>
-                <td class="p-3.5">
+                <td data-label="Metode Bayar" class="p-3.5">
                     <span class="px-2 py-0.5 rounded-md text-[10px] font-extrabold bg-slate-100 border border-slate-200 text-slate-700">
                         {{ $pay->payment_method }}
                     </span>
                 </td>
-                <td class="p-3.5 text-xs text-slate-600 max-w-xs cursor-pointer hover:text-teal-700 transition" wire:click="showLandPaymentDetail({{ $pay->id }})" title="Klik untuk melihat detail catatan">
+                <td data-label="Keterangan" class="p-3.5 text-xs text-slate-600 max-w-xs cursor-pointer hover:text-teal-700 transition" wire:click="showLandPaymentDetail({{ $pay->id }})" title="Klik untuk melihat detail catatan">
                     <p class="line-clamp-2">{{ $pay->notes ?: '-' }}</p>
                 </td>
-                <td class="p-3.5 whitespace-nowrap">
+                <td data-label="Resi & Dokumen" class="p-3.5 whitespace-nowrap">
                     <div class="inline-flex items-center gap-1.5 whitespace-nowrap">
                         @if($pay->receipt_photo_url)
                             <x-button variant="outline" size="xs" wire:click="openViewerModal('image', '{{ $pay->receipt_photo_url }}', 'Foto Bukti Pembayaran Lahan - {{ $pay->project->name ?? '' }}')" class="bg-amber-50 hover:bg-amber-100 text-amber-900 border-amber-200 shadow-2xs font-bold" title="Lihat Foto Resi / Bukti Transfer">
@@ -216,10 +216,10 @@
                         @endif
                     </div>
                 </td>
-                <td class="p-3.5 text-xs text-slate-600">
+                <td data-label="Dicatat Oleh" class="p-3.5 text-xs text-slate-600">
                     <span class="font-medium">{{ $pay->creator->name ?? 'Sistem' }}</span>
                 </td>
-                <td class="p-3.5 text-center whitespace-nowrap">
+                <td data-card-action class="p-3.5 text-center whitespace-nowrap">
                     <div class="inline-flex items-center justify-center gap-1.5 whitespace-nowrap">
                         <x-button variant="detail" size="xs" wire:click="showLandPaymentDetail({{ $pay->id }})" title="Lihat Rincian Lengkap">
                             <span>Detail</span>
@@ -249,13 +249,7 @@
                 </td>
             </tr>
         @empty
-            <tr>
-                <td colspan="8" class="p-12 text-center text-slate-400">
-                    <svg class="w-12 h-12 mx-auto text-slate-300 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                    <p class="font-bold text-slate-600">Belum Ada Riwayat Pembayaran Lahan</p>
-                    <p class="text-xs text-slate-400 mt-1">Gunakan tombol "Catat Bayar Lahan" untuk mencatat termin pembayaran pembelian tanah ke penjual.</p>
-                </td>
-            </tr>
+            <x-table-empty colspan="8" title="Belum Ada Riwayat Pembayaran Lahan" message="Gunakan tombol 'Catat Bayar Lahan' untuk mencatat termin pembayaran pembelian tanah ke penjual." />
         @endforelse
 
         @if($landPayments->count() > 0)

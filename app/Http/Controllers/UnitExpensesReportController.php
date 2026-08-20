@@ -94,7 +94,8 @@ class UnitExpensesReportController extends Controller
             'qrCodeUrl' => $qrCodeUrl,
         ]);
 
-        $filename = 'LAPORAN-BIAYA-UNIT-' . str_replace(' ', '-', strtoupper($unit->code)) . '.pdf';
+        $cleanUnitCode = preg_replace('/[^A-Za-z0-9_-]/', '-', strtoupper($unit->code));
+        $filename = 'LAPORAN-BIAYA-UNIT-' . $cleanUnitCode . '.pdf';
         return $pdf->stream($filename);
     }
 

@@ -55,7 +55,7 @@
             <div class="flex items-center justify-between flex-wrap gap-3">
                 
                 <!-- Left: 5 Navigation Tabs -->
-                <div class="flex items-center gap-1.5 bg-slate-100 p-1.5 rounded-2xl flex-wrap">
+                <div class="flex items-center gap-1.5 bg-slate-100 p-1.5 rounded-2xl overflow-x-auto max-w-full custom-scrollbar flex-nowrap sm:flex-wrap">
                     <button type="button" wire:click="setTab('material_bills')" class="px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 whitespace-nowrap shrink-0 {{ $activeTab === 'material_bills' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600 hover:text-slate-900' }}">
                         <svg class="w-4 h-4 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
                         <span>Hutang Toko Material</span>

@@ -233,3 +233,101 @@ test('founder can edit unit dimensions and customize excess land cost', function
     expect((float)$unit->excess_land_area)->toBe(20.0);
     expect((float)$unit->excess_cost)->toBe(24000000.0);
 });
+
+test('user can specify booking date when creating booking from units index and unit detail', function () {
+    $founder = User::create([
+        'name' => 'Founder Booking',
+        'email' => 'founder_book@example.com',
+        'password' => bcrypt('password'),
+        'role' => 'founder',
+        'is_active' => true,
+    ]);
+    $founder->assignRole('founder');
+
+    $project = Project::create([
+        'name' => 'Grand Booking Area',
+        'location' => 'Pekanbaru',
+        'base_price' => 120000000,
+        'standard_land_area' => 100,
+        'standard_building_area' => 0,
+        'excess_price_per_sqm' => 1000000,
+        'created_by' => $founder->id,
+    ]);
+
+    $unit1 = Unit::create([
+        'project_id' => $project->id,
+        'code' => 'GB-01',
+        'type' => 'kavling',
+        'status' => 'tersedia',
+        'land_length' => 12,
+        'land_width' => 10,
+        'land_area' => 120,
+        'excess_land_area' => 20,
+        'excess_cost' => 20000000,
+        'hpp' => 140000000,
+        'created_by' => $founder->id,
+    ]);
+
+    expect((float)$unit1->base_price)->toBe(120000000.0);
+    expect((float)$unit1->total_price)->toBe(140000000.0);
+
+    // 1. Direct booking from Units\Index
+    $customBookingDate = '2026-08-15';
+    Livewire::actingAs($founder)
+        ->test(\App\Livewire\Units\Index::class)
+        ->call('openBookingModal', $unit1->id)
+        ->assertSet('showBookingModal', true)
+        ->assertSet('bookingUnitId', $unit1->id)
+        ->set('buyer_name', 'Bpk. Ahmad Dahlan')
+        ->set('buyer_phone', '081122334455')
+        ->set('booking_amount', 5000000)
+        ->set('booking_date', $customBookingDate)
+        ->call('saveBooking')
+        ->assertHasNoErrors()
+        ->assertSet('showBookingModal', false);
+
+    $unit1->refresh();
+    expect($unit1->status)->toBe('booked');
+
+    $booking1 = \App\Models\Booking::where('unit_id', $unit1->id)->first();
+    expect($booking1)->not->toBeNull();
+    expect($booking1->buyer_name)->toBe('Bpk. Ahmad Dahlan');
+    expect($booking1->booking_date->format('Y-m-d'))->toBe($customBookingDate);
+
+    // 2. Direct booking from Units\Show
+    $unit2 = Unit::create([
+        'project_id' => $project->id,
+        'code' => 'GB-02',
+        'type' => 'kavling',
+        'status' => 'tersedia',
+        'land_length' => 10,
+        'land_width' => 10,
+        'land_area' => 100,
+        'excess_land_area' => 0,
+        'excess_cost' => 0,
+        'hpp' => 120000000,
+        'created_by' => $founder->id,
+    ]);
+
+    $customBookingDate2 = '2026-08-10';
+    Livewire::actingAs($founder)
+        ->test(\App\Livewire\Units\Show::class, ['id' => $unit2->id])
+        ->call('openBookingModal')
+        ->assertSet('showBookingModal', true)
+        ->set('buyer_name', 'Ibu Siti Khadijah')
+        ->set('buyer_phone', '081299887766')
+        ->set('booking_amount', 10000000)
+        ->set('booking_date', $customBookingDate2)
+        ->call('saveBooking')
+        ->assertHasNoErrors()
+        ->assertSet('showBookingModal', false);
+
+    $unit2->refresh();
+    expect($unit2->status)->toBe('booked');
+
+    $booking2 = \App\Models\Booking::where('unit_id', $unit2->id)->first();
+    expect($booking2)->not->toBeNull();
+    expect($booking2->buyer_name)->toBe('Ibu Siti Khadijah');
+    expect($booking2->booking_date->format('Y-m-d'))->toBe($customBookingDate2);
+});
+

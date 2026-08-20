@@ -143,29 +143,24 @@ class BookingRejectionAndHppVisibilityTest extends TestCase
         $founder = User::where('role', 'founder')->firstOrFail();
         $finance = User::where('role', 'finance')->firstOrFail();
         $marketing = User::where('role', 'marketing')->firstOrFail();
-        $pengawas = User::where('role', 'pengawas_project')->firstOrFail();
         $supervisor = User::where('role', 'supervisor')->firstOrFail();
 
         $unit = Unit::firstOrFail();
 
-        // 1. Founder can view HPP
-        $this->actingAs($founder)->get(route('units.show', $unit->id))->assertSee('HPP Pokok Unit');
-        $this->actingAs($founder)->get(route('units.index'))->assertSee('HPP Pokok:');
+        // 1. Founder can view Harga Jual and Harga Total
+        $this->actingAs($founder)->get(route('units.show', $unit->id))->assertSee('Harga Jual Standar')->assertSee('Harga Total Unit');
+        $this->actingAs($founder)->get(route('units.index'))->assertSee('Harga Jual:')->assertSee('Harga Total:');
 
-        // 2. Finance can view HPP
-        $this->actingAs($finance)->get(route('units.show', $unit->id))->assertSee('HPP Pokok Unit');
-        $this->actingAs($finance)->get(route('units.index'))->assertSee('HPP Pokok:');
+        // 2. Finance can view Harga Jual and Harga Total
+        $this->actingAs($finance)->get(route('units.show', $unit->id))->assertSee('Harga Jual Standar')->assertSee('Harga Total Unit');
+        $this->actingAs($finance)->get(route('units.index'))->assertSee('Harga Jual:')->assertSee('Harga Total:');
 
-        // 3. Marketing CANNOT view HPP
-        $this->actingAs($marketing)->get(route('units.show', $unit->id))->assertDontSee('HPP Pokok Unit');
-        $this->actingAs($marketing)->get(route('units.index'))->assertDontSee('HPP Pokok:');
+        // 3. Marketing can view Harga Jual and Harga Total
+        $this->actingAs($marketing)->get(route('units.show', $unit->id))->assertSee('Harga Jual Standar')->assertSee('Harga Total Unit');
+        $this->actingAs($marketing)->get(route('units.index'))->assertSee('Harga Jual:')->assertSee('Harga Total:');
 
-        // 4. Pengawas CANNOT view HPP
-        $this->actingAs($pengawas)->get(route('units.show', $unit->id))->assertDontSee('HPP Pokok Unit');
-        $this->actingAs($pengawas)->get(route('units.index'))->assertDontSee('HPP Pokok:');
-
-        // 5. Supervisor CAN view HPP (Main Admin)
-        $this->actingAs($supervisor)->get(route('units.show', $unit->id))->assertSee('HPP Pokok Unit');
-        $this->actingAs($supervisor)->get(route('units.index'))->assertSee('HPP Pokok:');
+        // 4. Supervisor can view Harga Jual and Harga Total
+        $this->actingAs($supervisor)->get(route('units.show', $unit->id))->assertSee('Harga Jual Standar')->assertSee('Harga Total Unit');
+        $this->actingAs($supervisor)->get(route('units.index'))->assertSee('Harga Jual:')->assertSee('Harga Total:');
     }
 }

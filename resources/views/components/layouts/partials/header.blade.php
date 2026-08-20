@@ -46,14 +46,14 @@
     </div>
 
     <div class="flex items-center gap-2 sm:gap-3 min-w-0 flex-1 mr-2">
-        <!-- Mobile Drawer Toggle -->
-        <button @click="mobileMenuOpen = !mobileMenuOpen" class="p-2 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 md:hidden focus:outline-none shrink-0" aria-label="Buka Menu Mobile">
+        <!-- Mobile & Tablet Drawer Toggle -->
+        <button @click="mobileMenuOpen = !mobileMenuOpen" class="p-2 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 lg:hidden focus:outline-none shrink-0" aria-label="Buka Menu Navigasi">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
         </button>
 
         <!-- Desktop Sidebar Toggle (Compact/Expanded Mode) -->
         <button @click="toggleSidebar()" 
-                class="p-2 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 hidden md:flex items-center justify-center transition focus:outline-none shrink-0" 
+                class="p-2 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 hidden lg:flex items-center justify-center transition focus:outline-none shrink-0" 
                 :title="sidebarExpanded ? 'Ciutkan Sidebar (Mode Mini)' : 'Buka Sidebar Penuh'">
             <svg class="w-5 h-5 transition-transform duration-200" :class="!sidebarExpanded && 'rotate-180'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h10M4 18h16"/>
@@ -67,7 +67,7 @@
         <!-- Global Search Command Palette (Ctrl + K) -->
         @livewire('global-search')
 
-        <div class="text-right hidden md:block">
+        <div class="text-right hidden lg:block">
             <p class="text-xs font-bold text-slate-800">{{ auth()->user()->name }}</p>
             <p class="text-[11px] text-slate-500 font-mono">{{ auth()->user()->email }}</p>
         </div>

@@ -87,4 +87,9 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Project::class, 'worker_assignments', 'user_id', 'project_id')->where('worker_assignments.status', 'active');
     }
+
+    public function employeeSalary()
+    {
+        return $this->hasOne(EmployeeSalary::class, 'user_id');
+    }
 }

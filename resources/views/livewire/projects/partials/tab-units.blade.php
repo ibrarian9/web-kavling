@@ -2,8 +2,8 @@
 <div class="space-y-4">
     <x-card padding="p-4">
         <div class="flex flex-col sm:flex-row items-center justify-between gap-3">
-            <div class="flex items-center gap-2 w-full sm:w-auto flex-nowrap">
-                <h3 class="font-bold text-slate-900 text-sm whitespace-nowrap">{{ (auth()->user()->isPengawasProject() || auth()->user()->isMarketing()) ? 'Daftar Status Unit Proyek' : 'Dashboard Penjualan & Profit Per Unit' }}</h3>
+            <div class="flex items-center gap-2 w-full sm:w-auto flex-wrap">
+                <h3 class="font-bold text-slate-900 text-sm">{{ (auth()->user()->isPengawasProject() || auth()->user()->isMarketing()) ? 'Daftar Status Unit Proyek' : 'Dashboard Penjualan & Profit Per Unit' }}</h3>
                 <span class="inline-flex items-center bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2.5 py-0.5 rounded-full border border-emerald-200 whitespace-nowrap">
                     {{ count($unitsList) }} Unit
                 </span>
@@ -154,11 +154,22 @@
                             @endif
                         </div>
                     @else
-                        @php $uAssignment = $u->assignments->where('status', 'active')->first(); @endphp
+                        @php 
+                            $uAssignment = $u->assignments->where('status', 'active')->first(); 
+                            $pAssignment = $project->assignments->where('status', 'active')->first();
+                        @endphp
                         <div class="text-xs">
                             @if($uAssignment && $uAssignment->worker)
                                 <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-blue-50 text-blue-800 border border-blue-200 font-semibold">
                                     {{ $uAssignment->worker->name }} ({{ ucfirst($uAssignment->worker->type) }})
+                                </span>
+                            @elseif($pAssignment && $pAssignment->worker)
+                                <span class="text-slate-500 text-xs italic">
+                                    {{ $pAssignment->worker->name }} ({{ ucfirst($pAssignment->worker->type) }} Proyek)
+                                </span>
+                            @elseif($pAssignment && $pAssignment->user)
+                                <span class="text-slate-500 text-xs italic">
+                                    {{ $pAssignment->user->name }} (Pengawas Proyek)
                                 </span>
                             @else
                                 <span class="text-slate-400 italic">Penugasan mengikuti proyek</span>
@@ -275,10 +286,19 @@
                                 <td class="px-3 py-3.5 whitespace-nowrap">
                                     @php
                                         $uAssignment = $u->assignments->where('status', 'active')->first();
+                                        $pAssignment = $project->assignments->where('status', 'active')->first();
                                     @endphp
                                     @if($uAssignment && $uAssignment->worker)
                                         <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-blue-50 text-blue-800 border border-blue-200 text-xs font-semibold whitespace-nowrap">
                                             {{ $uAssignment->worker->name }} ({{ ucfirst($uAssignment->worker->type) }})
+                                        </span>
+                                    @elseif($pAssignment && $pAssignment->worker)
+                                        <span class="text-slate-500 text-xs italic whitespace-nowrap">
+                                            {{ $pAssignment->worker->name }} ({{ ucfirst($pAssignment->worker->type) }} Proyek)
+                                        </span>
+                                    @elseif($pAssignment && $pAssignment->user)
+                                        <span class="text-slate-500 text-xs italic whitespace-nowrap">
+                                            {{ $pAssignment->user->name }} (Pengawas Proyek)
                                         </span>
                                     @else
                                         <span class="text-slate-400 text-xs italic whitespace-nowrap">Penugasan mengikuti proyek</span>

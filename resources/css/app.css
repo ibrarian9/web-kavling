@@ -253,3 +253,212 @@
   from { transform: translateY(0) scale(1); opacity: 1; }
   to { transform: translateY(12px) scale(0.96); opacity: 0; }
 }
+
+/* ========================================================= */
+/* iPad & Touch-Screen Responsive Enhancements               */
+/* ========================================================= */
+@layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  /* Smooth Momentum Scrolling on iPad & Mobile */
+  .overflow-x-auto,
+  .overflow-y-auto,
+  .custom-scrollbar {
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Optimize touch responsiveness on tablets */
+  button, 
+  a, 
+  select, 
+  input, 
+  [role="button"] {
+    touch-action: manipulation;
+  }
+}
+
+/* Safe Area Inset Support for iPad & Mobile */
+.safe-pb {
+  padding-bottom: max(1rem, env(safe-area-inset-bottom, 0px));
+}
+
+/* Tablet Table Responsive Scroll Container */
+.table-responsive-container {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 1rem;
+}
+
+/* ========================================================= */
+/* Global CSS Table-to-Card Responsive Transformation (< 640px Mobile Only) */
+/* ========================================================= */
+@media (max-width: 639px) {
+  .card-clean {
+    border-radius: 1.25rem;
+  }
+
+  .table-responsive-card {
+    display: block !important;
+    width: 100% !important;
+    border: none !important;
+    background: transparent !important;
+  }
+
+  .table-responsive-card thead {
+    display: none !important;
+  }
+
+  .table-responsive-card tbody {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 1rem !important;
+    width: 100% !important;
+    padding: 0 !important;
+    border: none !important;
+  }
+
+  .table-responsive-card tbody tr {
+    display: flex !important;
+    flex-direction: column !important;
+    background-color: #ffffff !important;
+    border: 1px solid rgba(226, 232, 240, 0.9) !important;
+    border-radius: 1.5rem !important;
+    padding: 1.25rem !important;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05) !important;
+    gap: 0.625rem !important;
+    width: 100% !important;
+    transition: all 0.2s ease-in-out !important;
+  }
+
+  .table-responsive-card tbody tr:hover {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+  }
+
+  .table-responsive-card tbody tr td {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    padding: 0.25rem 0 !important;
+    width: 100% !important;
+    border: none !important;
+    text-align: right !important;
+    white-space: normal !important;
+    font-size: 0.8125rem !important;
+    background: transparent !important;
+  }
+
+  /* Left-aligned data label from data-label attribute */
+  .table-responsive-card tbody tr td[data-label]::before {
+    content: attr(data-label);
+    font-size: 0.6875rem !important;
+    font-weight: 800 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+    color: #94a3b8 !important;
+    text-align: left !important;
+    margin-right: 0.75rem !important;
+    flex-shrink: 0 !important;
+  }
+
+  /* Right-align content container */
+  .table-responsive-card tbody tr td[data-label] > * {
+    text-align: right;
+  }
+
+  /* Full-width block cell (e.g. Card Title Header) */
+  .table-responsive-card tbody tr td[data-card-full] {
+    display: block !important;
+    text-align: left !important;
+    width: 100% !important;
+    padding-bottom: 0.375rem !important;
+    border-bottom: 1px dashed #f1f5f9 !important;
+    margin-bottom: 0.25rem !important;
+  }
+  .table-responsive-card tbody tr td[data-card-full]::before {
+    display: none !important;
+  }
+
+  /* Action toolbar at bottom of the card */
+  .table-responsive-card tbody tr td[data-card-action],
+  .table-responsive-card tbody tr td.table-card-action {
+    display: flex !important;
+    border-top: 1px solid #f1f5f9 !important;
+    padding-top: 0.75rem !important;
+    margin-top: 0.25rem !important;
+    justify-content: flex-end !important;
+    align-items: center !important;
+    width: 100% !important;
+    flex-wrap: wrap !important;
+    gap: 0.5rem !important;
+  }
+  .table-responsive-card tbody tr td[data-card-action]::before,
+  .table-responsive-card tbody tr td.table-card-action::before {
+    display: none !important;
+  }
+
+  .table-responsive-card tbody tr td[data-card-action] > div,
+  .table-responsive-card tbody tr td.table-card-action > div {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    gap: 0.5rem !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .table-responsive-card tbody tr td[data-card-action] button,
+  .table-responsive-card tbody tr td[data-card-action] a,
+  .table-responsive-card tbody tr td.table-card-action button,
+  .table-responsive-card tbody tr td.table-card-action a {
+    max-width: 100% !important;
+  }
+
+  /* Empty state rows */
+  .table-responsive-card tbody tr.table-empty-row,
+  .table-responsive-card tbody tr td[colspan] {
+    display: block !important;
+    text-align: center !important;
+    width: 100% !important;
+    padding: 2.5rem 1rem !important;
+  }
+  .table-responsive-card tbody tr td[colspan]::before {
+    display: none !important;
+  }
+}
+
+/* ========================================================= */
+/* Tablet & Desktop Data Table Enhancements (>= 640px)       */
+/* ========================================================= */
+@media (min-width: 640px) {
+  .table-responsive-card {
+    display: table !important;
+    width: 100% !important;
+  }
+
+  .table-responsive-card thead {
+    display: table-header-group !important;
+  }
+
+  .table-responsive-card tbody {
+    display: table-row-group !important;
+  }
+
+  .table-responsive-card tbody tr {
+    display: table-row !important;
+  }
+
+  .table-responsive-card tbody tr td {
+    display: table-cell !important;
+    vertical-align: middle !important;
+  }
+
+  .table-responsive-card tbody tr td[data-label]::before {
+    display: none !important;
+  }
+}
+
