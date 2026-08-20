@@ -38,9 +38,16 @@
             </div>
 
             <div class="flex items-center justify-between pb-2.5 border-b border-slate-800">
-                <span class="text-slate-400 font-semibold uppercase text-[10px]">Kode Unit Objek</span>
-                <span class="font-extrabold text-emerald-400 font-mono text-sm">UNIT {{ $unit->code }}</span>
+                <span class="text-slate-400 font-semibold uppercase text-[10px]">{{ $unit->category === 'infrastruktur' ? 'Objek Fasilitas Umum' : 'Kode Unit Objek' }}</span>
+                <span class="font-extrabold text-emerald-400 font-mono text-sm">{{ $unit->category === 'infrastruktur' ? $unit->code : 'UNIT ' . $unit->code }}</span>
             </div>
+
+            @if($unit->category === 'infrastruktur')
+                <div class="flex items-center justify-between pb-2.5 border-b border-slate-800">
+                    <span class="text-slate-400 font-semibold uppercase text-[10px]">Luas Pengerjaan</span>
+                    <span class="font-bold text-slate-200">{{ number_format($unit->land_area, 0, ',', '.') }} m²</span>
+                </div>
+            @endif
 
             <div class="flex items-center justify-between pb-2.5 border-b border-slate-800">
                 <span class="text-slate-400 font-semibold uppercase text-[10px]">Nama Pekerja</span>
@@ -48,12 +55,12 @@
             </div>
 
             <div class="flex items-center justify-between pb-2.5 border-b border-slate-800">
-                <span class="text-slate-400 font-semibold uppercase text-[10px]">Total Kontrak Gaji</span>
+                <span class="text-slate-400 font-semibold uppercase text-[10px]">Total Pembayaran Kontrak</span>
                 <span class="font-bold text-emerald-400 font-mono text-sm">Rp {{ number_format($payroll->agreed_salary, 0, ',', '.') }}</span>
             </div>
 
             <div class="flex items-center justify-between pb-2.5 border-b border-slate-800">
-                <span class="text-slate-400 font-semibold uppercase text-[10px]">Skema Penarikan</span>
+                <span class="text-slate-400 font-semibold uppercase text-[10px]">Skema Pembayaran</span>
                 <span class="font-bold text-slate-200 capitalize">{{ $payroll->payment_frequency }}</span>
             </div>
 

@@ -21,26 +21,39 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-3 gap-3">
-                <div>
-                    <label class="block font-semibold text-slate-700 mb-1.5 text-[11px] uppercase tracking-wider truncate" title="Panjang Tanah (meter)">
-                        Panjang (m)
-                    </label>
-                    <input type="number" step="0.01" min="0.1" wire:model.live.debounce.300ms="edit_land_length" class="input-clean w-full h-10 font-mono font-semibold text-xs text-center">
+            @if($edit_unit_category === 'infrastruktur')
+                <div class="bg-sky-50/80 border border-sky-200/80 rounded-2xl p-3.5 space-y-2">
+                    <p class="font-bold text-[11px] uppercase tracking-wider text-sky-900">Luas Pengerjaan Fasum / Infrastruktur:</p>
+                    <div>
+                        <label class="block font-semibold text-sky-800 mb-1 text-[11px] uppercase tracking-wider">
+                            Luas Pengerjaan (m²) <span class="text-rose-500">*</span>
+                        </label>
+                        <input type="number" step="0.01" min="0" wire:model="edit_land_area" required placeholder="Contoh: 150" class="input-clean w-full h-10 font-extrabold font-mono text-xs bg-white text-sky-950">
+                        <p class="text-[10px] text-slate-500 mt-1">Input manual luas area/panjang pengerjaan fisik fasilitas umum / infrastruktur.</p>
+                    </div>
                 </div>
-                <div>
-                    <label class="block font-semibold text-slate-700 mb-1.5 text-[11px] uppercase tracking-wider truncate" title="Lebar Tanah (meter)">
-                        Lebar (m)
-                    </label>
-                    <input type="number" step="0.01" min="0.1" wire:model.live.debounce.300ms="edit_land_width" class="input-clean w-full h-10 font-mono font-semibold text-xs text-center">
+            @else
+                <div class="grid grid-cols-3 gap-3">
+                    <div>
+                        <label class="block font-semibold text-slate-700 mb-1.5 text-[11px] uppercase tracking-wider truncate" title="Panjang Tanah (meter)">
+                            Panjang (m)
+                        </label>
+                        <input type="number" step="0.01" min="0.1" wire:model.live.debounce.300ms="edit_land_length" class="input-clean w-full h-10 font-mono font-semibold text-xs text-center">
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-slate-700 mb-1.5 text-[11px] uppercase tracking-wider truncate" title="Lebar Tanah (meter)">
+                            Lebar (m)
+                        </label>
+                        <input type="number" step="0.01" min="0.1" wire:model.live.debounce.300ms="edit_land_width" class="input-clean w-full h-10 font-mono font-semibold text-xs text-center">
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-slate-700 mb-1.5 text-[11px] uppercase tracking-wider truncate" title="Luas Tanah (meter persegi)">
+                            Luas (m²) <span class="text-emerald-600 font-bold lowercase text-[10px]">(auto)</span>
+                        </label>
+                        <input type="number" step="0.01" wire:model="edit_land_area" readonly tabindex="-1" class="input-clean w-full h-10 font-extrabold font-mono text-xs text-center bg-slate-100/90 text-slate-800 border-slate-300 cursor-not-allowed" title="Luas tanah terhitung otomatis dari Panjang x Lebar">
+                    </div>
                 </div>
-                <div>
-                    <label class="block font-semibold text-slate-700 mb-1.5 text-[11px] uppercase tracking-wider truncate" title="Luas Tanah (meter persegi)">
-                        Luas (m²) <span class="text-emerald-600 font-bold lowercase text-[10px]">(auto)</span>
-                    </label>
-                    <input type="number" step="0.01" wire:model="edit_land_area" readonly tabindex="-1" class="input-clean w-full h-10 font-extrabold font-mono text-xs text-center bg-slate-100/90 text-slate-800 border-slate-300 cursor-not-allowed" title="Luas tanah terhitung otomatis dari Panjang x Lebar">
-                </div>
-            </div>
+            @endif
 
             @if($edit_unit_category === 'rumah')
                 <div>

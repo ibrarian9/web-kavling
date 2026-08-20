@@ -688,7 +688,7 @@ class Show extends Component
 
     public function updatedEditLandLength(): void
     {
-        if ((float)$this->edit_land_length > 0 && (float)$this->edit_land_width > 0) {
+        if ($this->edit_unit_category !== 'infrastruktur' && (float)$this->edit_land_length > 0 && (float)$this->edit_land_width > 0) {
             $this->edit_land_area = round((float)$this->edit_land_length * (float)$this->edit_land_width, 2);
             $this->recalcEditExcessLand();
         }
@@ -696,7 +696,7 @@ class Show extends Component
 
     public function updatedEditLandWidth(): void
     {
-        if ((float)$this->edit_land_length > 0 && (float)$this->edit_land_width > 0) {
+        if ($this->edit_unit_category !== 'infrastruktur' && (float)$this->edit_land_length > 0 && (float)$this->edit_land_width > 0) {
             $this->edit_land_area = round((float)$this->edit_land_length * (float)$this->edit_land_width, 2);
             $this->recalcEditExcessLand();
         }
@@ -755,9 +755,15 @@ class Show extends Component
             'edit_excess_cost' => 'nullable|numeric|min:0',
         ]);
         $unit = Unit::with('project')->findOrFail($this->unitId);
+        $landLength = $this->edit_land_length;
+        $landWidth = $this->edit_land_width;
         $excessLandArea = 0;
         $excessCost = 0;
-        if ($unit->project && $this->edit_unit_category !== 'infrastruktur') {
+
+        if ($this->edit_unit_category === 'infrastruktur') {
+            $landLength = 0;
+            $landWidth = 0;
+        } elseif ($unit->project) {
             $excessLandArea = max(0, (float)$this->edit_land_area - (float)$unit->project->standard_land_area);
             if ($this->edit_excess_cost !== null && (float)$this->edit_excess_cost >= 0) {
                 $excessCost = (float)$this->edit_excess_cost;
@@ -770,13 +776,13 @@ class Show extends Component
             'code' => $this->edit_unit_code,
             'category' => $this->edit_unit_category,
             'status' => $this->edit_unit_status,
-            'land_length' => $this->edit_land_length,
-            'land_width' => $this->edit_land_width,
+            'land_length' => $landLength,
+            'land_width' => $landWidth,
             'land_area' => $this->edit_land_area,
             'excess_land_area' => $excessLandArea,
             'excess_cost' => $excessCost,
-            'building_area' => $this->edit_building_area,
-            'final_selling_price' => $this->edit_final_selling_price,
+            'building_area' => $this->edit_unit_category === 'rumah' ? $this->edit_building_area : 0,
+            'final_selling_price' => $this->edit_unit_category !== 'infrastruktur' ? $this->edit_final_selling_price : 0,
             'specifications' => $this->edit_specifications,
         ]);
 

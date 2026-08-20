@@ -449,5 +449,28 @@ class AuditAllButtonsTest extends TestCase
             ->call('closeModal')
             ->assertSet('isOpen', false)
             ->assertStatus(200);
+
+        // 15. External Projects Index & Show
+        $extProject = \App\Models\ExternalProject::create([
+            'name' => 'Proyek Audit Test',
+            'status' => 'aktif',
+            'created_by' => $founder->id,
+        ]);
+
+        Livewire::test(\App\Livewire\ExternalProjects\Index::class)
+            ->call('openModal')
+            ->assertSet('showModal', true)
+            ->call('closeModal')
+            ->assertSet('showModal', false)
+            ->assertStatus(200);
+
+        Livewire::test(\App\Livewire\ExternalProjects\Show::class, ['id' => $extProject->id])
+            ->call('openMaterialModal')
+            ->assertSet('showMaterialModal', true)
+            ->set('showMaterialModal', false)
+            ->call('openWageModal')
+            ->assertSet('showWageModal', true)
+            ->set('showWageModal', false)
+            ->assertStatus(200);
     }
 }

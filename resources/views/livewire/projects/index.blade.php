@@ -84,7 +84,7 @@
 
     <!-- Projects Table -->
     @php
-        $headers = ['Nama Proyek & Lokasi', 'Pekerja Lapangan', 'Luas Standar (m²)'];
+        $headers = ['Nama Proyek & Lokasi', 'Pengawas Proyek', 'Luas Standar (m²)'];
         if(auth()->user()->canViewHpp()) {
             $headers[] = 'Harga Beli Lahan (Penjual)';
             $headers[] = 'Harga Dasar Standar (HPP)';
@@ -98,7 +98,7 @@
     <x-table :headers="$headers" loadingTarget="search, page, gotoPage, nextPage, previousPage">
         @forelse($projects as $p)
             @php
-                $activeAssignments = $p->assignments->where('status', 'active');
+                $activePengawasAssignments = $p->assignments->where('status', 'active')->filter(fn($a) => $a->user_id !== null || $a->user !== null);
             @endphp
             <tr class="hover:bg-slate-50/80 transition duration-150">
                 <td data-label="Nama Proyek & Lokasi" class="p-3.5">
@@ -110,13 +110,13 @@
                         {{ $p->location }}
                     </p>
                 </td>
-                <td data-label="Pekerja & Pengawas" class="p-3.5">
+                <td data-label="Pengawas Proyek" class="p-3.5">
                     <div class="flex flex-wrap gap-1.5 max-w-xs">
-                        @forelse($activeAssignments as $pa)
+                        @forelse($activePengawasAssignments as $pa)
                             @if($pa->user)
-                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-extrabold bg-purple-100 text-purple-800 border border-purple-200/80 shadow-2xs group" title="Pengawas Project System">
+                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-extrabold bg-purple-100 text-purple-800 border border-purple-200/80 shadow-2xs group" title="Pengawas Project: {{ $pa->user->name }}">
                                     <svg class="w-3.5 h-3.5 text-purple-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-                                    <span>{{ $pa->user->name ?? 'Pengawas' }} (Pengawas)</span>
+                                    <span>{{ $pa->user->name ?? 'Pengawas' }}</span>
                                     @if(auth()->user()->isAdminOrFounder())
                                          <button type="button" @click="confirmModalAction({
                                              title: 'Copot Pengawas Proyek',
@@ -129,14 +129,9 @@
                                          </button>
                                      @endif
                                 </span>
-                            @elseif($pa->worker)
-                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-extrabold bg-emerald-100 text-emerald-800 border border-emerald-200/80 shadow-2xs group" title="{{ ucfirst($pa->worker->type) }} Lapangan">
-                                    <svg class="w-3.5 h-3.5 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-                                    <span>{{ $pa->worker->name }} ({{ ucfirst($pa->worker->type) }})</span>
-                                </span>
                             @endif
                         @empty
-                            <span class="text-[10px] text-slate-400 italic">Belum ada pekerja / pengawas</span>
+                            <span class="text-[10px] text-slate-400 italic">Belum ada pengawas</span>
                         @endforelse
                     </div>
                 </td>

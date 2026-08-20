@@ -79,7 +79,7 @@
         <thead>
             <tr>
                 <th style="width: 30%;">Komponen Objek</th>
-                <th>Keterangan / Spesifikasi Unit</th>
+                <th>Keterangan / Spesifikasi Objek</th>
             </tr>
         </thead>
         <tbody>
@@ -87,14 +87,30 @@
                 <td><strong>Lokasi Proyek</strong></td>
                 <td>{{ $project->name }}</td>
             </tr>
-            <tr>
-                <td><strong>Kode Unit Kavling/Rumah</strong></td>
-                <td><strong style="font-size: 11px;">UNIT {{ $unit->code }}</strong> (Kategori: {{ ucfirst($unit->category) }} - {{ $unit->type }})</td>
-            </tr>
-            <tr>
-                <td><strong>Ukuran & Spesifikasi Unit</strong></td>
-                <td>Luas Tanah: {{ $unit->land_area }} m² @if($unit->building_area) | Luas Bangunan: {{ $unit->building_area }} m² @endif</td>
-            </tr>
+            @if($unit->category === 'infrastruktur' || $unit->status === 'infrastruktur')
+                <tr>
+                    <td><strong>Objek Fasilitas Umum</strong></td>
+                    <td><strong style="font-size: 11px;">{{ $unit->code }}</strong></td>
+                </tr>
+                <tr>
+                    <td><strong>Luas & Spesifikasi Pengerjaan</strong></td>
+                    <td>
+                        Luas Pengerjaan: <strong>{{ number_format($unit->land_area, 0, ',', '.') }} m²</strong>
+                        @if($unit->specifications)
+                            <br><span style="font-size: 9px; color: #334155;">Catatan Teknis: {{ $unit->specifications }}</span>
+                        @endif
+                    </td>
+                </tr>
+            @else
+                <tr>
+                    <td><strong>Kode Unit Kavling/Rumah</strong></td>
+                    <td><strong style="font-size: 11px;">UNIT {{ $unit->code }}</strong></td>
+                </tr>
+                <tr>
+                    <td><strong>Ukuran & Spesifikasi Unit</strong></td>
+                    <td>Luas Tanah: {{ number_format($unit->land_area, 0, ',', '.') }} m² @if($unit->building_area) | Luas Bangunan: {{ number_format($unit->building_area, 0, ',', '.') }} m² @endif</td>
+                </tr>
+            @endif
             <tr>
                 <td><strong>Lingkup & Catatan Pekerjaan</strong></td>
                 <td>{{ $payroll->notes ?: 'Pekerjaan pembangunan, persiapan, finishing borongan unit sesuai instruksi pengawas lapangan.' }}</td>
@@ -102,8 +118,8 @@
         </tbody>
     </table>
 
-    <!-- Section 3: Nilai Kontrak Gaji Borongan -->
-    <div class="section-header">III. KESEPAKATAN NILAI GAJI & SKEMA PEMBAYARAN</div>
+    <!-- Section 3: Nilai Pembayaran Kontrak Borongan -->
+    <div class="section-header">III. KESEPAKATAN NILAI KONTRAK & SKEMA PEMBAYARAN</div>
     <table class="details-table">
         <thead>
             <tr>
@@ -113,11 +129,11 @@
         </thead>
         <tbody>
             <tr style="background-color: #f8fafc;">
-                <td><strong>TOTAL KONTRAK GAJI BORONGAN UNIT</strong></td>
+                <td><strong>TOTAL NILAI PEMBAYARAN KONTRAK BORONGAN</strong></td>
                 <td style="text-align: right; font-size: 12px; font-weight: bold; color: #000000;">Rp {{ number_format($payroll->agreed_salary, 0, ',', '.') }}</td>
             </tr>
             <tr>
-                <td>Skema Penarikan / Pembayaran Gaji</td>
+                <td>Skema Pembayaran Kontrak</td>
                 <td style="text-align: right; font-weight: bold; color: #000000;">{{ ucfirst($payroll->payment_frequency) }}</td>
             </tr>
             <tr>
@@ -125,7 +141,7 @@
                 <td style="text-align: right; font-weight: bold; color: #000000;">Rp {{ number_format($payroll->paid_amount, 0, ',', '.') }} ({{ $payroll->progress_percentage }}%)</td>
             </tr>
             <tr>
-                <td>Sisa Kontrak Gaji Belum Dibayar</td>
+                <td>Sisa Pembayaran Kontrak Belum Dibayar</td>
                 <td style="text-align: right; font-weight: bold; color: #000000;">Rp {{ number_format($payroll->remaining_salary, 0, ',', '.') }}</td>
             </tr>
         </tbody>
@@ -140,7 +156,7 @@
     <div class="terms-box">
         <ol>
             <li>Pihak Kedua (Penerima Kerja) bersedia melaksanakan seluruh pekerjaan borongan unit sesuai spesifikasi teknis dan petunjuk dari Pihak Pertama.</li>
-            <li>Pembayaran gaji borongan dilakukan secara bertahap berdasarkan realisasi fisik progres pekerjaan yang disetujui Pengawas Proyek.</li>
+            <li>Pembayaran kontrak borongan dilakukan secara bertahap berdasarkan realisasi fisik progres pekerjaan yang disetujui Pengawas Proyek.</li>
             <li>Surat Perintah Kerja (SPK) ini berlaku mengikat kedua belah pihak sejak tanggal diterbitkan hingga seluruh pekerjaan unit diselesaikan.</li>
         </ol>
     </div>

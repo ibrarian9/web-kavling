@@ -1,24 +1,43 @@
 <!-- Physical Specifications Card -->
-<x-card padding="p-5" title="Spesifikasi Fisik & Dimensi">
+<x-card padding="p-5" :title="$unit->category === 'infrastruktur' ? 'Spesifikasi & Luas Pengerjaan Fasum' : 'Spesifikasi Fisik & Dimensi'">
     <div class="space-y-2.5 text-xs">
         <div class="flex items-center justify-between py-1.5 border-b border-slate-50">
             <span class="text-slate-500 font-medium">Proyek Properti:</span>
             <span class="font-bold text-slate-800 text-right">{{ $unit->project->name }}</span>
         </div>
-        <div class="flex items-center justify-between py-1.5 border-b border-slate-50">
-            <span class="text-slate-500 font-medium">Dimensi Tanah (P &times; L):</span>
-            <span class="font-mono font-bold text-slate-800">{{ $unit->land_length }}m &times; {{ $unit->land_width }}m</span>
-        </div>
-        <div class="flex items-center justify-between py-1.5 border-b border-slate-50">
-            <span class="text-slate-500 font-medium">Luas Tanah Aktual:</span>
-            <span class="font-mono font-extrabold text-slate-900 text-xs">{{ number_format($unit->land_area, 0, ',', '.') }} m²</span>
-        </div>
-        <div class="flex items-center justify-between py-1.5 border-b border-slate-50">
-            <span class="text-slate-500 font-medium">Standar Proyek:</span>
-            <span class="font-mono text-slate-700">{{ number_format($unit->project->standard_land_area, 0, ',', '.') }} m²</span>
-        </div>
 
-        @if($unit->category !== 'infrastruktur')
+        @if($unit->category === 'infrastruktur')
+            <div class="flex items-center justify-between py-1.5 border-b border-slate-50">
+                <span class="text-slate-500 font-medium">Jenis Fasum / Infrastruktur:</span>
+                <span class="font-bold text-sky-800 uppercase">{{ $unit->type }}</span>
+            </div>
+            <div class="flex items-center justify-between py-1.5 border-b border-slate-50">
+                <span class="text-slate-500 font-medium">Luas Pengerjaan:</span>
+                <span class="font-mono font-extrabold text-sky-900 text-xs">{{ number_format($unit->land_area, 0, ',', '.') }} m²</span>
+            </div>
+
+            @if($unit->specifications)
+                <div class="pt-2 mt-2 border-t border-sky-100 space-y-1.5">
+                    <p class="font-extrabold text-sky-900 text-[11px] uppercase tracking-wider">Catatan Teknis Fasum:</p>
+                    <div class="text-slate-700 text-xs bg-sky-50/60 p-2.5 rounded-xl border border-sky-200/70 leading-relaxed">
+                        {{ $unit->specifications }}
+                    </div>
+                </div>
+            @endif
+        @else
+            <div class="flex items-center justify-between py-1.5 border-b border-slate-50">
+                <span class="text-slate-500 font-medium">Dimensi Tanah (P &times; L):</span>
+                <span class="font-mono font-bold text-slate-800">{{ $unit->land_length }}m &times; {{ $unit->land_width }}m</span>
+            </div>
+            <div class="flex items-center justify-between py-1.5 border-b border-slate-50">
+                <span class="text-slate-500 font-medium">Luas Tanah Aktual:</span>
+                <span class="font-mono font-extrabold text-slate-900 text-xs">{{ number_format($unit->land_area, 0, ',', '.') }} m²</span>
+            </div>
+            <div class="flex items-center justify-between py-1.5 border-b border-slate-50">
+                <span class="text-slate-500 font-medium">Standar Proyek:</span>
+                <span class="font-mono text-slate-700">{{ number_format($unit->project->standard_land_area, 0, ',', '.') }} m²</span>
+            </div>
+
             <div class="flex items-center justify-between py-1.5 border-b border-slate-50">
                 <span class="text-slate-500 font-medium">Harga Jual Standar:</span>
                 <span class="font-mono font-bold text-slate-800">Rp {{ number_format($unit->project->base_price ?? $unit->base_price, 0, ',', '.') }}</span>
@@ -34,15 +53,6 @@
             <div class="flex items-center justify-between py-1.5 border-b border-slate-50 font-bold">
                 <span class="text-slate-700">Harga Total Unit:</span>
                 <span class="font-mono font-extrabold text-emerald-700 text-xs">Rp {{ number_format($unit->total_price, 0, ',', '.') }}</span>
-            </div>
-        @endif
-
-        @if($unit->category === 'infrastruktur' && $unit->specifications)
-            <div class="pt-2 mt-2 border-t border-sky-100 space-y-1.5">
-                <p class="font-extrabold text-sky-900 text-[11px] uppercase tracking-wider">Catatan Teknis Fasum:</p>
-                <div class="text-slate-700 text-xs bg-sky-50/60 p-2.5 rounded-xl border border-sky-200/70 leading-relaxed">
-                    {{ $unit->specifications }}
-                </div>
             </div>
         @endif
 

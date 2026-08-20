@@ -31,25 +31,20 @@
         </div>
 
         <div class="text-xs border-t md:border-t-0 md:border-l border-slate-800 pt-2 md:pt-0 md:pl-4 min-w-[200px]">
-            <span class="text-slate-400 block text-[10px] uppercase font-bold tracking-wider mb-1.5">Pengawas & Mandor Bertugas</span>
+            <span class="text-slate-400 block text-[10px] uppercase font-bold tracking-wider mb-1.5">Pengawas Proyek</span>
             @php
-                $projActiveAssignments = $project->assignments->where('status', 'active');
+                $projActivePengawas = $project->assignments->where('status', 'active')->filter(fn($a) => $a->user_id !== null || $a->user !== null);
             @endphp
             <div class="flex flex-wrap items-center gap-1.5">
-                @forelse($projActiveAssignments as $pa)
+                @forelse($projActivePengawas as $pa)
                     @if($pa->user)
                         <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-extrabold bg-purple-900/80 text-purple-200 border border-purple-700/80 shadow-2xs" title="Pengawas Project: {{ $pa->user->name }}">
                             <svg class="w-3.5 h-3.5 text-purple-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-                            <span>{{ $pa->user->name }} (Pengawas)</span>
-                        </span>
-                    @elseif($pa->worker)
-                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-extrabold bg-emerald-900/80 text-emerald-200 border border-emerald-700/80 shadow-2xs" title="{{ ucfirst($pa->worker->type) }}: {{ $pa->worker->name }}">
-                            <svg class="w-3.5 h-3.5 text-emerald-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-                            <span>{{ $pa->worker->name }} ({{ ucfirst($pa->worker->type) }})</span>
+                            <span>{{ $pa->user->name }}</span>
                         </span>
                     @endif
                 @empty
-                    <span class="text-slate-500 text-[11px] italic">Belum ada pekerja / pengawas ditugaskan</span>
+                    <span class="text-slate-500 text-[11px] italic">Belum ada pengawas ditugaskan</span>
                 @endforelse
             </div>
         </div>

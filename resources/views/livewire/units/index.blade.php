@@ -488,6 +488,12 @@
                         </div>
 
                         <div>
+                            <label class="block font-semibold text-sky-800 mb-1 text-[11px] uppercase tracking-wider">Luas Pengerjaan (m²) <span class="text-rose-500">*</span></label>
+                            <input type="number" step="0.01" min="0" wire:model="land_area" placeholder="Contoh: 150" required class="input-clean w-full h-10 font-extrabold font-mono text-xs bg-white text-sky-950">
+                            @error('land_area') <span class="text-rose-500 text-[10px] mt-1 block font-semibold">{{ $message }}</span> @enderror
+                        </div>
+
+                        <div>
                             <label class="block font-semibold text-sky-800 mb-1 text-[11px] uppercase tracking-wider">Keterangan / Deskripsi Pengerjaan</label>
                             <textarea wire:model="specifications" rows="2" placeholder="Detail lokasi, spesifikasi cor parit, lebar jalan, dll." class="input-clean w-full bg-white text-xs"></textarea>
                         </div>

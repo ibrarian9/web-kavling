@@ -187,3 +187,75 @@ test('spk pdf streams successfully even when unit code or worker name contains s
     $response->assertStatus(200);
     $response->assertHeader('content-type', 'application/pdf');
 });
+
+test('fasum unit uses manual luas pengerjaan on show page and renders correctly in SPK PDF', function () {
+    $founder = User::create([
+        'name' => 'Founder Fasum',
+        'email' => 'founder_fasum@example.com',
+        'password' => bcrypt('password'),
+        'role' => 'founder',
+        'is_active' => true,
+    ]);
+
+    $project = Project::create([
+        'name' => 'Proyek Grand Fasum',
+        'location' => 'Jl. Boulevard Utama',
+        'standard_land_area' => 100,
+        'excess_price_per_sqm' => 1500000,
+        'base_price' => 150000000,
+        'total_project_price' => 1000000000,
+        'status' => 'aktif',
+        'created_by' => $founder->id,
+    ]);
+
+    $fasumUnit = Unit::create([
+        'project_id' => $project->id,
+        'code' => 'FASUM-DRAINASE-01',
+        'category' => 'infrastruktur',
+        'type' => 'parit',
+        'land_area' => 250.50, // Manual Luas Pengerjaan
+        'specifications' => 'Pengerjaan cor parit drainase induk blok A',
+        'status' => 'infrastruktur',
+        'created_by' => $founder->id,
+    ]);
+
+    $worker = Worker::create([
+        'name' => 'Mandor Drainase Sukses',
+        'type' => 'mandor',
+        'specialty' => 'Infrastruktur & Drainase',
+        'status' => 'active',
+    ]);
+
+    $payroll = WorkerUnitPayroll::create([
+        'worker_id' => $worker->id,
+        'project_id' => $project->id,
+        'unit_id' => $fasumUnit->id,
+        'agreed_salary' => 18000000,
+        'paid_amount' => 0,
+        'payment_frequency' => 'fleksibel',
+        'status' => 'berjalan',
+        'notes' => 'Pengecoran parit U-Ditch 40x40 sepanjang area',
+        'created_by' => $founder->id,
+    ]);
+
+    // 1. Check Unit Show page renders Luas Pengerjaan
+    \Livewire\Livewire::actingAs($founder)
+        ->test(\App\Livewire\Units\Show::class, ['id' => $fasumUnit->id])
+        ->assertSee('Spesifikasi & Luas Pengerjaan Fasum')
+        ->assertSee('Luas Pengerjaan')
+        ->assertSee('251 m²') // formatted
+        ->assertDontSee('Dimensi Tanah (P × L)');
+
+    // 2. Check SPK PDF stream returns 200
+    $pdfResponse = $this->actingAs($founder)->get(route('units.payroll.spk-pdf', $payroll->id));
+    $pdfResponse->assertStatus(200);
+    $pdfResponse->assertHeader('content-type', 'application/pdf');
+
+    // 3. Check Public QR Verify page renders Fasum info and Pembayaran Kontrak
+    $verifyResponse = $this->get(route('verify.worker-spk', $payroll->id));
+    $verifyResponse->assertStatus(200);
+    $verifyResponse->assertSee('Objek Fasilitas Umum');
+    $verifyResponse->assertSee('Luas Pengerjaan');
+    $verifyResponse->assertSee('Total Pembayaran Kontrak');
+    $verifyResponse->assertDontSee('Total Kontrak Gaji');
+});

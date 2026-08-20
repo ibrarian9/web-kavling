@@ -77,6 +77,11 @@ Route::middleware(['auth', \App\Http\Middleware\EnsureUserIsActive::class])->gro
     Route::get('/field-expenses/export-pdf', [\App\Http\Controllers\FieldExpensesReportController::class, 'exportPdf'])->name('field-expenses.export-pdf');
     Route::get('/worker-payroll/{uuid}/receipt', [PayrollReceiptController::class, 'streamReceipt'])->name('payroll.receipt');
 
+    // Proyek Luar Non-Kavling (Material & Upah Tukang Terpisah)
+    Route::get('/external-projects', \App\Livewire\ExternalProjects\Index::class)->name('external-projects.index');
+    Route::get('/external-projects/{id}', \App\Livewire\ExternalProjects\Show::class)->name('external-projects.show');
+    Route::get('/external-projects/{id}/report-pdf', [\App\Http\Controllers\ExternalProjectReportController::class, 'exportPdf'])->name('external-projects.report-pdf');
+
     // Penjualan, Booking & Approval
     Route::get('/daily-activity-reports', \App\Livewire\DailyActivityReports\Index::class)->name('daily-activity-reports.index');
     Route::get('/daily-activity-reports/export-pdf', [\App\Http\Controllers\DailyActivityReportPdfController::class, 'exportPdf'])->name('daily-activity-reports.export-pdf');
