@@ -326,12 +326,6 @@
                             </span>
                         </div>
                     @else
-                        <div class="flex justify-between items-baseline">
-                            <span class="text-slate-500 font-medium">Harga Jual:</span>
-                            <span class="font-mono font-bold text-slate-800">
-                                Rp {{ number_format($unit->project->base_price ?? $unit->base_price, 0, ',', '.') }}
-                            </span>
-                        </div>
                         <div class="flex justify-between items-baseline text-slate-900 font-extrabold pt-0.5 border-t border-slate-100">
                             <span class="text-slate-700">Harga Total:</span>
                             <span class="font-mono text-emerald-700 font-bold">
