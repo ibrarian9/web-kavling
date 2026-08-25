@@ -69,9 +69,9 @@
                     <p class="text-slate-400 text-[10px] font-mono">{{ format_id_datetime($prop->created_at, false) }}</p>
                 </td>
                 @if(auth()->user()->canViewHpp())
-                    <td data-label="Harga HPP" class="p-3.5 font-mono font-medium text-slate-600 text-xs">Rp {{ number_format($prop->hpp_price, 0, ',', '.') }}</td>
+                    <td data-label="Harga HPP" class="p-3.5 font-mono font-medium text-slate-600 text-xs whitespace-nowrap">Rp {{ number_format($prop->hpp_price, 0, ',', '.') }}</td>
                 @endif
-                <td data-label="Harga Usulan Jual" class="p-3.5 font-mono font-bold text-emerald-700 text-xs">
+                <td data-label="Harga Usulan Jual" class="p-3.5 font-mono font-bold text-emerald-700 text-xs whitespace-nowrap">
                     Rp {{ number_format($prop->proposed_price, 0, ',', '.') }}
                     @if($isBelowHpp)
                         <span class="block text-[9px] font-bold text-rose-600 bg-rose-50 px-1.5 py-0.5 rounded border border-rose-200 mt-0.5 w-fit">

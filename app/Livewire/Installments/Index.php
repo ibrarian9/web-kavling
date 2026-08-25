@@ -48,7 +48,7 @@ class Index extends Component
     public function setTab(string $tab): void
     {
         $user = auth()->user();
-        if ($tab === 'land_payments' && $user && $user->isAdmin()) {
+        if ($tab === 'land_payments' && $user && !$user->canViewLandPrices()) {
             $this->activeTab = 'unit_installments';
             return;
         }
@@ -132,7 +132,11 @@ class Index extends Component
 
     public function mount(): void
     {
-        if (auth()->user()?->isAdmin() && $this->activeTab === 'land_payments') {
+        if (auth()->user()?->isAdmin()) {
+            abort(403, 'Akses modul Cicilan & Piutang tidak diizinkan untuk role Admin.');
+        }
+
+        if (auth()->user() && !auth()->user()->canViewLandPrices() && $this->activeTab === 'land_payments') {
             $this->activeTab = 'unit_installments';
         }
         $this->start_date = date('Y-m-d');

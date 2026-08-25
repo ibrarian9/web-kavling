@@ -80,47 +80,47 @@
     </div>
 
     <!-- Summary KPI Cards Grid (Filtered View Balance) -->
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
         <!-- Card 1: Total Pemasukan -->
-        <div class="kpi-card-emerald bg-white border border-slate-200/80 rounded-3xl p-5 shadow-xs">
+        <div class="kpi-card-emerald bg-white border border-slate-200/80 rounded-3xl p-5 shadow-xs min-w-0">
             <div class="flex items-center justify-between">
                 <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Total Kas Masuk (Pemasukan)</span>
-                <div class="p-2.5 rounded-2xl bg-emerald-50 text-emerald-600 border border-emerald-100 shadow-2xs">
+                <div class="p-2.5 rounded-2xl bg-emerald-50 text-emerald-600 border border-emerald-100 shadow-2xs shrink-0">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11l5-5m0 0l5 5m-5-5v12"/></svg>
                 </div>
             </div>
-            <p class="text-2xl font-extrabold text-emerald-700 font-mono mt-2">
+            <p class="text-lg sm:text-xl xl:text-2xl font-extrabold text-emerald-700 font-mono tracking-tight truncate mt-2" title="Rp {{ number_format($totalMasuk, 0, ',', '.') }}">
                 Rp {{ number_format($totalMasuk, 0, ',', '.') }}
             </p>
-            <p class="text-[11px] text-slate-400 mt-1">Penjualan unit, booking fee & DP</p>
+            <p class="text-[11px] text-slate-400 mt-1 truncate">Penjualan unit, booking fee & DP</p>
         </div>
 
         <!-- Card 2: Total Pengeluaran -->
-        <div class="kpi-card-rose bg-white border border-slate-200/80 rounded-3xl p-5 shadow-xs">
+        <div class="kpi-card-rose bg-white border border-slate-200/80 rounded-3xl p-5 shadow-xs min-w-0">
             <div class="flex items-center justify-between">
                 <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Total Kas Keluar (Pengeluaran)</span>
-                <div class="p-2.5 rounded-2xl bg-rose-50 text-rose-600 border border-rose-100 shadow-2xs">
+                <div class="p-2.5 rounded-2xl bg-rose-50 text-rose-600 border border-rose-100 shadow-2xs shrink-0">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 13l-5 5m0 0l-5-5m5 5V6"/></svg>
                 </div>
             </div>
-            <p class="text-2xl font-extrabold text-rose-700 font-mono mt-2">
+            <p class="text-lg sm:text-xl xl:text-2xl font-extrabold text-rose-700 font-mono tracking-tight truncate mt-2" title="Rp {{ number_format($totalKeluar, 0, ',', '.') }}">
                 Rp {{ number_format($totalKeluar, 0, ',', '.') }}
             </p>
-            <p class="text-[11px] text-slate-400 mt-1">Belanja material, upah & operasional</p>
+            <p class="text-[11px] text-slate-400 mt-1 truncate">Belanja material, upah & operasional</p>
         </div>
 
         <!-- Card 3: Saldo Kas Bersih -->
-        <div class="kpi-card-blue bg-white border border-slate-200/80 rounded-3xl p-5 shadow-xs">
+        <div class="kpi-card-blue bg-white border border-slate-200/80 rounded-3xl p-5 shadow-xs min-w-0 col-span-1 sm:col-span-2 lg:col-span-1">
             <div class="flex items-center justify-between">
                 <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Saldo Bersih (Net Cashflow)</span>
-                <div class="p-2.5 rounded-2xl bg-purple-50 text-purple-600 border border-purple-100 shadow-2xs">
+                <div class="p-2.5 rounded-2xl bg-purple-50 text-purple-600 border border-purple-100 shadow-2xs shrink-0">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                 </div>
             </div>
-            <p class="text-2xl font-extrabold font-mono mt-2 {{ $netCashflow >= 0 ? 'text-slate-900' : 'text-rose-600' }}">
+            <p class="text-lg sm:text-xl xl:text-2xl font-extrabold font-mono tracking-tight truncate mt-2 {{ $netCashflow >= 0 ? 'text-slate-900' : 'text-rose-600' }}" title="Rp {{ number_format($netCashflow, 0, ',', '.') }}">
                 Rp {{ number_format($netCashflow, 0, ',', '.') }}
             </p>
-            <p class="text-[11px] text-slate-400 mt-1">Akumulasi bersih periode terpilih</p>
+            <p class="text-[11px] text-slate-400 mt-1 truncate">Akumulasi bersih periode terpilih</p>
         </div>
     </div>
 
@@ -384,7 +384,7 @@
                     </td>
 
                     <!-- Nominal -->
-                    <td data-label="Nominal" class="p-3.5 text-right font-mono font-extrabold text-sm {{ $trx->type === 'masuk' ? 'text-emerald-600' : 'text-rose-600' }}">
+                    <td data-label="Nominal" class="p-3.5 text-right font-mono font-extrabold text-sm whitespace-nowrap {{ $trx->type === 'masuk' ? 'text-emerald-600' : 'text-rose-600' }}">
                         <span>Rp {{ number_format($trx->amount, 0, ',', '.') }}</span>
                     </td>
 

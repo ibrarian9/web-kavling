@@ -100,7 +100,7 @@
                         <span class="font-mono text-slate-500">{{ number_format($u->land_area, 0, ',', '.') }} m²</span>
                     </div>
 
-                    @if(!auth()->user()->isPengawasProject())
+                    @if(auth()->user()->canViewSalesPrices())
                         <!-- Financial Grid -->
                         @if($perf['buyer_name'] !== '-')
                             <p class="text-xs font-bold text-slate-800">Pembeli: {{ $perf['buyer_name'] }}</p>
@@ -193,7 +193,7 @@
                     <tr>
                         <th class="px-3 py-3.5">Kode Unit & Status</th>
                         <th class="px-3 py-3.5">Kategori & Luas Tanah</th>
-                        @if(!auth()->user()->isPengawasProject())
+                        @if(auth()->user()->canViewSalesPrices())
                             <th class="px-3 py-3.5">Nama Pembeli</th>
                             <th class="px-3 py-3.5 text-right">Harga Deal (Rp)</th>
                             <th class="px-3 py-3.5 text-right">Sudah Dibayar (Rp)</th>
@@ -236,7 +236,7 @@
                                 <span class="text-[11px] text-slate-500 font-mono block">{{ number_format($u->land_area, 0, ',', '.') }} m²</span>
                             </td>
 
-                            @if(!auth()->user()->isPengawasProject())
+                            @if(auth()->user()->canViewSalesPrices())
                                 <td class="px-3 py-3.5 font-bold text-slate-800 whitespace-nowrap">
                                     {{ $perf['buyer_name'] }}
                                 </td>

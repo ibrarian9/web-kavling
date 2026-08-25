@@ -2,33 +2,33 @@
 <div class="space-y-6">
 
     <!-- KPI Summary Cards for Land Payments -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div class="kpi-card-purple bg-white border border-slate-200/80 rounded-3xl p-5 shadow-xs">
+    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-5">
+        <div class="kpi-card-purple bg-white border border-slate-200/80 rounded-3xl p-5 shadow-xs min-w-0">
             <div class="flex items-center justify-between">
                 <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">
                     {{ $selectedProjectName ? 'Nilai Lahan (' . $selectedProjectName . ')' : 'Total Nilai Lahan Seluruh Proyek' }}
                 </span>
-                <div class="p-2.5 rounded-2xl bg-purple-50 text-purple-600 border border-purple-100 shadow-2xs">
+                <div class="p-2.5 rounded-2xl bg-purple-50 text-purple-600 border border-purple-100 shadow-2xs shrink-0">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5m0 0h5m-5 0v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
                 </div>
             </div>
-            <p class="text-2xl font-extrabold text-slate-900 font-mono mt-2">Rp {{ number_format($totalLandCost, 0, ',', '.') }}</p>
-            <p class="text-[11px] text-slate-400 mt-1">
+            <p class="text-lg sm:text-xl xl:text-2xl font-extrabold text-slate-900 font-mono tracking-tight truncate mt-2" title="Rp {{ number_format($totalLandCost, 0, ',', '.') }}">Rp {{ number_format($totalLandCost, 0, ',', '.') }}</p>
+            <p class="text-[11px] text-slate-400 mt-1 truncate">
                 {{ $selectedProjectName ? 'Target nilai lahan proyek terpilih' : 'Kesepakatan beli tanah ' . $projects->count() . ' proyek' }}
             </p>
         </div>
 
-        <div class="kpi-card-emerald bg-white border border-slate-200/80 rounded-3xl p-5 shadow-xs">
+        <div class="kpi-card-emerald bg-white border border-slate-200/80 rounded-3xl p-5 shadow-xs min-w-0">
             <div class="flex items-center justify-between">
                 <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">
                     {{ $selectedProjectName ? 'Terbayar (' . $selectedProjectName . ')' : 'Total Terbayar ke Pemilik' }}
                 </span>
-                <div class="p-2.5 rounded-2xl bg-emerald-50 text-emerald-600 border border-emerald-100 shadow-2xs">
+                <div class="p-2.5 rounded-2xl bg-emerald-50 text-emerald-600 border border-emerald-100 shadow-2xs shrink-0">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                 </div>
             </div>
-            <p class="text-2xl font-extrabold text-emerald-700 font-mono mt-2">Rp {{ number_format($totalLandPaid, 0, ',', '.') }}</p>
-            <p class="text-[11px] text-emerald-600 font-semibold mt-1">
+            <p class="text-lg sm:text-xl xl:text-2xl font-extrabold text-emerald-700 font-mono tracking-tight truncate mt-2" title="Rp {{ number_format($totalLandPaid, 0, ',', '.') }}">Rp {{ number_format($totalLandPaid, 0, ',', '.') }}</p>
+            <p class="text-[11px] text-emerald-600 font-semibold mt-1 truncate">
                 @if($totalLandCost > 0)
                     {{ round(($totalLandPaid / $totalLandCost) * 100, 1) }}% dari total nilai lahan
                 @else
@@ -37,30 +37,30 @@
             </p>
         </div>
 
-        <div class="kpi-card-amber bg-white border border-slate-200/80 rounded-3xl p-5 shadow-xs">
+        <div class="kpi-card-amber bg-white border border-slate-200/80 rounded-3xl p-5 shadow-xs min-w-0">
             <div class="flex items-center justify-between">
                 <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">
                     {{ $selectedProjectName ? 'Sisa Tanggungan (' . $selectedProjectName . ')' : 'Sisa Hutang / Tanggungan Lahan' }}
                 </span>
-                <div class="p-2.5 rounded-2xl bg-amber-50 text-amber-600 border border-amber-100 shadow-2xs">
+                <div class="p-2.5 rounded-2xl bg-amber-50 text-amber-600 border border-amber-100 shadow-2xs shrink-0">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                 </div>
             </div>
-            <p class="text-2xl font-extrabold text-amber-700 font-mono mt-2">Rp {{ number_format($totalLandRemaining, 0, ',', '.') }}</p>
-            <p class="text-[11px] text-slate-400 mt-1">
+            <p class="text-lg sm:text-xl xl:text-2xl font-extrabold text-amber-700 font-mono tracking-tight truncate mt-2" title="Rp {{ number_format($totalLandRemaining, 0, ',', '.') }}">Rp {{ number_format($totalLandRemaining, 0, ',', '.') }}</p>
+            <p class="text-[11px] text-slate-400 mt-1 truncate">
                 {{ $totalLandRemaining > 0 ? 'Sisa termin yang harus dibayar' : 'Semua termin lunas / target tercapai' }}
             </p>
         </div>
 
-        <div class="kpi-card-blue bg-white border border-slate-200/80 rounded-3xl p-5 shadow-xs">
+        <div class="kpi-card-blue bg-white border border-slate-200/80 rounded-3xl p-5 shadow-xs min-w-0">
             <div class="flex items-center justify-between">
                 <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Total Kuitansi Pembayaran</span>
-                <div class="p-2.5 rounded-2xl bg-blue-50 text-blue-600 border border-blue-100 shadow-2xs">
+                <div class="p-2.5 rounded-2xl bg-blue-50 text-blue-600 border border-blue-100 shadow-2xs shrink-0">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                 </div>
             </div>
-            <p class="text-2xl font-extrabold text-blue-700 font-mono mt-2">{{ $totalLandTransactions }} Transaksi</p>
-            <p class="text-[11px] text-slate-400 mt-1">Histori transfer & pembayaran</p>
+            <p class="text-lg sm:text-xl xl:text-2xl font-extrabold text-blue-700 font-mono tracking-tight truncate mt-2">{{ $totalLandTransactions }} Transaksi</p>
+            <p class="text-[11px] text-slate-400 mt-1 truncate">Histori transfer & pembayaran</p>
         </div>
     </div>
 
@@ -186,7 +186,7 @@
                     </a>
                     <span class="text-[10px] text-slate-400">{{ $pay->project->location ?? '' }}</span>
                 </td>
-                <td data-label="Jumlah Pembayaran" class="p-3.5 font-mono font-bold text-rose-700 text-xs">
+                <td data-label="Jumlah Pembayaran" class="p-3.5 font-mono font-bold text-rose-700 text-xs whitespace-nowrap">
                     Rp {{ number_format($pay->amount_paid, 0, ',', '.') }}
                 </td>
                 <td data-label="Metode Bayar" class="p-3.5">

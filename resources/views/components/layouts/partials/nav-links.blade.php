@@ -202,7 +202,7 @@
     <!-- ========================================== -->
     <!-- SECTION 4: PENJUALAN & LEGALITAS (ACCORDION)-->
     <!-- ========================================== -->
-    @if($isFO || $isS || $isFI || $isM)
+    @if($isF || $isS || $isFI || $isM || $isA)
         <div class="space-y-1 pt-2 border-t border-slate-800/60">
             <!-- Accordion Header -->
             <button type="button" 
@@ -237,35 +237,37 @@
                     @endif
                 </a>
 
-                <a href="{{ route('proposals.index') }}" wire:navigate.hover @click="mobileMenuOpen = false" 
-                   :title="!sidebarExpanded ? 'Pengajuan & Approval' : ''"
-                   :class="sidebarExpanded ? 'justify-between px-3 py-2' : 'justify-center p-2.5'"
-                   class="flex items-center rounded-xl text-xs sm:text-sm font-medium transition-colors group {{ request()->routeIs('proposals.*') ? 'bg-gradient-to-r from-emerald-500/20 to-teal-500/10 text-emerald-400 font-bold border-l-4 border-emerald-500 shadow-2xs' : 'text-slate-400 hover:bg-slate-800/80 hover:text-slate-100 hover:translate-x-0.5' }}">
-                    <div class="flex items-center gap-3 min-w-0">
-                        <div class="p-1.5 rounded-lg transition-colors {{ request()->routeIs('proposals.*') ? 'bg-emerald-500/20 text-emerald-400' : 'bg-slate-800/60 text-slate-400 group-hover:text-slate-200 group-hover:bg-slate-700/60' }}">
-                            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                @if(!$isA)
+                    <a href="{{ route('proposals.index') }}" wire:navigate.hover @click="mobileMenuOpen = false" 
+                       :title="!sidebarExpanded ? 'Pengajuan & Approval' : ''"
+                       :class="sidebarExpanded ? 'justify-between px-3 py-2' : 'justify-center p-2.5'"
+                       class="flex items-center rounded-xl text-xs sm:text-sm font-medium transition-colors group {{ request()->routeIs('proposals.*') ? 'bg-gradient-to-r from-emerald-500/20 to-teal-500/10 text-emerald-400 font-bold border-l-4 border-emerald-500 shadow-2xs' : 'text-slate-400 hover:bg-slate-800/80 hover:text-slate-100 hover:translate-x-0.5' }}">
+                        <div class="flex items-center gap-3 min-w-0">
+                            <div class="p-1.5 rounded-lg transition-colors {{ request()->routeIs('proposals.*') ? 'bg-emerald-500/20 text-emerald-400' : 'bg-slate-800/60 text-slate-400 group-hover:text-slate-200 group-hover:bg-slate-700/60' }}">
+                                <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            </div>
+                            <span x-show="sidebarExpanded" class="truncate">Pengajuan & Approval</span>
                         </div>
-                        <span x-show="sidebarExpanded" class="truncate">Pengajuan & Approval</span>
-                    </div>
-                    @if(request()->routeIs('proposals.*'))
-                        <span x-show="sidebarExpanded" class="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-sm"></span>
-                    @endif
-                </a>
+                        @if(request()->routeIs('proposals.*'))
+                            <span x-show="sidebarExpanded" class="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-sm"></span>
+                        @endif
+                    </a>
 
-                <a href="{{ route('documents.index') }}" wire:navigate.hover @click="mobileMenuOpen = false" 
-                   :title="!sidebarExpanded ? 'Surat Resmi SPP (PDF)' : ''"
-                   :class="sidebarExpanded ? 'justify-between px-3 py-2' : 'justify-center p-2.5'"
-                   class="flex items-center rounded-xl text-xs sm:text-sm font-medium transition-colors group {{ request()->routeIs('documents.*') ? 'bg-gradient-to-r from-emerald-500/20 to-teal-500/10 text-emerald-400 font-bold border-l-4 border-emerald-500 shadow-2xs' : 'text-slate-400 hover:bg-slate-800/80 hover:text-slate-100 hover:translate-x-0.5' }}">
-                    <div class="flex items-center gap-3 min-w-0">
-                        <div class="p-1.5 rounded-lg transition-colors {{ request()->routeIs('documents.*') ? 'bg-emerald-500/20 text-emerald-400' : 'bg-slate-800/60 text-slate-400 group-hover:text-slate-200 group-hover:bg-slate-700/60' }}">
-                            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                    <a href="{{ route('documents.index') }}" wire:navigate.hover @click="mobileMenuOpen = false" 
+                       :title="!sidebarExpanded ? 'Surat Resmi SPP (PDF)' : ''"
+                       :class="sidebarExpanded ? 'justify-between px-3 py-2' : 'justify-center p-2.5'"
+                       class="flex items-center rounded-xl text-xs sm:text-sm font-medium transition-colors group {{ request()->routeIs('documents.*') ? 'bg-gradient-to-r from-emerald-500/20 to-teal-500/10 text-emerald-400 font-bold border-l-4 border-emerald-500 shadow-2xs' : 'text-slate-400 hover:bg-slate-800/80 hover:text-slate-100 hover:translate-x-0.5' }}">
+                        <div class="flex items-center gap-3 min-w-0">
+                            <div class="p-1.5 rounded-lg transition-colors {{ request()->routeIs('documents.*') ? 'bg-emerald-500/20 text-emerald-400' : 'bg-slate-800/60 text-slate-400 group-hover:text-slate-200 group-hover:bg-slate-700/60' }}">
+                                <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                            </div>
+                            <span x-show="sidebarExpanded" class="truncate">Surat Resmi SPP (PDF)</span>
                         </div>
-                        <span x-show="sidebarExpanded" class="truncate">Surat Resmi SPP (PDF)</span>
-                    </div>
-                    @if(request()->routeIs('documents.*'))
-                        <span x-show="sidebarExpanded" class="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-sm"></span>
-                    @endif
-                </a>
+                        @if(request()->routeIs('documents.*'))
+                            <span x-show="sidebarExpanded" class="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-sm"></span>
+                        @endif
+                    </a>
+                @endif
             </div>
         </div>
     @endif
@@ -273,7 +275,7 @@
     <!-- ========================================== -->
     <!-- SECTION 5: KEUANGAN & ARUS KAS (ACCORDION)-->
     <!-- ========================================== -->
-    @if($isFO || $isS || $isFI || $isM)
+    @if(($isF || $isS || $isFI || $isM) && !$isA)
         <div class="space-y-1 pt-2 border-t border-slate-800/60">
             <!-- Accordion Header -->
             <button type="button" 
@@ -393,7 +395,7 @@
     <!-- ========================================== -->
     <!-- SECTION 6: FOUNDER & ADMINISTRASI         -->
     <!-- ========================================== -->
-    @if($isFO || $isFI)
+    @if($isF || $isS)
         <div class="space-y-1 pt-2 border-t border-slate-800/60">
             <!-- Accordion Header -->
             <button type="button" 
@@ -413,20 +415,22 @@
             <!-- Accordion Body -->
             <div x-show="!sidebarExpanded || isOpen('admin')" class="space-y-1">
 
-                <a href="{{ route('profile.index') }}" wire:navigate.hover @click="mobileMenuOpen = false" 
-                   :title="!sidebarExpanded ? 'Profil Pengguna' : ''"
-                   :class="sidebarExpanded ? 'justify-between px-3 py-2' : 'justify-center p-2.5'"
-                   class="flex items-center rounded-xl text-xs sm:text-sm font-medium transition-colors group {{ request()->routeIs('profile.*') ? 'bg-gradient-to-r from-emerald-500/20 to-teal-500/10 text-emerald-400 font-bold border-l-4 border-emerald-500 shadow-2xs' : 'text-slate-400 hover:bg-slate-800/80 hover:text-slate-100 hover:translate-x-0.5' }}">
-                    <div class="flex items-center gap-3 min-w-0">
-                        <div class="p-1.5 rounded-lg transition-colors {{ request()->routeIs('profile.*') ? 'bg-emerald-500/20 text-emerald-400' : 'bg-slate-800/60 text-slate-400 group-hover:text-slate-200 group-hover:bg-slate-700/60' }}">
-                            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                @if($isF)
+                    <a href="{{ route('profile.index') }}" wire:navigate.hover @click="mobileMenuOpen = false" 
+                       :title="!sidebarExpanded ? 'Profil Pengguna' : ''"
+                       :class="sidebarExpanded ? 'justify-between px-3 py-2' : 'justify-center p-2.5'"
+                       class="flex items-center rounded-xl text-xs sm:text-sm font-medium transition-colors group {{ request()->routeIs('profile.*') ? 'bg-gradient-to-r from-emerald-500/20 to-teal-500/10 text-emerald-400 font-bold border-l-4 border-emerald-500 shadow-2xs' : 'text-slate-400 hover:bg-slate-800/80 hover:text-slate-100 hover:translate-x-0.5' }}">
+                        <div class="flex items-center gap-3 min-w-0">
+                            <div class="p-1.5 rounded-lg transition-colors {{ request()->routeIs('profile.*') ? 'bg-emerald-500/20 text-emerald-400' : 'bg-slate-800/60 text-slate-400 group-hover:text-slate-200 group-hover:bg-slate-700/60' }}">
+                                <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                            </div>
+                            <span x-show="sidebarExpanded" class="truncate">Profil</span>
                         </div>
-                        <span x-show="sidebarExpanded" class="truncate">Profil</span>
-                    </div>
-                    @if(request()->routeIs('profile.*'))
-                        <span x-show="sidebarExpanded" class="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-sm"></span>
-                    @endif
-                </a>
+                        @if(request()->routeIs('profile.*'))
+                            <span x-show="sidebarExpanded" class="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-sm"></span>
+                        @endif
+                    </a>
+                @endif
 
                 @if($isF || $isS)
                     <a href="{{ route('users.index') }}" wire:navigate.hover @click="mobileMenuOpen = false" 

@@ -20,56 +20,47 @@
     </x-card>
 
     <!-- Summary KPI Cards Grid -->
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
-        <div class="kpi-card-blue bg-white border border-slate-200/80 rounded-3xl p-5 shadow-xs">
-            <div class="flex items-center justify-between">
-                <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Total Proyek Kavling</span>
-                <div class="p-2.5 rounded-2xl bg-purple-50 text-purple-600 border border-purple-100 shadow-2xs">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5m0 0h5m-5 0v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+        <div class="kpi-card-blue bg-white border border-slate-200/80 rounded-3xl p-4 sm:p-5 shadow-xs min-w-0 flex flex-col justify-between">
+            <div class="flex items-center justify-between gap-1">
+                <span class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-400 truncate">Total Proyek Kavling</span>
+                <div class="p-2 rounded-2xl bg-purple-50 text-purple-600 border border-purple-100 shadow-2xs shrink-0">
+                    <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5m0 0h5m-5 0v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
                 </div>
             </div>
-            <p class="text-2xl font-extrabold text-slate-900 font-mono mt-2">{{ $projects->total() }} Proyek</p>
-            <p class="text-[11px] text-slate-400 mt-1">Lokasi perumahan & kavling terdaftar</p>
+            <div class="mt-2 min-w-0">
+                <p class="text-base sm:text-lg xl:text-2xl font-extrabold text-slate-900 font-mono tracking-tight truncate">{{ $projects->total() }} <span class="text-[10px] sm:text-xs font-normal font-sans text-slate-400">Proyek</span></p>
+                <p class="text-[10px] sm:text-[11px] text-slate-400 mt-0.5 truncate">Lokasi perumahan & kavling</p>
+            </div>
         </div>
 
-        <div class="kpi-card-emerald bg-white border border-slate-200/80 rounded-3xl p-5 shadow-xs">
-            <div class="flex items-center justify-between">
-                <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Total Unit Terdaftar</span>
-                <div class="p-2.5 rounded-2xl bg-emerald-50 text-emerald-600 border border-emerald-100 shadow-2xs">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
+        <div class="kpi-card-emerald bg-white border border-slate-200/80 rounded-3xl p-4 sm:p-5 shadow-xs min-w-0 flex flex-col justify-between">
+            <div class="flex items-center justify-between gap-1">
+                <span class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-400 truncate">Total Unit Terdaftar</span>
+                <div class="p-2 rounded-2xl bg-emerald-50 text-emerald-600 border border-emerald-100 shadow-2xs shrink-0">
+                    <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
                 </div>
             </div>
-            <p class="text-2xl font-extrabold text-slate-900 font-mono mt-2">{{ \App\Models\Unit::count() }} Unit</p>
-            <p class="text-[11px] text-slate-400 mt-1">Kavling tanah & rumah di seluruh proyek</p>
+            <div class="mt-2 min-w-0">
+                <p class="text-base sm:text-lg xl:text-2xl font-extrabold text-slate-900 font-mono tracking-tight truncate">{{ \App\Models\Unit::count() }} <span class="text-[10px] sm:text-xs font-normal font-sans text-slate-400">Unit</span></p>
+                <p class="text-[10px] sm:text-[11px] text-slate-400 mt-0.5 truncate">Kavling tanah & rumah</p>
+            </div>
         </div>
 
-        @if(auth()->user()->canViewHpp())
-            <div class="kpi-card-amber bg-white border border-slate-200/80 rounded-3xl p-5 shadow-xs">
-                <div class="flex items-center justify-between">
-                    <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Total Harga Beli Lahan</span>
-                    <div class="p-2.5 rounded-2xl bg-amber-50 text-amber-600 border border-amber-100 shadow-2xs">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                    </div>
+        <div class="kpi-card-amber bg-white border border-slate-200/80 rounded-3xl p-4 sm:p-5 shadow-xs min-w-0 flex flex-col justify-between col-span-1 sm:col-span-2 lg:col-span-1">
+            <div class="flex items-center justify-between gap-1">
+                <span class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-400 truncate">Pengawas Bertugas</span>
+                <div class="p-2 rounded-2xl bg-purple-50 text-purple-600 border border-purple-100 shadow-2xs shrink-0">
+                    <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                 </div>
-                <p class="text-2xl font-extrabold text-amber-600 font-mono mt-2">
-                    Rp {{ number_format(\App\Models\Project::sum('total_project_price'), 0, ',', '.') }}
-                </p>
-                <p class="text-[11px] text-slate-400 mt-1">Akumulasi komitmen bayar ke penjual</p>
             </div>
-        @else
-            <div class="kpi-card-amber bg-white border border-slate-200/80 rounded-3xl p-5 shadow-xs">
-                <div class="flex items-center justify-between">
-                    <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Pengawas Bertugas</span>
-                    <div class="p-2.5 rounded-2xl bg-purple-50 text-purple-600 border border-purple-100 shadow-2xs">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-                    </div>
-                </div>
-                <p class="text-2xl font-extrabold text-purple-700 font-mono mt-2">
-                    {{ \App\Models\WorkerAssignment::where('status', 'active')->whereNotNull('user_id')->count() }} Penugasan
+            <div class="mt-2 min-w-0">
+                <p class="text-base sm:text-lg xl:text-2xl font-extrabold text-purple-700 font-mono tracking-tight truncate">
+                    {{ \App\Models\WorkerAssignment::where('status', 'active')->whereNotNull('user_id')->count() }} <span class="text-[10px] sm:text-xs font-normal font-sans text-slate-400">Penugasan</span>
                 </p>
-                <p class="text-[11px] text-slate-400 mt-1">Pengawas proyek aktif</p>
+                <p class="text-[10px] sm:text-[11px] text-slate-400 mt-0.5 truncate">Pengawas proyek aktif</p>
             </div>
-        @endif
+        </div>
     </div>
 
     <!-- Filters & Search Toolbar -->
@@ -85,11 +76,10 @@
     <!-- Projects Table -->
     @php
         $headers = ['Nama Proyek & Lokasi', 'Pengawas Proyek', 'Luas Standar (m²)'];
-        if(auth()->user()->canViewHpp()) {
-            $headers[] = 'Harga Beli Lahan (Penjual)';
+        if(auth()->user()->canViewSalesPrices()) {
             $headers[] = 'Harga Dasar Standar (HPP)';
+            $headers[] = 'Tarif Kelebihan / m²';
         }
-        $headers[] = 'Tarif Kelebihan / m²';
         $headers[] = 'Jumlah Unit';
         $headers[] = ['label' => 'Aksi Proyek', 'class' => 'p-3.5 text-center'];
     @endphp
@@ -135,18 +125,11 @@
                         @endforelse
                     </div>
                 </td>
-                <td data-label="Luas Standar" class="p-3.5 font-mono font-medium text-slate-700">{{ number_format($p->standard_land_area, 0, ',', '.') }} m²</td>
-                @if(auth()->user()->canViewHpp())
-                    <td data-label="Beli Lahan" class="p-3.5 font-mono text-purple-700 font-bold">
-                        @if($p->total_project_price > 0)
-                            Rp {{ number_format($p->total_project_price, 0, ',', '.') }}
-                        @else
-                            <span class="text-slate-400 font-normal italic">-</span>
-                        @endif
-                    </td>
-                    <td data-label="Harga Dasar (HPP)" class="p-3.5 font-mono text-emerald-700 font-bold">Rp {{ number_format($p->base_price, 0, ',', '.') }}</td>
+                <td data-label="Luas Standar" class="p-3.5 font-mono font-medium text-slate-700 whitespace-nowrap">{{ number_format($p->standard_land_area, 0, ',', '.') }} m²</td>
+                @if(auth()->user()->canViewSalesPrices())
+                    <td data-label="Harga Dasar (HPP)" class="p-3.5 font-mono text-emerald-700 font-bold whitespace-nowrap">Rp {{ number_format($p->base_price, 0, ',', '.') }}</td>
+                    <td data-label="Tarif Kelebihan" class="p-3.5 font-mono text-slate-700 whitespace-nowrap">Rp {{ number_format($p->excess_price_per_sqm, 0, ',', '.') }} / m²</td>
                 @endif
-                <td data-label="Tarif Kelebihan" class="p-3.5 font-mono text-slate-700">Rp {{ number_format($p->excess_price_per_sqm, 0, ',', '.') }} / m²</td>
                 <td data-label="Jumlah Unit" class="p-3.5 font-bold text-slate-800 whitespace-nowrap">
                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700 border border-slate-200 text-xs font-semibold whitespace-nowrap">
                         {{ $p->units_count }} Unit

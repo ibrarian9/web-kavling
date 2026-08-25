@@ -75,6 +75,10 @@ class Index extends Component
 
     public function mount()
     {
+        if (auth()->user()?->isAdmin()) {
+            abort(403, 'Akses modul Pengajuan Proposal tidak diizinkan untuk role Admin.');
+        }
+
         if ($this->create_unit_id) {
             $unit = Unit::find($this->create_unit_id);
             if ($unit) {

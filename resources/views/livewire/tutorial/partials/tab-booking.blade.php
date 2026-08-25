@@ -16,8 +16,8 @@
             </a>
         </div>
 
-        <!-- 3-Step Cards Layout -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-5 text-xs">
+        <!-- 3-Step Cards Layout (Responsive: 1 Kolom di iPad/Tablet, 3 Kolom di Layar Lebar) -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-5 text-xs">
             <!-- Step 1: Input Booking Fee -->
             <div class="p-5 bg-gradient-to-b from-slate-50 to-white rounded-2xl border border-slate-200 shadow-xs space-y-3 relative overflow-hidden flex flex-col justify-between">
                 <div class="w-1 bg-emerald-600 absolute left-0 top-0 bottom-0"></div>

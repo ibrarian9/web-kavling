@@ -89,150 +89,105 @@
     <div wire:loading.class="opacity-50 pointer-events-none transition-opacity duration-200" wire:target="search, status_filter, category_filter, project_id, viewMode">
     
     <!-- Summary KPI Cards Grid -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4 mb-6">
-        <div class="kpi-card-blue">
-            <div class="flex items-center justify-between">
-                <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Total Stok Unit</span>
-                <div class="p-2 rounded-xl bg-purple-50 text-purple-600 border border-purple-100">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
+        <div class="kpi-card-blue p-3.5 sm:p-4 xl:p-5 min-w-0 flex flex-col justify-between">
+            <div class="flex items-center justify-between gap-1">
+                <span class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-400 truncate">Total Stok Unit</span>
+                <div class="p-1.5 sm:p-2 rounded-xl bg-purple-50 text-purple-600 border border-purple-100 shrink-0">
+                    <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
                 </div>
             </div>
-            <p class="text-2xl font-extrabold text-slate-900 font-mono mt-1.5">{{ $totalUnitsCount }} Unit</p>
-            <p class="text-[10px] text-slate-400 mt-0.5">{{ $project_id ? 'Proyek terpilih' : ($category_filter ? 'Kategori: ' . ucfirst($category_filter) : 'Total stok unit') }}</p>
+            <div class="mt-2 min-w-0">
+                <p class="text-base sm:text-lg xl:text-2xl font-extrabold text-slate-900 font-mono tracking-tight truncate">{{ $totalUnitsCount }} <span class="text-[10px] sm:text-xs font-normal font-sans text-slate-400">Unit</span></p>
+                <p class="text-[10px] sm:text-[11px] text-slate-400 mt-0.5 truncate">{{ $project_id ? 'Proyek terpilih' : ($category_filter ? 'Kategori: ' . ucfirst($category_filter) : 'Total stok unit') }}</p>
+            </div>
         </div>
 
-        <div class="kpi-card-emerald">
-            <div class="flex items-center justify-between">
-                <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Unit Tersedia</span>
-                <div class="p-2 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <div class="kpi-card-emerald p-3.5 sm:p-4 xl:p-5 min-w-0 flex flex-col justify-between">
+            <div class="flex items-center justify-between gap-1">
+                <span class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-400 truncate">Unit Tersedia</span>
+                <div class="p-1.5 sm:p-2 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100 shrink-0">
+                    <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                 </div>
             </div>
-            <p class="text-2xl font-extrabold text-emerald-700 font-mono mt-1.5">
-                {{ $availableUnitsCount }} Unit
-            </p>
-            <p class="text-[10px] text-slate-400 mt-0.5">Siap dijual / dipesan</p>
+            <div class="mt-2 min-w-0">
+                <p class="text-base sm:text-lg xl:text-2xl font-extrabold text-emerald-700 font-mono tracking-tight truncate">
+                    {{ $availableUnitsCount }} <span class="text-[10px] sm:text-xs font-normal font-sans text-slate-400">Unit</span>
+                </p>
+                <p class="text-[10px] sm:text-[11px] text-slate-400 mt-0.5 truncate">Siap dijual / dipesan</p>
+            </div>
         </div>
 
-        <div class="kpi-card-amber">
-            <div class="flex items-center justify-between">
-                <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Booked & Pending</span>
-                <div class="p-2 rounded-xl bg-amber-50 text-amber-600 border border-amber-100">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <div class="kpi-card-amber p-3.5 sm:p-4 xl:p-5 min-w-0 flex flex-col justify-between">
+            <div class="flex items-center justify-between gap-1">
+                <span class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-400 truncate">Booked & Pending</span>
+                <div class="p-1.5 sm:p-2 rounded-xl bg-amber-50 text-amber-600 border border-amber-100 shrink-0">
+                    <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                 </div>
             </div>
-            <p class="text-2xl font-extrabold text-amber-700 font-mono mt-1.5">
-                {{ $bookedUnitsCount }} Unit
-            </p>
-            <p class="text-[10px] text-slate-400 mt-0.5">Dalam proses transaksi</p>
+            <div class="mt-2 min-w-0">
+                <p class="text-base sm:text-lg xl:text-2xl font-extrabold text-amber-700 font-mono tracking-tight truncate">
+                    {{ $bookedUnitsCount }} <span class="text-[10px] sm:text-xs font-normal font-sans text-slate-400">Unit</span>
+                </p>
+                <p class="text-[10px] sm:text-[11px] text-slate-400 mt-0.5 truncate">Dalam proses transaksi</p>
+            </div>
         </div>
 
-        <div class="kpi-card-rose">
-            <div class="flex items-center justify-between">
-                <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Unit Terjual / ACC</span>
-                <div class="p-2 rounded-xl bg-rose-50 text-rose-600 border border-rose-100">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+        <div class="kpi-card-rose p-3.5 sm:p-4 xl:p-5 min-w-0 flex flex-col justify-between">
+            <div class="flex items-center justify-between gap-1">
+                <span class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-400 truncate">Unit Terjual / ACC</span>
+                <div class="p-1.5 sm:p-2 rounded-xl bg-rose-50 text-rose-600 border border-rose-100 shrink-0">
+                    <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                 </div>
             </div>
-            <p class="text-2xl font-extrabold text-rose-700 font-mono mt-1.5">
-                {{ $soldUnitsCount }} Unit
-            </p>
-            <p class="text-[10px] text-slate-400 mt-0.5">Penjualan lunas / cicilan</p>
+            <div class="mt-2 min-w-0">
+                <p class="text-base sm:text-lg xl:text-2xl font-extrabold text-rose-700 font-mono tracking-tight truncate">
+                    {{ $soldUnitsCount }} <span class="text-[10px] sm:text-xs font-normal font-sans text-slate-400">Unit</span>
+                </p>
+                <p class="text-[10px] sm:text-[11px] text-slate-400 mt-0.5 truncate">Penjualan lunas / cicilan</p>
+            </div>
         </div>
     </div>
 
     @if($viewMode === 'siteplan')
-        <div class="card-clean p-4 sm:p-6 bg-slate-900/5 border border-slate-200 mb-6">
-            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 sm:gap-4">
-                @forelse($units as $unit)
-                    @php
-                        $isInfra = ($unit->category === 'infrastruktur' || $unit->type === 'infrastruktur');
-                        $isSold = in_array($unit->status, ['terjual', 'disetujui']);
-                        $isBooked = in_array($unit->status, ['booked', 'menunggu_persetujuan']);
-                        $isAvailable = in_array($unit->status, ['tersedia', 'draft']);
-
-                        if ($isInfra) {
-                            $cardBg = 'bg-indigo-50/90 border-indigo-200 hover:border-indigo-400 text-indigo-950';
-                            $badgeBg = 'bg-indigo-100 text-indigo-800 border-indigo-200';
-                            $statusLabel = 'Fasum';
-                        } elseif ($isSold) {
-                            $cardBg = 'bg-rose-50/90 border-rose-200 hover:border-rose-400 text-rose-950';
-                            $badgeBg = 'bg-rose-100 text-rose-800 border-rose-200';
-                            $statusLabel = 'Terjual';
-                        } elseif ($isBooked) {
-                            $cardBg = 'bg-amber-50/90 border-amber-200 hover:border-amber-400 text-amber-950';
-                            $badgeBg = 'bg-amber-100 text-amber-800 border-amber-200';
-                            $statusLabel = 'Booked';
-                        } else {
-                            $cardBg = 'bg-emerald-50/90 border-emerald-200 hover:border-emerald-400 text-emerald-950';
-                            $badgeBg = 'bg-emerald-100 text-emerald-800 border-emerald-200';
-                            $statusLabel = 'Tersedia';
-                        }
-                    @endphp
-
-                    <a href="{{ route('units.show', $unit->id) }}" wire:navigate.hover class="{{ $cardBg }} border rounded-2xl p-3 flex flex-col justify-between transition-all duration-200 transform hover:-translate-y-1 hover:shadow-md cursor-pointer group relative overflow-hidden min-h-[128px]">
-                        <div class="flex items-center justify-between gap-1">
-                            <span class="text-[9px] font-extrabold uppercase px-2 py-0.5 rounded-full border {{ $badgeBg }}">
-                                {{ $statusLabel }}
-                            </span>
-                            <span class="text-[10px] font-mono text-slate-500 font-semibold">
-                                {{ (float)$unit->land_area }} m²
-                            </span>
-                        </div>
-
-                        <div class="my-2">
-                            <p class="text-base sm:text-lg font-black font-mono tracking-tight group-hover:text-emerald-700 transition">
-                                {{ $unit->code }}
-                            </p>
-                            <p class="text-[10px] text-slate-500 font-medium capitalize truncate">
-                                {{ $unit->project->name ?? 'Proyek' }}
-                            </p>
-                        </div>
-
-                        <div class="pt-1.5 border-t border-slate-200/60 flex items-center justify-between text-[11px]">
-                            <span class="font-mono font-bold text-slate-800">
-                                Rp {{ number_format($unit->final_selling_price ?? $unit->hpp ?? 0, 0, ',', '.') }}
-                            </span>
-                            <svg class="w-3.5 h-3.5 text-slate-400 group-hover:text-emerald-600 transform group-hover:translate-x-0.5 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                        </div>
-                    </a>
-                @empty
-                    <div class="col-span-full py-12 text-center text-slate-400">
-                        <svg class="w-12 h-12 mx-auto text-slate-300 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6z"/></svg>
-                        <p class="font-bold text-slate-600">Tidak ada unit yang sesuai dengan filter site plan</p>
-                    </div>
-                @endforelse
-            </div>
+        <div class="card-clean p-4 sm:p-6 bg-slate-50/50 border border-slate-200/80 mb-6">
+            <x-siteplan-visual-grid :units="$units" :interactiveModal="false" :showProjectName="true" />
         </div>
     @else
         <!-- Units Grid Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4 sm:gap-5">
         @forelse($units as $unit)
-            <div class="card-clean p-5 space-y-4 flex flex-col justify-between hover:shadow-md transition">
-                <div>
+            <div class="card-clean p-4 sm:p-5 space-y-3.5 flex flex-col justify-between hover:shadow-md transition">
+                <div class="space-y-3">
                     <!-- Top Badge & Code -->
-                    <div class="flex items-center justify-between gap-2 flex-nowrap">
-                        <div class="flex items-center gap-2 flex-nowrap whitespace-nowrap overflow-hidden">
-                            <span class="text-lg font-extrabold text-slate-900 font-mono whitespace-nowrap">{{ $unit->code }}</span>
-                            @if($unit->category === 'infrastruktur' || $unit->status === 'infrastruktur')
-                                <span class="text-[10px] uppercase font-extrabold px-2 py-0.5 rounded-md bg-sky-100 text-sky-800 border border-sky-300 whitespace-nowrap">
-                                    FASUM: {{ strtoupper($unit->type) }}
-                                </span>
-                            @elseif($unit->category === 'rumah')
-                                <span class="text-[10px] uppercase font-bold px-2 py-0.5 rounded-md bg-purple-50 text-purple-800 border border-purple-200 whitespace-nowrap">
-                                    Rumah
-                                </span>
-                            @else
-                                <span class="text-[10px] uppercase font-bold px-2 py-0.5 rounded-md bg-amber-50 text-amber-800 border border-amber-200 whitespace-nowrap">
-                                    Kavling
-                                </span>
-                            @endif
+                    <div class="flex items-start justify-between gap-2">
+                        <div class="space-y-1 min-w-0 flex-1">
+                            <div class="flex items-center gap-1.5 flex-wrap">
+                                <span class="text-base sm:text-lg font-extrabold text-slate-900 font-mono tracking-tight">{{ $unit->code }}</span>
+                                @if($unit->category === 'infrastruktur' || $unit->status === 'infrastruktur')
+                                    <span class="text-[10px] uppercase font-extrabold px-2 py-0.5 rounded-md bg-sky-100 text-sky-800 border border-sky-300 inline-block">
+                                        {{ $unit->type ? ucwords(str_replace('_', ' ', $unit->type)) : 'Fasum' }}
+                                    </span>
+                                @elseif($unit->category === 'rumah')
+                                    <span class="text-[10px] uppercase font-bold px-2 py-0.5 rounded-md bg-purple-50 text-purple-800 border border-purple-200 inline-block">
+                                        Rumah
+                                    </span>
+                                @else
+                                    <span class="text-[10px] uppercase font-bold px-2 py-0.5 rounded-md bg-amber-50 text-amber-800 border border-amber-200 inline-block">
+                                        Kavling
+                                    </span>
+                                @endif
+                            </div>
+                            <p class="text-xs font-semibold text-slate-600 flex items-center gap-1.5 truncate" title="{{ $unit->project->name ?? '' }}">
+                                <svg class="w-3.5 h-3.5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5m0 0h5m-5 0v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                                <span class="truncate">{{ $unit->project->name ?? '-' }}</span>
+                            </p>
                         </div>
 
                         <!-- Status Badge -->
-                        <div class="shrink-0 whitespace-nowrap">
+                        <div class="shrink-0">
                             @if($unit->status === 'infrastruktur' || $unit->category === 'infrastruktur')
-                                <span class="px-2.5 py-0.5 rounded-md text-[10px] font-bold bg-sky-950 text-sky-300 border border-sky-500/40 whitespace-nowrap">
+                                <span class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-sky-950 text-sky-300 border border-sky-500/40 inline-block shadow-2xs">
                                     Infrastruktur Proyek
                                 </span>
                             @else
@@ -241,67 +196,91 @@
                         </div>
                     </div>
 
-                    <p class="text-xs font-semibold text-slate-600 mt-1 flex items-center gap-1.5">
-                        <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5m0 0h5m-5 0v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
-                        {{ $unit->project->name }}
-                    </p>
-
-                    <!-- Mandor / Tukang Bertugas Badge (Ringkas: 1 Pekerja + ...) -->
+                    <!-- Mandor / Tukang Bertugas Badge -->
                     @php
                         $activeWorkers = $unit->activeAssignments->where('status', 'active');
                         $firstWorker = $activeWorkers->first();
                         $workerCount = $activeWorkers->count();
                     @endphp
-                    <div class="mt-2.5 flex items-center gap-1.5">
+                    <div class="flex items-center gap-1.5">
                         @if($firstWorker && $firstWorker->worker)
-                            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[10px] font-semibold bg-blue-50 text-blue-800 border border-blue-200/80 max-w-[220px] truncate" title="{{ $firstWorker->worker->name }} ({{ ucfirst($firstWorker->worker->type) }})">
-                                <svg class="w-3 h-3 text-blue-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-                                <span class="truncate">{{ $firstWorker->worker->name }} ({{ ucfirst($firstWorker->worker->type) }})</span>
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-semibold bg-blue-50 text-blue-800 border border-blue-200/80 max-w-full truncate" title="{{ $firstWorker->worker->name }} ({{ ucfirst($firstWorker->worker->type) }})">
+                                <svg class="w-3.5 h-3.5 text-blue-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                                <span class="truncate font-medium">{{ $firstWorker->worker->name }}</span>
+                                <span class="text-blue-500 text-[9px] shrink-0">({{ ucfirst($firstWorker->worker->type) }})</span>
                                 @if($workerCount > 1)
-                                    <span class="text-blue-600 font-bold shrink-0">...</span>
+                                    <span class="bg-blue-200 text-blue-900 text-[9px] px-1 py-0.2 rounded font-bold shrink-0">+{{ $workerCount - 1 }}</span>
                                 @endif
                             </span>
                         @else
-                            <span class="text-[10px] text-slate-400 italic">Belum ada penugasan pekerja</span>
+                            <span class="text-[10px] text-slate-400 italic flex items-center gap-1">
+                                <svg class="w-3 h-3 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                                Belum ada penugasan pekerja
+                            </span>
                         @endif
                     </div>
 
-                    <!-- Details Box -->
-                    <div class="bg-slate-50 border border-slate-200/60 rounded-xl p-3.5 mt-3.5 text-xs space-y-1.5">
+                    <!-- Details Box (Rapi, Terstruktur, Dimensi & Luas Jelas) -->
+                    <div class="bg-slate-50/90 border border-slate-200/70 rounded-2xl p-3 text-xs space-y-2">
                         @if($unit->category === 'infrastruktur' || $unit->status === 'infrastruktur')
-                            <div class="text-sky-900 font-semibold">
-                                <span class="text-slate-500 font-medium">Jenis Fasum:</span> {{ strtoupper($unit->type) }}
-                            </div>
-                            @if($unit->specifications)
-                                <div class="text-[11px] text-slate-600 pt-1 border-t border-slate-200/80">
-                                    <span class="font-bold text-slate-700">Keterangan:</span> {{ $unit->specifications }}
+                            <div class="space-y-1.5">
+                                <div class="flex items-center justify-between text-slate-700">
+                                    <span class="text-slate-500 font-medium">Jenis Fasum:</span>
+                                    <span class="font-bold text-sky-900 uppercase bg-sky-100/80 px-2 py-0.5 rounded border border-sky-200 text-[11px]">
+                                        {{ str_replace('_', ' ', $unit->type ?? 'Fasum Lainnya') }}
+                                    </span>
                                 </div>
-                            @endif
-                        @else
-                            <div class="flex justify-between text-slate-600">
-                                <span>Dimensi Tanah (P x L):</span>
-                                <span class="font-mono font-medium text-slate-800">{{ $unit->land_length }}m &times; {{ $unit->land_width }}m</span>
+                                @if($unit->work_area)
+                                    <div class="flex items-center justify-between text-slate-700 pt-1.5 border-t border-slate-200/60">
+                                        <span class="text-slate-500 font-medium">Luas Pengerjaan:</span>
+                                        <span class="font-mono font-bold text-slate-900">{{ number_format($unit->work_area, 0, ',', '.') }} m²</span>
+                                    </div>
+                                @endif
+                                @if($unit->specifications)
+                                    <div class="pt-1.5 border-t border-slate-200/60 text-[11px]">
+                                        <span class="font-bold text-slate-700 block mb-1">Keterangan:</span>
+                                        <p class="text-slate-600 leading-relaxed bg-white p-2 rounded-lg border border-slate-200/60 text-[11px]">{{ $unit->specifications }}</p>
+                                    </div>
+                                @endif
                             </div>
-                            <div class="flex justify-between text-slate-700 font-semibold">
-                                <span>Luas Tanah Total:</span>
-                                <span class="font-mono text-slate-900 font-bold">{{ number_format($unit->land_area, 0, ',', '.') }} m²</span>
+                        @else
+                            <div class="grid grid-cols-2 gap-2">
+                                <div class="bg-white p-2.5 rounded-xl border border-slate-200/70 shadow-2xs">
+                                    <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Dimensi (P × L)</span>
+                                    <span class="font-mono font-bold text-slate-800 text-xs block mt-1">
+                                        @if($unit->land_length || $unit->land_width)
+                                            {{ (float)$unit->land_length }}m × {{ (float)$unit->land_width }}m
+                                        @else
+                                            <span class="text-slate-400 font-normal italic">-</span>
+                                        @endif
+                                    </span>
+                                </div>
+                                <div class="bg-white p-2.5 rounded-xl border border-slate-200/70 shadow-2xs">
+                                    <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Luas Tanah Total</span>
+                                    <span class="font-mono font-bold text-emerald-700 text-xs block mt-1">
+                                        {{ number_format($unit->land_area, 0, ',', '.') }} m²
+                                    </span>
+                                </div>
                             </div>
 
                             @if($unit->category === 'rumah' && $unit->building_area)
-                                <div class="flex justify-between text-purple-700 font-semibold pt-1 border-t border-slate-200/80">
-                                    <span>Luas Bangunan:</span>
+                                <div class="flex items-center justify-between text-xs pt-1.5 border-t border-slate-200/60 text-purple-800 font-medium">
+                                    <span class="text-slate-500">Luas Bangunan:</span>
                                     <span class="font-mono font-bold">{{ number_format($unit->building_area, 0, ',', '.') }} m² ({{ $unit->floors_count ?? 1 }} Lt)</span>
                                 </div>
                             @endif
 
                             @if($unit->excess_land_area > 0)
-                                <div class="flex justify-between text-amber-700 font-medium pt-1.5 border-t border-slate-200/80">
-                                    <span>Kelebihan Luas:</span>
-                                    <span class="font-mono font-bold">+{{ number_format($unit->excess_land_area, 0, ',', '.') }} m²</span>
+                                <div class="flex items-center justify-between text-xs pt-1.5 border-t border-slate-200/60 text-amber-800 font-medium">
+                                    <span class="text-slate-500">Kelebihan Luas:</span>
+                                    <span class="font-mono font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded border border-amber-200/70">
+                                        +{{ number_format($unit->excess_land_area, 0, ',', '.') }} m²
+                                    </span>
                                 </div>
                             @else
-                                <div class="text-[11px] text-slate-400 pt-1 border-t border-slate-200/80">
-                                    Ukuran standar proyek ({{ number_format($unit->project->standard_land_area, 0, ',', '.') }} m²)
+                                <div class="text-[10px] text-slate-400 pt-1.5 border-t border-slate-200/60 flex items-center justify-between">
+                                    <span>Standar Proyek:</span>
+                                    <span class="font-mono font-medium text-slate-600">{{ number_format($unit->project->standard_land_area ?? 0, 0, ',', '.') }} m²</span>
                                 </div>
                             @endif
                         @endif
@@ -317,42 +296,44 @@
                         'is_sold' => false,
                     ];
                 @endphp
-                <div class="mt-4 pt-3 border-t border-slate-100 space-y-1.5 text-xs">
-                    @if($unit->category === 'infrastruktur')
-                        <div class="flex justify-between items-baseline">
-                            <span class="text-slate-500 font-medium">Anggaran Infra:</span>
-                            <span class="font-mono font-bold text-slate-800">
-                                {{ $unit->hpp ? 'Rp ' . number_format($unit->hpp, 0, ',', '.') : 'Belum Diset' }}
-                            </span>
-                        </div>
-                    @else
-                        <div class="flex justify-between items-baseline text-slate-900 font-extrabold pt-0.5 border-t border-slate-100">
-                            <span class="text-slate-700">Harga Total:</span>
-                            <span class="font-mono text-emerald-700 font-bold">
-                                Rp {{ number_format($unit->total_price, 0, ',', '.') }}
-                            </span>
-                        </div>
-                    @endif
+                @if(auth()->user()->canViewSalesPrices())
+                    <div class="pt-3 border-t border-slate-100 space-y-1.5 text-xs">
+                        @if($unit->category === 'infrastruktur')
+                            <div class="flex justify-between items-baseline bg-slate-50 px-2.5 py-1.5 rounded-lg border border-slate-200/60">
+                                <span class="text-slate-500 font-medium">Anggaran Infra:</span>
+                                <span class="font-mono font-bold text-slate-800">
+                                    {{ $unit->hpp ? 'Rp ' . number_format($unit->hpp, 0, ',', '.') : 'Belum Diset' }}
+                                </span>
+                            </div>
+                        @else
+                            <div class="flex justify-between items-baseline text-slate-900 font-extrabold pt-0.5">
+                                <span class="text-slate-600">Harga Total:</span>
+                                <span class="font-mono text-emerald-700 font-bold text-sm">
+                                    Rp {{ number_format($unit->total_price, 0, ',', '.') }}
+                                </span>
+                            </div>
+                        @endif
 
-                    @if($payInfo['deal_price'] > 0 && $unit->category !== 'infrastruktur')
-                        <div class="flex justify-between items-baseline text-emerald-700 font-bold">
-                            <span>Harga Deal Unit:</span>
-                            <span class="font-mono">Rp {{ number_format($payInfo['deal_price'], 0, ',', '.') }}</span>
-                        </div>
-                        <div class="flex justify-between items-baseline text-sky-700 font-semibold">
-                            <span>Sudah Terbayar:</span>
-                            <span class="font-mono">Rp {{ number_format($payInfo['paid_amount'], 0, ',', '.') }}</span>
-                        </div>
-                        <div class="flex justify-between items-baseline text-amber-700 font-semibold">
-                            <span>Sisa Tagihan:</span>
-                            @if($payInfo['is_sold'] && $payInfo['remaining_amount'] == 0)
-                                <span class="text-emerald-600 font-bold">LUNAS</span>
-                            @else
-                                <span class="font-mono font-bold">Rp {{ number_format($payInfo['remaining_amount'], 0, ',', '.') }}</span>
-                            @endif
-                        </div>
-                    @endif
-                </div>
+                        @if($payInfo['deal_price'] > 0 && $unit->category !== 'infrastruktur')
+                            <div class="flex justify-between items-baseline text-emerald-700 font-bold">
+                                <span>Harga Deal Unit:</span>
+                                <span class="font-mono">Rp {{ number_format($payInfo['deal_price'], 0, ',', '.') }}</span>
+                            </div>
+                            <div class="flex justify-between items-baseline text-sky-700 font-semibold">
+                                <span>Sudah Terbayar:</span>
+                                <span class="font-mono">Rp {{ number_format($payInfo['paid_amount'], 0, ',', '.') }}</span>
+                            </div>
+                            <div class="flex justify-between items-baseline text-amber-700 font-semibold">
+                                <span>Sisa Tagihan:</span>
+                                @if($payInfo['is_sold'] && $payInfo['remaining_amount'] == 0)
+                                    <span class="text-emerald-600 font-bold">LUNAS</span>
+                                @else
+                                    <span class="font-mono font-bold">Rp {{ number_format($payInfo['remaining_amount'], 0, ',', '.') }}</span>
+                                @endif
+                            </div>
+                        @endif
+                    </div>
+                @endif
 
                 <!-- Footer Actions & Booking Button -->
                 <div class="pt-3 border-t border-slate-100 flex items-center justify-between gap-2 whitespace-nowrap flex-nowrap">

@@ -102,6 +102,29 @@ class Dashboard extends Component
             }
         }
 
+        // 8. Field & Operational Metrics (for Admin & Pengawas Project)
+        $recentMaterialPurchases = \App\Models\WeeklyMaterialPurchase::with(['project', 'unit.project'])
+            ->latest('purchase_date')
+            ->take(5)
+            ->get();
+
+        $totalMaterialPurchasesThisMonth = \App\Models\WeeklyMaterialPurchase::whereMonth('purchase_date', now()->month)
+            ->whereYear('purchase_date', now()->year)
+            ->sum('total_price');
+
+        $activeWorkerAssignments = \App\Models\WorkerAssignment::with(['worker', 'project', 'unit.project'])
+            ->where('status', 'active')
+            ->latest()
+            ->take(5)
+            ->get();
+
+        $pageTitle = 'Dashboard Executive & Keuangan';
+        if ($user->isAdmin() || $user->isPengawasProject()) {
+            $pageTitle = 'Dashboard Operasional & Lapangan';
+        } elseif ($user->isMarketing()) {
+            $pageTitle = 'Dashboard Aktivitas Sales & Marketing';
+        }
+
         return view('livewire.dashboard', [
             'user' => $user,
             'userSalary' => $userSalary,
@@ -123,10 +146,13 @@ class Dashboard extends Component
             'marketingHotDealsCount' => $marketingHotDealsCount,
             'recentProposals' => $recentProposals,
             'recentUnits' => $recentUnits,
+            'recentMaterialPurchases' => $recentMaterialPurchases,
+            'totalMaterialPurchasesThisMonth' => $totalMaterialPurchasesThisMonth,
+            'activeWorkerAssignments' => $activeWorkerAssignments,
             'chartLabels' => $chartLabels,
             'chartMasuk' => $chartMasuk,
             'chartKeluar' => $chartKeluar,
-        ])->layout('components.layouts.app', ['title' => 'Dashboard Executive Overview']);
+        ])->layout('components.layouts.app', ['title' => $pageTitle]);
     }
 }
 

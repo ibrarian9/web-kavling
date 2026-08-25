@@ -33,7 +33,7 @@ test('founder sees all executive modules and does not see personal employee sala
         ->assertDontSee('Informasi Penetapan Gaji Anda')
         ->assertSee('Proyek Properti')
         ->assertSee('Stok Unit')
-        ->assertSee('Saldo Kas Bersih Global')
+        ->assertSee('Saldo Kas Bersih')
         ->assertSee('Pintasan Modul Utama');
 });
 
@@ -112,7 +112,7 @@ test('employee without established salary sees helpful notice and operational mo
         ->assertSee('Informasi Gaji Belum Ditetapkan')
         ->assertSee('Proyek Properti')
         ->assertSee('Pintasan Modul Utama')
-        ->assertSee('Daily Activity & Hot Deals', false);
+        ->assertSee('Daily Activity Report', false);
 });
 
 test('admin does not see financial stats or cashflow chart on dashboard and sees worker count instead', function () {
@@ -130,13 +130,13 @@ test('admin does not see financial stats or cashflow chart on dashboard and sees
         ->assertSee('Informasi Penetapan Gaji Anda')
         ->assertSee('Proyek Properti')
         ->assertSee('Stok Unit')
-        ->assertSee('Pemesanan & Booking', false)
-        ->assertSee('Pekerja Mandor & Tukang', false)
-        ->assertDontSee('Saldo Kas Bersih Global')
+        ->assertSee('Mandor & Tukang', false)
+        ->assertDontSee('Pemesanan & Booking')
+        ->assertDontSee('Saldo Kas Bersih')
         ->assertDontSee('Grafik Tren Keuangan Arus Kas');
 });
 
-test('admin does not see land payments tab in installments page', function () {
+test('admin is forbidden from installments page', function () {
     $admin = User::create([
         'role' => 'admin',
         'email' => 'admin2@test.com',
@@ -147,7 +147,5 @@ test('admin does not see land payments tab in installments page', function () {
 
     Livewire::actingAs($admin)
         ->test(\App\Livewire\Installments\Index::class)
-        ->assertStatus(200)
-        ->assertSee('Cicilan & Piutang Pembeli', false)
-        ->assertDontSee('Pembayaran Lahan Proyek');
+        ->assertStatus(403);
 });

@@ -32,6 +32,10 @@
               return this.openSections[key] === undefined ? true : !!this.openSections[key];
           },
           init() {
+              if (window.innerWidth >= 1024 && localStorage.getItem('sidebar_expanded') === null) {
+                  this.sidebarExpanded = true;
+                  localStorage.setItem('sidebar_expanded', 'true');
+              }
               this.syncActiveSection();
               
               const restoreNavScroll = () => {

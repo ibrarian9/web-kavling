@@ -60,29 +60,29 @@
             $hasApprovedPrice = $unit->officialDocument || $unit->proposals->where('status', 'disetujui')->count() > 0;
         @endphp
 
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs bg-slate-50/90 p-4 rounded-2xl border border-slate-200/80">
-            <div class="bg-white p-2.5 rounded-xl border border-slate-100">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3 text-xs bg-slate-50/90 p-3.5 sm:p-4 rounded-2xl border border-slate-200/80">
+            <div class="bg-white p-2.5 rounded-xl border border-slate-100 min-w-0">
                 <div class="flex items-center justify-between gap-1 mb-0.5">
-                    <span class="text-slate-500 block text-[10px] uppercase font-bold tracking-wider">Total Harga Deal:</span>
+                    <span class="text-slate-500 block text-[10px] uppercase font-bold tracking-wider truncate">Total Harga Deal:</span>
                     @if($hasApprovedPrice)
-                        <span class="text-[9px] font-extrabold text-emerald-800 bg-emerald-100 px-1.5 py-0.5 rounded border border-emerald-200">ACC</span>
+                        <span class="text-[9px] font-extrabold text-emerald-800 bg-emerald-100 px-1.5 py-0.5 rounded border border-emerald-200 shrink-0">ACC</span>
                     @else
-                        <span class="text-[9px] font-extrabold text-amber-800 bg-amber-100 px-1.5 py-0.5 rounded border border-amber-200">Belum ACC</span>
+                        <span class="text-[9px] font-extrabold text-amber-800 bg-amber-100 px-1.5 py-0.5 rounded border border-amber-200 shrink-0">Belum ACC</span>
                     @endif
                 </div>
-                <span class="font-extrabold text-slate-900 font-mono text-xs sm:text-sm">Rp {{ number_format($unit->installment->total_price, 0, ',', '.') }}</span>
+                <span class="font-extrabold text-slate-900 font-mono text-xs sm:text-sm block truncate" title="Rp {{ number_format($unit->installment->total_price, 0, ',', '.') }}">Rp {{ number_format($unit->installment->total_price, 0, ',', '.') }}</span>
             </div>
-            <div class="bg-white p-2.5 rounded-xl border border-slate-100">
-                <span class="text-slate-500 block text-[10px] uppercase font-bold tracking-wider">Sudah Terbayar:</span>
-                <span class="font-extrabold text-emerald-700 font-mono text-xs sm:text-sm">Rp {{ number_format($paidSoFar, 0, ',', '.') }}</span>
+            <div class="bg-white p-2.5 rounded-xl border border-slate-100 min-w-0">
+                <span class="text-slate-500 block text-[10px] uppercase font-bold tracking-wider truncate">Sudah Terbayar:</span>
+                <span class="font-extrabold text-emerald-700 font-mono text-xs sm:text-sm block truncate" title="Rp {{ number_format($paidSoFar, 0, ',', '.') }}">Rp {{ number_format($paidSoFar, 0, ',', '.') }}</span>
             </div>
-            <div class="bg-amber-50/80 p-2.5 rounded-xl border border-amber-200/80">
-                <span class="text-amber-800 block text-[10px] uppercase font-bold tracking-wider">Sisa Belum Terbayar:</span>
-                <span class="font-extrabold text-amber-700 font-mono text-xs sm:text-sm">Rp {{ number_format($unpaidBalance, 0, ',', '.') }}</span>
+            <div class="bg-amber-50/80 p-2.5 rounded-xl border border-amber-200/80 min-w-0">
+                <span class="text-amber-800 block text-[10px] uppercase font-bold tracking-wider truncate">Sisa Belum Terbayar:</span>
+                <span class="font-extrabold text-amber-700 font-mono text-xs sm:text-sm block truncate" title="Rp {{ number_format($unpaidBalance, 0, ',', '.') }}">Rp {{ number_format($unpaidBalance, 0, ',', '.') }}</span>
             </div>
-            <div class="bg-white p-2.5 rounded-xl border border-slate-100">
-                <span class="text-slate-500 block text-[10px] uppercase font-bold tracking-wider">Skema Cicilan:</span>
-                <span class="font-bold text-slate-800 font-mono text-xs">{{ $unit->installment->installment_count }}x @ Rp {{ number_format($unit->installment->installment_amount, 0, ',', '.') }}</span>
+            <div class="bg-white p-2.5 rounded-xl border border-slate-100 min-w-0">
+                <span class="text-slate-500 block text-[10px] uppercase font-bold tracking-wider truncate">Skema Cicilan:</span>
+                <span class="font-bold text-slate-800 font-mono text-xs block truncate" title="{{ $unit->installment->installment_count }}x @ Rp {{ number_format($unit->installment->installment_amount, 0, ',', '.') }}">{{ $unit->installment->installment_count }}x @ Rp {{ number_format($unit->installment->installment_amount, 0, ',', '.') }}</span>
             </div>
         </div>
 

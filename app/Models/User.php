@@ -78,9 +78,39 @@ class User extends Authenticatable
         return $this->role === 'marketing';
     }
 
+    public function canViewSalesPrices(): bool
+    {
+        // Admin cannot view property sales prices, unit prices, booking fees, installments, or commissions
+        if ($this->isAdmin()) {
+            return false;
+        }
+        return $this->isFounder() || $this->isFinance() || $this->isMarketing() || $this->isSupervisor();
+    }
+
+    public function canViewLandPrices(): bool
+    {
+        // Land prices are visible to Founder, Admin, Finance, Supervisor
+        return $this->isFounder() || $this->isAdmin() || $this->isFinance() || $this->isSupervisor();
+    }
+
+    public function canViewMaterialPrices(): bool
+    {
+        // Material & item prices are visible to Founder, Admin, Finance, Supervisor, Pengawas
+        return true;
+    }
+
+    public function canViewWorkerWages(): bool
+    {
+        // Worker wages are visible to Founder, Admin, Finance, Supervisor, Pengawas
+        return true;
+    }
+
     public function canViewHpp(): bool
     {
-        return $this->isFounder() || $this->isAdmin() || $this->isSupervisor() || $this->isFinance();
+        if ($this->isAdmin()) {
+            return false;
+        }
+        return $this->isFounder() || $this->isSupervisor() || $this->isFinance();
     }
 
     public function assignedProjects()

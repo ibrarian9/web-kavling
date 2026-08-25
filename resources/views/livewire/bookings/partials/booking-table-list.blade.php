@@ -61,8 +61,12 @@
                         {{ $b->booking_type === 'unit' ? 'Per Unit' : 'Per Proyek' }}
                     </span>
                 </td>
-                <td data-label="Nominal Tanda Jadi" class="p-3.5 text-right font-mono font-extrabold text-teal-700 text-sm">
-                    Rp {{ number_format($b->booking_amount, 0, ',', '.') }}
+                <td data-label="Nominal Tanda Jadi" class="p-3.5 text-right font-mono font-extrabold text-teal-700 text-sm whitespace-nowrap">
+                    @if(auth()->user()->canViewSalesPrices())
+                        Rp {{ number_format($b->booking_amount, 0, ',', '.') }}
+                    @else
+                        <span class="text-slate-400 font-normal text-xs">-</span>
+                    @endif
                 </td>
                 <td data-label="Status" class="p-3.5 text-center">
                     @if ($b->status === 'active')

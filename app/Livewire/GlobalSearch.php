@@ -47,10 +47,12 @@ class GlobalSearch extends Component
             ['title' => 'Dashboard Utama', 'category' => 'Menu', 'url' => route('dashboard'), 'icon' => 'home'],
             ['title' => 'Proyek Properti', 'category' => 'Menu', 'url' => route('projects.index'), 'icon' => 'office-building'],
             ['title' => 'Unit Kavling & Rumah', 'category' => 'Menu', 'url' => route('units.index'), 'icon' => 'home'],
-            ['title' => 'Booking Fee & DP', 'category' => 'Menu', 'url' => route('bookings.index'), 'icon' => 'cash'],
-            ['title' => 'Pengajuan & Approval Proposal', 'category' => 'Menu', 'url' => route('proposals.index'), 'icon' => 'clipboard-check'],
-            ['title' => 'Surat Resmi SPP (PDF)', 'category' => 'Menu', 'url' => route('documents.index'), 'icon' => 'document-text'],
-            ['title' => 'Cicilan Pembeli & Skema', 'category' => 'Menu', 'url' => route('installments.index'), 'icon' => 'credit-card'],
+            ...($u && !$u->isAdmin() ? [
+                ['title' => 'Booking Fee & DP', 'category' => 'Menu', 'url' => route('bookings.index'), 'icon' => 'cash'],
+                ['title' => 'Pengajuan & Approval Proposal', 'category' => 'Menu', 'url' => route('proposals.index'), 'icon' => 'clipboard-check'],
+                ['title' => 'Surat Resmi SPP (PDF)', 'category' => 'Menu', 'url' => route('documents.index'), 'icon' => 'document-text'],
+                ['title' => 'Cicilan Pembeli & Skema', 'category' => 'Menu', 'url' => route('installments.index'), 'icon' => 'credit-card'],
+            ] : []),
             ...($u && ($u->isFounder() || $u->isFinance()) ? [
                 ['title' => 'Arus Kas Global & Konsolidasi', 'category' => 'Menu', 'url' => route('cashflow.index'), 'icon' => 'chart-bar'],
                 ['title' => 'Invoice Manual', 'category' => 'Menu', 'url' => route('manual-invoices.index'), 'icon' => 'receipt'],
@@ -94,12 +96,14 @@ class GlobalSearch extends Component
                 ->take(4)
                 ->get();
 
-            // Filter Bookings / Buyers
-            $results['bookings'] = Booking::with(['unit', 'project'])
-                ->where('buyer_name', 'like', $s)
-                ->orWhere('buyer_phone', 'like', $s)
-                ->take(4)
-                ->get();
+            // Filter Bookings / Buyers (Hidden for Admin)
+            if ($u && !$u->isAdmin()) {
+                $results['bookings'] = Booking::with(['unit', 'project'])
+                    ->where('buyer_name', 'like', $s)
+                    ->orWhere('buyer_phone', 'like', $s)
+                    ->take(4)
+                    ->get();
+            }
 
             // Filter Workers / Mandor
             $results['workers'] = Worker::where('name', 'like', $s)
@@ -108,11 +112,13 @@ class GlobalSearch extends Component
                 ->take(4)
                 ->get();
 
-            // Filter Official Documents (SPP)
-            $results['documents'] = OfficialDocument::where('document_number', 'like', $s)
-                ->orWhere('buyer_name', 'like', $s)
-                ->take(4)
-                ->get();
+            // Filter Official Documents (SPP) (Hidden for Admin)
+            if ($u && !$u->isAdmin()) {
+                $results['documents'] = OfficialDocument::where('document_number', 'like', $s)
+                    ->orWhere('buyer_name', 'like', $s)
+                    ->take(4)
+                    ->get();
+            }
         }
 
         return view('livewire.global-search', [

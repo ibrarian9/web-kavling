@@ -87,10 +87,14 @@ beforeEach(function () {
     ]);
 });
 
-test('admin can view HPP and execute operational tasks', function () {
+test('admin can execute operational tasks and view land, material, and worker prices', function () {
     expect($this->admin->isAdmin())->toBeTrue();
     expect($this->admin->isAdminOrFounder())->toBeTrue();
-    expect($this->admin->canViewHpp())->toBeTrue();
+    expect($this->admin->canViewSalesPrices())->toBeFalse();
+    expect($this->admin->canViewHpp())->toBeFalse();
+    expect($this->admin->canViewLandPrices())->toBeTrue();
+    expect($this->admin->canViewMaterialPrices())->toBeTrue();
+    expect($this->admin->canViewWorkerWages())->toBeTrue();
 });
 
 test('admin is forbidden 403 from accessing activity logs, user management, and employee salaries', function () {
@@ -136,10 +140,26 @@ test('supervisor has main admin access to activity logs, user management, and em
         ->assertStatus(200);
 });
 
-test('admin can submit and approve proposals but cannot delete proposals', function () {
+test('admin is forbidden 403 from accessing proposals, documents, bookings, and installments', function () {
     $this->actingAs($this->admin);
 
-    // Admin creates proposal
+    Livewire::test(\App\Livewire\Proposals\Index::class)
+        ->assertStatus(403);
+
+    Livewire::test(\App\Livewire\Documents\Index::class)
+        ->assertStatus(403);
+
+    Livewire::test(\App\Livewire\Bookings\Index::class)
+        ->assertStatus(403);
+
+    Livewire::test(\App\Livewire\Installments\Index::class)
+        ->assertStatus(403);
+});
+
+test('marketing and supervisor can submit proposals and manage documents', function () {
+    $this->actingAs($this->marketing);
+
+    // Marketing creates proposal
     Livewire::test(\App\Livewire\Proposals\Index::class)
         ->set('unit_id', $this->unit->id)
         ->set('proposed_price', 140000000)
@@ -149,7 +169,8 @@ test('admin can submit and approve proposals but cannot delete proposals', funct
     $proposal = PriceProposal::where('unit_id', $this->unit->id)->first();
     expect($proposal)->not->toBeNull();
 
-    // Admin approves proposal
+    // Supervisor approves proposal
+    $this->actingAs($this->supervisor);
     Livewire::test(\App\Livewire\Proposals\Index::class)
         ->set('selectedProposalId', $proposal->id)
         ->set('approval_decision', 'disetujui')
@@ -158,51 +179,17 @@ test('admin can submit and approve proposals but cannot delete proposals', funct
 
     expect($proposal->fresh()->status)->toBe('disetujui');
 
-    // Admin attempts to delete proposal -> should fail
-    Livewire::test(\App\Livewire\Proposals\Index::class)
-        ->call('deleteProposal', $proposal->id);
-
-    expect(PriceProposal::find($proposal->id))->not->toBeNull();
-
-    // Supervisor deletes proposal
-    $this->actingAs($this->supervisor);
-    Livewire::test(\App\Livewire\Proposals\Index::class)
-        ->call('deleteProposal', $proposal->id);
-
-    expect(PriceProposal::find($proposal->id))->toBeNull();
-});
-
-test('admin cannot delete official documents but supervisor can', function () {
-    $proposal = PriceProposal::create([
-        'unit_id' => $this->unit->id,
-        'hpp_price' => 100000000,
-        'proposed_price' => 140000000,
-        'margin' => 40000000,
-        'is_below_hpp' => false,
-        'proposed_by' => $this->admin->id,
-        'status' => 'disetujui',
-    ]);
-
     $doc = OfficialDocument::create([
         'unit_id' => $this->unit->id,
         'price_proposal_id' => $proposal->id,
         'document_number' => 'SPP/TEST/2026/001',
         'buyer_name' => 'Budi Santoso',
         'buyer_contact' => '08123456789',
-        'issued_by' => $this->admin->id,
+        'issued_by' => $this->supervisor->id,
         'issued_at' => now(),
     ]);
 
-    $this->actingAs($this->admin);
-
-    // Admin attempts delete -> should fail
-    Livewire::test(\App\Livewire\Documents\Index::class)
-        ->call('deleteDocument', $doc->id);
-
-    expect(OfficialDocument::find($doc->id))->not->toBeNull();
-
     // Supervisor deletes
-    $this->actingAs($this->supervisor);
     Livewire::test(\App\Livewire\Documents\Index::class)
         ->call('deleteDocument', $doc->id);
 
@@ -273,6 +260,42 @@ test('admin can create and save new unit in units index component', function () 
     $createdUnit = Unit::where('code', 'B-99')->where('project_id', $this->project->id)->first();
     expect($createdUnit)->not->toBeNull();
     expect($createdUnit->category)->toBe('kavling');
+});
+
+test('profile menu on sidebar is only visible to founder and hidden from other roles', function () {
+    Role::firstOrCreate(['name' => 'finance', 'guard_name' => 'web']);
+    $finance = User::create([
+        'name' => 'Finance User',
+        'email' => 'finance_nav@test.com',
+        'password' => bcrypt('password'),
+        'role' => 'finance',
+        'is_active' => true,
+    ]);
+    $finance->assignRole('finance');
+
+    // Founder sees Profile link in sidebar
+    $this->actingAs($this->founder);
+    $responseFounder = $this->get(route('dashboard'));
+    $responseFounder->assertStatus(200);
+    $responseFounder->assertSee(route('profile.index'));
+
+    // Admin does NOT see Profile link in sidebar
+    $this->actingAs($this->admin);
+    $responseAdmin = $this->get(route('dashboard'));
+    $responseAdmin->assertStatus(200);
+    $responseAdmin->assertDontSee(route('profile.index'));
+
+    // Marketing does NOT see Profile link in sidebar
+    $this->actingAs($this->marketing);
+    $responseMarketing = $this->get(route('dashboard'));
+    $responseMarketing->assertStatus(200);
+    $responseMarketing->assertDontSee(route('profile.index'));
+
+    // Finance does NOT see Profile link in sidebar
+    $this->actingAs($finance);
+    $responseFinance = $this->get(route('dashboard'));
+    $responseFinance->assertStatus(200);
+    $responseFinance->assertDontSee(route('profile.index'));
 });
 
 

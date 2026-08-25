@@ -4,10 +4,10 @@
     @include('livewire.units.partials.header-actions')
 
     <!-- Main Grid Structure: Left Column (Physical & Workers) & Right Column (Sales, Installment, Expenses) -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
 
         <!-- Left Column: Specs & Physical Details & Worker Management -->
-        <div class="space-y-6 lg:col-span-1">
+        <div class="space-y-6 xl:col-span-1">
             <!-- Physical Specifications Card -->
             @include('livewire.units.partials.section-specifications')
 
@@ -19,8 +19,8 @@
         </div>
 
         <!-- Right Column: Proposals, SPP, Financials & Costs -->
-        <div class="space-y-6 lg:col-span-2">
-            @if($unit->category !== 'infrastruktur')
+        <div class="space-y-6 xl:col-span-2">
+            @if($unit->category !== 'infrastruktur' && auth()->user()->canViewSalesPrices())
                 <!-- Proposal & Official Document (SPP) Status Card -->
                 @include('livewire.units.partials.section-proposals-spp')
 

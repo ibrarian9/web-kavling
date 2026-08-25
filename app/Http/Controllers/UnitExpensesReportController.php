@@ -36,7 +36,10 @@ class UnitExpensesReportController extends Controller
                 'source_type' => 'payroll_setup',
                 'date' => $up->created_at,
                 'category_badge' => 'Kontrak Gaji',
+                'worker_name' => $up->worker->name ?? 'Pekerja Lapangan',
+                'store_name' => null,
                 'description' => 'Kontrak Borongan Gaji ' . ($up->worker->name ?? 'Pekerja Lapangan') . ' (' . strtoupper($up->status) . ' - Terbayar Rp ' . number_format($up->paid_amount, 0, ',', '.') . ' / Total Rp ' . number_format($up->agreed_salary, 0, ',', '.') . ')',
+                'notes' => $up->notes,
                 'amount' => $up->agreed_salary,
                 'created_at' => $up->created_at,
             ]);
@@ -48,7 +51,10 @@ class UnitExpensesReportController extends Controller
                 'source_type' => 'salary_payment',
                 'date' => $sp->payment_date,
                 'category_badge' => 'Gaji Worker',
+                'worker_name' => $sp->payroll->worker->name ?? 'Pekerja Lapangan',
+                'store_name' => null,
                 'description' => 'Pembayaran Gaji ' . ($sp->payroll->worker->name ?? 'Pekerja Lapangan') . ' (' . str_replace('_', ' ', $sp->payment_method) . ')',
+                'notes' => $sp->notes,
                 'amount' => $sp->amount_paid,
                 'created_at' => $sp->created_at,
             ]);
@@ -60,7 +66,10 @@ class UnitExpensesReportController extends Controller
                 'source_type' => 'material',
                 'date' => $mp->purchase_date,
                 'category_badge' => 'Belanja Material',
-                'description' => $mp->item_name . ' (' . number_format($mp->quantity, 0, ',', '.') . ' ' . $mp->unit_measure . ' @ Rp ' . number_format($mp->unit_price, 0, ',', '.') . ')',
+                'worker_name' => $mp->worker->name ?? null,
+                'store_name' => $mp->store_name ?: '-',
+                'description' => $mp->item_name . ' (' . number_format($mp->quantity, 0, ',', '.') . ' ' . $mp->unit_measure . ' @ Rp ' . number_format($mp->unit_price, 0, ',', '.') . ')' . ($mp->store_name ? ' [Toko: ' . $mp->store_name . ']' : ''),
+                'notes' => $mp->notes,
                 'amount' => $mp->total_price,
                 'created_at' => $mp->created_at,
             ]);

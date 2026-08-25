@@ -13,19 +13,19 @@
 
             <!-- Status Color Legend -->
             <div class="flex items-center gap-2 flex-wrap text-[11px] font-semibold">
-                <span class="px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 flex items-center gap-1.5 shadow-sm">
+                <span class="px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 flex items-center gap-1.5 shadow-2xs">
                     <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
                     <span>Tersedia ({{ $availableUnits }})</span>
                 </span>
-                <span class="px-2.5 py-1 rounded-full bg-amber-50 text-amber-800 border border-amber-200 flex items-center gap-1.5 shadow-sm">
+                <span class="px-2.5 py-1 rounded-full bg-amber-50 text-amber-800 border border-amber-200 flex items-center gap-1.5 shadow-2xs">
                     <span class="w-2 h-2 rounded-full bg-amber-500"></span>
                     <span>Booked ({{ $pendingUnits }})</span>
                 </span>
-                <span class="px-2.5 py-1 rounded-full bg-rose-50 text-rose-800 border border-rose-200 flex items-center gap-1.5 shadow-sm">
+                <span class="px-2.5 py-1 rounded-full bg-rose-50 text-rose-800 border border-rose-200 flex items-center gap-1.5 shadow-2xs">
                     <span class="w-2 h-2 rounded-full bg-rose-500"></span>
                     <span>Terjual ({{ $soldUnits }})</span>
                 </span>
-                <span class="px-2.5 py-1 rounded-full bg-indigo-50 text-indigo-800 border border-indigo-200 flex items-center gap-1.5 shadow-sm">
+                <span class="px-2.5 py-1 rounded-full bg-indigo-50 text-indigo-800 border border-indigo-200 flex items-center gap-1.5 shadow-2xs">
                     <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
                     <span>Fasum/Infra ({{ $infraUnitsCount }})</span>
                 </span>
@@ -57,71 +57,8 @@
     </x-card>
 
     <!-- Responsive Interactive Visual Siteplan Grid -->
-    <x-card padding="p-4 sm:p-6" class="bg-slate-900/5 border border-slate-200">
-        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 sm:gap-4">
-            @forelse($unitsList as $u)
-                @php
-                    $isInfra = ($u->category === 'infrastruktur' || $u->type === 'infrastruktur');
-                    $isSold = in_array($u->status, ['terjual', 'disetujui']);
-                    $isBooked = in_array($u->status, ['booked', 'menunggu_persetujuan']);
-                    $isAvailable = in_array($u->status, ['tersedia', 'draft']);
-
-                    if ($isInfra) {
-                        $cardBg = 'bg-indigo-50/90 border-indigo-200 hover:border-indigo-400 text-indigo-950';
-                        $badgeBg = 'bg-indigo-100 text-indigo-800 border-indigo-200';
-                        $statusLabel = 'Fasum';
-                    } elseif ($isSold) {
-                        $cardBg = 'bg-rose-50/90 border-rose-200 hover:border-rose-400 text-rose-950';
-                        $badgeBg = 'bg-rose-100 text-rose-800 border-rose-200';
-                        $statusLabel = 'Terjual';
-                    } elseif ($isBooked) {
-                        $cardBg = 'bg-amber-50/90 border-amber-200 hover:border-amber-400 text-amber-950';
-                        $badgeBg = 'bg-amber-100 text-amber-800 border-amber-200';
-                        $statusLabel = 'Booked';
-                    } else {
-                        $cardBg = 'bg-emerald-50/90 border-emerald-200 hover:border-emerald-400 text-emerald-950';
-                        $badgeBg = 'bg-emerald-100 text-emerald-800 border-emerald-200';
-                        $statusLabel = 'Tersedia';
-                    }
-                @endphp
-
-                <div wire:click="openSiteplanUnitModal({{ $u->id }})" class="{{ $cardBg }} border rounded-2xl p-3 flex flex-col justify-between transition-all duration-200 transform hover:-translate-y-1 hover:shadow-md cursor-pointer group relative overflow-hidden min-h-[128px]">
-                    <!-- Top Ribbon Header -->
-                    <div class="flex items-center justify-between gap-1">
-                        <span class="text-[9px] font-extrabold uppercase px-2 py-0.5 rounded-full border {{ $badgeBg }}">
-                            {{ $statusLabel }}
-                        </span>
-                        <span class="text-[10px] font-mono text-slate-500 font-semibold">
-                            {{ (float)$u->land_area }} m²
-                        </span>
-                    </div>
-
-                    <!-- Unit Code & Category -->
-                    <div class="my-2">
-                        <p class="text-base sm:text-lg font-black font-mono tracking-tight group-hover:text-emerald-700 transition">
-                            {{ $u->code }}
-                        </p>
-                        <p class="text-[10px] text-slate-500 font-medium capitalize truncate">
-                            {{ $u->category === 'rumah' ? ($u->building_area ? 'Rumah Tipe ' . (int)$u->building_area : 'Rumah') : 'Kavling' }}
-                        </p>
-                    </div>
-
-                    <!-- Bottom Price Tag -->
-                    <div class="pt-1.5 border-t border-slate-200/60 flex items-center justify-between text-[11px]">
-                        <span class="font-mono font-bold text-slate-800">
-                            Rp {{ number_format($u->final_selling_price ?? $u->hpp ?? 0, 0, ',', '.') }}
-                        </span>
-                        <svg class="w-3.5 h-3.5 text-slate-400 group-hover:text-emerald-600 transform group-hover:translate-x-0.5 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                    </div>
-                </div>
-            @empty
-                <div class="col-span-full py-12 text-center text-slate-400">
-                    <svg class="w-12 h-12 mx-auto text-slate-300 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6z"/></svg>
-                    <p class="font-bold text-slate-600">Tidak ada unit yang sesuai dengan filter site plan</p>
-                    <p class="text-xs text-slate-400 mt-1">Coba ubah kata kunci pencarian atau filter status unit.</p>
-                </div>
-            @endforelse
-        </div>
+    <x-card padding="p-4 sm:p-6" class="bg-slate-50/50 border border-slate-200/80">
+        <x-siteplan-visual-grid :units="$unitsList" :interactiveModal="true" modalAction="openSiteplanUnitModal" />
     </x-card>
 
     <!-- Quick Modal Detail Unit Siteplan -->
@@ -133,13 +70,13 @@
                         maxWidth="max-w-md">
             <div class="space-y-3.5 text-xs">
                 <!-- Status Badge Block -->
-                <div class="p-3 rounded-2xl border flex items-center justify-between {{ in_array($selectedSiteplanUnit->status, ['terjual', 'disetujui']) ? 'bg-rose-50 border-rose-200 text-rose-900' : (in_array($selectedSiteplanUnit->status, ['booked', 'menunggu_persetujuan']) ? 'bg-amber-50 border-amber-200 text-amber-900' : 'bg-emerald-50 border-emerald-200 text-emerald-900') }}">
+                <div class="p-3.5 rounded-2xl border flex items-center justify-between {{ in_array($selectedSiteplanUnit->status, ['terjual', 'disetujui']) ? 'bg-rose-50 border-rose-200 text-rose-900' : (in_array($selectedSiteplanUnit->status, ['booked', 'menunggu_persetujuan']) ? 'bg-amber-50 border-amber-200 text-amber-900' : 'bg-emerald-50 border-emerald-200 text-emerald-900') }}">
                     <span class="font-bold uppercase tracking-wider text-[10px]">Status Keterjualan Unit:</span>
                     <x-status-badge :status="$selectedSiteplanUnit->status" />
                 </div>
 
                 <!-- Specification Grid -->
-                <div class="grid grid-cols-2 gap-2.5 bg-slate-50 p-3 rounded-2xl border border-slate-200/80">
+                <div class="grid grid-cols-2 gap-2.5 bg-slate-50 p-3.5 rounded-2xl border border-slate-200/80">
                     <div>
                         <span class="text-[10px] text-slate-400 font-semibold uppercase block">Kategori</span>
                         <span class="font-bold text-slate-800 capitalize">{{ $selectedSiteplanUnit->category }}</span>
@@ -152,15 +89,22 @@
                         <span class="text-[10px] text-slate-400 font-semibold uppercase block">Luas Tanah</span>
                         <span class="font-bold text-slate-800 font-mono">{{ (float)$selectedSiteplanUnit->land_area }} m²</span>
                     </div>
-                    <div>
-                        <span class="text-[10px] text-slate-400 font-semibold uppercase block">Harga Jual / HPP</span>
-                        <span class="font-extrabold text-emerald-700 font-mono text-sm">Rp {{ number_format($selectedSiteplanUnit->final_selling_price ?? $selectedSiteplanUnit->hpp ?? 0, 0, ',', '.') }}</span>
-                    </div>
+                    @if(auth()->user()->canViewSalesPrices())
+                        <div>
+                            <span class="text-[10px] text-slate-400 font-semibold uppercase block">Harga Jual Standar</span>
+                            <span class="font-extrabold text-emerald-700 font-mono text-sm">Rp {{ number_format($selectedSiteplanUnit->final_selling_price ?? $selectedSiteplanUnit->hpp ?? 0, 0, ',', '.') }}</span>
+                        </div>
+                    @else
+                        <div>
+                            <span class="text-[10px] text-slate-400 font-semibold uppercase block">Status Unit</span>
+                            <span class="font-bold text-slate-800 capitalize">{{ ucfirst($selectedSiteplanUnit->status) }}</span>
+                        </div>
+                    @endif
                 </div>
 
                 <!-- Info Pembeli / Booking jika ada -->
                 @if($selectedSiteplanUnit->officialDocument)
-                    <div class="p-3 bg-blue-50 border border-blue-200 rounded-2xl space-y-1">
+                    <div class="p-3.5 bg-blue-50/80 border border-blue-200/80 rounded-2xl space-y-1">
                         <span class="text-[10px] font-bold uppercase tracking-wider text-blue-700">Pembeli Terdaftar (SPP):</span>
                         <p class="font-bold text-slate-900 text-xs">{{ $selectedSiteplanUnit->officialDocument->buyer_name }}</p>
                         <p class="text-[11px] font-mono text-slate-500">{{ $selectedSiteplanUnit->officialDocument->buyer_contact }}</p>

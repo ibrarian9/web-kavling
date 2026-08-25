@@ -28,8 +28,8 @@
         @forelse($unitAssignments as $assign)
             @if($assign->worker)
                 <div class="p-3 bg-slate-50/90 rounded-2xl border border-slate-200/70 flex items-center justify-between gap-3 transition-all duration-200 hover:bg-white hover:shadow-xs hover:border-slate-300">
-                    <!-- Left Side: 70% Width (Nama Mandor & Spesialisasi) -->
-                    <div class="w-[70%] min-w-0 space-y-0.5">
+                    <!-- Left Side: Nama Mandor & Spesialisasi -->
+                    <div class="flex-1 min-w-0 space-y-0.5">
                         <div class="flex items-center gap-2 flex-wrap">
                             <h4 class="font-extrabold text-slate-900 text-xs sm:text-sm truncate leading-tight">{{ $assign->worker->name }}</h4>
                             <span class="px-2 py-0.5 rounded text-[9px] font-bold bg-slate-200/80 text-slate-700 uppercase tracking-wider">
@@ -76,7 +76,7 @@
             @elseif($assign->user)
                 <div class="p-3 bg-purple-50/80 rounded-2xl border border-purple-200/80 flex items-center justify-between gap-3 transition-all duration-200 hover:bg-purple-50">
                     <!-- Left Side: Nama Pengawas & Tugas -->
-                    <div class="min-w-0 space-y-0.5">
+                    <div class="flex-1 min-w-0 space-y-0.5">
                         <div class="flex items-center gap-2 flex-wrap">
                             <h4 class="font-extrabold text-purple-950 text-xs sm:text-sm truncate leading-tight">{{ $assign->user->name }}</h4>
                             <span class="badge-role-pengawas text-[9px] px-1.5 py-0.5">
@@ -93,10 +93,6 @@
 
                     <!-- Right Side: Action + Badge -->
                     <div class="shrink-0 flex items-center justify-end gap-1.5 whitespace-nowrap flex-nowrap">
-                        <span class="badge-role-pengawas text-[9px] px-2 py-1 font-bold rounded-lg shrink-0">
-                            Pengawas
-                        </span>
-
                         @if(auth()->user()->isFounder())
                             <x-action-dropdown title="Menu Opsi Pengawas" size="xs">
                                 <div class="py-1">

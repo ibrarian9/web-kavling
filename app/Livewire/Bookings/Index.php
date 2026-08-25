@@ -38,6 +38,13 @@ class Index extends Component
         'endDate' => ['except' => ''],
     ];
 
+    public function mount(): void
+    {
+        if (auth()->user()?->isAdmin()) {
+            abort(403, 'Akses modul Booking Fee & DP tidak diizinkan untuk role Admin.');
+        }
+    }
+
     // Viewer Modal (PDF Viewer)
     public bool $showViewerModal = false;
     public string $viewerType = 'pdf';

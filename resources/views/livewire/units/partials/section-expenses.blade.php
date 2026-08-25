@@ -48,7 +48,26 @@
                             </span>
                         </td>
                         <td class="px-3.5 py-2.5 font-semibold text-slate-800">
-                            {{ $exp->description }}
+                            <div>{{ $exp->description }}</div>
+                            @if(!empty($exp->notes))
+                                <div class="mt-1 text-[11px] text-slate-600 bg-slate-100/90 border border-slate-200/70 rounded-lg px-2.5 py-1 flex items-start gap-1.5 font-normal">
+                                    <svg class="w-3.5 h-3.5 text-slate-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"/></svg>
+                                    <div>
+                                        <span class="font-bold text-slate-700">Catatan:</span> {{ $exp->notes }}
+                                    </div>
+                                </div>
+                            @endif
+                            @if(isset($exp->source_type) && $exp->source_type === 'material' && !empty($exp->store_name) && $exp->store_name !== '-')
+                                <div class="mt-1 text-[11px] text-amber-700 font-medium flex items-center gap-1">
+                                    <svg class="w-3.5 h-3.5 text-amber-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5m0 0h5m-5 0v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                                    <span>Toko / Supplier: <strong class="text-slate-800 font-bold">{{ $exp->store_name }}</strong></span>
+                                </div>
+                            @elseif(isset($exp->source_type) && in_array($exp->source_type, ['salary_payment', 'payroll_setup']) && !empty($exp->worker_name))
+                                <div class="mt-1 text-[11px] text-emerald-700 font-medium flex items-center gap-1">
+                                    <svg class="w-3.5 h-3.5 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                                    <span>Tenaga Kerja: <strong class="text-slate-800 font-bold">{{ $exp->worker_name }}</strong></span>
+                                </div>
+                            @endif
                         </td>
                         <td class="px-3.5 py-2.5 font-mono font-extrabold text-slate-900 text-right whitespace-nowrap">
                             Rp {{ number_format($exp->amount, 0, ',', '.') }}

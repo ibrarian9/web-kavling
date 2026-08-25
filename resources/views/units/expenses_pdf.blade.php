@@ -198,7 +198,14 @@
                             <span class="badge badge-salary">Gaji Worker</span>
                         @endif
                     </td>
-                    <td>{{ $exp->description }}</td>
+                    <td>
+                        <div style="font-weight: 500;">{{ $exp->description }}</div>
+                        @if(!empty($exp->notes))
+                            <div style="font-size: 8.5px; color: #475569; margin-top: 3px; font-style: italic; background-color: #f1f5f9; padding: 2px 5px; border-radius: 3px; border-left: 2px solid #0f766e;">
+                                <strong>Catatan:</strong> {{ $exp->notes }}
+                            </div>
+                        @endif
+                    </td>
                     <td style="text-align: right; font-family: monospace; font-weight: bold; color: #0f172a;">
                         Rp {{ number_format($exp->amount, 0, ',', '.') }}
                     </td>

@@ -149,18 +149,18 @@ class BookingRejectionAndHppVisibilityTest extends TestCase
 
         // 1. Founder can view Harga Jual and Harga Total
         $this->actingAs($founder)->get(route('units.show', $unit->id))->assertSee('Harga Jual Standar')->assertSee('Harga Total Unit');
-        $this->actingAs($founder)->get(route('units.index'))->assertSee('Harga Jual:')->assertSee('Harga Total:');
+        $this->actingAs($founder)->get(route('units.index'))->assertSee('Harga Total:');
 
         // 2. Finance can view Harga Jual and Harga Total
         $this->actingAs($finance)->get(route('units.show', $unit->id))->assertSee('Harga Jual Standar')->assertSee('Harga Total Unit');
-        $this->actingAs($finance)->get(route('units.index'))->assertSee('Harga Jual:')->assertSee('Harga Total:');
+        $this->actingAs($finance)->get(route('units.index'))->assertSee('Harga Total:');
 
         // 3. Marketing can view Harga Jual and Harga Total
         $this->actingAs($marketing)->get(route('units.show', $unit->id))->assertSee('Harga Jual Standar')->assertSee('Harga Total Unit');
-        $this->actingAs($marketing)->get(route('units.index'))->assertSee('Harga Jual:')->assertSee('Harga Total:');
+        $this->actingAs($marketing)->get(route('units.index'))->assertSee('Harga Total:');
 
         // 4. Supervisor can view Harga Jual and Harga Total
         $this->actingAs($supervisor)->get(route('units.show', $unit->id))->assertSee('Harga Jual Standar')->assertSee('Harga Total Unit');
-        $this->actingAs($supervisor)->get(route('units.index'))->assertSee('Harga Jual:')->assertSee('Harga Total:');
+        $this->actingAs($supervisor)->get(route('units.index'))->assertSee('Harga Total:');
     }
 }

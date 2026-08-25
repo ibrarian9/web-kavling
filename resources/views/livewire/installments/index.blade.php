@@ -57,8 +57,8 @@
             </span>
         </button>
 
-        {{-- Tab 2: Pembayaran Lahan Proyek (Founder, Supervisor, & Finance Only) --}}
-        @if(!auth()->user()->isAdmin())
+        {{-- Tab 2: Pembayaran Lahan Proyek (Founder, Admin, Supervisor, & Finance) --}}
+        @if(auth()->user()->canViewLandPrices())
             <button type="button" 
                     wire:click="setTab('land_payments')" 
                     class="px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-extrabold flex items-center gap-2 transition-all shrink-0 {{ $activeTab === 'land_payments' ? 'bg-slate-900 text-white shadow-md shadow-slate-900/20 ring-2 ring-slate-900/10' : 'bg-white text-slate-600 hover:bg-slate-100 hover:text-slate-900 border border-slate-200/80' }}">
@@ -74,7 +74,7 @@
     </div>
 
     <!-- Active Tab Content -->
-    @if($activeTab === 'unit_installments' || auth()->user()->isAdmin())
+    @if($activeTab === 'unit_installments')
         @include('livewire.installments.partials.tab-unit-installments')
     @else
         @include('livewire.installments.partials.tab-land-payments')
@@ -92,7 +92,7 @@
     <!-- Modal Detail Rincian Skema Cicilan & Riwayat Setoran -->
     @include('livewire.installments.partials.modal-installment-detail')
 
-    @if(!auth()->user()->isAdmin())
+    @if(auth()->user()->canViewLandPrices())
         {{-- Modal Catat / Edit Pembayaran Lahan ke Penjual Tanah --}}
         @include('livewire.installments.partials.modal-land-payment')
 

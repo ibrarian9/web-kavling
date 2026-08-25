@@ -2,51 +2,67 @@
 <div class="space-y-6">
 
     <!-- Summary KPI Cards Grid (4 Responsive Columns) -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div class="kpi-card-blue bg-white border border-slate-200/80 rounded-3xl p-5 shadow-xs">
+    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-5">
+        <div class="kpi-card-blue bg-white border border-slate-200/80 rounded-3xl p-5 shadow-xs min-w-0">
             <div class="flex items-center justify-between">
                 <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Total Unit Berjalan</span>
-                <div class="p-2.5 rounded-2xl bg-purple-50 text-purple-600 border border-purple-100 shadow-2xs">
+                <div class="p-2.5 rounded-2xl bg-purple-50 text-purple-600 border border-purple-100 shadow-2xs shrink-0">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
                 </div>
             </div>
-            <p class="text-2xl font-extrabold text-slate-900 font-mono mt-2">{{ $installments->total() }} Skema</p>
-            <p class="text-[11px] text-slate-400 mt-1">Skema kredit & cicilan terdaftar</p>
+            <p class="text-lg sm:text-xl xl:text-2xl font-extrabold text-slate-900 font-mono tracking-tight truncate mt-2">{{ $installments->total() }} Skema</p>
+            <p class="text-[11px] text-slate-400 mt-1 truncate">Skema kredit & cicilan terdaftar</p>
         </div>
 
-        <div class="kpi-card-rose bg-rose-50/40 border border-rose-200/60 rounded-3xl p-5 shadow-xs">
+        <div class="kpi-card-rose bg-rose-50/40 border border-rose-200/60 rounded-3xl p-5 shadow-xs min-w-0">
             <div class="flex items-center justify-between">
                 <span class="text-[11px] font-bold uppercase tracking-wider text-rose-600">Belum Bayar ({{ $currentMonthName }})</span>
-                <div class="p-2.5 rounded-2xl bg-rose-100 text-rose-700 border border-rose-200 shadow-2xs">
+                <div class="p-2.5 rounded-2xl bg-rose-100 text-rose-700 border border-rose-200 shadow-2xs shrink-0">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
                 </div>
             </div>
-            <p class="text-2xl font-extrabold text-rose-700 font-mono mt-2">{{ $unpaidThisMonthCount }} Pembeli</p>
-            <p class="text-[11px] text-rose-600 font-semibold mt-1">Rp {{ number_format($unpaidThisMonthAmount, 0, ',', '.') }} est. tagihan</p>
+            <p class="text-lg sm:text-xl xl:text-2xl font-extrabold text-rose-700 font-mono tracking-tight truncate mt-2">{{ $unpaidThisMonthCount }} Pembeli</p>
+            <p class="text-[11px] text-rose-600 font-semibold mt-1 truncate">
+                @if(auth()->user()->canViewSalesPrices())
+                    Rp {{ number_format($unpaidThisMonthAmount, 0, ',', '.') }} est. tagihan
+                @else
+                    Tunggakan bulan berjalan
+                @endif
+            </p>
         </div>
 
-        <div class="kpi-card-emerald bg-white border border-slate-200/80 rounded-3xl p-5 shadow-xs">
+        <div class="kpi-card-emerald bg-white border border-slate-200/80 rounded-3xl p-5 shadow-xs min-w-0">
             <div class="flex items-center justify-between">
                 <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Sudah Masuk ({{ $currentMonthName }})</span>
-                <div class="p-2.5 rounded-2xl bg-emerald-50 text-emerald-600 border border-emerald-100 shadow-2xs">
+                <div class="p-2.5 rounded-2xl bg-emerald-50 text-emerald-600 border border-emerald-100 shadow-2xs shrink-0">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                 </div>
             </div>
-            <p class="text-2xl font-extrabold text-emerald-700 font-mono mt-2">Rp {{ number_format($paidThisMonthAmount, 0, ',', '.') }}</p>
-            <p class="text-[11px] text-slate-400 mt-1">{{ $paidThisMonthCount }} pembeli telah bayar</p>
+            <p class="text-lg sm:text-xl xl:text-2xl font-extrabold text-emerald-700 font-mono tracking-tight truncate mt-2" title="@if(auth()->user()->canViewSalesPrices()) Rp {{ number_format($paidThisMonthAmount, 0, ',', '.') }} @else {{ $paidThisMonthCount }} Pembeli @endif">
+                @if(auth()->user()->canViewSalesPrices())
+                    Rp {{ number_format($paidThisMonthAmount, 0, ',', '.') }}
+                @else
+                    {{ $paidThisMonthCount }} Pembeli
+                @endif
+            </p>
+            <p class="text-[11px] text-slate-400 mt-1 truncate">{{ $paidThisMonthCount }} pembeli telah bayar</p>
         </div>
 
-        <div class="kpi-card-amber bg-white border border-slate-200/80 rounded-3xl p-5 shadow-xs">
+        <div class="kpi-card-amber bg-white border border-slate-200/80 rounded-3xl p-5 shadow-xs min-w-0">
             <div class="flex items-center justify-between">
                 <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Sisa Piutang Berjalan</span>
-                <div class="p-2.5 rounded-2xl bg-amber-50 text-amber-600 border border-amber-100 shadow-2xs">
+                <div class="p-2.5 rounded-2xl bg-amber-50 text-amber-600 border border-amber-100 shadow-2xs shrink-0">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                 </div>
             </div>
-            <p class="text-2xl font-extrabold text-amber-700 font-mono mt-2">
-                Rp {{ number_format(\App\Models\UnitInstallment::all()->sum(fn($i) => $i->remaining_balance), 0, ',', '.') }}
+            <p class="text-lg sm:text-xl xl:text-2xl font-extrabold text-amber-700 font-mono tracking-tight truncate mt-2" title="@if(auth()->user()->canViewSalesPrices()) Rp {{ number_format(\App\Models\UnitInstallment::all()->sum(fn($i) => $i->remaining_balance), 0, ',', '.') }} @else {{ \App\Models\UnitInstallment::where('status', 'berjalan')->count() }} Aktif @endif">
+                @if(auth()->user()->canViewSalesPrices())
+                    Rp {{ number_format(\App\Models\UnitInstallment::all()->sum(fn($i) => $i->remaining_balance), 0, ',', '.') }}
+                @else
+                    {{ \App\Models\UnitInstallment::where('status', 'berjalan')->count() }} Aktif
+                @endif
             </p>
-            <p class="text-[11px] text-slate-400 mt-1">Sisa tagihan belum lunas</p>
+            <p class="text-[11px] text-slate-400 mt-1 truncate">Sisa tagihan belum lunas</p>
         </div>
     </div>
 
@@ -131,17 +147,31 @@
                         @endif
                     </div>
                 </td>
-                <td data-label="Harga Kesepakatan" class="p-3.5 font-mono font-bold text-slate-900 text-xs">
-                    Rp {{ number_format($inst->total_price, 0, ',', '.') }}
+                <td data-label="Harga Kesepakatan" class="p-3.5 font-mono font-bold text-slate-900 text-xs whitespace-nowrap">
+                    @if(auth()->user()->canViewSalesPrices())
+                        Rp {{ number_format($inst->total_price, 0, ',', '.') }}
+                    @else
+                        <span class="text-slate-400 font-normal">-</span>
+                    @endif
                 </td>
-                <td data-label="Uang Muka (DP)" class="p-3.5 font-mono font-bold text-slate-700 text-xs">
-                    Rp {{ number_format($inst->down_payment, 0, ',', '.') }}
+                <td data-label="Uang Muka (DP)" class="p-3.5 font-mono font-bold text-slate-700 text-xs whitespace-nowrap">
+                    @if(auth()->user()->canViewSalesPrices())
+                        Rp {{ number_format($inst->down_payment, 0, ',', '.') }}
+                    @else
+                        <span class="text-slate-400 font-normal">-</span>
+                    @endif
                 </td>
-                <td data-label="Progres Terbayar" class="p-3.5">
+                <td data-label="Progres Terbayar" class="p-3.5 whitespace-nowrap">
                     <div class="space-y-1">
                         <div class="flex items-center justify-between text-[10px] font-bold font-mono">
-                            <span class="text-emerald-700">Rp {{ number_format($inst->total_paid, 0, ',', '.') }}</span>
-                            <span class="text-slate-500">{{ $inst->progress_percentage }}%</span>
+                            <span class="text-emerald-700 whitespace-nowrap">
+                                @if(auth()->user()->canViewSalesPrices())
+                                    Rp {{ number_format($inst->total_paid, 0, ',', '.') }}
+                                @else
+                                    {{ $inst->payments->count() }}x Masuk
+                                @endif
+                            </span>
+                            <span class="text-slate-500 ml-2">{{ $inst->progress_percentage }}%</span>
                         </div>
                         <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
                             <div class="bg-emerald-500 h-full rounded-full transition-all duration-300" style="width: {{ $inst->progress_percentage }}%"></div>
@@ -149,8 +179,12 @@
                         <p class="text-[9px] text-slate-400 font-mono">{{ $inst->payments->count() }}x setoran tercatat</p>
                     </div>
                 </td>
-                <td data-label="Sisa Piutang" class="p-3.5 font-mono font-bold text-xs {{ $inst->remaining_balance > 0 ? 'text-amber-700' : 'text-emerald-700' }}">
-                    Rp {{ number_format($inst->remaining_balance, 0, ',', '.') }}
+                <td data-label="Sisa Piutang" class="p-3.5 font-mono font-bold text-xs whitespace-nowrap {{ $inst->remaining_balance > 0 ? 'text-amber-700' : 'text-emerald-700' }}">
+                    @if(auth()->user()->canViewSalesPrices())
+                        Rp {{ number_format($inst->remaining_balance, 0, ',', '.') }}
+                    @else
+                        <span class="text-slate-400 font-normal">-</span>
+                    @endif
                 </td>
                 <td data-label="Status" class="p-3.5">
                     @if($inst->status === 'lunas')
