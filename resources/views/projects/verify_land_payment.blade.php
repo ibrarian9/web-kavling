@@ -58,7 +58,7 @@
 
         <!-- Actions -->
         <div class="space-y-2">
-            <a href="{{ route('land-payment.receipt', $payment->uuid) }}" target="_blank" class="w-full bg-purple-600 hover:bg-purple-500 text-white font-extrabold text-xs py-3 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2">
+            <a href="{{ route('land-payment.receipt', $payment->uuid) }}" target="_blank" class="w-full bg-rose-600 hover:bg-rose-500 text-white font-extrabold text-xs py-3 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                 <span>Unduh / Cetak Resi Kuitansi PDF</span>
             </a>

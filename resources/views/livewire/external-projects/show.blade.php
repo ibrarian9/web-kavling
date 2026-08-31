@@ -57,7 +57,7 @@
                     <span>Kembali</span>
                 </x-button>
 
-                <x-button variant="secondary" size="sm" icon="pdf" wire:click="openViewerModal('pdf', '{{ route('external-projects.report-pdf', $project->id) }}', 'Rekapitulasi Biaya - {{ addslashes($project->name) }}')">
+                <x-button variant="pdf" size="sm" icon="pdf" wire:click="openViewerModal('pdf', '{{ route('external-projects.report-pdf', $project->id) }}', 'Rekapitulasi Biaya - {{ addslashes($project->name) }}')">
                     <span>Pratinjau Rekap PDF</span>
                 </x-button>
             </div>
@@ -82,8 +82,8 @@
         </div>
     @endif
 
-    <!-- Financial KPI Summary Cards -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <!-- Financial KPI Summary Cards (Responsive: 2 Kolom di Mobile/iPad (2 Atas 2 Bawah), 4 Kolom di Desktop Layar Lebar) -->
+    <div class="grid grid-cols-2 xl:grid-cols-4 gap-3.5 sm:gap-4 lg:gap-5">
         <div class="kpi-card-amber bg-white border border-slate-200/80 rounded-3xl p-5 shadow-xs">
             <div class="flex items-center justify-between">
                 <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Total Belanja Barang</span>

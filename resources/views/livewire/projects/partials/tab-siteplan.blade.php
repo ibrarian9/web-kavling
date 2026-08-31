@@ -13,20 +13,20 @@
 
             <!-- Status Color Legend -->
             <div class="flex items-center gap-2 flex-wrap text-[11px] font-semibold">
-                <span class="px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 flex items-center gap-1.5 shadow-2xs">
-                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span class="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-300 flex items-center gap-1.5 shadow-2xs">
+                    <span class="w-2 h-2 rounded-full bg-emerald-600 animate-pulse"></span>
                     <span>Tersedia ({{ $availableUnits }})</span>
                 </span>
-                <span class="px-2.5 py-1 rounded-full bg-amber-50 text-amber-800 border border-amber-200 flex items-center gap-1.5 shadow-2xs">
-                    <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+                <span class="px-2.5 py-1 rounded-full bg-amber-100 text-amber-900 border border-amber-300 flex items-center gap-1.5 shadow-2xs">
+                    <span class="w-2 h-2 rounded-full bg-amber-600"></span>
                     <span>Booked ({{ $pendingUnits }})</span>
                 </span>
-                <span class="px-2.5 py-1 rounded-full bg-rose-50 text-rose-800 border border-rose-200 flex items-center gap-1.5 shadow-2xs">
-                    <span class="w-2 h-2 rounded-full bg-rose-500"></span>
+                <span class="px-2.5 py-1 rounded-full bg-rose-100 text-rose-900 border border-rose-300 flex items-center gap-1.5 shadow-2xs">
+                    <span class="w-2 h-2 rounded-full bg-rose-600"></span>
                     <span>Terjual ({{ $soldUnits }})</span>
                 </span>
-                <span class="px-2.5 py-1 rounded-full bg-indigo-50 text-indigo-800 border border-indigo-200 flex items-center gap-1.5 shadow-2xs">
-                    <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+                <span class="px-2.5 py-1 rounded-full bg-indigo-100 text-indigo-900 border border-indigo-300 flex items-center gap-1.5 shadow-2xs">
+                    <span class="w-2 h-2 rounded-full bg-indigo-600"></span>
                     <span>Fasum/Infra ({{ $infraUnitsCount }})</span>
                 </span>
             </div>
@@ -57,9 +57,9 @@
     </x-card>
 
     <!-- Responsive Interactive Visual Siteplan Grid -->
-    <x-card padding="p-4 sm:p-6" class="bg-slate-50/50 border border-slate-200/80">
+    <div class="p-4 sm:p-6 bg-slate-100/90 rounded-3xl border border-slate-200 shadow-inner">
         <x-siteplan-visual-grid :units="$unitsList" :interactiveModal="true" modalAction="openSiteplanUnitModal" />
-    </x-card>
+    </div>
 
     <!-- Quick Modal Detail Unit Siteplan -->
     @if($showSiteplanModal && $selectedSiteplanUnit)

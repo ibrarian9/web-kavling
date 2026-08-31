@@ -12,7 +12,7 @@
 
             @if(auth()->user()->isAdminOrFounder() || auth()->user()->isFinance())
                 <div class="flex items-center gap-2 flex-wrap">
-                    <x-button variant="outline" size="xs" wire:click="openViewerModal('pdf', '{{ route('installments.unit-statement-pdf', $unit->installment->id) }}', 'Pratinjau Rekapitulasi Cicilan Unit {{ $unit->code }} - {{ $unit->installment->buyer_name }}')" icon="pdf" title="Pratinjau Rekapitulasi & Kartu Pembayaran Cicilan PDF">
+                    <x-button variant="pdf" size="xs" wire:click="openViewerModal('pdf', '{{ route('installments.unit-statement-pdf', $unit->installment->id) }}', 'Pratinjau Rekapitulasi Cicilan Unit {{ $unit->code }} - {{ $unit->installment->buyer_name }}')" icon="pdf" title="Pratinjau Rekapitulasi & Kartu Pembayaran Cicilan PDF">
                         <span>Rekap Cicilan PDF</span>
                     </x-button>
 
@@ -105,8 +105,7 @@
                             </x-button>
                         @endif
                         @if($pay->uuid)
-                            <x-button variant="outline" size="xs" wire:click="openViewerModal('pdf', '{{ route('installment.invoice', $pay->uuid) }}', 'Pratinjau Invoice Setoran Unit {{ $unit->code }}')" title="Pratinjau Invoice / Kuitansi PDF (QR Verification)">
-                                <svg class="w-3.5 h-3.5 text-sky-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                            <x-button variant="pdf" size="xs" wire:click="openViewerModal('pdf', '{{ route('installment.invoice', $pay->uuid) }}', 'Pratinjau Invoice Setoran Unit {{ $unit->code }}')" title="Pratinjau Invoice / Kuitansi PDF (QR Verification)" icon="pdf">
                                 <span>Invoice PDF</span>
                             </x-button>
                         @endif
@@ -184,7 +183,7 @@
                         <span class="font-mono font-extrabold text-sm {{ $inv->type === 'masuk' ? 'text-emerald-700' : 'text-rose-700' }}">
                             {{ $inv->type === 'masuk' ? '+' : '-' }} Rp {{ number_format($inv->amount, 0, ',', '.') }}
                         </span>
-                        <x-button variant="outline" size="xs" wire:click="openViewerModal('pdf', '{{ route('manual-invoices.pdf', $inv->uuid) }}', 'Pratinjau Invoice {{ $inv->invoice_number }}')">
+                        <x-button variant="pdf" size="xs" wire:click="openViewerModal('pdf', '{{ route('manual-invoices.pdf', $inv->uuid) }}', 'Pratinjau Invoice {{ $inv->invoice_number }}')" icon="pdf">
                             <span>PDF</span>
                         </x-button>
                     </div>

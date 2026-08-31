@@ -21,7 +21,7 @@
         'detail', 'eye' => 'text-teal-600',
         'check', 'success', 'payment' => 'text-emerald-600',
         'convert' => 'text-purple-600',
-        'pdf' => 'text-sky-600',
+        'pdf' => 'text-rose-600',
         'toggle' => match($variant) {
             'success', 'emerald' => 'text-emerald-600',
             'warning', 'amber' => 'text-amber-600',

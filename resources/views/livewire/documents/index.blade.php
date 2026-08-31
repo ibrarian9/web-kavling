@@ -95,10 +95,10 @@
                 </td>
                 <td data-label="Dokumen Resi" class="p-3.5 text-center whitespace-nowrap">
                     <div class="inline-flex items-center justify-center gap-1.5 flex-wrap">
-                        <x-button variant="outline" size="xs" wire:click="openViewerModal('pdf', '{{ route('documents.stream', $doc->id) }}', 'Pratinjau Dokumen SPP - {{ $doc->document_number }}')" title="Lihat Dokumen SPP PDF">
+                        <x-button variant="pdf" size="xs" icon="pdf" wire:click="openViewerModal('pdf', '{{ route('documents.stream', $doc->id) }}', 'Pratinjau Dokumen SPP - {{ $doc->document_number }}')" title="Lihat Dokumen SPP PDF">
                             SPP PDF
                         </x-button>
-                        <x-button variant="emerald" size="xs" wire:click="openViewerModal('pdf', '{{ route('documents.spjb-pdf', $doc->id) }}', 'Pratinjau Surat Perjanjian Jual Beli (SPJB) - {{ $doc->unit->code }}')" title="Cetak Surat Perjanjian Jual Beli (SPJB) PDF">
+                        <x-button variant="pdf" size="xs" icon="pdf" wire:click="openViewerModal('pdf', '{{ route('documents.spjb-pdf', $doc->id) }}', 'Pratinjau Surat Perjanjian Jual Beli (SPJB) - {{ $doc->unit->code }}')" title="Cetak Surat Perjanjian Jual Beli (SPJB) PDF">
                             SPJB PDF
                         </x-button>
                     </div>

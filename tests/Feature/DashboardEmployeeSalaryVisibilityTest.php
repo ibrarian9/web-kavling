@@ -27,7 +27,7 @@ test('founder sees all executive modules and does not see personal employee sala
     ]);
     $founder->assignRole('founder');
 
-    Livewire::actingAs($founder)
+    $test = Livewire::actingAs($founder)
         ->test(Dashboard::class)
         ->assertStatus(200)
         ->assertDontSee('Informasi Penetapan Gaji Anda')
@@ -35,6 +35,8 @@ test('founder sees all executive modules and does not see personal employee sala
         ->assertSee('Stok Unit')
         ->assertSee('Saldo Kas Bersih')
         ->assertSee('Pintasan Modul Utama');
+
+    expect($test->html())->toContain('grid-cols-2 xl:grid-cols-4');
 });
 
 test('employee sees their salary details and their operational modules on dashboard', function () {

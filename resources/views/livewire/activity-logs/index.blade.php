@@ -1,17 +1,17 @@
-<div class="space-y-6" wire:poll.5s>
+<div class="space-y-6">
     <!-- Header Page -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-slate-900 text-white p-6 rounded-3xl border border-slate-800 shadow-xl">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-slate-900 text-white p-5 sm:p-6 rounded-3xl border border-slate-800 shadow-xl">
         <div class="space-y-1">
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-2 flex-wrap">
                 <span class="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[10px] font-extrabold uppercase tracking-wider">
                     Founder Executive Security
                 </span>
                 <span class="text-xs text-slate-400 font-mono">• Audit Trail System</span>
             </div>
-            <h1 class="text-2xl font-extrabold tracking-tight text-white">Log Aktivitas & Audit Sistem</h1>
+            <h1 class="text-xl sm:text-2xl font-extrabold tracking-tight text-white">Log Aktivitas & Audit Sistem</h1>
             <p class="text-xs text-slate-400">Pemantauan aktivitas pengguna, otentikasi, pergeseran peran, notifikasi terkirim, dan log transaksi real-time.</p>
         </div>        
-        <div class="flex items-center gap-2">
+        <div class="flex items-center gap-2 shrink-0">
             @if(in_array($activeTab, ['database', 'notifications']))
                 <button type="button" @click="confirmModalAction({
                     title: 'Bersihkan Database Logs',
@@ -40,21 +40,21 @@
 
     <!-- Unified Control Bar: Tabs Switcher, Searching & Filtering in ONE Card -->
     <div class="card-clean p-4 border border-slate-200/80 rounded-3xl space-y-3.5 shadow-2xs">
-        <!-- Baris 1: Tabs Switcher -->
-        <div class="flex items-center gap-2 bg-slate-100 p-1.5 rounded-2xl w-full md:w-auto overflow-x-auto custom-scrollbar">
-            <button wire:click="setTab('database')" type="button" class="px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 shrink-0 {{ $activeTab === 'database' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-500 hover:text-slate-800' }}">
+        <!-- Baris 1: Responsive Tabs Switcher (Touch friendly on mobile & iPad) -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 bg-slate-100 p-1.5 rounded-2xl w-full">
+            <button wire:key="tab-btn-database" wire:click="setTab('database')" type="button" class="w-full justify-center px-3.5 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-2 {{ $activeTab === 'database' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-500 hover:text-slate-800' }}">
                 <svg class="w-4 h-4 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"/></svg>
                 <span>Operasional & Keuangan</span>
                 <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-slate-100 text-slate-700 border border-slate-200">{{ $operationalCount }}</span>
             </button>
 
-            <button wire:click="setTab('notifications')" type="button" class="px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 shrink-0 {{ $activeTab === 'notifications' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-500 hover:text-slate-800' }}">
+            <button wire:key="tab-btn-notifications" wire:click="setTab('notifications')" type="button" class="w-full justify-center px-3.5 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-2 {{ $activeTab === 'notifications' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-500 hover:text-slate-800' }}">
                 <svg class="w-4 h-4 text-blue-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
                 <span>Notifikasi Terkirim</span>
                 <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-blue-100 text-blue-800 border border-blue-200">{{ $notificationCount }}</span>
             </button>
 
-            <button wire:click="setTab('file')" type="button" class="px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 shrink-0 {{ $activeTab === 'file' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-500 hover:text-slate-800' }}">
+            <button wire:key="tab-btn-file" wire:click="setTab('file')" type="button" class="w-full justify-center px-3.5 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-2 {{ $activeTab === 'file' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-500 hover:text-slate-800' }}">
                 <svg class="w-4 h-4 text-purple-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                 <span>File Server (`laravel.log`)</span>
             </button>
@@ -93,7 +93,7 @@
 
     <!-- TAB 1 & 2: Database Audit Logs (Operational or Notifications) -->
     @if(in_array($activeTab, ['database', 'notifications']))
-        <div class="space-y-4">
+        <div class="space-y-4" wire:poll.15s>
             <!-- Unified Table of Database Logs with CSS Table-to-Card Transformation -->
             <x-table :headers="['Waktu Presisi', 'Pengguna / Peran', 'Jenis Event / Aksi', 'Detail Log Aktivitas / Notifikasi', 'IP & Client Device']" loadingTarget="search, actionFilter, datePeriod, startDate, endDate, gotoPage, nextPage, previousPage">
                 @forelse($databaseLogs as $log)
@@ -144,7 +144,6 @@
                     <x-table-empty colspan="5" :title="'Belum ada riwayat ' . ($activeTab === 'notifications' ? 'log notifikasi terkirim' : 'aktivitas operasional')" message="Seluruh log terikat akan ditampilkan di sini." />
                 @endforelse
             </x-table>
-        </div>
 
             <div>{{ $databaseLogs->links() }}</div>
         </div>

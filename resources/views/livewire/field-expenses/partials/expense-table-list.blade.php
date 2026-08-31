@@ -86,7 +86,7 @@
                         @endif
 
                         @if (!empty($item['pdf_url']))
-                            <x-button variant="outline" size="xs" wire:click="openViewer('Pratinjau Resi Gaji PDF', 'pdf', '{{ $item['pdf_url'] }}')" title="Pratinjau PDF Resi">
+                            <x-button variant="pdf" size="xs" icon="pdf" wire:click="openViewer('Pratinjau Resi Gaji PDF', 'pdf', '{{ $item['pdf_url'] }}')" title="Pratinjau PDF Resi">
                                 PDF
                             </x-button>
                         @endif

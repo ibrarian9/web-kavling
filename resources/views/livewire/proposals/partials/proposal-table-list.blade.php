@@ -121,7 +121,7 @@
                 <td data-label="Dokumen SPP" class="p-3.5 text-center whitespace-nowrap">
                     @if($prop->status === 'disetujui')
                         @if($prop->officialDocument)
-                            <x-button variant="outline" size="xs" wire:click="openViewerModal('pdf', '{{ route('documents.stream', $prop->officialDocument->id) }}', 'Surat Pemesanan Properti (SPP) - Unit {{ $prop->unit->code }}')" title="Pratinjau Dokumen SPP">
+                            <x-button variant="pdf" size="xs" icon="pdf" wire:click="openViewerModal('pdf', '{{ route('documents.stream', $prop->officialDocument->id) }}', 'Surat Pemesanan Properti (SPP) - Unit {{ $prop->unit->code }}')" title="Pratinjau Dokumen SPP">
                                 Lihat SPP
                             </x-button>
                         @else

@@ -99,18 +99,18 @@
         </div>
     @endif
 
-    <!-- KPI Metric Cards Grid (Primary Focus: 2 Baris di iPad / Tablet, 4 Kolom di Layar Lebar) -->
-    <div class="grid grid-cols-2 xl:grid-cols-4 gap-3.5 sm:gap-4">
+    <!-- KPI Metric Cards Grid (Responsive: 2 Kolom di Mobile/iPad (2 Atas 2 Bawah), 4 Kolom di Desktop Layar Lebar) -->
+    <div class="grid grid-cols-2 xl:grid-cols-4 gap-3.5 sm:gap-4 lg:gap-5">
         <!-- Stat Card 1: Proyek Aktif -->
         <div class="kpi-card-blue p-4 sm:p-5 flex flex-col justify-between min-w-0 shadow-2xs rounded-2xl">
-            <div class="flex items-center justify-between gap-1">
-                <span class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-400 truncate">Proyek Properti</span>
+            <div class="flex items-start justify-between gap-1">
+                <span class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-400 leading-snug">Proyek Properti</span>
                 <div class="p-1.5 sm:p-2 rounded-xl bg-purple-50 text-purple-600 border border-purple-100 shadow-2xs shrink-0">
                     <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5m0 0h5m-5 0v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
                 </div>
             </div>
             <div class="mt-3 min-w-0">
-                <p class="text-base sm:text-lg xl:text-2xl font-black text-slate-900 font-mono tracking-tight">{{ $totalProjects }} Proyek</p>
+                <p class="text-base sm:text-xl xl:text-2xl font-black text-slate-900 font-mono tracking-tight">{{ $totalProjects }} Proyek</p>
                 <p class="text-[10px] sm:text-[11px] text-slate-500 mt-1 flex items-center gap-1 truncate">
                     <span class="w-1.5 h-1.5 rounded-full bg-purple-500 shrink-0"></span>
                     <span class="truncate">Kawasan perumahan aktif</span>
@@ -120,16 +120,16 @@
 
         <!-- Stat Card 2: Stok Unit & Accessibility Breakdown -->
         <div class="kpi-card-emerald p-4 sm:p-5 flex flex-col justify-between min-w-0 shadow-2xs rounded-2xl">
-            <div class="flex items-center justify-between gap-1">
-                <span class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-400 truncate">Stok Unit Fisik</span>
+            <div class="flex items-start justify-between gap-1">
+                <span class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-400 leading-snug">Stok Unit Fisik</span>
                 <div class="p-1.5 sm:p-2 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100 shadow-2xs shrink-0">
                     <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
                 </div>
             </div>
             <div class="mt-3 min-w-0">
                 <div class="flex items-baseline justify-between gap-1.5 flex-wrap">
-                    <span class="text-base sm:text-lg xl:text-2xl font-black text-slate-900 font-mono tracking-tight">{{ $totalUnits }} Unit</span>
-                    <span class="status-tersedia text-[9px] sm:text-[10px] shrink-0">
+                    <span class="text-base sm:text-xl xl:text-2xl font-black text-slate-900 font-mono tracking-tight">{{ $totalUnits }} Unit</span>
+                    <span class="status-tersedia text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-full shrink-0">
                         {{ $availableUnits }} Tersedia
                     </span>
                 </div>
@@ -144,14 +144,14 @@
         <!-- Stat Card 3: Mandor & Tukang (Admin / Pengawas) vs Booking DP (Founder / Marketing / Finance) -->
         @if($user->isAdmin() || $user->isPengawasProject())
             <div class="kpi-card-amber p-4 sm:p-5 flex flex-col justify-between min-w-0 shadow-2xs rounded-2xl">
-                <div class="flex items-center justify-between gap-1">
-                    <span class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-400 truncate">Pekerja Lapangan</span>
+                <div class="flex items-start justify-between gap-1">
+                    <span class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-400 leading-snug">Pekerja Lapangan</span>
                     <div class="p-1.5 sm:p-2 rounded-xl bg-amber-50 text-amber-600 border border-amber-100 shadow-2xs shrink-0">
                         <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
                     </div>
                 </div>
                 <div class="mt-3 min-w-0">
-                    <p class="text-base sm:text-lg xl:text-2xl font-black text-amber-700 font-mono tracking-tight">{{ $activeWorkersCount }} Pekerja</p>
+                    <p class="text-base sm:text-xl xl:text-2xl font-black text-amber-700 font-mono tracking-tight">{{ $activeWorkersCount }} Pekerja</p>
                     <p class="text-[10px] sm:text-[11px] text-slate-500 mt-1 flex items-center gap-1 truncate">
                         <span class="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0"></span>
                         <span class="truncate">Mandor & tukang aktif</span>
@@ -160,14 +160,14 @@
             </div>
         @else
             <div class="kpi-card-amber p-4 sm:p-5 flex flex-col justify-between min-w-0 shadow-2xs rounded-2xl">
-                <div class="flex items-center justify-between gap-1">
-                    <span class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-400 truncate">Booking Fee & DP</span>
+                <div class="flex items-start justify-between gap-1">
+                    <span class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-400 leading-snug">Booking Fee & DP</span>
                     <div class="p-1.5 sm:p-2 rounded-xl bg-amber-50 text-amber-600 border border-amber-100 shadow-2xs shrink-0">
                         <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                     </div>
                 </div>
                 <div class="mt-3 min-w-0">
-                    <p class="text-base sm:text-lg xl:text-2xl font-black text-amber-700 font-mono tracking-tight whitespace-normal break-words" title="Rp {{ number_format($totalBookingAmount, 0, ',', '.') }}">Rp {{ number_format($totalBookingAmount, 0, ',', '.') }}</p>
+                    <p class="text-base sm:text-xl xl:text-2xl font-black text-amber-700 font-mono tracking-tight truncate whitespace-nowrap" title="Rp {{ number_format($totalBookingAmount, 0, ',', '.') }}">Rp {{ number_format($totalBookingAmount, 0, ',', '.') }}</p>
                     <p class="text-[10px] sm:text-[11px] text-slate-500 mt-1 truncate">Dari {{ $totalBookingsCount }} pemesanan</p>
                 </div>
             </div>
@@ -176,14 +176,14 @@
         <!-- Stat Card 4: Belanja Material Bulan Ini (Admin / Pengawas) vs Saldo Kas (Founder/Finance) vs Daily Activity (Marketing) -->
         @if($user->isAdmin() || $user->isPengawasProject())
             <div class="kpi-card-dark p-4 sm:p-5 flex flex-col justify-between min-w-0 shadow-2xs rounded-2xl">
-                <div class="flex items-center justify-between gap-1">
-                    <span class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-400 truncate">Belanja Material</span>
+                <div class="flex items-start justify-between gap-1">
+                    <span class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-400 leading-snug">Belanja Material</span>
                     <div class="p-1.5 sm:p-2 rounded-xl bg-slate-800 text-emerald-400 border border-slate-700 shadow-2xs shrink-0">
                         <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
                     </div>
                 </div>
                 <div class="mt-3 min-w-0">
-                    <p class="text-base sm:text-lg xl:text-2xl font-black text-emerald-400 font-mono tracking-tight whitespace-normal break-words" title="Rp {{ number_format($totalMaterialPurchasesThisMonth, 0, ',', '.') }}">
+                    <p class="text-base sm:text-xl xl:text-2xl font-black text-emerald-400 font-mono tracking-tight truncate whitespace-nowrap" title="Rp {{ number_format($totalMaterialPurchasesThisMonth, 0, ',', '.') }}">
                         Rp {{ number_format($totalMaterialPurchasesThisMonth, 0, ',', '.') }}
                     </p>
                     <p class="text-[10px] sm:text-[11px] text-slate-400 mt-1 flex items-center gap-1 truncate">
@@ -194,27 +194,27 @@
             </div>
         @elseif($user->isMarketing())
             <div class="kpi-card-dark p-4 sm:p-5 flex flex-col justify-between min-w-0 shadow-2xs rounded-2xl">
-                <div class="flex items-center justify-between gap-1">
-                    <span class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-400 truncate">Daily Activity</span>
+                <div class="flex items-start justify-between gap-1">
+                    <span class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-400 leading-snug">Daily Activity</span>
                     <div class="p-1.5 sm:p-2 rounded-xl bg-teal-500/20 text-teal-300 border border-teal-500/30 shrink-0">
                         <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
                     </div>
                 </div>
                 <div class="mt-3 min-w-0">
-                    <p class="text-base sm:text-lg xl:text-2xl font-black text-white font-mono tracking-tight">{{ $marketingDailyReportCount ?? 0 }} Laporan</p>
+                    <p class="text-base sm:text-xl xl:text-2xl font-black text-white font-mono tracking-tight">{{ $marketingDailyReportCount ?? 0 }} Laporan</p>
                     <p class="text-[10px] sm:text-[11px] text-teal-300 mt-1 font-semibold truncate">{{ $marketingHotDealsCount ?? 0 }} Prospek Hot Deal</p>
                 </div>
             </div>
         @else
             <div class="kpi-card-dark p-4 sm:p-5 flex flex-col justify-between min-w-0 shadow-2xs rounded-2xl">
-                <div class="flex items-center justify-between gap-1">
-                    <span class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-400 truncate">Saldo Kas Bersih</span>
+                <div class="flex items-start justify-between gap-1">
+                    <span class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-400 leading-snug">Saldo Kas Bersih</span>
                     <div class="p-1.5 sm:p-2 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 shrink-0">
                         <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
                     </div>
                 </div>
                 <div class="mt-3 min-w-0">
-                    <p class="text-base sm:text-lg xl:text-2xl font-black text-white font-mono tracking-tight whitespace-normal break-words" title="Rp {{ number_format($netCashflow, 0, ',', '.') }}">Rp {{ number_format($netCashflow, 0, ',', '.') }}</p>
+                    <p class="text-base sm:text-xl xl:text-2xl font-black text-white font-mono tracking-tight truncate whitespace-nowrap" title="Rp {{ number_format($netCashflow, 0, ',', '.') }}">Rp {{ number_format($netCashflow, 0, ',', '.') }}</p>
                     <p class="text-[10px] sm:text-[11px] text-emerald-400 mt-1 font-mono tracking-tight truncate" title="Pemasukan: Rp {{ number_format($totalCashIn, 0, ',', '.') }}">Pemasukan: Rp {{ number_format($totalCashIn, 0, ',', '.') }}</p>
                 </div>
             </div>
@@ -402,8 +402,8 @@
                 @if($latestSalaryPayment)
                     <a href="{{ route('employee-salary.slip-pdf', $latestSalaryPayment->uuid) }}" 
                        target="_blank" 
-                       class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow-xs transition flex items-center justify-center gap-2 self-start sm:self-auto shrink-0">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                       class="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-bold shadow-xs transition flex items-center justify-center gap-2 self-start sm:self-auto shrink-0">
+                        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2zM9 13h6m-6 4h4"/></svg>
                         <span>Cetak Slip Gaji ({{ $userSalary?->getIndonesianMonth($latestSalaryPayment->payroll_month) }} {{ $latestSalaryPayment->payroll_year }})</span>
                     </a>
                 @endif

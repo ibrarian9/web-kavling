@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use App\Enums\UnitStatus;
 
 class Unit extends Model
 {
@@ -93,6 +94,44 @@ class Unit extends Model
         return $this->hasOne(Booking::class)->whereIn('status', ['active', 'converted'])->latestOfMany();
     }
 
+    public function materialPurchases(): HasMany
+    {
+        return $this->hasMany(WeeklyMaterialPurchase::class);
+    }
+
+    public function payrolls(): HasMany
+    {
+        return $this->hasMany(WorkerUnitPayroll::class);
+    }
+
+    public function getRealizedExpensesAttribute(): float
+    {
+        $materialCost = $this->relationLoaded('materialPurchases')
+            ? (float) $this->materialPurchases->sum('total_price')
+            : (float) $this->materialPurchases()->sum('total_price');
+
+        $salaryCost = $this->relationLoaded('payrolls')
+            ? (float) $this->payrolls->sum(function ($p) {
+                return $p->relationLoaded('payments')
+                    ? (float) $p->payments->sum('amount_paid')
+                    : (float) $p->payments()->sum('amount_paid');
+            })
+            : (float) WorkerSalaryPayment::whereHas('payroll', fn($q) => $q->where('unit_id', $this->id))->sum('amount_paid');
+
+        return $materialCost + $salaryCost;
+    }
+
+    public function getHasExpensesAttribute(): bool
+    {
+        if ($this->relationLoaded('materialPurchases') && $this->materialPurchases->isNotEmpty()) {
+            return true;
+        }
+        if ($this->relationLoaded('payrolls') && $this->payrolls->isNotEmpty()) {
+            return true;
+        }
+        return $this->materialPurchases()->exists() || $this->payrolls()->exists();
+    }
+
 
     /**
      * Hitung otomatis kelebihan tanah dan rekomendasi HPP berbasis standar proyek
@@ -114,7 +153,7 @@ class Unit extends Model
         $standardLand = $project->standard_land_area;
         $excessSqm = max(0, $this->land_area - $standardLand);
         $excessCost = $excessSqm * $project->excess_price_per_sqm;
-        
+
         $this->excess_land_area = $excessSqm;
         $this->excess_cost = $excessCost;
 
@@ -138,27 +177,27 @@ class Unit extends Model
 
     public function getIsSoldAttribute(): bool
     {
-        return \App\Enums\UnitStatus::isSold($this->status);
+        return UnitStatus::isSold($this->status);
     }
 
     public function getIsAvailableAttribute(): bool
     {
-        return \App\Enums\UnitStatus::isAvailable($this->status);
+        return UnitStatus::isAvailable($this->status);
     }
 
     public function getIsBookedAttribute(): bool
     {
-        return \App\Enums\UnitStatus::isBooked($this->status);
+        return UnitStatus::isBooked($this->status);
     }
 
     public function getStatusLabelAttribute(): string
     {
-        return \App\Enums\UnitStatus::label($this->status);
+        return UnitStatus::label($this->status);
     }
 
     public function getStatusBadgeClassAttribute(): string
     {
-        return \App\Enums\UnitStatus::badgeClass($this->status);
+        return UnitStatus::badgeClass($this->status);
     }
 
     public function getBuyerNameAttribute(): string
@@ -178,9 +217,9 @@ class Unit extends Model
             }
         }
 
-        return $this->officialDocument()->value('buyer_name') 
-            ?? $this->activeBooking()->value('buyer_name') 
-            ?? $this->bookings()->latest('id')->value('buyer_name') 
+        return $this->officialDocument()->value('buyer_name')
+            ?? $this->activeBooking()->value('buyer_name')
+            ?? $this->bookings()->latest('id')->value('buyer_name')
             ?? 'Konsumen Pembeli';
     }
 
@@ -201,8 +240,8 @@ class Unit extends Model
             }
         }
 
-        return $this->officialDocument()->value('buyer_contact') 
-            ?? $this->activeBooking()->value('buyer_phone') 
+        return $this->officialDocument()->value('buyer_contact')
+            ?? $this->activeBooking()->value('buyer_phone')
             ?? $this->bookings()->latest('id')->value('buyer_phone');
     }
 }

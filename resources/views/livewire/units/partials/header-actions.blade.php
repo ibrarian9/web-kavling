@@ -112,10 +112,7 @@
 
         <!-- Total Construction & Material Expenses -->
         @php
-            $totalExpenses = 0;
-            if (isset($combinedExpenses)) {
-                $totalExpenses = collect($combinedExpenses)->sum('amount');
-            }
+            $totalExpenses = $totalRealizedExpenses ?? (collect($combinedExpenses ?? [])->whereIn('source_type', ['material', 'salary_payment'])->sum('amount'));
         @endphp
         <div class="card-clean p-5 transition-all duration-200 hover:-translate-y-0.5 border-amber-200/80 bg-gradient-to-br from-white to-amber-50/30">
             <div class="flex items-center justify-between">
@@ -238,10 +235,7 @@
                     </div>
                 </div>
                 @php
-                    $totalExpenses = 0;
-                    if (isset($combinedExpenses)) {
-                        $totalExpenses = collect($combinedExpenses)->sum('amount');
-                    }
+                    $totalExpenses = $totalRealizedExpenses ?? (collect($combinedExpenses ?? [])->whereIn('source_type', ['material', 'salary_payment'])->sum('amount'));
                 @endphp
                 <p class="text-xl sm:text-2xl font-extrabold text-amber-800 font-mono mt-2 tracking-tight">
                     Rp {{ number_format($totalExpenses, 0, ',', '.') }}
@@ -310,10 +304,7 @@
                     </div>
                 </div>
                 @php
-                    $totalExpenses = 0;
-                    if (isset($combinedExpenses)) {
-                        $totalExpenses = collect($combinedExpenses)->sum('amount');
-                    }
+                    $totalExpenses = $totalRealizedExpenses ?? (collect($combinedExpenses ?? [])->whereIn('source_type', ['material', 'salary_payment'])->sum('amount'));
                 @endphp
                 <p class="text-xl sm:text-2xl font-extrabold text-amber-800 font-mono mt-2 tracking-tight">
                     Rp {{ number_format($totalExpenses, 0, ',', '.') }}

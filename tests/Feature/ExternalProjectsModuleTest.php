@@ -383,4 +383,27 @@ class ExternalProjectsModuleTest extends TestCase
         $response->assertStatus(200);
         $response->assertHeader('content-type', 'application/pdf');
     }
+
+    public function test_external_projects_index_and_show_render_responsive_2x2_cards_on_ipad(): void
+    {
+        $founder = User::where('role', 'founder')->firstOrFail();
+
+        $project = ExternalProject::create([
+            'name' => 'Renovasi Rumah Mewah',
+            'client_name' => 'Bpk. Hendra',
+            'contract_value' => 150000000,
+            'status' => 'aktif',
+            'created_by' => $founder->id,
+        ]);
+
+        $indexTest = Livewire::actingAs($founder)->test(\App\Livewire\ExternalProjects\Index::class);
+        $this->assertStringContainsString('grid-cols-2 xl:grid-cols-4', $indexTest->html());
+        $this->assertStringContainsString('Total Proyek Luar', $indexTest->html());
+        $this->assertStringContainsString('Total Belanja Material', $indexTest->html());
+        $this->assertStringContainsString('Total Upah Tukang', $indexTest->html());
+        $this->assertStringContainsString('Total Pengeluaran', $indexTest->html());
+
+        $showTest = Livewire::actingAs($founder)->test(\App\Livewire\ExternalProjects\Show::class, ['id' => $project->id]);
+        $this->assertStringContainsString('grid-cols-2 xl:grid-cols-4', $showTest->html());
+    }
 }

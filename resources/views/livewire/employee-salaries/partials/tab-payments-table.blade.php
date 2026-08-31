@@ -55,7 +55,7 @@
                 <td data-card-action class="p-3.5 text-center whitespace-nowrap">
                     <div class="inline-flex items-center justify-center gap-1.5 whitespace-nowrap">
                         <a href="{{ route('employee-salary.slip-pdf', $pay->uuid) }}" target="_blank">
-                            <x-button variant="emerald" size="xs" title="Buka / Stream Slip Gaji PDF Resmi">
+                            <x-button variant="pdf" size="xs" icon="pdf" title="Buka / Stream Slip Gaji PDF Resmi">
                                 Slip Gaji PDF
                             </x-button>
                         </a>

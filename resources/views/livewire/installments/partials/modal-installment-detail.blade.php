@@ -14,8 +14,8 @@
                     </div>
                 </div>
                 <div class="flex items-center gap-1.5 shrink-0">
-                    <button type="button" wire:click="openViewerModal('pdf', '{{ route('installments.unit-statement-pdf', $selectedDetailInstallment->id) }}', 'Pratinjau Rekapitulasi Cicilan Unit {{ $selectedDetailInstallment->unit->code }} - {{ $selectedDetailInstallment->buyer_name }}')" class="px-2.5 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200/90 rounded-lg text-[11px] font-bold transition flex items-center gap-1 shadow-2xs" title="Pratinjau Rekapitulasi & Kartu Pembayaran Cicilan Unit PDF">
-                        <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                    <button type="button" wire:click="openViewerModal('pdf', '{{ route('installments.unit-statement-pdf', $selectedDetailInstallment->id) }}', 'Pratinjau Rekapitulasi Cicilan Unit {{ $selectedDetailInstallment->unit->code }} - {{ $selectedDetailInstallment->buyer_name }}')" class="px-2.5 py-1 bg-rose-50 hover:bg-rose-100 text-rose-800 border border-rose-200/90 rounded-lg text-[11px] font-bold transition flex items-center gap-1 shadow-2xs" title="Pratinjau Rekapitulasi & Kartu Pembayaran Cicilan Unit PDF">
+                        <svg class="w-3.5 h-3.5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
                         <span>Rekap PDF</span>
                     </button>
 
@@ -110,7 +110,7 @@
                                 <x-action-dropdown title="Menu Opsi Setoran" size="xs">
                                     <div class="py-1">
                                         @if($pay->uuid)
-                                            <x-dropdown-item icon="pdf" variant="blue" wire:click="openViewerModal('pdf', '{{ route('installment.invoice', $pay->uuid) }}', 'Invoice Setoran Unit {{ $selectedDetailInstallment->unit->code }}')">
+                                            <x-dropdown-item icon="pdf" wire:click="openViewerModal('pdf', '{{ route('installment.invoice', $pay->uuid) }}', 'Invoice Setoran Unit {{ $selectedDetailInstallment->unit->code }}')">
                                                 Cetak Invoice PDF
                                             </x-dropdown-item>
                                         @endif

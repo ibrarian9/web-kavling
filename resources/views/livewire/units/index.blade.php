@@ -1,8 +1,13 @@
 <div class="space-y-6">
 
+    <!-- Top Progress Bar during Livewire Network / View Mode Switch / Filter (Fixed Top Screen) -->
+    <div wire:loading.delay.shortest wire:target="setViewMode, viewMode, search, status_filter, category_filter, project_id, page, deleteUnit, openBookingModal, openModal" 
+         class="fixed top-0 left-0 right-0 z-[9999] h-1.5 bg-gradient-to-r from-emerald-500 via-teal-400 to-indigo-500 animate-livewire-progress shadow-md">
+    </div>
+
     <!-- Header & Filter Toolbar Section -->
     <x-card padding="p-4 sm:p-5" class="mb-6 space-y-4">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-3.5">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3.5 sm:gap-4 border-b border-slate-100 pb-3.5">
             <!-- Judul & Deskripsi Halaman -->
             <div class="space-y-1">
                 <h2 class="text-lg sm:text-xl font-bold text-slate-900 tracking-tight">
@@ -13,38 +18,40 @@
                 </p>
             </div>
 
-            <!-- Tombol Tambah Unit & Mode View -->
-            <div class="flex items-center gap-2.5 shrink-0">
+            <!-- Tombol Tambah Unit & Mode View (Rapi & Responsif Mobile) -->
+            <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-2.5 shrink-0 w-full sm:w-auto">
                 <!-- Toggle View Mode Button (Tabel ↔ Site Plan Visual) -->
-                <div class="flex items-center bg-slate-100 p-1 rounded-xl border border-slate-200 shrink-0">
-                    <button wire:click="$set('viewMode', 'table')" type="button" class="px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 {{ $viewMode === 'table' ? 'bg-white text-emerald-700 shadow-sm' : 'text-slate-500 hover:text-slate-800' }}">
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
+                <div class="inline-flex p-1 bg-slate-100/90 rounded-2xl border border-slate-200/80 shrink-0 w-full sm:w-auto">
+                    <button wire:click="setViewMode('table')" type="button" class="flex-1 sm:flex-initial justify-center px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 {{ $viewMode === 'table' ? 'bg-white text-emerald-700 shadow-2xs border border-slate-200/60' : 'text-slate-500 hover:text-slate-800' }}">
+                        <svg wire:loading.remove wire:target="setViewMode('table')" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
+                        <svg wire:loading wire:target="setViewMode('table')" class="w-3.5 h-3.5 animate-spin text-emerald-600" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
                         <span>Tabel</span>
                     </button>
-                    <button wire:click="$set('viewMode', 'siteplan')" type="button" class="px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 {{ $viewMode === 'siteplan' ? 'bg-white text-emerald-700 shadow-sm' : 'text-slate-500 hover:text-slate-800' }}">
-                        <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6z"/></svg>
+                    <button wire:click="setViewMode('siteplan')" type="button" class="flex-1 sm:flex-initial justify-center px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 {{ $viewMode === 'siteplan' ? 'bg-white text-emerald-700 shadow-2xs border border-slate-200/60' : 'text-slate-500 hover:text-slate-800' }}">
+                        <svg wire:loading.remove wire:target="setViewMode('siteplan')" class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6z"/></svg>
+                        <svg wire:loading wire:target="setViewMode('siteplan')" class="w-3.5 h-3.5 animate-spin text-emerald-600" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
                         <span>Site Plan Visual</span>
                     </button>
                 </div>
 
                 @if(auth()->user()->isAdminOrFounder() || auth()->user()->isSupervisor())
-                    <x-button variant="primary" size="sm" wire:click="openModal" icon="plus">
+                    <x-button variant="primary" size="sm" wire:click="openModal" icon="plus" class="w-full sm:w-auto justify-center min-h-[36px] rounded-xl font-bold shadow-xs">
                         <span>Tambah Unit Baru</span>
                     </x-button>
                 @endif
             </div>
         </div>
 
-        <!-- Filter Controls Container (Responsive Grid / Flex) -->
-        <div class="flex items-center gap-2.5 flex-wrap">
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 flex-1">
+        <!-- Filter Controls Container (Clean Grid with Bottom Active Reset Bar) -->
+        <div class="space-y-3">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
                 <!-- Search Bar -->
-                <x-search-input placeholder="Cari kode unit, mandor..." containerClass="relative w-full sm:col-span-2 lg:col-span-1" />
+                <x-search-input placeholder="Cari kode unit, mandor..." containerClass="w-full sm:col-span-2 lg:col-span-1" />
 
                 <!-- Filter Status Unit -->
                 <div class="w-full">
                     <select wire:model.live="status_filter" 
-                            class="w-full h-10 px-3 text-xs font-bold text-slate-700 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all cursor-pointer">
+                            class="w-full h-10 px-3 text-xs font-semibold text-slate-700 bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all cursor-pointer shadow-2xs">
                         <option value="">Semua Status Unit</option>
                         <option value="tersedia">Unit Tersedia</option>
                         <option value="booked">Unit Booked</option>
@@ -56,7 +63,7 @@
                 <!-- Filter Kategori -->
                 <div class="w-full">
                     <select wire:model.live="category_filter" 
-                            class="w-full h-10 px-3 text-xs font-semibold text-slate-700 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all cursor-pointer">
+                            class="w-full h-10 px-3 text-xs font-semibold text-slate-700 bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all cursor-pointer shadow-2xs">
                         <option value="">Semua Kategori</option>
                         <option value="kavling">Kavling Tanah</option>
                         <option value="rumah">Bangunan Rumah</option>
@@ -67,7 +74,7 @@
                 <!-- Filter Proyek -->
                 <div class="w-full">
                     <select wire:model.live="project_id" 
-                            class="w-full h-10 px-3 text-xs font-semibold text-slate-700 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all cursor-pointer">
+                            class="w-full h-10 px-3 text-xs font-semibold text-slate-700 bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all cursor-pointer shadow-2xs">
                         <option value="">Semua Proyek Properti</option>
                         @foreach($projects as $p)
                             <option value="{{ $p->id }}">{{ $p->name }}</option>
@@ -77,87 +84,110 @@
             </div>
 
             @if($search || $status_filter || $category_filter || $project_id)
-                <x-reset-filter-button 
-                    size="sm"
-                    wire:click="$set('search', ''); $set('status_filter', ''); $set('category_filter', ''); $set('project_id', '');" 
-                />
+                <div class="flex items-center justify-between pt-2 border-t border-slate-100">
+                    <span class="text-[11px] font-semibold text-slate-500 flex items-center gap-1.5">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                        <span>Filter aktif diterapkan</span>
+                    </span>
+                    <x-reset-filter-button 
+                        size="sm"
+                        wire:click="$set('search', ''); $set('status_filter', ''); $set('category_filter', ''); $set('project_id', '');" 
+                    />
+                </div>
             @endif
         </div>
     </x-card>
 
+    <!-- View Mode Switch & Filter Loading Feedback Banner -->
+    <div wire:loading.flex wire:target="setViewMode, viewMode, search, status_filter, category_filter, project_id" 
+         class="items-center justify-between gap-3 px-4 py-2.5 rounded-2xl bg-emerald-50/95 border border-emerald-200 text-emerald-900 text-xs shadow-sm mb-4">
+        <div class="flex items-center gap-2">
+            <svg class="w-4 h-4 text-emerald-600 animate-spin" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <span class="font-bold">Memuat tampilan data unit... Mohon tunggu sebentar</span>
+        </div>
+        <span class="text-[10px] font-mono font-semibold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full">Livewire Sync</span>
+    </div>
+
     <!-- Content Area Container with Loading Dimming -->
-    <div wire:loading.class="opacity-50 pointer-events-none transition-opacity duration-200" wire:target="search, status_filter, category_filter, project_id, viewMode">
+    <div wire:loading.class="opacity-40 pointer-events-none transition-opacity duration-200" wire:target="setViewMode, viewMode, search, status_filter, category_filter, project_id">
     
-    <!-- Summary KPI Cards Grid -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
+    <!-- Summary KPI Cards Grid (Rapi & Responsif Mobile 2x2 & Desktop 4 Kolom) -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-4 mb-6">
+        <!-- Card 1: Total Stok Unit -->
         <div class="kpi-card-blue p-3.5 sm:p-4 xl:p-5 min-w-0 flex flex-col justify-between">
-            <div class="flex items-center justify-between gap-1">
-                <span class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-400 truncate">Total Stok Unit</span>
-                <div class="p-1.5 sm:p-2 rounded-xl bg-purple-50 text-purple-600 border border-purple-100 shrink-0">
-                    <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
+            <div class="flex items-start justify-between gap-1">
+                <span class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-400 leading-snug">Total Stok Unit</span>
+                <div class="p-1.5 sm:p-2 rounded-xl bg-purple-50 text-purple-600 border border-purple-100 shrink-0 shadow-2xs">
+                    <svg class="w-3.5 h-3.5 sm:w-4.5 sm:h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
                 </div>
             </div>
             <div class="mt-2 min-w-0">
-                <p class="text-base sm:text-lg xl:text-2xl font-extrabold text-slate-900 font-mono tracking-tight truncate">{{ $totalUnitsCount }} <span class="text-[10px] sm:text-xs font-normal font-sans text-slate-400">Unit</span></p>
-                <p class="text-[10px] sm:text-[11px] text-slate-400 mt-0.5 truncate">{{ $project_id ? 'Proyek terpilih' : ($category_filter ? 'Kategori: ' . ucfirst($category_filter) : 'Total stok unit') }}</p>
+                <p class="text-base sm:text-xl xl:text-2xl font-black text-slate-900 font-mono tracking-tight leading-none">{{ $totalUnitsCount }} <span class="text-[10px] sm:text-xs font-normal font-sans text-slate-400">Unit</span></p>
+                <p class="text-[10px] sm:text-[11px] text-slate-400 mt-1.5 truncate">{{ $project_id ? 'Proyek terpilih' : ($category_filter ? 'Kategori: ' . ucfirst($category_filter) : 'Total stok unit') }}</p>
             </div>
         </div>
 
+        <!-- Card 2: Unit Tersedia -->
         <div class="kpi-card-emerald p-3.5 sm:p-4 xl:p-5 min-w-0 flex flex-col justify-between">
-            <div class="flex items-center justify-between gap-1">
-                <span class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-400 truncate">Unit Tersedia</span>
-                <div class="p-1.5 sm:p-2 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100 shrink-0">
-                    <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <div class="flex items-start justify-between gap-1">
+                <span class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-400 leading-snug">Unit Tersedia</span>
+                <div class="p-1.5 sm:p-2 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100 shrink-0 shadow-2xs">
+                    <svg class="w-3.5 h-3.5 sm:w-4.5 sm:h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                 </div>
             </div>
             <div class="mt-2 min-w-0">
-                <p class="text-base sm:text-lg xl:text-2xl font-extrabold text-emerald-700 font-mono tracking-tight truncate">
+                <p class="text-base sm:text-xl xl:text-2xl font-black text-emerald-700 font-mono tracking-tight leading-none">
                     {{ $availableUnitsCount }} <span class="text-[10px] sm:text-xs font-normal font-sans text-slate-400">Unit</span>
                 </p>
-                <p class="text-[10px] sm:text-[11px] text-slate-400 mt-0.5 truncate">Siap dijual / dipesan</p>
+                <p class="text-[10px] sm:text-[11px] text-slate-400 mt-1.5 truncate">Siap dijual / dipesan</p>
             </div>
         </div>
 
+        <!-- Card 3: Booked & Pending -->
         <div class="kpi-card-amber p-3.5 sm:p-4 xl:p-5 min-w-0 flex flex-col justify-between">
-            <div class="flex items-center justify-between gap-1">
-                <span class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-400 truncate">Booked & Pending</span>
-                <div class="p-1.5 sm:p-2 rounded-xl bg-amber-50 text-amber-600 border border-amber-100 shrink-0">
-                    <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <div class="flex items-start justify-between gap-1">
+                <span class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-400 leading-snug">Booked & Pending</span>
+                <div class="p-1.5 sm:p-2 rounded-xl bg-amber-50 text-amber-600 border border-amber-100 shrink-0 shadow-2xs">
+                    <svg class="w-3.5 h-3.5 sm:w-4.5 sm:h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                 </div>
             </div>
             <div class="mt-2 min-w-0">
-                <p class="text-base sm:text-lg xl:text-2xl font-extrabold text-amber-700 font-mono tracking-tight truncate">
+                <p class="text-base sm:text-xl xl:text-2xl font-black text-amber-700 font-mono tracking-tight leading-none">
                     {{ $bookedUnitsCount }} <span class="text-[10px] sm:text-xs font-normal font-sans text-slate-400">Unit</span>
                 </p>
-                <p class="text-[10px] sm:text-[11px] text-slate-400 mt-0.5 truncate">Dalam proses transaksi</p>
+                <p class="text-[10px] sm:text-[11px] text-slate-400 mt-1.5 truncate">Dalam proses transaksi</p>
             </div>
         </div>
 
+        <!-- Card 4: Unit Terjual / ACC -->
         <div class="kpi-card-rose p-3.5 sm:p-4 xl:p-5 min-w-0 flex flex-col justify-between">
-            <div class="flex items-center justify-between gap-1">
-                <span class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-400 truncate">Unit Terjual / ACC</span>
-                <div class="p-1.5 sm:p-2 rounded-xl bg-rose-50 text-rose-600 border border-rose-100 shrink-0">
-                    <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            <div class="flex items-start justify-between gap-1">
+                <span class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-400 leading-snug">Unit Terjual / ACC</span>
+                <div class="p-1.5 sm:p-2 rounded-xl bg-rose-50 text-rose-600 border border-rose-100 shrink-0 shadow-2xs">
+                    <svg class="w-3.5 h-3.5 sm:w-4.5 sm:h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                 </div>
             </div>
             <div class="mt-2 min-w-0">
-                <p class="text-base sm:text-lg xl:text-2xl font-extrabold text-rose-700 font-mono tracking-tight truncate">
+                <p class="text-base sm:text-xl xl:text-2xl font-black text-rose-700 font-mono tracking-tight leading-none">
                     {{ $soldUnitsCount }} <span class="text-[10px] sm:text-xs font-normal font-sans text-slate-400">Unit</span>
                 </p>
-                <p class="text-[10px] sm:text-[11px] text-slate-400 mt-0.5 truncate">Penjualan lunas / cicilan</p>
+                <p class="text-[10px] sm:text-[11px] text-slate-400 mt-1.5 truncate">Penjualan lunas / cicilan</p>
             </div>
         </div>
     </div>
 
     @if($viewMode === 'siteplan')
-        <div class="card-clean p-4 sm:p-6 bg-slate-50/50 border border-slate-200/80 mb-6">
+        <div class="p-4 sm:p-6 bg-slate-100/90 rounded-3xl border border-slate-200 shadow-inner mb-6">
             <x-siteplan-visual-grid :units="$units" :interactiveModal="false" :showProjectName="true" />
         </div>
     @else
         <!-- Units Grid Cards -->
         <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4 sm:gap-5">
         @forelse($units as $unit)
-            <div class="card-clean p-4 sm:p-5 space-y-3.5 flex flex-col justify-between hover:shadow-md transition">
+            <div class="bg-white border-2 border-slate-200/90 hover:border-emerald-300 rounded-3xl p-4 sm:p-5 space-y-3.5 flex flex-col justify-between hover:shadow-md transition-all duration-200 shadow-xs">
                 <div class="space-y-3">
                     <!-- Top Badge & Code -->
                     <div class="flex items-start justify-between gap-2">
@@ -175,6 +205,23 @@
                                 @else
                                     <span class="text-[10px] uppercase font-bold px-2 py-0.5 rounded-md bg-amber-50 text-amber-800 border border-amber-200 inline-block">
                                         Kavling
+                                    </span>
+                                @endif
+
+                                @php
+                                    $expInfo = $unitExpensesData[$unit->id] ?? [
+                                        'has_expenses' => false,
+                                        'total_realized' => 0,
+                                        'material_cost' => 0,
+                                        'salary_cost' => 0,
+                                        'contract_cost' => 0,
+                                    ];
+                                @endphp
+
+                                @if($expInfo['has_expenses'])
+                                    <span class="inline-flex items-center gap-1 text-[10px] font-black px-2 py-0.5 rounded-md bg-amber-100/90 text-amber-900 border border-amber-300 shadow-2xs" title="Terdapat catatan biaya pengeluaran di detail unit">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-amber-600 animate-pulse"></span>
+                                        <span>Ada Biaya</span>
                                     </span>
                                 @endif
                             </div>
@@ -215,7 +262,7 @@
                         @else
                             <span class="text-[10px] text-slate-400 italic flex items-center gap-1">
                                 <svg class="w-3 h-3 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-                                Belum ada penugasan pekerja
+                                <span class="text-slate-400">Belum ada penugasan pekerja</span>
                             </span>
                         @endif
                     </div>
@@ -285,6 +332,32 @@
                             @endif
                         @endif
                     </div>
+
+                    <!-- Realisasi Biaya Lapangan Info Strip -->
+                    @if($expInfo['has_expenses'])
+                        <div class="bg-gradient-to-r from-amber-50 to-orange-50/80 border border-amber-200/90 rounded-2xl p-2.5 flex items-center justify-between text-xs shadow-2xs">
+                            <div class="flex items-center gap-1.5 min-w-0">
+                                <div class="p-1 rounded-lg bg-amber-100 text-amber-700 shrink-0">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                </div>
+                                <div class="min-w-0">
+                                    <span class="font-extrabold text-amber-900 text-[11px] block truncate">Biaya di Detail:</span>
+                                    <span class="text-[9px] text-amber-700 font-semibold block truncate">
+                                        @if($expInfo['total_realized'] > 0)
+                                            Material & Upah Terbayar
+                                        @else
+                                            Kontrak Borongan Kerja
+                                        @endif
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="text-right shrink-0">
+                                <span class="font-mono font-black text-amber-900 text-xs sm:text-sm block">
+                                    Rp {{ number_format($expInfo['total_realized'] > 0 ? $expInfo['total_realized'] : $expInfo['contract_cost'], 0, ',', '.') }}
+                                </span>
+                            </div>
+                        </div>
+                    @endif
                 </div>
 
                 <!-- Price Info & Financial Status -->

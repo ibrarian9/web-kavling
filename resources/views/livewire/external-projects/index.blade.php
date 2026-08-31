@@ -39,50 +39,58 @@
         </div>
     @endif
 
-    <!-- KPI Summary Cards Grid -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div class="kpi-card-blue bg-white border border-slate-200/80 rounded-3xl p-5 shadow-xs">
-            <div class="flex items-center justify-between">
-                <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Total Proyek Luar</span>
-                <div class="p-2.5 rounded-2xl bg-indigo-50 text-indigo-600 border border-indigo-100 shadow-2xs">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5m0 0h5m-5 0v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+    <!-- KPI Summary Cards Grid (Responsive: 2 Kolom di Mobile/iPad (2 Atas 2 Bawah), 4 Kolom di Desktop Layar Lebar) -->
+    <div class="grid grid-cols-2 xl:grid-cols-4 gap-3.5 sm:gap-4 lg:gap-5">
+        <div class="kpi-card-blue bg-white border border-slate-200/80 rounded-2xl sm:rounded-3xl p-4 sm:p-5 shadow-xs min-w-0 flex flex-col justify-between">
+            <div class="flex items-start justify-between gap-1">
+                <span class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-400 leading-snug">Total Proyek Luar</span>
+                <div class="p-1.5 sm:p-2.5 rounded-xl sm:rounded-2xl bg-indigo-50 text-indigo-600 border border-indigo-100 shadow-2xs shrink-0">
+                    <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5m0 0h5m-5 0v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
                 </div>
             </div>
-            <p class="text-2xl font-extrabold text-slate-900 font-mono mt-2">{{ $totalProjectsCount }} Proyek</p>
-            <p class="text-[11px] text-slate-400 mt-1">{{ $totalActiveProjectsCount }} Proyek Sedang Berjalan</p>
+            <div class="mt-2 min-w-0">
+                <p class="text-base sm:text-xl xl:text-2xl font-black text-slate-900 font-mono tracking-tight">{{ $totalProjectsCount }} <span class="text-xs font-sans font-semibold text-slate-500">Proyek</span></p>
+                <p class="text-[10px] sm:text-[11px] text-slate-400 mt-0.5 truncate">{{ $totalActiveProjectsCount }} Sedang Berjalan</p>
+            </div>
         </div>
 
-        <div class="kpi-card-amber bg-white border border-slate-200/80 rounded-3xl p-5 shadow-xs">
-            <div class="flex items-center justify-between">
-                <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Total Belanja Material</span>
-                <div class="p-2.5 rounded-2xl bg-amber-50 text-amber-600 border border-amber-100 shadow-2xs">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+        <div class="kpi-card-amber bg-white border border-slate-200/80 rounded-2xl sm:rounded-3xl p-4 sm:p-5 shadow-xs min-w-0 flex flex-col justify-between">
+            <div class="flex items-start justify-between gap-1">
+                <span class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-400 leading-snug">Total Belanja Material</span>
+                <div class="p-1.5 sm:p-2.5 rounded-xl sm:rounded-2xl bg-amber-50 text-amber-600 border border-amber-100 shadow-2xs shrink-0">
+                    <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
                 </div>
             </div>
-            <p class="text-2xl font-extrabold text-amber-700 font-mono mt-2">Rp {{ number_format($totalExternalMaterialSum, 0, ',', '.') }}</p>
-            <p class="text-[11px] text-slate-400 mt-1">Akumulasi pembelian barang</p>
+            <div class="mt-2 min-w-0">
+                <p class="text-base sm:text-xl xl:text-2xl font-black text-amber-700 font-mono tracking-tight truncate whitespace-nowrap" title="Rp {{ number_format($totalExternalMaterialSum, 0, ',', '.') }}">Rp {{ number_format($totalExternalMaterialSum, 0, ',', '.') }}</p>
+                <p class="text-[10px] sm:text-[11px] text-slate-400 mt-0.5 truncate">Akumulasi pembelian barang</p>
+            </div>
         </div>
 
-        <div class="kpi-card-teal bg-white border border-slate-200/80 rounded-3xl p-5 shadow-xs">
-            <div class="flex items-center justify-between">
-                <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Total Upah Tukang</span>
-                <div class="p-2.5 rounded-2xl bg-teal-50 text-teal-600 border border-teal-100 shadow-2xs">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+        <div class="kpi-card-teal bg-white border border-slate-200/80 rounded-2xl sm:rounded-3xl p-4 sm:p-5 shadow-xs min-w-0 flex flex-col justify-between">
+            <div class="flex items-start justify-between gap-1">
+                <span class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-400 leading-snug">Total Upah Tukang</span>
+                <div class="p-1.5 sm:p-2.5 rounded-xl sm:rounded-2xl bg-teal-50 text-teal-600 border border-teal-100 shadow-2xs shrink-0">
+                    <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
                 </div>
             </div>
-            <p class="text-2xl font-extrabold text-teal-700 font-mono mt-2">Rp {{ number_format($totalExternalWageSum, 0, ',', '.') }}</p>
-            <p class="text-[11px] text-slate-400 mt-1">Akumulasi upah dibayarkan</p>
+            <div class="mt-2 min-w-0">
+                <p class="text-base sm:text-xl xl:text-2xl font-black text-teal-700 font-mono tracking-tight truncate whitespace-nowrap" title="Rp {{ number_format($totalExternalWageSum, 0, ',', '.') }}">Rp {{ number_format($totalExternalWageSum, 0, ',', '.') }}</p>
+                <p class="text-[10px] sm:text-[11px] text-slate-400 mt-0.5 truncate">Akumulasi upah dibayarkan</p>
+            </div>
         </div>
 
-        <div class="kpi-card-rose bg-white border border-slate-200/80 rounded-3xl p-5 shadow-xs">
-            <div class="flex items-center justify-between">
-                <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Total Pengeluaran Proyek</span>
-                <div class="p-2.5 rounded-2xl bg-rose-50 text-rose-600 border border-rose-100 shadow-2xs">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <div class="kpi-card-rose bg-white border border-slate-200/80 rounded-2xl sm:rounded-3xl p-4 sm:p-5 shadow-xs min-w-0 flex flex-col justify-between">
+            <div class="flex items-start justify-between gap-1">
+                <span class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-400 leading-snug">Total Pengeluaran</span>
+                <div class="p-1.5 sm:p-2.5 rounded-xl sm:rounded-2xl bg-rose-50 text-rose-600 border border-rose-100 shadow-2xs shrink-0">
+                    <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                 </div>
             </div>
-            <p class="text-2xl font-extrabold text-rose-700 font-mono mt-2">Rp {{ number_format($totalOverallExpenses, 0, ',', '.') }}</p>
-            <p class="text-[11px] text-slate-400 mt-1">Material + Upah Pekerja</p>
+            <div class="mt-2 min-w-0">
+                <p class="text-base sm:text-xl xl:text-2xl font-black text-rose-700 font-mono tracking-tight truncate whitespace-nowrap" title="Rp {{ number_format($totalOverallExpenses, 0, ',', '.') }}">Rp {{ number_format($totalOverallExpenses, 0, ',', '.') }}</p>
+                <p class="text-[10px] sm:text-[11px] text-slate-400 mt-0.5 truncate">Material + Upah Pekerja</p>
+            </div>
         </div>
     </div>
 
@@ -107,9 +115,9 @@
     @php
         $headers = [
             'Proyek & Klien',
-            'Rincian Biaya (Material & Upah)',
-            'Total Pengeluaran',
-            'Status',
+            ['label' => 'Rincian Biaya (Material & Upah)', 'class' => 'p-3.5 min-w-[210px]'],
+            ['label' => 'Total Pengeluaran', 'class' => 'p-3.5 min-w-[170px]'],
+            ['label' => 'Status', 'class' => 'p-3.5 text-center'],
             ['label' => 'Aksi', 'class' => 'p-3.5 text-center']
         ];
     @endphp
@@ -148,26 +156,26 @@
                     </div>
                 </td>
 
-                <td data-label="Rincian Biaya" class="p-3.5">
+                <td data-label="Rincian Biaya" class="p-3.5 whitespace-nowrap">
                     <div class="space-y-1 text-xs">
-                        <div class="flex items-center justify-between gap-2">
-                            <span class="text-slate-500 text-[11px]">Material ({{ $proj->materials_count }}x):</span>
-                            <span class="font-mono font-bold text-amber-700">Rp {{ number_format($matCost, 0, ',', '.') }}</span>
+                        <div class="flex items-center justify-between gap-3">
+                            <span class="text-slate-500 text-[11px] whitespace-nowrap">Material ({{ $proj->materials_count }}x):</span>
+                            <span class="font-mono font-bold text-amber-700 whitespace-nowrap">Rp {{ number_format($matCost, 0, ',', '.') }}</span>
                         </div>
-                        <div class="flex items-center justify-between gap-2">
-                            <span class="text-slate-500 text-[11px]">Upah ({{ $proj->worker_wages_count }}x):</span>
-                            <span class="font-mono font-bold text-teal-700">Rp {{ number_format($wageCost, 0, ',', '.') }}</span>
+                        <div class="flex items-center justify-between gap-3">
+                            <span class="text-slate-500 text-[11px] whitespace-nowrap">Upah ({{ $proj->worker_wages_count }}x):</span>
+                            <span class="font-mono font-bold text-teal-700 whitespace-nowrap">Rp {{ number_format($wageCost, 0, ',', '.') }}</span>
                         </div>
                     </div>
                 </td>
 
-                <td data-label="Total Pengeluaran" class="p-3.5">
-                    <span class="font-mono text-sm font-extrabold text-rose-700 block">
+                <td data-label="Total Pengeluaran" class="p-3.5 whitespace-nowrap">
+                    <span class="font-mono text-sm font-extrabold text-rose-700 block whitespace-nowrap">
                         Rp {{ number_format($totalCost, 0, ',', '.') }}
                     </span>
                     @if($proj->contract_value > 0)
-                        <span class="text-[10px] text-slate-500 font-sans block mt-0.5">
-                            Kontrak: <strong class="text-slate-700 font-mono">Rp {{ number_format($proj->contract_value, 0, ',', '.') }}</strong>
+                        <span class="text-[10px] text-slate-500 font-sans block mt-0.5 whitespace-nowrap">
+                            Kontrak: <strong class="text-slate-700 font-mono whitespace-nowrap">Rp {{ number_format($proj->contract_value, 0, ',', '.') }}</strong>
                         </span>
                     @endif
                 </td>
@@ -194,7 +202,7 @@
                             Detail & Biaya
                         </x-button>
 
-                        <x-button variant="outline" size="xs" icon="pdf" wire:click="openViewerModal('pdf', '{{ route('external-projects.report-pdf', $proj->id) }}', 'Rekapitulasi Biaya - {{ addslashes($proj->name) }}')" title="Pratinjau Rekap PDF">
+                        <x-button variant="pdf" size="xs" icon="pdf" wire:click="openViewerModal('pdf', '{{ route('external-projects.report-pdf', $proj->id) }}', 'Rekapitulasi Biaya - {{ addslashes($proj->name) }}')" title="Pratinjau Rekap PDF">
                             PDF
                         </x-button>
 

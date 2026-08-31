@@ -2255,6 +2255,11 @@ class Show extends Component
             ->latest('id')
             ->get();
 
+        $totalMaterialCost = (float) $materialPurchases->sum('total_price');
+        $totalSalaryCost = (float) $salaryPayments->sum('amount_paid');
+        $totalPayrollContractCost = (float) $unitPayrolls->sum('agreed_salary');
+        $totalRealizedExpenses = $totalMaterialCost + $totalSalaryCost;
+
         return view('livewire.units.show', [
             'unit' => $unit,
             'unitAssignments' => $unitAssignments,
@@ -2265,6 +2270,10 @@ class Show extends Component
             'unitPayrolls' => $unitPayrolls,
             'unitCommissions' => $unitCommissions,
             'combinedExpenses' => $combinedExpenses,
+            'totalMaterialCost' => $totalMaterialCost,
+            'totalSalaryCost' => $totalSalaryCost,
+            'totalPayrollContractCost' => $totalPayrollContractCost,
+            'totalRealizedExpenses' => $totalRealizedExpenses,
             'showWorkerModal' => $this->showWorkerModal,
             'showBookingModal' => $this->showBookingModal,
             'showPayrollSetupModal' => $this->showPayrollSetupModal,

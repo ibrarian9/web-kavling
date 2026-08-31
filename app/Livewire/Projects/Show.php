@@ -22,7 +22,12 @@ class Show extends Component
     public string $statusFilter = '';
     public string $typeFilter = '';
     public string $unitSearch = '';
-    public string $activeTab = 'units'; // 'units', 'payments', or 'cashflow'
+    public string $activeTab = 'units'; // 'units', 'siteplan', 'payments', or 'cashflow'
+    
+    public function setTab(string $tab): void
+    {
+        $this->activeTab = $tab;
+    }
 
     // Project Payment Modal Form
     public bool $showPaymentModal = false;

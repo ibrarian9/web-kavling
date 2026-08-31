@@ -254,6 +254,16 @@
   to { transform: translateY(12px) scale(0.96); opacity: 0; }
 }
 
+@keyframes livewireProgress {
+  0% { transform: translateX(-100%); }
+  50% { transform: translateX(0%); }
+  100% { transform: translateX(100%); }
+}
+
+.animate-livewire-progress {
+  animation: livewireProgress 1.2s infinite ease-in-out;
+}
+
 /* ========================================================= */
 /* iPad & Touch-Screen Responsive Enhancements               */
 /* ========================================================= */

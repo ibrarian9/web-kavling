@@ -1,7 +1,7 @@
 <!-- Unit Status & Financial KPI Dashboard Cards -->
 <div class="space-y-4">
-    <!-- Unit Status Summary Grid (2 Baris di iPad / Tablet, 4 Kolom di Layar Lebar) -->
-    <div class="grid grid-cols-2 xl:grid-cols-4 gap-3.5 sm:gap-4">
+    <!-- Unit Status Summary Grid (4 Kolom di iPad & Layar Lebar) -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3.5 sm:gap-4">
         <!-- Unit Terjual -->
         <div class="kpi-card-emerald p-4 sm:p-5 min-w-0 flex flex-col justify-between shadow-2xs rounded-2xl">
             <div class="flex items-center justify-between gap-1.5">
@@ -71,9 +71,9 @@
         </div>
     </div>
 
-    <!-- Financial KPI Dashboard Cards (2 Baris di iPad / Tablet, 4 Kolom di Layar Lebar) -->
+    <!-- Financial KPI Dashboard Cards (4 Kolom di iPad & Layar Lebar) -->
     @if(!auth()->user()->isMarketing() && !auth()->user()->isPengawasProject() && auth()->user()->canViewSalesPrices())
-        <div class="grid grid-cols-2 xl:grid-cols-4 gap-3.5 sm:gap-4">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3.5 sm:gap-4">
             <!-- Total Nilai Deal Penjualan -->
             <div class="kpi-card-emerald p-4 sm:p-5 min-w-0 flex flex-col justify-between shadow-2xs rounded-2xl">
                 <div class="flex items-center justify-between gap-1.5">
@@ -83,10 +83,10 @@
                     </div>
                 </div>
                 <div class="mt-3 min-w-0">
-                    <p class="text-base sm:text-lg xl:text-2xl font-black text-emerald-700 font-mono tracking-tight whitespace-normal break-words" title="Rp {{ number_format($totalSalesRevenue, 0, ',', '.') }}">
+                    <p class="text-sm sm:text-base lg:text-xl xl:text-2xl font-black text-emerald-700 font-mono tracking-tight truncate whitespace-nowrap" title="Rp {{ number_format($totalSalesRevenue, 0, ',', '.') }}">
                         Rp {{ number_format($totalSalesRevenue, 0, ',', '.') }}
                     </p>
-                    <p class="text-[11px] sm:text-xs text-slate-400 mt-1">{{ $soldUnits }} Unit Deal / Terjual</p>
+                    <p class="text-[11px] sm:text-xs text-slate-400 mt-1 truncate">{{ $soldUnits }} Unit Deal / Terjual</p>
                 </div>
             </div>
 
@@ -99,10 +99,10 @@
                     </div>
                 </div>
                 <div class="mt-3 min-w-0">
-                    <p class="text-base sm:text-lg xl:text-2xl font-black text-emerald-700 font-mono tracking-tight whitespace-normal break-words" title="Rp {{ number_format($totalPaidRevenue, 0, ',', '.') }}">
+                    <p class="text-sm sm:text-base lg:text-xl xl:text-2xl font-black text-emerald-700 font-mono tracking-tight truncate whitespace-nowrap" title="Rp {{ number_format($totalPaidRevenue, 0, ',', '.') }}">
                         Rp {{ number_format($totalPaidRevenue, 0, ',', '.') }}
                     </p>
-                    <p class="text-[11px] sm:text-xs text-slate-400 mt-1">Booking, DP, & Cicilan</p>
+                    <p class="text-[11px] sm:text-xs text-slate-400 mt-1 truncate">Booking, DP, & Cicilan</p>
                 </div>
             </div>
 
@@ -115,10 +115,10 @@
                     </div>
                 </div>
                 <div class="mt-3 min-w-0">
-                    <p class="text-base sm:text-lg xl:text-2xl font-black text-amber-700 font-mono tracking-tight whitespace-normal break-words" title="Rp {{ number_format($totalOutstandingReceivable, 0, ',', '.') }}">
+                    <p class="text-sm sm:text-base lg:text-xl xl:text-2xl font-black text-amber-700 font-mono tracking-tight truncate whitespace-nowrap" title="Rp {{ number_format($totalOutstandingReceivable, 0, ',', '.') }}">
                         Rp {{ number_format($totalOutstandingReceivable, 0, ',', '.') }}
                     </p>
-                    <p class="text-[11px] sm:text-xs text-slate-400 mt-1">Piutang Belum Lunas</p>
+                    <p class="text-[11px] sm:text-xs text-slate-400 mt-1 truncate">Piutang Belum Lunas</p>
                 </div>
             </div>
 
@@ -131,10 +131,10 @@
                     </div>
                 </div>
                 <div class="mt-3 min-w-0">
-                    <p class="text-base sm:text-lg xl:text-2xl font-black font-mono tracking-tight whitespace-normal break-words {{ $totalProjectProfit >= 0 ? 'text-emerald-700' : 'text-rose-700' }}" title="Rp {{ number_format($totalProjectProfit, 0, ',', '.') }}">
+                    <p class="text-sm sm:text-base lg:text-xl xl:text-2xl font-black font-mono tracking-tight truncate whitespace-nowrap {{ $totalProjectProfit >= 0 ? 'text-emerald-700' : 'text-rose-700' }}" title="Rp {{ number_format($totalProjectProfit, 0, ',', '.') }}">
                         Rp {{ number_format($totalProjectProfit, 0, ',', '.') }}
                     </p>
-                    <p class="text-[11px] sm:text-xs text-slate-400 mt-1" title="Pengeluaran: Rp {{ number_format($totalProjectExpenses, 0, ',', '.') }}">Biaya: Rp {{ number_format($totalProjectExpenses, 0, ',', '.') }}</p>
+                    <p class="text-[11px] sm:text-xs text-slate-400 mt-1 truncate" title="Pengeluaran: Rp {{ number_format($totalProjectExpenses, 0, ',', '.') }}">Biaya: Rp {{ number_format($totalProjectExpenses, 0, ',', '.') }}</p>
                 </div>
             </div>
         </div>

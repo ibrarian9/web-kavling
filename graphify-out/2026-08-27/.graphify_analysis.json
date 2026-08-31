@@ -1,0 +1,2027 @@
+{
+  "communities": {
+    "0": [
+      "app_http_controllers_cashflowreportcontroller",
+      "app_http_controllers_cashflowverificationcontroller",
+      "app_http_controllers_fieldexpensesreportcontroller",
+      "app_http_controllers_projectreportcontroller",
+      "app_http_controllers_unitexpensesreportcontroller",
+      "app_livewire_bookings_index",
+      "app_livewire_cashflow_index",
+      "app_livewire_dashboard",
+      "app_livewire_dashboard_dashboard",
+      "app_livewire_documents_index",
+      "app_livewire_employeesalaries_index",
+      "app_livewire_fieldexpenses_index",
+      "app_livewire_globalsearch",
+      "app_livewire_installments_index",
+      "app_livewire_manualinvoices_index",
+      "app_livewire_profile_index",
+      "app_livewire_projects_index",
+      "app_livewire_projects_show",
+      "app_livewire_proposals_index",
+      "app_livewire_units_index",
+      "app_livewire_units_legacysale",
+      "app_livewire_units_show",
+      "app_livewire_users_index",
+      "app_models_approval",
+      "app_models_booking",
+      "app_models_cashflowtransaction",
+      "app_models_employeepayrollpayment",
+      "app_models_employeesalary",
+      "app_models_installmentpayment",
+      "app_models_manualinvoice",
+      "app_models_officialdocument",
+      "app_models_priceproposal",
+      "app_models_project",
+      "app_models_projectpayment",
+      "app_models_unit",
+      "app_models_unitinstallment",
+      "app_models_user",
+      "app_models_weeklymaterialpurchase",
+      "app_models_workerassignment",
+      "app_models_workersalarypayment",
+      "app_services_activitylogger",
+      "app_services_imagecompressor",
+      "config_auth",
+      "database_seeders_bookingseeder",
+      "database_seeders_databaseseeder",
+      "database_seeders_employeesalaryseeder",
+      "database_seeders_financialseeder",
+      "database_seeders_priceproposalseeder",
+      "database_seeders_unitseeder",
+      "database_seeders_workerseeder",
+      "illuminate_database_eloquent_factories_hasfactory",
+      "illuminate_database_eloquent_model",
+      "illuminate_foundation_testing_refreshdatabase",
+      "illuminate_foundation_testing_testcase",
+      "livewire_component",
+      "livewire_withfileuploads",
+      "livewire_withpagination",
+      "tests_feature_activitylogtest",
+      "tests_feature_allpagestest",
+      "tests_feature_bookingreceiptphototest",
+      "tests_feature_bookingrejectionandhppvisibilitytest",
+      "tests_feature_cashflowaudittrailtest",
+      "tests_feature_cashflowqrverificationtest",
+      "tests_feature_cashflowreceiptphototest",
+      "tests_feature_cashflowseparationandexporttest",
+      "tests_feature_contractorandinstallmentcancellationtest",
+      "tests_feature_directcashspptest",
+      "tests_feature_documenteditdeletetest",
+      "tests_feature_employeesalariestest",
+      "tests_feature_fieldexpensespdftest",
+      "tests_feature_founderdeleteunittest",
+      "tests_feature_globalsearchtest",
+      "tests_feature_inactiveaccountlogintest",
+      "tests_feature_installmentdeletetest",
+      "tests_feature_installmentinvoicepdftest",
+      "tests_feature_installmentschemeedittest",
+      "tests_feature_integration_endtoendbookingcancellationandconversionintegrationtest",
+      "tests_feature_integration_endtoendcashflowreportingintegrationtest",
+      "tests_feature_integration_endtoendemployeepayrollandfinanceintegrationtest",
+      "tests_feature_integration_endtoendmanualinvoiceintegrationtest",
+      "tests_feature_integration_endtoendpriceproposalintegrationtest",
+      "tests_feature_integration_endtoendprojectlandpaymentintegrationtest",
+      "tests_feature_integration_endtoendpropertysaleintegrationtest",
+      "tests_feature_integration_endtoendworkerandconstructionintegrationtest",
+      "tests_feature_livewiresuitetest",
+      "tests_feature_manualinvoicemanagementtest",
+      "tests_feature_monthlyinstallmenttrackertest",
+      "tests_feature_officialdocumentsearchfiltertest",
+      "tests_feature_officialdocumentsearchfiltertest_officialdocumentsearchfiltertest",
+      "tests_feature_pengawasmanagementtest",
+      "tests_feature_profiletest",
+      "tests_feature_projectdeletetest",
+      "tests_feature_projectpaymentedittest",
+      "tests_feature_proposaleditdeletetest",
+      "tests_feature_siteplanvisualtest",
+      "tests_feature_spjbpdftest",
+      "tests_feature_toastnotificationtest",
+      "tests_feature_tutorialpagetest",
+      "tests_feature_uniqueunitcodetest",
+      "tests_feature_unitdetaileditanddeletepermissionstest",
+      "tests_feature_unitdetailresponsivenessandroletest",
+      "tests_feature_unitexpensespdftest",
+      "tests_feature_unitsstatusfiltertest",
+      "tests_feature_unpaidinstallmentpdfreporttest",
+      "tests_feature_userdeletetest",
+      "tests_feature_workerspkpdftest",
+      "tests_pest",
+      "tests_pest_something",
+      "tests_testcase",
+      "tests_testcase_testcase",
+      "tests_unit_activitylogandloggerunittest",
+      "tests_unit_bookingunittest",
+      "tests_unit_cashflowunittest",
+      "tests_unit_employeesalaryunittest",
+      "tests_unit_imagecompressorunittest",
+      "tests_unit_installmentunittest",
+      "tests_unit_manualinvoiceunittest",
+      "tests_unit_officialdocumentunittest",
+      "tests_unit_priceproposalandapprovalunittest",
+      "tests_unit_projectpaymentunittest",
+      "tests_unit_projectunittest",
+      "tests_unit_unitunittest",
+      "tests_unit_userandauthunittest",
+      "tests_unit_weeklymaterialpurchaseunittest",
+      "tests_unit_workerandpayrollunittest",
+      "tests_unit_workersalarypaymentunittest"
+    ],
+    "1": [
+      "app_http_controllers_authcontroller",
+      "app_http_controllers_authcontroller_authcontroller",
+      "app_http_controllers_authcontroller_authcontroller_login",
+      "app_http_controllers_authcontroller_authcontroller_logout",
+      "app_http_controllers_authcontroller_authcontroller_showlogin",
+      "app_http_controllers_authcontroller_authcontroller_switchrole",
+      "app_http_controllers_bookingreceiptcontroller",
+      "app_http_controllers_bookingreceiptcontroller_bookingreceiptcontroller",
+      "app_http_controllers_bookingreceiptcontroller_bookingreceiptcontroller_generateqrbase64",
+      "app_http_controllers_bookingreceiptcontroller_bookingreceiptcontroller_streamreceipt",
+      "app_http_controllers_bookingreceiptcontroller_bookingreceiptcontroller_terbilang",
+      "app_http_controllers_cashflowreportcontroller_cashflowreportcontroller",
+      "app_http_controllers_cashflowreportcontroller_cashflowreportcontroller_exportexcel",
+      "app_http_controllers_cashflowreportcontroller_cashflowreportcontroller_exportpdf",
+      "app_http_controllers_cashflowreportcontroller_cashflowreportcontroller_generateqrbase64",
+      "app_http_controllers_cashflowverificationcontroller_cashflowverificationcontroller",
+      "app_http_controllers_cashflowverificationcontroller_cashflowverificationcontroller_verify",
+      "app_http_controllers_controller",
+      "app_http_controllers_controller_controller",
+      "app_http_controllers_documentverificationcontroller",
+      "app_http_controllers_documentverificationcontroller_documentverificationcontroller",
+      "app_http_controllers_documentverificationcontroller_documentverificationcontroller_verify",
+      "app_http_controllers_fieldexpensesreportcontroller_fieldexpensesreportcontroller",
+      "app_http_controllers_fieldexpensesreportcontroller_fieldexpensesreportcontroller_exportpdf",
+      "app_http_controllers_fieldexpensesreportcontroller_fieldexpensesreportcontroller_generateqrbase64",
+      "app_http_controllers_fieldexpensesreportcontroller_fieldexpensesreportcontroller_verify",
+      "app_http_controllers_landpaymentreceiptcontroller",
+      "app_http_controllers_materialpurchasereceiptcontroller",
+      "app_http_controllers_materialpurchasereceiptcontroller_materialpurchasereceiptcontroller",
+      "app_http_controllers_materialpurchasereceiptcontroller_materialpurchasereceiptcontroller_generateqrbase64",
+      "app_http_controllers_materialpurchasereceiptcontroller_materialpurchasereceiptcontroller_streamreceipt",
+      "app_http_controllers_materialpurchasereceiptcontroller_materialpurchasereceiptcontroller_terbilang",
+      "app_http_controllers_materialpurchasereceiptcontroller_materialpurchasereceiptcontroller_verify",
+      "app_http_controllers_payrollreceiptcontroller",
+      "app_http_controllers_payrollreceiptcontroller_payrollreceiptcontroller",
+      "app_http_controllers_payrollreceiptcontroller_payrollreceiptcontroller_generateqrbase64",
+      "app_http_controllers_payrollreceiptcontroller_payrollreceiptcontroller_streamreceipt",
+      "app_http_controllers_payrollreceiptcontroller_payrollreceiptcontroller_terbilang",
+      "app_http_controllers_payrollverificationcontroller",
+      "app_http_controllers_payrollverificationcontroller_payrollverificationcontroller",
+      "app_http_controllers_payrollverificationcontroller_payrollverificationcontroller_verify",
+      "app_http_controllers_receiptverificationcontroller",
+      "app_http_controllers_receiptverificationcontroller_receiptverificationcontroller",
+      "app_http_controllers_receiptverificationcontroller_receiptverificationcontroller_verify",
+      "app_http_controllers_unpaidinstallmentreportcontroller",
+      "app_http_controllers_unpaidinstallmentreportcontroller_unpaidinstallmentreportcontroller",
+      "app_http_controllers_unpaidinstallmentreportcontroller_unpaidinstallmentreportcontroller_exportpdf",
+      "app_http_controllers_unpaidinstallmentreportcontroller_unpaidinstallmentreportcontroller_generateqrbase64",
+      "app_http_controllers_unpaidinstallmentreportcontroller_unpaidinstallmentreportcontroller_verify",
+      "app_http_middleware_ensureuserisactive",
+      "app_http_middleware_ensureuserisactive_ensureuserisactive",
+      "app_http_middleware_ensureuserisactive_ensureuserisactive_handle",
+      "closure",
+      "illuminate_http_request",
+      "routes_web",
+      "symfony_component_httpfoundation_response",
+      "symfony_component_httpfoundation_streamedresponse"
+    ],
+    "2": [
+      "app_http_controllers_projectreportcontroller_projectreportcontroller",
+      "app_http_controllers_projectreportcontroller_projectreportcontroller_exportlandpaymentspdf",
+      "app_http_controllers_projectreportcontroller_projectreportcontroller_exportsalesprofitpdf",
+      "app_http_controllers_projectreportcontroller_projectreportcontroller_generateqrbase64",
+      "app_http_controllers_projectreportcontroller_projectreportcontroller_verifylandpayments",
+      "app_http_controllers_projectreportcontroller_projectreportcontroller_verifysalesprofit",
+      "app_livewire_projects_index_index",
+      "app_livewire_projects_index_index_closemodal",
+      "app_livewire_projects_index_index_deleteproject",
+      "app_livewire_projects_index_index_editproject",
+      "app_livewire_projects_index_index_movepengawasassignment",
+      "app_livewire_projects_index_index_openmodal",
+      "app_livewire_projects_index_index_openworkermodal",
+      "app_livewire_projects_index_index_removepengawasassignment",
+      "app_livewire_projects_index_index_render",
+      "app_livewire_projects_index_index_resetinputfields",
+      "app_livewire_projects_index_index_saveproject",
+      "app_livewire_projects_index_index_saveworkerassignment",
+      "app_livewire_units_index_index",
+      "app_livewire_units_index_index_calculatelandpreview",
+      "app_livewire_units_index_index_closemodal",
+      "app_livewire_units_index_index_deleteunit",
+      "app_livewire_units_index_index_editunit",
+      "app_livewire_units_index_index_mount",
+      "app_livewire_units_index_index_openbookingmodal",
+      "app_livewire_units_index_index_openmodal",
+      "app_livewire_units_index_index_render",
+      "app_livewire_units_index_index_resetinputfields",
+      "app_livewire_units_index_index_savebooking",
+      "app_livewire_units_index_index_saveunit",
+      "app_livewire_units_index_index_updated",
+      "app_livewire_units_show_show_mount",
+      "app_models_project_project",
+      "app_models_project_project_creator",
+      "app_models_project_project_getpaymentprogresspercentageattribute",
+      "app_models_project_project_getremainingbalanceattribute",
+      "app_models_project_project_gettotalpaidattribute",
+      "app_models_project_project_payments",
+      "app_models_workerassignment_workerassignment",
+      "app_models_workerassignment_workerassignment_project",
+      "app_models_workerassignment_workerassignment_unit",
+      "app_models_workerassignment_workerassignment_user",
+      "app_models_workerassignment_workerassignment_worker",
+      "database_seeders_workerseeder_workerseeder",
+      "database_seeders_workerseeder_workerseeder_run",
+      "tests_feature_allpagestest_allpagestest",
+      "tests_feature_allpagestest_allpagestest_setup",
+      "tests_feature_allpagestest_allpagestest_test_founder_can_access_all_main_pages",
+      "tests_feature_allpagestest_allpagestest_test_login_page_is_accessible",
+      "tests_feature_allpagestest_allpagestest_test_pengawas_can_access_assigned_projects_and_units",
+      "tests_feature_pengawasmanagementtest_pengawasmanagementtest",
+      "tests_feature_pengawasmanagementtest_pengawasmanagementtest_setup",
+      "tests_feature_pengawasmanagementtest_pengawasmanagementtest_test_founder_can_assign_remove_and_move_pengawas_project",
+      "tests_feature_pengawasmanagementtest_pengawasmanagementtest_test_pengawas_only_sees_assigned_projects_and_hpp_hidden"
+    ],
+    "3": [
+      "composer",
+      "composer_allow_plugins_pestphp_pest_plugin",
+      "composer_allow_plugins_php_http_discovery",
+      "composer_autoload",
+      "composer_autoload_dev",
+      "composer_autoload_dev_psr_4",
+      "composer_autoload_psr_4",
+      "composer_config",
+      "composer_config_allow_plugins",
+      "composer_config_optimize_autoloader",
+      "composer_config_preferred_install",
+      "composer_config_sort_packages",
+      "composer_description",
+      "composer_extra",
+      "composer_extra_laravel",
+      "composer_keywords",
+      "composer_laravel_dont_discover",
+      "composer_license",
+      "composer_minimum_stability",
+      "composer_name",
+      "composer_prefer_stable",
+      "composer_psr_4_app",
+      "composer_psr_4_database_factories",
+      "composer_psr_4_database_seeders",
+      "composer_psr_4_tests",
+      "composer_require",
+      "composer_require_barryvdh_laravel_dompdf",
+      "composer_require_dev",
+      "composer_require_dev_fakerphp_faker",
+      "composer_require_dev_laravel_pail",
+      "composer_require_dev_laravel_pao",
+      "composer_require_dev_laravel_pint",
+      "composer_require_dev_mockery_mockery",
+      "composer_require_dev_nunomaduro_collision",
+      "composer_require_dev_pestphp_pest",
+      "composer_require_dev_pestphp_pest_plugin_laravel",
+      "composer_require_laravel_framework",
+      "composer_require_laravel_octane",
+      "composer_require_laravel_tinker",
+      "composer_require_livewire_livewire",
+      "composer_require_php",
+      "composer_require_simplesoftwareio_simple_qrcode",
+      "composer_require_spatie_laravel_permission",
+      "composer_require_spiral_roadrunner_cli",
+      "composer_require_spiral_roadrunner_http",
+      "composer_schema",
+      "composer_type",
+      "ref_framework",
+      "ref_laravel"
+    ],
+    "4": [
+      "app_http_controllers_employeesalaryslipcontroller",
+      "app_http_controllers_employeesalaryslipcontroller_employeesalaryslipcontroller",
+      "app_http_controllers_employeesalaryslipcontroller_employeesalaryslipcontroller_streampdf",
+      "app_livewire_employeesalaries_index_index",
+      "app_livewire_employeesalaries_index_index_closesalarymodal",
+      "app_livewire_employeesalaries_index_index_deletepaymentrecord",
+      "app_livewire_employeesalaries_index_index_deletesalarystandard",
+      "app_livewire_employeesalaries_index_index_editsalarystandard",
+      "app_livewire_employeesalaries_index_index_getindonesianmonth",
+      "app_livewire_employeesalaries_index_index_mount",
+      "app_livewire_employeesalaries_index_index_openpaymentmodal",
+      "app_livewire_employeesalaries_index_index_opensalarymodal",
+      "app_livewire_employeesalaries_index_index_processpayment",
+      "app_livewire_employeesalaries_index_index_render",
+      "app_livewire_employeesalaries_index_index_resetsalaryfields",
+      "app_livewire_employeesalaries_index_index_savesalarystandard",
+      "app_livewire_employeesalaries_index_index_updatedtargettype",
+      "app_livewire_employeesalaries_index_index_updateduserid",
+      "app_livewire_employeesalaries_index_index_updatedworkerid",
+      "app_models_employeepayrollpayment_employeepayrollpayment",
+      "app_models_employeepayrollpayment_employeepayrollpayment_boot",
+      "app_models_employeepayrollpayment_employeepayrollpayment_cashflowtransaction",
+      "app_models_employeepayrollpayment_employeepayrollpayment_creator",
+      "app_models_employeepayrollpayment_employeepayrollpayment_employeesalary",
+      "app_models_employeesalary_employeesalary",
+      "app_models_employeesalary_employeesalary_boot",
+      "app_models_employeesalary_employeesalary_creator",
+      "app_models_employeesalary_employeesalary_getindonesianmonth",
+      "app_models_employeesalary_employeesalary_user",
+      "app_models_employeesalary_employeesalary_worker",
+      "app_models_installmentpayment_installmentpayment_booted",
+      "app_models_manualinvoice_manualinvoice_booted",
+      "app_models_projectpayment_projectpayment_booted",
+      "app_models_workersalarypayment_workersalarypayment_boot",
+      "database_factories_userfactory",
+      "database_factories_userfactory_userfactory",
+      "database_factories_userfactory_userfactory_definition",
+      "database_factories_userfactory_userfactory_unverified",
+      "database_seeders_employeesalaryseeder_employeesalaryseeder",
+      "database_seeders_employeesalaryseeder_employeesalaryseeder_getmonthname",
+      "database_seeders_employeesalaryseeder_employeesalaryseeder_run",
+      "illuminate_database_eloquent_factories_factory",
+      "illuminate_http_response",
+      "static"
+    ],
+    "5": [
+      "app_livewire_installments_index_index",
+      "app_livewire_installments_index_index_calculatemonthlyinstallment",
+      "app_livewire_installments_index_index_closedetailmodal",
+      "app_livewire_installments_index_index_closeviewermodal",
+      "app_livewire_installments_index_index_deleteinstallment",
+      "app_livewire_installments_index_index_deleteinstallmentpayment",
+      "app_livewire_installments_index_index_mount",
+      "app_livewire_installments_index_index_openconverttocashmodal",
+      "app_livewire_installments_index_index_opendetailmodal",
+      "app_livewire_installments_index_index_openpaymentmodal",
+      "app_livewire_installments_index_index_opensetupmodal",
+      "app_livewire_installments_index_index_openviewermodal",
+      "app_livewire_installments_index_index_render",
+      "app_livewire_installments_index_index_savesetup",
+      "app_livewire_installments_index_index_selectunitforinstallment",
+      "app_livewire_installments_index_index_setmonthlyfilter",
+      "app_livewire_installments_index_index_submitconverttocash",
+      "app_livewire_installments_index_index_submitpayment",
+      "app_livewire_installments_index_index_updated",
+      "app_livewire_installments_index_index_updatingmonthlyfilter",
+      "app_livewire_installments_index_index_updatingprojectidfilter",
+      "app_livewire_installments_index_index_updatingsearch",
+      "app_livewire_installments_index_index_updatingstatusfilter",
+      "app_livewire_units_legacysale_legacysale_save",
+      "app_livewire_units_show_show_deleteinstallmentpayment",
+      "app_livewire_units_show_show_deleteinstallmentscheme",
+      "app_livewire_units_show_show_deleteunit",
+      "app_livewire_units_show_show_saveconverttocash",
+      "app_livewire_units_show_show_saveinstallmentpayment",
+      "app_livewire_units_show_show_savesetupinstallment",
+      "app_models_cashflowtransaction_cashflowtransaction",
+      "app_models_cashflowtransaction_cashflowtransaction_getreceiptphotourlattribute",
+      "app_models_installmentpayment_installmentpayment",
+      "app_models_unitinstallment_unitinstallment",
+      "app_models_unitinstallment_unitinstallment_getremainingbalanceattribute",
+      "app_models_unitinstallment_unitinstallment_gettotalpaidattribute",
+      "app_models_unitinstallment_unitinstallment_officialdocument",
+      "app_models_unitinstallment_unitinstallment_payments",
+      "database_seeders_financialseeder_financialseeder_run"
+    ],
+    "6": [
+      "app_livewire_dashboard_dashboard_render",
+      "app_livewire_globalsearch_globalsearch",
+      "app_livewire_globalsearch_globalsearch_closemodal",
+      "app_livewire_globalsearch_globalsearch_openmodal",
+      "app_livewire_globalsearch_globalsearch_render",
+      "app_livewire_units_show_show_openmaterialmodal",
+      "app_livewire_units_show_show_openpayrollsetupmodal",
+      "app_livewire_units_show_show_openworkermodal",
+      "app_livewire_workers_index",
+      "app_livewire_workers_index_index",
+      "app_livewire_workers_index_index_create",
+      "app_livewire_workers_index_index_edit",
+      "app_livewire_workers_index_index_openassignmodal",
+      "app_livewire_workers_index_index_render",
+      "app_livewire_workers_index_index_rules",
+      "app_livewire_workers_index_index_save",
+      "app_livewire_workers_index_index_saveassignment",
+      "app_livewire_workers_index_index_togglestatus",
+      "app_livewire_workers_index_index_updatingsearch",
+      "app_models_employeesalary_employeesalary_payrollpayments",
+      "app_models_project_project_assignments",
+      "app_models_project_project_cashflows",
+      "app_models_project_project_units",
+      "app_models_unit_unit_activeassignments",
+      "app_models_unit_unit_assignments",
+      "app_models_unit_unit_bookings",
+      "app_models_unit_unit_proposals",
+      "app_models_worker",
+      "app_models_worker_worker",
+      "app_models_worker_worker_activeassignments",
+      "app_models_worker_worker_assignments",
+      "app_models_worker_worker_unitpayrolls",
+      "app_models_worker_worker_weeklypurchases",
+      "illuminate_database_eloquent_relations_hasmany",
+      "tests_feature_togglestatusmodaltest"
+    ],
+    "7": [
+      "app_http_controllers_landpaymentreceiptcontroller_landpaymentreceiptcontroller",
+      "app_http_controllers_landpaymentreceiptcontroller_landpaymentreceiptcontroller_generateqrbase64",
+      "app_http_controllers_landpaymentreceiptcontroller_landpaymentreceiptcontroller_streamreceipt",
+      "app_http_controllers_landpaymentreceiptcontroller_landpaymentreceiptcontroller_terbilang",
+      "app_http_controllers_landpaymentreceiptcontroller_landpaymentreceiptcontroller_verify",
+      "app_livewire_projects_show_show",
+      "app_livewire_projects_show_show_calculatelegacylandarea",
+      "app_livewire_projects_show_show_closedetailmodal",
+      "app_livewire_projects_show_show_closeimagemodal",
+      "app_livewire_projects_show_show_closelegacymodal",
+      "app_livewire_projects_show_show_closepaymentmodal",
+      "app_livewire_projects_show_show_closesiteplanunitmodal",
+      "app_livewire_projects_show_show_deleteprojectpayment",
+      "app_livewire_projects_show_show_deletetransaction",
+      "app_livewire_projects_show_show_deleteunit",
+      "app_livewire_projects_show_show_editprojectpayment",
+      "app_livewire_projects_show_show_mount",
+      "app_livewire_projects_show_show_opendetailmodal",
+      "app_livewire_projects_show_show_openimagemodal",
+      "app_livewire_projects_show_show_openlegacymodal",
+      "app_livewire_projects_show_show_openpaymentmodal",
+      "app_livewire_projects_show_show_opensiteplanunitmodal",
+      "app_livewire_projects_show_show_saveprojectpayment",
+      "app_livewire_projects_show_show_submitlegacysale",
+      "app_livewire_projects_show_show_submitprojectpayment",
+      "app_livewire_projects_show_show_updatedlegacylandlength",
+      "app_livewire_projects_show_show_updatedlegacylandwidth",
+      "app_models_projectpayment_projectpayment",
+      "app_models_projectpayment_projectpayment_cashflowtransaction",
+      "app_models_projectpayment_projectpayment_creator",
+      "app_models_projectpayment_projectpayment_getreceiptphotourlattribute",
+      "app_models_projectpayment_projectpayment_project",
+      "app_services_imagecompressor_imagecompressor",
+      "app_services_imagecompressor_imagecompressor_compressandstore"
+    ],
+    "8": [
+      "app_livewire_proposals_index_index",
+      "app_livewire_proposals_index_index_calculatemargin",
+      "app_livewire_proposals_index_index_closeviewermodal",
+      "app_livewire_proposals_index_index_deleteproposal",
+      "app_livewire_proposals_index_index_editproposal",
+      "app_livewire_proposals_index_index_issuedocument",
+      "app_livewire_proposals_index_index_mount",
+      "app_livewire_proposals_index_index_openapprovalmodal",
+      "app_livewire_proposals_index_index_opencreatemodal",
+      "app_livewire_proposals_index_index_opendocmodal",
+      "app_livewire_proposals_index_index_openviewermodal",
+      "app_livewire_proposals_index_index_render",
+      "app_livewire_proposals_index_index_resetproposalform",
+      "app_livewire_proposals_index_index_selectunitforproposal",
+      "app_livewire_proposals_index_index_submitapproval",
+      "app_livewire_proposals_index_index_submitproposal",
+      "app_livewire_proposals_index_index_updatedprojectidfilter",
+      "app_livewire_proposals_index_index_updatedproposedprice",
+      "app_livewire_proposals_index_index_updatedsearch",
+      "app_livewire_proposals_index_index_updatedstatusfilter",
+      "app_models_approval_approval",
+      "app_models_approval_approval_approver",
+      "app_models_approval_approval_proposal",
+      "app_models_priceproposal_priceproposal",
+      "app_models_priceproposal_priceproposal_approvals",
+      "app_models_priceproposal_priceproposal_isfullyapproved",
+      "app_models_priceproposal_priceproposal_isrejected",
+      "app_models_priceproposal_priceproposal_proposer",
+      "app_models_priceproposal_priceproposal_unit",
+      "database_seeders_priceproposalseeder_priceproposalseeder",
+      "database_seeders_priceproposalseeder_priceproposalseeder_run"
+    ],
+    "9": [
+      "composer_scripts",
+      "composer_scripts_dev",
+      "composer_scripts_octane",
+      "composer_scripts_post_autoload_dump",
+      "composer_scripts_post_create_project_cmd",
+      "composer_scripts_post_root_package_install",
+      "composer_scripts_post_update_cmd",
+      "composer_scripts_pre_package_uninstall",
+      "composer_scripts_setup",
+      "composer_scripts_test",
+      "ref_composer_config_disableprocesstimeout",
+      "ref_composer_install",
+      "ref_illuminate_foundation_composerscripts_postautoloaddump",
+      "ref_illuminate_foundation_composerscripts_prepackageuninstall",
+      "ref_npm_install_ignore_scripts",
+      "ref_npm_run_build",
+      "ref_npx_concurrently_c_93c5fd_c4b5fd_fb7185_fdba74_php_artisan_octane_start_server_roadrunner_port_8001_php_artisan_queue_listen_tries_1_timeout_0_php_artisan_pail_timeout_0_npm_run_dev_names_octane_queue_logs_vite_kill_others",
+      "ref_php_artisan_config_clear_ansi_no_additional_args",
+      "ref_php_artisan_key_generate",
+      "ref_php_artisan_key_generate_ansi",
+      "ref_php_artisan_migrate_force",
+      "ref_php_artisan_migrate_graceful_ansi",
+      "ref_php_artisan_octane_start_server_roadrunner_port_8001",
+      "ref_php_artisan_package_discover_ansi",
+      "ref_php_artisan_test",
+      "ref_php_artisan_vendor_publish_tag_laravel_assets_ansi_force",
+      "ref_php_r_file_exists_database_database_sqlite_touch_database_database_sqlite",
+      "ref_php_r_file_exists_env_copy_env_example_env"
+    ],
+    "10": [
+      "app_http_controllers_unitexpensesreportcontroller_unitexpensesreportcontroller",
+      "app_http_controllers_unitexpensesreportcontroller_unitexpensesreportcontroller_exportpdf",
+      "app_http_controllers_unitexpensesreportcontroller_unitexpensesreportcontroller_generateqrbase64",
+      "app_http_controllers_unitexpensesreportcontroller_unitexpensesreportcontroller_verify",
+      "app_livewire_fieldexpenses_index_index",
+      "app_livewire_fieldexpenses_index_index_closeeditmodal",
+      "app_livewire_fieldexpenses_index_index_closeviewer",
+      "app_livewire_fieldexpenses_index_index_deleteexpense",
+      "app_livewire_fieldexpenses_index_index_openeditmodal",
+      "app_livewire_fieldexpenses_index_index_openviewer",
+      "app_livewire_fieldexpenses_index_index_render",
+      "app_livewire_fieldexpenses_index_index_saveedit",
+      "app_livewire_fieldexpenses_index_index_updatedcategoryfilter",
+      "app_livewire_fieldexpenses_index_index_updatedprojectid",
+      "app_livewire_fieldexpenses_index_index_updatedsearch",
+      "app_livewire_fieldexpenses_index_index_updatedunitid",
+      "app_livewire_units_show_show_render",
+      "app_models_weeklymaterialpurchase_weeklymaterialpurchase",
+      "app_models_weeklymaterialpurchase_weeklymaterialpurchase_pengawas",
+      "app_models_weeklymaterialpurchase_weeklymaterialpurchase_project",
+      "app_models_weeklymaterialpurchase_weeklymaterialpurchase_unit",
+      "app_models_weeklymaterialpurchase_weeklymaterialpurchase_worker",
+      "app_models_workersalarypayment_workersalarypayment",
+      "app_models_workersalarypayment_workersalarypayment_creator",
+      "app_models_workersalarypayment_workersalarypayment_payroll"
+    ],
+    "11": [
+      "app_livewire_units_show_show",
+      "app_livewire_units_show_show_calculatemonthlyinstallment",
+      "app_livewire_units_show_show_canmanagefinancial",
+      "app_livewire_units_show_show_canmanageoperational",
+      "app_livewire_units_show_show_closeviewermodal",
+      "app_livewire_units_show_show_deletematerialpurchase",
+      "app_livewire_units_show_show_deletepayrollpayment",
+      "app_livewire_units_show_show_deletepayrollsetup",
+      "app_livewire_units_show_show_deleteworkerassignment",
+      "app_livewire_units_show_show_editinstallmentpayment",
+      "app_livewire_units_show_show_editmaterialpurchase",
+      "app_livewire_units_show_show_editpayrollpayment",
+      "app_livewire_units_show_show_editpayrollsetup",
+      "app_livewire_units_show_show_editworkerassignment",
+      "app_livewire_units_show_show_openeditunitmodal",
+      "app_livewire_units_show_show_opensetupinstallmentmodal",
+      "app_livewire_units_show_show_openviewermodal",
+      "app_livewire_units_show_show_savedirectspp",
+      "app_livewire_units_show_show_saveeditunit",
+      "app_livewire_units_show_show_savematerialpurchase",
+      "app_livewire_units_show_show_savepayrollpayment",
+      "app_livewire_units_show_show_savepayrollsetup",
+      "app_livewire_units_show_show_saveworkerassignment",
+      "app_livewire_units_show_show_updatedmaterialquantity",
+      "app_livewire_units_show_show_updatedmaterialunitprice"
+    ],
+    "12": [
+      "app_http_controllers_manualinvoicecontroller",
+      "app_http_controllers_manualinvoicecontroller_manualinvoicecontroller",
+      "app_http_controllers_manualinvoicecontroller_manualinvoicecontroller_generateqrbase64",
+      "app_http_controllers_manualinvoicecontroller_manualinvoicecontroller_streampdf",
+      "app_http_controllers_manualinvoicecontroller_manualinvoicecontroller_terbilang",
+      "app_http_controllers_manualinvoicecontroller_manualinvoicecontroller_verify",
+      "app_livewire_manualinvoices_index_index",
+      "app_livewire_manualinvoices_index_index_closemodal",
+      "app_livewire_manualinvoices_index_index_closeviewermodal",
+      "app_livewire_manualinvoices_index_index_deleteinvoice",
+      "app_livewire_manualinvoices_index_index_editinvoice",
+      "app_livewire_manualinvoices_index_index_mount",
+      "app_livewire_manualinvoices_index_index_opencreatemodal",
+      "app_livewire_manualinvoices_index_index_openpdfpreview",
+      "app_livewire_manualinvoices_index_index_render",
+      "app_livewire_manualinvoices_index_index_saveinvoice",
+      "app_livewire_manualinvoices_index_index_updatingprojectfilter",
+      "app_livewire_manualinvoices_index_index_updatingsearch",
+      "app_livewire_manualinvoices_index_index_updatingstatusfilter",
+      "app_livewire_manualinvoices_index_index_updatingtypefilter",
+      "app_models_manualinvoice_manualinvoice",
+      "app_models_manualinvoice_manualinvoice_creator",
+      "app_models_manualinvoice_manualinvoice_project",
+      "app_models_manualinvoice_manualinvoice_unit"
+    ],
+    "13": [
+      "app_http_controllers_workerspkcontroller",
+      "app_http_controllers_workerspkcontroller_workerspkcontroller",
+      "app_http_controllers_workerspkcontroller_workerspkcontroller_generateqrbase64",
+      "app_http_controllers_workerspkcontroller_workerspkcontroller_streamspk",
+      "app_http_controllers_workerspkcontroller_workerspkcontroller_terbilang",
+      "app_http_controllers_workerspkcontroller_workerspkcontroller_verify",
+      "app_livewire_units_show_show_openpayrollpaymentmodal",
+      "app_models_cashflowtransaction_cashflowtransaction_creator",
+      "app_models_cashflowtransaction_cashflowtransaction_project",
+      "app_models_installmentpayment_installmentpayment_creator",
+      "app_models_installmentpayment_installmentpayment_installment",
+      "app_models_unit_unit_creator",
+      "app_models_unit_unit_project",
+      "app_models_unitinstallment_unitinstallment_unit",
+      "app_models_workerunitpayroll",
+      "app_models_workerunitpayroll_workerunitpayroll",
+      "app_models_workerunitpayroll_workerunitpayroll_creator",
+      "app_models_workerunitpayroll_workerunitpayroll_getprogresspercentageattribute",
+      "app_models_workerunitpayroll_workerunitpayroll_getremainingsalaryattribute",
+      "app_models_workerunitpayroll_workerunitpayroll_payments",
+      "app_models_workerunitpayroll_workerunitpayroll_project",
+      "app_models_workerunitpayroll_workerunitpayroll_unit",
+      "app_models_workerunitpayroll_workerunitpayroll_worker",
+      "illuminate_database_eloquent_relations_belongsto"
+    ],
+    "14": [
+      "app_livewire_units_show_show_openbookingmodal",
+      "app_livewire_units_show_show_openconverttocashmodal",
+      "app_livewire_units_show_show_opendirectsppmodal",
+      "app_livewire_units_show_show_openinstallmentpaymentmodal",
+      "app_models_unit_unit",
+      "app_models_unit_unit_activebooking",
+      "app_models_unit_unit_activeproposal",
+      "app_models_unit_unit_installment",
+      "app_models_unit_unit_officialdocument",
+      "app_models_unit_unit_recalculatelandandhpp",
+      "illuminate_database_eloquent_relations_hasone",
+      "tests_feature_globalsearchtest_globalsearchtest",
+      "tests_feature_globalsearchtest_globalsearchtest_setup",
+      "tests_feature_globalsearchtest_globalsearchtest_test_can_search_globally_without_sql_errors",
+      "tests_feature_uniqueunitcodetest_uniqueunitcodetest",
+      "tests_feature_uniqueunitcodetest_uniqueunitcodetest_setup",
+      "tests_feature_uniqueunitcodetest_uniqueunitcodetest_test_cannot_create_duplicate_unit_code_in_legacy_sale",
+      "tests_feature_uniqueunitcodetest_uniqueunitcodetest_test_cannot_create_duplicate_unit_code_in_project_detail",
+      "tests_feature_uniqueunitcodetest_uniqueunitcodetest_test_cannot_create_duplicate_unit_code_in_units_index",
+      "tests_feature_unitdetailresponsivenessandroletest_unitdetailresponsivenessandroletest",
+      "tests_feature_unitdetailresponsivenessandroletest_unitdetailresponsivenessandroletest_setup",
+      "tests_feature_unitdetailresponsivenessandroletest_unitdetailresponsivenessandroletest_test_all_main_application_routes_return_200_ok",
+      "tests_feature_unitdetailresponsivenessandroletest_unitdetailresponsivenessandroletest_test_marketing_finance_and_founder_can_see_spp_and_proposals_on_unit_detail",
+      "tests_feature_unitdetailresponsivenessandroletest_unitdetailresponsivenessandroletest_test_pengawas_project_cannot_see_spp_proposals_or_installments_on_unit_detail"
+    ],
+    "15": [
+      "app_models_user_user",
+      "app_models_user_user_assignedprojects",
+      "app_models_user_user_canviewhpp",
+      "app_models_user_user_casts",
+      "app_models_user_user_isfinance",
+      "app_models_user_user_isfounder",
+      "app_models_user_user_ismarketing",
+      "app_models_user_user_ispengawasproject",
+      "app_models_user_user_issupervisor",
+      "illuminate_foundation_auth_user",
+      "illuminate_notifications_notifiable",
+      "spatie_permission_traits_hasroles",
+      "tests_feature_bookingrejectionandhppvisibilitytest_bookingrejectionandhppvisibilitytest",
+      "tests_feature_bookingrejectionandhppvisibilitytest_bookingrejectionandhppvisibilitytest_setup",
+      "tests_feature_bookingrejectionandhppvisibilitytest_bookingrejectionandhppvisibilitytest_test_finance_and_founder_can_cancel_or_refund_approved_dp",
+      "tests_feature_bookingrejectionandhppvisibilitytest_bookingrejectionandhppvisibilitytest_test_finance_and_founder_can_reject_booking_and_unit_reverts_to_available",
+      "tests_feature_bookingrejectionandhppvisibilitytest_bookingrejectionandhppvisibilitytest_test_hpp_is_visible_only_to_founder_and_finance",
+      "tests_feature_bookingrejectionandhppvisibilitytest_bookingrejectionandhppvisibilitytest_test_marketing_and_pengawas_cannot_approve_or_reject_booking",
+      "tests_feature_cashflowseparationandexporttest_cashflowseparationandexporttest",
+      "tests_feature_cashflowseparationandexporttest_cashflowseparationandexporttest_setup",
+      "tests_feature_cashflowseparationandexporttest_cashflowseparationandexporttest_test_can_export_cashflow_excel_csv",
+      "tests_feature_cashflowseparationandexporttest_cashflowseparationandexporttest_test_can_export_cashflow_pdf",
+      "tests_feature_cashflowseparationandexporttest_cashflowseparationandexporttest_test_can_filter_cashflow_by_global_project_unit_and_month"
+    ],
+    "16": [
+      "app_livewire_bookings_index_index",
+      "app_livewire_bookings_index_index_approvedp",
+      "app_livewire_bookings_index_index_cancelapproveddp",
+      "app_livewire_bookings_index_index_closeimagemodal",
+      "app_livewire_bookings_index_index_closeviewermodal",
+      "app_livewire_bookings_index_index_create",
+      "app_livewire_bookings_index_index_deletebooking",
+      "app_livewire_bookings_index_index_editbooking",
+      "app_livewire_bookings_index_index_openimagemodal",
+      "app_livewire_bookings_index_index_openviewermodal",
+      "app_livewire_bookings_index_index_rejectdp",
+      "app_livewire_bookings_index_index_render",
+      "app_livewire_bookings_index_index_rules",
+      "app_livewire_bookings_index_index_save",
+      "app_livewire_bookings_index_index_updatedreceiptphoto",
+      "app_livewire_projects_show_show_render",
+      "app_livewire_projects_show_show_resolveaudittrail",
+      "app_livewire_units_show_show_savebooking",
+      "app_models_booking_booking",
+      "app_models_booking_booking_creator",
+      "app_models_booking_booking_project",
+      "app_models_booking_booking_unit"
+    ],
+    "17": [
+      "app_livewire_cashflow_index_index",
+      "app_livewire_cashflow_index_index_boot",
+      "app_livewire_cashflow_index_index_closedetailmodal",
+      "app_livewire_cashflow_index_index_closeimagemodal",
+      "app_livewire_cashflow_index_index_deletetransaction",
+      "app_livewire_cashflow_index_index_mount",
+      "app_livewire_cashflow_index_index_opendetailmodal",
+      "app_livewire_cashflow_index_index_openimagemodal",
+      "app_livewire_cashflow_index_index_openmanualmodal",
+      "app_livewire_cashflow_index_index_render",
+      "app_livewire_cashflow_index_index_resetform",
+      "app_livewire_cashflow_index_index_resolveaudittrail",
+      "app_livewire_cashflow_index_index_savetransaction",
+      "app_livewire_cashflow_index_index_setalltime",
+      "app_livewire_cashflow_index_index_setcurrentmonth",
+      "app_livewire_cashflow_index_index_updatedfiltermonth",
+      "app_livewire_cashflow_index_index_updatedfilterprojectid",
+      "app_livewire_cashflow_index_index_updatedfilterunitid",
+      "app_livewire_cashflow_index_index_updatedviewmode",
+      "app_livewire_cashflow_index_index_updatingcategoryfilter",
+      "app_livewire_cashflow_index_index_updatingsearch",
+      "app_livewire_cashflow_index_index_updatingtypefilter"
+    ],
+    "18": [
+      "concurrently",
+      "laravel_vite_plugin",
+      "micromodal",
+      "package",
+      "package_dependencies",
+      "package_dependencies_micromodal",
+      "package_devdependencies",
+      "package_devdependencies_concurrently",
+      "package_devdependencies_laravel_vite_plugin",
+      "package_devdependencies_tailwindcss",
+      "package_devdependencies_tailwindcss_vite",
+      "package_devdependencies_vite",
+      "package_private",
+      "package_schema",
+      "package_scripts",
+      "package_scripts_build",
+      "package_scripts_dev",
+      "package_type",
+      "tailwindcss",
+      "tailwindcss_vite",
+      "vite"
+    ],
+    "19": [
+      "database_seeders_bookingseeder_bookingseeder",
+      "database_seeders_bookingseeder_bookingseeder_run",
+      "database_seeders_bookingseeder_me_date",
+      "database_seeders_databaseseeder_databaseseeder",
+      "database_seeders_databaseseeder_databaseseeder_run",
+      "database_seeders_financialseeder_financialseeder",
+      "database_seeders_officialdocumentseeder",
+      "database_seeders_officialdocumentseeder_officialdocumentseeder",
+      "database_seeders_officialdocumentseeder_officialdocumentseeder_run",
+      "database_seeders_productionseeder",
+      "database_seeders_productionseeder_productionseeder",
+      "database_seeders_productionseeder_productionseeder_run",
+      "database_seeders_projectseeder",
+      "database_seeders_projectseeder_projectseeder",
+      "database_seeders_projectseeder_projectseeder_run",
+      "database_seeders_unitseeder_unitseeder",
+      "database_seeders_unitseeder_unitseeder_run",
+      "database_seeders_userseeder",
+      "database_seeders_userseeder_userseeder",
+      "database_seeders_userseeder_userseeder_run",
+      "illuminate_database_seeder"
+    ],
+    "20": [
+      "livewire_units_partials_header_actions",
+      "livewire_units_partials_modal_booking",
+      "livewire_units_partials_modal_convert_to_cash",
+      "livewire_units_partials_modal_direct_spp",
+      "livewire_units_partials_modal_edit_unit",
+      "livewire_units_partials_modal_installment_payment",
+      "livewire_units_partials_modal_material_purchase",
+      "livewire_units_partials_modal_payroll_payment",
+      "livewire_units_partials_modal_payroll_setup",
+      "livewire_units_partials_modal_setup_installment",
+      "livewire_units_partials_modal_worker_assignment",
+      "livewire_units_partials_section_expenses",
+      "livewire_units_partials_section_installments",
+      "livewire_units_partials_section_payroll_borongan",
+      "livewire_units_partials_section_proposals_spp",
+      "livewire_units_partials_section_specifications",
+      "livewire_units_partials_section_workers",
+      "resources_views_livewire_units_show_blade",
+      "resources_views_livewire_units_show_blade_php_livewire_units_partials_modal_viewer"
+    ],
+    "21": [
+      "app_http_controllers_documentpdfcontroller",
+      "app_http_controllers_documentpdfcontroller_documentpdfcontroller",
+      "app_http_controllers_documentpdfcontroller_documentpdfcontroller_generateqrbase64",
+      "app_http_controllers_documentpdfcontroller_documentpdfcontroller_streampdf",
+      "app_http_controllers_documentpdfcontroller_documentpdfcontroller_streamspjbpdf",
+      "app_http_controllers_documentpdfcontroller_documentpdfcontroller_terbilang",
+      "app_http_controllers_documentpdfcontroller_documentpdfcontroller_verifyspjb",
+      "app_models_officialdocument_officialdocument",
+      "app_models_officialdocument_officialdocument_geteffectivebuyernikattribute",
+      "app_models_officialdocument_officialdocument_geteffectiveselleraddressattribute",
+      "app_models_officialdocument_officialdocument_geteffectivesellernameattribute",
+      "app_models_officialdocument_officialdocument_geteffectivesellernikattribute",
+      "app_models_officialdocument_officialdocument_geteffectivesellerpositionattribute",
+      "app_models_officialdocument_officialdocument_issuer",
+      "app_models_officialdocument_officialdocument_proposal",
+      "app_models_officialdocument_officialdocument_unit",
+      "tests_feature_officialdocumentsearchfiltertest_officialdocumentsearchfiltertest_test_document_index_filters_by_project_and_search_keyword"
+    ],
+    "22": [
+      "app_livewire_units_legacysale_legacysale",
+      "app_livewire_units_legacysale_legacysale_calculatelandarea",
+      "app_livewire_units_legacysale_legacysale_closeviewermodal",
+      "app_livewire_units_legacysale_legacysale_messages",
+      "app_livewire_units_legacysale_legacysale_mount",
+      "app_livewire_units_legacysale_legacysale_opencreatemodal",
+      "app_livewire_units_legacysale_legacysale_openviewermodal",
+      "app_livewire_units_legacysale_legacysale_render",
+      "app_livewire_units_legacysale_legacysale_rules",
+      "app_livewire_units_legacysale_legacysale_updatedcategoryfilter",
+      "app_livewire_units_legacysale_legacysale_updatedlandlength",
+      "app_livewire_units_legacysale_legacysale_updatedlandwidth",
+      "app_livewire_units_legacysale_legacysale_updatedprojectfilter",
+      "app_livewire_units_legacysale_legacysale_updatedsearch"
+    ],
+    "23": [
+      "livewire_projects_partials_header",
+      "livewire_projects_partials_kpi_dashboard",
+      "livewire_projects_partials_land_purchase_card",
+      "livewire_projects_partials_modal_legacy_sale",
+      "livewire_projects_partials_modal_payment",
+      "livewire_projects_partials_specifications_strip",
+      "livewire_projects_partials_tab_cashflow",
+      "livewire_projects_partials_tab_payments",
+      "livewire_projects_partials_tab_siteplan",
+      "livewire_projects_partials_tab_units",
+      "resources_views_livewire_projects_show_blade",
+      "resources_views_livewire_projects_show_blade_php_closeimagemodal",
+      "resources_views_livewire_projects_show_blade_php_livewire_cashflow_partials_modal_detail_transaction",
+      "resources_views_livewire_projects_show_blade_php_set"
+    ],
+    "24": [
+      "app_livewire_activitylogs_index",
+      "app_livewire_activitylogs_index_index",
+      "app_livewire_activitylogs_index_index_cleardatabaselogs",
+      "app_livewire_activitylogs_index_index_clearfilelog",
+      "app_livewire_activitylogs_index_index_mount",
+      "app_livewire_activitylogs_index_index_render",
+      "app_livewire_activitylogs_index_index_updatingactionfilter",
+      "app_livewire_activitylogs_index_index_updatingsearch",
+      "app_models_activitylog",
+      "app_models_activitylog_activitylog",
+      "app_models_activitylog_activitylog_user",
+      "tests_feature_activitylogtest_activitylogtest_test_livewire_activity_logs_index_component_renders_and_filters",
+      "tests_feature_activitylogtest_activitylogtest_test_livewire_founder_can_clear_database_logs"
+    ],
+    "25": [
+      "app_livewire_documents_index_index_deletedocument",
+      "app_services_activitylogger_activitylogger",
+      "app_services_activitylogger_activitylogger_log",
+      "tests_feature_activitylogtest_activitylogtest",
+      "tests_feature_activitylogtest_activitylogtest_setup",
+      "tests_feature_activitylogtest_activitylogtest_test_activity_logger_service_creates_database_record_for_guest",
+      "tests_feature_activitylogtest_activitylogtest_test_activity_logger_service_creates_database_record_for_user",
+      "tests_feature_activitylogtest_activitylogtest_test_founder_can_access_activity_logs_page",
+      "tests_feature_activitylogtest_activitylogtest_test_guest_cannot_access_activity_logs_page",
+      "tests_feature_activitylogtest_activitylogtest_test_livewire_founder_can_clear_file_log",
+      "tests_feature_activitylogtest_activitylogtest_test_non_founder_cannot_access_activity_logs_page",
+      "tests_feature_activitylogtest_activitylogtest_test_role_switch_triggers_activity_log",
+      "tests_feature_activitylogtest_activitylogtest_test_user_login_triggers_activity_log"
+    ],
+    "26": [
+      "livewire_installments_partials_modal_convert_to_cash",
+      "livewire_installments_partials_modal_installment_detail",
+      "livewire_installments_partials_modal_installment_payment",
+      "livewire_installments_partials_modal_setup_installment",
+      "opendetailmodal_inst_id",
+      "openpaymentmodal_inst_id",
+      "opensetupmodal",
+      "resources_views_livewire_installments_index_blade",
+      "resources_views_livewire_installments_index_blade_php_closeviewermodal",
+      "resources_views_livewire_installments_index_blade_php_openviewermodal",
+      "resources_views_livewire_installments_index_blade_php_set"
+    ],
+    "27": [
+      "livewire_cashflow_partials_modal_manual_transaction",
+      "opendetailmodal_trx_id",
+      "openmanualmodal",
+      "resources_views_livewire_cashflow_index_blade",
+      "resources_views_livewire_cashflow_index_blade_php_closeimagemodal",
+      "resources_views_livewire_cashflow_index_blade_php_livewire_cashflow_partials_modal_detail_transaction",
+      "resources_views_livewire_cashflow_index_blade_php_openimagemodal",
+      "resources_views_livewire_cashflow_index_blade_php_set",
+      "setalltime",
+      "setcurrentmonth"
+    ],
+    "28": [
+      "app_livewire_documents_index_index",
+      "app_livewire_documents_index_index_closeviewermodal",
+      "app_livewire_documents_index_index_editdocument",
+      "app_livewire_documents_index_index_generatedocument",
+      "app_livewire_documents_index_index_opengeneratemodal",
+      "app_livewire_documents_index_index_openviewermodal",
+      "app_livewire_documents_index_index_render",
+      "app_livewire_documents_index_index_updatedprojectid",
+      "app_livewire_documents_index_index_updatedsearch"
+    ],
+    "29": [
+      "app_livewire_users_index_index",
+      "app_livewire_users_index_index_deleteuser",
+      "app_livewire_users_index_index_mount",
+      "app_livewire_users_index_index_opencreatemodal",
+      "app_livewire_users_index_index_openeditmodal",
+      "app_livewire_users_index_index_render",
+      "app_livewire_users_index_index_saveuser",
+      "app_livewire_users_index_index_togglestatus"
+    ],
+    "30": [
+      "app_http_controllers_installmentinvoicecontroller",
+      "app_http_controllers_installmentinvoicecontroller_installmentinvoicecontroller",
+      "app_http_controllers_installmentinvoicecontroller_installmentinvoicecontroller_generateqrbase64",
+      "app_http_controllers_installmentinvoicecontroller_installmentinvoicecontroller_streaminvoice",
+      "app_http_controllers_installmentinvoicecontroller_installmentinvoicecontroller_terbilang",
+      "app_http_controllers_installmentinvoicecontroller_installmentinvoicecontroller_verify"
+    ],
+    "31": [
+      "app_livewire_tutorial_index",
+      "app_livewire_tutorial_index_index",
+      "app_livewire_tutorial_index_index_mount",
+      "app_livewire_tutorial_index_index_render",
+      "app_livewire_tutorial_index_index_settab",
+      "app_livewire_tutorial_index_index_setviewmode"
+    ],
+    "32": [
+      "app_providers_appserviceprovider",
+      "app_providers_appserviceprovider_appserviceprovider",
+      "app_providers_appserviceprovider_appserviceprovider_boot",
+      "app_providers_appserviceprovider_appserviceprovider_register",
+      "bootstrap_providers",
+      "illuminate_support_serviceprovider"
+    ],
+    "33": [
+      "closesalarymodal",
+      "editsalarystandard_sal_id",
+      "openpaymentmodal_sal_id",
+      "opensalarymodal",
+      "resources_views_livewire_employee_salaries_index_blade",
+      "resources_views_livewire_employee_salaries_index_blade_php_set"
+    ],
+    "34": [
+      "components_layouts_partials_confirm_modal",
+      "components_layouts_partials_header",
+      "components_layouts_partials_sidebar_desktop",
+      "components_layouts_partials_sidebar_mobile",
+      "components_layouts_partials_toast_notifications",
+      "resources_views_components_layouts_app_blade"
+    ],
+    "35": [
+      "editdocument_doc_id",
+      "opengeneratemodal",
+      "resources_views_livewire_documents_index_blade",
+      "resources_views_livewire_documents_index_blade_php_closeviewermodal",
+      "resources_views_livewire_documents_index_blade_php_openviewermodal",
+      "resources_views_livewire_documents_index_blade_php_set"
+    ],
+    "36": [
+      "editinstallmentpayment_pay_id",
+      "openconverttocashmodal",
+      "openinstallmentpaymentmodal",
+      "opensetupinstallmentmodal",
+      "resources_views_livewire_units_partials_section_installments_blade",
+      "resources_views_livewire_units_partials_section_installments_blade_php_openviewermodal"
+    ],
+    "37": [
+      "editinvoice_inv_id",
+      "openpdfpreview",
+      "resources_views_livewire_manual_invoices_index_blade",
+      "resources_views_livewire_manual_invoices_index_blade_php_closemodal",
+      "resources_views_livewire_manual_invoices_index_blade_php_closeviewermodal",
+      "resources_views_livewire_manual_invoices_index_blade_php_opencreatemodal"
+    ],
+    "38": [
+      "editmaterialpurchase_exp_id",
+      "editpayrollpayment_exp_id",
+      "editpayrollsetup_exp_id",
+      "openmaterialmodal",
+      "resources_views_livewire_units_partials_section_expenses_blade",
+      "resources_views_livewire_units_partials_section_expenses_blade_php_openviewermodal"
+    ],
+    "39": [
+      "editunit_unit_id",
+      "openbookingmodal_unit_id",
+      "resources_views_livewire_units_index_blade",
+      "resources_views_livewire_units_index_blade_php_closemodal",
+      "resources_views_livewire_units_index_blade_php_openmodal",
+      "resources_views_livewire_units_index_blade_php_set"
+    ],
+    "40": [
+      "livewire_bookings_partials_booking_form_modal",
+      "livewire_bookings_partials_booking_header",
+      "livewire_bookings_partials_booking_kpi_summary",
+      "livewire_bookings_partials_booking_table_list",
+      "livewire_bookings_partials_booking_viewer_modal",
+      "resources_views_livewire_bookings_index_blade"
+    ],
+    "41": [
+      "livewire_field_expenses_partials_expense_edit_modal",
+      "livewire_field_expenses_partials_expense_header",
+      "livewire_field_expenses_partials_expense_kpi_summary",
+      "livewire_field_expenses_partials_expense_table_list",
+      "livewire_field_expenses_partials_expense_viewer_modal",
+      "resources_views_livewire_field_expenses_index_blade"
+    ],
+    "42": [
+      "livewire_proposals_partials_proposal_action_modals",
+      "livewire_proposals_partials_proposal_form_modal",
+      "livewire_proposals_partials_proposal_header",
+      "livewire_proposals_partials_proposal_kpi_summary",
+      "livewire_proposals_partials_proposal_table_list",
+      "resources_views_livewire_proposals_index_blade"
+    ],
+    "43": [
+      "livewire_tutorial_partials_tutorial_faq_accordion",
+      "livewire_tutorial_partials_tutorial_flow_booking_cash",
+      "livewire_tutorial_partials_tutorial_flow_cicilan_dokumen",
+      "livewire_tutorial_partials_tutorial_flow_map",
+      "livewire_tutorial_partials_tutorial_header",
+      "resources_views_livewire_tutorial_index_blade"
+    ],
+    "44": [
+      "livewire_workers_partials_worker_assign_modal",
+      "livewire_workers_partials_worker_form_modal",
+      "livewire_workers_partials_worker_header",
+      "livewire_workers_partials_worker_kpi_summary",
+      "livewire_workers_partials_worker_table_list",
+      "resources_views_livewire_workers_index_blade"
+    ],
+    "45": [
+      "app_livewire_profile_index_index",
+      "app_livewire_profile_index_index_mount",
+      "app_livewire_profile_index_index_render",
+      "app_livewire_profile_index_index_updatepassword",
+      "app_livewire_profile_index_index_updateprofile"
+    ],
+    "46": [
+      "editpayrollsetup_up_id",
+      "openpayrollpaymentmodal_up_id",
+      "openpayrollsetupmodal",
+      "resources_views_livewire_units_partials_section_payroll_borongan_blade",
+      "resources_views_livewire_units_partials_section_payroll_borongan_blade_php_openviewermodal"
+    ],
+    "47": [
+      "editproposal_prop_id",
+      "openapprovalmodal_prop_id",
+      "opendocmodal_prop_id",
+      "resources_views_livewire_proposals_partials_proposal_table_list_blade",
+      "resources_views_livewire_proposals_partials_proposal_table_list_blade_php_openviewermodal"
+    ],
+    "48": [
+      "livewire_units_partials_legacy_create_modal",
+      "livewire_units_partials_legacy_header_info",
+      "livewire_units_partials_legacy_table_list",
+      "resources_views_livewire_units_legacy_sale_blade",
+      "resources_views_livewire_units_legacy_sale_blade_php_livewire_units_partials_modal_viewer"
+    ],
+    "49": [
+      "editbooking_b_id",
+      "resources_views_livewire_bookings_partials_booking_table_list_blade",
+      "resources_views_livewire_bookings_partials_booking_table_list_blade_php_openimagemodal",
+      "resources_views_livewire_bookings_partials_booking_table_list_blade_php_openviewermodal"
+    ],
+    "50": [
+      "editprojectpayment_pay_id",
+      "opendetailmodal_pay_cashflowtransaction_id",
+      "resources_views_livewire_projects_partials_tab_payments_blade",
+      "resources_views_livewire_projects_partials_tab_payments_blade_php_openpaymentmodal"
+    ],
+    "51": [
+      "openbookingmodal",
+      "opendirectsppmodal",
+      "openeditunitmodal",
+      "resources_views_livewire_units_partials_header_actions_blade"
+    ],
+    "52": [
+      "openeditmodal_u_id",
+      "resources_views_livewire_users_index_blade",
+      "resources_views_livewire_users_index_blade_php_opencreatemodal",
+      "resources_views_livewire_users_index_blade_php_set"
+    ],
+    "53": [
+      "resources_views_livewire_projects_index_blade",
+      "resources_views_livewire_projects_index_blade_php_closemodal",
+      "resources_views_livewire_projects_index_blade_php_openmodal",
+      "resources_views_livewire_projects_index_blade_php_set"
+    ],
+    "54": [
+      "tests_feature_contractorandinstallmentcancellationtest_contractorandinstallmentcancellationtest",
+      "tests_feature_contractorandinstallmentcancellationtest_contractorandinstallmentcancellationtest_setup",
+      "tests_feature_contractorandinstallmentcancellationtest_contractorandinstallmentcancellationtest_test_can_register_and_filter_kontraktor_worker",
+      "tests_feature_contractorandinstallmentcancellationtest_contractorandinstallmentcancellationtest_test_founder_and_finance_can_cancel_installment_and_convert_to_cash"
+    ],
+    "55": [
+      "tests_feature_inactiveaccountlogintest_inactiveaccountlogintest",
+      "tests_feature_inactiveaccountlogintest_inactiveaccountlogintest_setup",
+      "tests_feature_inactiveaccountlogintest_inactiveaccountlogintest_test_inactive_user_cannot_login",
+      "tests_feature_inactiveaccountlogintest_inactiveaccountlogintest_test_inactive_user_is_logged_out_by_middleware"
+    ],
+    "56": [
+      "closepaymentmodal",
+      "resources_views_livewire_projects_partials_modal_payment_blade",
+      "resources_views_livewire_projects_partials_modal_payment_blade_php_set"
+    ],
+    "57": [
+      "closesiteplanunitmodal",
+      "opensiteplanunitmodal_u_id",
+      "resources_views_livewire_projects_partials_tab_siteplan_blade"
+    ],
+    "58": [
+      "database_migrations_0001_01_01_000000_create_users_table",
+      "database_migrations_0001_01_01_000000_create_users_table_down",
+      "database_migrations_0001_01_01_000000_create_users_table_up"
+    ],
+    "59": [
+      "database_migrations_0001_01_01_000001_create_cache_table",
+      "database_migrations_0001_01_01_000001_create_cache_table_down",
+      "database_migrations_0001_01_01_000001_create_cache_table_up"
+    ],
+    "60": [
+      "database_migrations_0001_01_01_000002_create_jobs_table",
+      "database_migrations_0001_01_01_000002_create_jobs_table_down",
+      "database_migrations_0001_01_01_000002_create_jobs_table_up"
+    ],
+    "61": [
+      "database_migrations_2026_07_19_190428_create_permission_tables",
+      "database_migrations_2026_07_19_190428_create_permission_tables_down",
+      "database_migrations_2026_07_19_190428_create_permission_tables_up"
+    ],
+    "62": [
+      "database_migrations_2026_07_19_191000_add_role_and_is_active_to_users_table",
+      "database_migrations_2026_07_19_191000_add_role_and_is_active_to_users_table_down",
+      "database_migrations_2026_07_19_191000_add_role_and_is_active_to_users_table_up"
+    ],
+    "63": [
+      "database_migrations_2026_07_19_191100_create_projects_table",
+      "database_migrations_2026_07_19_191100_create_projects_table_down",
+      "database_migrations_2026_07_19_191100_create_projects_table_up"
+    ],
+    "64": [
+      "database_migrations_2026_07_19_191200_create_units_table",
+      "database_migrations_2026_07_19_191200_create_units_table_down",
+      "database_migrations_2026_07_19_191200_create_units_table_up"
+    ],
+    "65": [
+      "database_migrations_2026_07_19_191300_create_proposals_and_approvals_tables",
+      "database_migrations_2026_07_19_191300_create_proposals_and_approvals_tables_down",
+      "database_migrations_2026_07_19_191300_create_proposals_and_approvals_tables_up"
+    ],
+    "66": [
+      "database_migrations_2026_07_19_191400_create_financial_and_cashflow_tables",
+      "database_migrations_2026_07_19_191400_create_financial_and_cashflow_tables_down",
+      "database_migrations_2026_07_19_191400_create_financial_and_cashflow_tables_up"
+    ],
+    "67": [
+      "database_migrations_2026_07_21_000001_create_workers_and_assignments_table",
+      "database_migrations_2026_07_21_000001_create_workers_and_assignments_table_down",
+      "database_migrations_2026_07_21_000001_create_workers_and_assignments_table_up"
+    ],
+    "68": [
+      "database_migrations_2026_07_21_000002_create_worker_loans_and_weekly_purchases_table",
+      "database_migrations_2026_07_21_000002_create_worker_loans_and_weekly_purchases_table_down",
+      "database_migrations_2026_07_21_000002_create_worker_loans_and_weekly_purchases_table_up"
+    ],
+    "69": [
+      "database_migrations_2026_07_21_000003_create_bookings_table",
+      "database_migrations_2026_07_21_000003_create_bookings_table_down",
+      "database_migrations_2026_07_21_000003_create_bookings_table_up"
+    ],
+    "70": [
+      "database_migrations_2026_07_23_000001_alter_units_category_status_to_string",
+      "database_migrations_2026_07_23_000001_alter_units_category_status_to_string_down",
+      "database_migrations_2026_07_23_000001_alter_units_category_status_to_string_up"
+    ],
+    "71": [
+      "database_migrations_2026_07_25_000001_create_worker_unit_payrolls_table",
+      "database_migrations_2026_07_25_000001_create_worker_unit_payrolls_table_down",
+      "database_migrations_2026_07_25_000001_create_worker_unit_payrolls_table_up"
+    ],
+    "72": [
+      "database_migrations_2026_07_26_000001_add_receipt_photo_path_to_weekly_material_purchases_table",
+      "database_migrations_2026_07_26_000001_add_receipt_photo_path_to_weekly_material_purchases_table_down",
+      "database_migrations_2026_07_26_000001_add_receipt_photo_path_to_weekly_material_purchases_table_up"
+    ],
+    "73": [
+      "database_migrations_2026_07_27_000001_add_total_project_price_and_create_project_payments_table",
+      "database_migrations_2026_07_27_000001_add_total_project_price_and_create_project_payments_table_down",
+      "database_migrations_2026_07_27_000001_add_total_project_price_and_create_project_payments_table_up"
+    ],
+    "74": [
+      "database_migrations_2026_07_27_000002_add_receipt_photo_path_to_project_payments_table",
+      "database_migrations_2026_07_27_000002_add_receipt_photo_path_to_project_payments_table_down",
+      "database_migrations_2026_07_27_000002_add_receipt_photo_path_to_project_payments_table_up"
+    ],
+    "75": [
+      "database_migrations_2026_07_27_000003_add_uuid_to_project_payments_table",
+      "database_migrations_2026_07_27_000003_add_uuid_to_project_payments_table_down",
+      "database_migrations_2026_07_27_000003_add_uuid_to_project_payments_table_up"
+    ],
+    "76": [
+      "database_migrations_2026_07_27_000004_create_activity_logs_table",
+      "database_migrations_2026_07_27_000004_create_activity_logs_table_down",
+      "database_migrations_2026_07_27_000004_create_activity_logs_table_up"
+    ],
+    "77": [
+      "database_migrations_2026_07_27_000005_add_user_id_to_worker_assignments_table",
+      "database_migrations_2026_07_27_000005_add_user_id_to_worker_assignments_table_down",
+      "database_migrations_2026_07_27_000005_add_user_id_to_worker_assignments_table_up"
+    ],
+    "78": [
+      "database_migrations_2026_07_28_000001_add_kontraktor_to_workers_type_table",
+      "database_migrations_2026_07_28_000001_add_kontraktor_to_workers_type_table_down",
+      "database_migrations_2026_07_28_000001_add_kontraktor_to_workers_type_table_up"
+    ],
+    "79": [
+      "database_migrations_2026_07_28_000002_add_konversi_cash_to_unit_installments_status",
+      "database_migrations_2026_07_28_000002_add_konversi_cash_to_unit_installments_status_down",
+      "database_migrations_2026_07_28_000002_add_konversi_cash_to_unit_installments_status_up"
+    ],
+    "80": [
+      "database_migrations_2026_07_29_000001_add_uuid_to_installment_payments_table",
+      "database_migrations_2026_07_29_000001_add_uuid_to_installment_payments_table_down",
+      "database_migrations_2026_07_29_000001_add_uuid_to_installment_payments_table_up"
+    ],
+    "81": [
+      "database_migrations_2026_07_29_000002_create_manual_invoices_table",
+      "database_migrations_2026_07_29_000002_create_manual_invoices_table_down",
+      "database_migrations_2026_07_29_000002_create_manual_invoices_table_up"
+    ],
+    "82": [
+      "database_migrations_2026_07_29_000003_alter_cashflow_transactions_project_id_nullable",
+      "database_migrations_2026_07_29_000003_alter_cashflow_transactions_project_id_nullable_down",
+      "database_migrations_2026_07_29_000003_alter_cashflow_transactions_project_id_nullable_up"
+    ],
+    "83": [
+      "database_migrations_2026_08_01_000001_add_receipt_photo_path_to_bookings_table",
+      "database_migrations_2026_08_01_000001_add_receipt_photo_path_to_bookings_table_down",
+      "database_migrations_2026_08_01_000001_add_receipt_photo_path_to_bookings_table_up"
+    ],
+    "84": [
+      "database_migrations_2026_08_01_000002_add_receipt_photo_path_to_cashflow_transactions_table",
+      "database_migrations_2026_08_01_000002_add_receipt_photo_path_to_cashflow_transactions_table_down",
+      "database_migrations_2026_08_01_000002_add_receipt_photo_path_to_cashflow_transactions_table_up"
+    ],
+    "85": [
+      "database_migrations_2026_08_05_000001_add_nik_and_seller_fields_to_official_documents_table",
+      "database_migrations_2026_08_05_000001_add_nik_and_seller_fields_to_official_documents_table_down",
+      "database_migrations_2026_08_05_000001_add_nik_and_seller_fields_to_official_documents_table_up"
+    ],
+    "86": [
+      "database_migrations_2026_08_05_000002_add_profile_fields_to_users_table",
+      "database_migrations_2026_08_05_000002_add_profile_fields_to_users_table_down",
+      "database_migrations_2026_08_05_000002_add_profile_fields_to_users_table_up"
+    ],
+    "87": [
+      "database_migrations_2026_08_06_000001_create_employee_salaries_and_payrolls_table",
+      "database_migrations_2026_08_06_000001_create_employee_salaries_and_payrolls_table_down",
+      "database_migrations_2026_08_06_000001_create_employee_salaries_and_payrolls_table_up"
+    ],
+    "88": [
+      "edit_worker_id",
+      "openassignmodal_worker_id",
+      "resources_views_livewire_workers_partials_worker_table_list_blade"
+    ],
+    "89": [
+      "editworkerassignment_assign_id",
+      "openworkermodal",
+      "resources_views_livewire_units_partials_section_workers_blade"
+    ],
+    "90": [
+      "opendetailmodal_tx_id",
+      "resources_views_livewire_projects_partials_tab_cashflow_blade",
+      "resources_views_livewire_projects_partials_tab_cashflow_blade_php_openimagemodal"
+    ],
+    "91": [
+      "openeditmodal",
+      "resources_views_livewire_field_expenses_partials_expense_table_list_blade",
+      "resources_views_livewire_field_expenses_partials_expense_table_list_blade_php_openviewer"
+    ],
+    "92": [
+      "resources_views_livewire_bookings_partials_booking_viewer_modal_blade",
+      "resources_views_livewire_bookings_partials_booking_viewer_modal_blade_php_closeimagemodal",
+      "resources_views_livewire_bookings_partials_booking_viewer_modal_blade_php_closeviewermodal"
+    ],
+    "93": [
+      "resources_views_livewire_proposals_partials_proposal_action_modals_blade",
+      "resources_views_livewire_proposals_partials_proposal_action_modals_blade_php_closeviewermodal",
+      "resources_views_livewire_proposals_partials_proposal_action_modals_blade_php_set"
+    ],
+    "94": [
+      "resources_views_livewire_units_partials_legacy_table_list_blade",
+      "resources_views_livewire_units_partials_legacy_table_list_blade_php_openviewermodal",
+      "resources_views_livewire_units_partials_legacy_table_list_blade_php_set"
+    ],
+    "95": [
+      "artisan",
+      "routes_console"
+    ],
+    "96": [
+      "closeeditmodal",
+      "resources_views_livewire_field_expenses_partials_expense_edit_modal_blade"
+    ],
+    "97": [
+      "closelegacymodal",
+      "resources_views_livewire_projects_partials_modal_legacy_sale_blade"
+    ],
+    "98": [
+      "closeviewer",
+      "resources_views_livewire_field_expenses_partials_expense_viewer_modal_blade"
+    ],
+    "99": [
+      "openlegacymodal",
+      "resources_views_livewire_projects_partials_header_blade"
+    ],
+    "100": [
+      "resources_views_components_layouts_partials_sidebar_desktop_blade",
+      "resources_views_components_layouts_partials_sidebar_desktop_blade_php_components_layouts_partials_nav_links"
+    ],
+    "101": [
+      "resources_views_components_layouts_partials_sidebar_mobile_blade",
+      "resources_views_components_layouts_partials_sidebar_mobile_blade_php_components_layouts_partials_nav_links"
+    ],
+    "102": [
+      "resources_views_livewire_activity_logs_index_blade",
+      "resources_views_livewire_activity_logs_index_blade_php_set"
+    ],
+    "103": [
+      "resources_views_livewire_bookings_partials_booking_form_modal_blade",
+      "resources_views_livewire_bookings_partials_booking_form_modal_blade_php_set"
+    ],
+    "104": [
+      "resources_views_livewire_bookings_partials_booking_header_blade",
+      "resources_views_livewire_bookings_partials_booking_header_blade_php_create"
+    ],
+    "105": [
+      "resources_views_livewire_cashflow_partials_modal_detail_transaction_blade",
+      "resources_views_livewire_cashflow_partials_modal_detail_transaction_blade_php_closedetailmodal"
+    ],
+    "106": [
+      "resources_views_livewire_cashflow_partials_modal_manual_transaction_blade",
+      "resources_views_livewire_cashflow_partials_modal_manual_transaction_blade_php_set"
+    ],
+    "107": [
+      "resources_views_livewire_field_expenses_partials_expense_header_blade",
+      "resources_views_livewire_field_expenses_partials_expense_header_blade_php_openviewer"
+    ],
+    "108": [
+      "resources_views_livewire_installments_partials_modal_convert_to_cash_blade",
+      "resources_views_livewire_installments_partials_modal_convert_to_cash_blade_php_set"
+    ],
+    "109": [
+      "resources_views_livewire_installments_partials_modal_installment_detail_blade",
+      "resources_views_livewire_installments_partials_modal_installment_detail_blade_php_closedetailmodal"
+    ],
+    "110": [
+      "resources_views_livewire_installments_partials_modal_installment_payment_blade",
+      "resources_views_livewire_installments_partials_modal_installment_payment_blade_php_set"
+    ],
+    "111": [
+      "resources_views_livewire_installments_partials_modal_setup_installment_blade",
+      "resources_views_livewire_installments_partials_modal_setup_installment_blade_php_set"
+    ],
+    "112": [
+      "resources_views_livewire_projects_partials_land_purchase_card_blade",
+      "resources_views_livewire_projects_partials_land_purchase_card_blade_php_openpaymentmodal"
+    ],
+    "113": [
+      "resources_views_livewire_proposals_partials_proposal_form_modal_blade",
+      "resources_views_livewire_proposals_partials_proposal_form_modal_blade_php_set"
+    ],
+    "114": [
+      "resources_views_livewire_proposals_partials_proposal_header_blade",
+      "resources_views_livewire_proposals_partials_proposal_header_blade_php_opencreatemodal"
+    ],
+    "115": [
+      "resources_views_livewire_tutorial_partials_tutorial_flow_map_blade",
+      "settab"
+    ],
+    "116": [
+      "resources_views_livewire_tutorial_partials_tutorial_header_blade",
+      "setviewmode"
+    ],
+    "117": [
+      "resources_views_livewire_units_partials_legacy_create_modal_blade",
+      "resources_views_livewire_units_partials_legacy_create_modal_blade_php_set"
+    ],
+    "118": [
+      "resources_views_livewire_units_partials_legacy_header_info_blade",
+      "resources_views_livewire_units_partials_legacy_header_info_blade_php_opencreatemodal"
+    ],
+    "119": [
+      "resources_views_livewire_units_partials_modal_booking_blade",
+      "resources_views_livewire_units_partials_modal_booking_blade_php_set"
+    ],
+    "120": [
+      "resources_views_livewire_units_partials_modal_convert_to_cash_blade",
+      "resources_views_livewire_units_partials_modal_convert_to_cash_blade_php_set"
+    ],
+    "121": [
+      "resources_views_livewire_units_partials_modal_direct_spp_blade",
+      "resources_views_livewire_units_partials_modal_direct_spp_blade_php_set"
+    ],
+    "122": [
+      "resources_views_livewire_units_partials_modal_edit_unit_blade",
+      "resources_views_livewire_units_partials_modal_edit_unit_blade_php_set"
+    ],
+    "123": [
+      "resources_views_livewire_units_partials_modal_installment_payment_blade",
+      "resources_views_livewire_units_partials_modal_installment_payment_blade_php_set"
+    ],
+    "124": [
+      "resources_views_livewire_units_partials_modal_material_purchase_blade",
+      "resources_views_livewire_units_partials_modal_material_purchase_blade_php_set"
+    ],
+    "125": [
+      "resources_views_livewire_units_partials_modal_payroll_payment_blade",
+      "resources_views_livewire_units_partials_modal_payroll_payment_blade_php_set"
+    ],
+    "126": [
+      "resources_views_livewire_units_partials_modal_payroll_setup_blade",
+      "resources_views_livewire_units_partials_modal_payroll_setup_blade_php_set"
+    ],
+    "127": [
+      "resources_views_livewire_units_partials_modal_setup_installment_blade",
+      "resources_views_livewire_units_partials_modal_setup_installment_blade_php_set"
+    ],
+    "128": [
+      "resources_views_livewire_units_partials_modal_viewer_blade",
+      "resources_views_livewire_units_partials_modal_viewer_blade_php_closeviewermodal"
+    ],
+    "129": [
+      "resources_views_livewire_units_partials_modal_worker_assignment_blade",
+      "resources_views_livewire_units_partials_modal_worker_assignment_blade_php_set"
+    ],
+    "130": [
+      "resources_views_livewire_units_partials_section_proposals_spp_blade",
+      "resources_views_livewire_units_partials_section_proposals_spp_blade_php_openviewermodal"
+    ],
+    "131": [
+      "resources_views_livewire_workers_partials_worker_assign_modal_blade",
+      "resources_views_livewire_workers_partials_worker_assign_modal_blade_php_set"
+    ],
+    "132": [
+      "resources_views_livewire_workers_partials_worker_form_modal_blade",
+      "resources_views_livewire_workers_partials_worker_form_modal_blade_php_set"
+    ],
+    "133": [
+      "resources_views_livewire_workers_partials_worker_header_blade",
+      "resources_views_livewire_workers_partials_worker_header_blade_php_create"
+    ],
+    "134": [
+      "bootstrap_app"
+    ],
+    "135": [
+      "config_app"
+    ],
+    "136": [
+      "config_cache"
+    ],
+    "137": [
+      "config_database"
+    ],
+    "138": [
+      "config_filesystems"
+    ],
+    "139": [
+      "config_logging"
+    ],
+    "140": [
+      "config_mail"
+    ],
+    "141": [
+      "config_octane"
+    ],
+    "142": [
+      "config_permission"
+    ],
+    "143": [
+      "config_queue"
+    ],
+    "144": [
+      "config_services"
+    ],
+    "145": [
+      "config_session"
+    ],
+    "146": [
+      "public_index"
+    ],
+    "147": [
+      "resources_js_app"
+    ],
+    "148": [
+      "resources_views_auth_login_blade"
+    ],
+    "149": [
+      "resources_views_bookings_receipt_pdf_blade"
+    ],
+    "150": [
+      "resources_views_bookings_verify_public_blade"
+    ],
+    "151": [
+      "resources_views_cashflow_report_pdf_blade"
+    ],
+    "152": [
+      "resources_views_cashflow_verify_public_blade"
+    ],
+    "153": [
+      "resources_views_components_currency_input_blade"
+    ],
+    "154": [
+      "resources_views_components_layouts_partials_confirm_modal_blade"
+    ],
+    "155": [
+      "resources_views_components_layouts_partials_header_blade"
+    ],
+    "156": [
+      "resources_views_components_layouts_partials_nav_links_blade"
+    ],
+    "157": [
+      "resources_views_components_layouts_partials_toast_notifications_blade"
+    ],
+    "158": [
+      "resources_views_components_table_loading_blade"
+    ],
+    "159": [
+      "resources_views_documents_employee_salary_slip_pdf_blade"
+    ],
+    "160": [
+      "resources_views_documents_pdf_blade"
+    ],
+    "161": [
+      "resources_views_documents_spjb_pdf_blade"
+    ],
+    "162": [
+      "resources_views_documents_verify_public_blade"
+    ],
+    "163": [
+      "resources_views_documents_verify_spjb_public_blade"
+    ],
+    "164": [
+      "resources_views_field_expenses_pdf_report_blade"
+    ],
+    "165": [
+      "resources_views_field_expenses_verify_public_blade"
+    ],
+    "166": [
+      "resources_views_installments_invoice_pdf_blade"
+    ],
+    "167": [
+      "resources_views_installments_verify_public_blade"
+    ],
+    "168": [
+      "resources_views_livewire_bookings_partials_booking_kpi_summary_blade"
+    ],
+    "169": [
+      "resources_views_livewire_dashboard_blade"
+    ],
+    "170": [
+      "resources_views_livewire_field_expenses_partials_expense_kpi_summary_blade"
+    ],
+    "171": [
+      "resources_views_livewire_global_search_blade"
+    ],
+    "172": [
+      "resources_views_livewire_profile_index_blade"
+    ],
+    "173": [
+      "resources_views_livewire_projects_partials_kpi_dashboard_blade"
+    ],
+    "174": [
+      "resources_views_livewire_projects_partials_specifications_strip_blade"
+    ],
+    "175": [
+      "resources_views_livewire_projects_partials_tab_units_blade"
+    ],
+    "176": [
+      "resources_views_livewire_proposals_partials_proposal_kpi_summary_blade"
+    ],
+    "177": [
+      "resources_views_livewire_tutorial_partials_tutorial_faq_accordion_blade"
+    ],
+    "178": [
+      "resources_views_livewire_tutorial_partials_tutorial_flow_booking_cash_blade"
+    ],
+    "179": [
+      "resources_views_livewire_tutorial_partials_tutorial_flow_cicilan_dokumen_blade"
+    ],
+    "180": [
+      "resources_views_livewire_units_partials_section_specifications_blade"
+    ],
+    "181": [
+      "resources_views_livewire_workers_partials_worker_kpi_summary_blade"
+    ],
+    "182": [
+      "resources_views_manual_invoices_pdf_blade"
+    ],
+    "183": [
+      "resources_views_manual_invoices_verify_public_blade"
+    ],
+    "184": [
+      "resources_views_material_purchases_receipt_pdf_blade"
+    ],
+    "185": [
+      "resources_views_material_purchases_verify_public_blade"
+    ],
+    "186": [
+      "resources_views_payroll_receipt_pdf_blade"
+    ],
+    "187": [
+      "resources_views_payroll_verify_public_blade"
+    ],
+    "188": [
+      "resources_views_pdf_unpaid_installments_report_blade"
+    ],
+    "189": [
+      "resources_views_pdf_verify_unpaid_installments_public_blade"
+    ],
+    "190": [
+      "resources_views_projects_land_payments_pdf_blade"
+    ],
+    "191": [
+      "resources_views_projects_payment_receipt_pdf_blade"
+    ],
+    "192": [
+      "resources_views_projects_sales_profit_pdf_blade"
+    ],
+    "193": [
+      "resources_views_projects_verify_land_payment_blade"
+    ],
+    "194": [
+      "resources_views_projects_verify_land_payments_public_blade"
+    ],
+    "195": [
+      "resources_views_projects_verify_sales_profit_public_blade"
+    ],
+    "196": [
+      "resources_views_units_expenses_pdf_blade"
+    ],
+    "197": [
+      "resources_views_units_spk_pdf_blade"
+    ],
+    "198": [
+      "resources_views_units_verify_expenses_public_blade"
+    ],
+    "199": [
+      "resources_views_units_verify_spk_public_blade"
+    ],
+    "200": [
+      "resources_views_welcome_blade"
+    ],
+    "201": [
+      "tests_feature_exampletest"
+    ],
+    "202": [
+      "tests_feature_indonesiantimezonetest"
+    ],
+    "203": [
+      "tests_unit_exampletest"
+    ],
+    "204": [
+      "vite_config"
+    ]
+  },
+  "cohesion": {
+    "0": 0.06311111111111112,
+    "1": 0.05137844611528822,
+    "2": 0.0593990216631726,
+    "3": 0.04081632653061224,
+    "4": 0.06342494714587738,
+    "5": 0.09176788124156546,
+    "6": 0.07226890756302522,
+    "7": 0.0784313725490196,
+    "8": 0.1010752688172043,
+    "9": 0.07407407407407407,
+    "10": 0.12,
+    "11": 0.14,
+    "12": 0.11231884057971014,
+    "13": 0.11231884057971014,
+    "14": 0.10869565217391304,
+    "15": 0.11462450592885376,
+    "16": 0.11688311688311688,
+    "17": 0.09956709956709957,
+    "18": 0.09523809523809523,
+    "19": 0.11428571428571428,
+    "20": 0.10526315789473684,
+    "21": 0.15441176470588236,
+    "22": 0.18681318681318682,
+    "23": 0.14285714285714285,
+    "24": 0.1794871794871795,
+    "25": 0.16666666666666666,
+    "26": 0.18181818181818182,
+    "27": 0.2,
+    "28": 0.25,
+    "29": 0.25,
+    "30": 0.4666666666666667,
+    "31": 0.3333333333333333,
+    "32": 0.4,
+    "33": 0.3333333333333333,
+    "34": 0.3333333333333333,
+    "35": 0.3333333333333333,
+    "36": 0.3333333333333333,
+    "37": 0.3333333333333333,
+    "38": 0.3333333333333333,
+    "39": 0.3333333333333333,
+    "40": 0.3333333333333333,
+    "41": 0.3333333333333333,
+    "42": 0.3333333333333333,
+    "43": 0.3333333333333333,
+    "44": 0.3333333333333333,
+    "45": 0.4,
+    "46": 0.4,
+    "47": 0.4,
+    "48": 0.4,
+    "49": 0.5,
+    "50": 0.5,
+    "51": 0.5,
+    "52": 0.5,
+    "53": 0.5,
+    "54": 0.5,
+    "55": 0.5,
+    "56": 0.6666666666666666,
+    "57": 0.6666666666666666,
+    "58": 0.6666666666666666,
+    "59": 0.6666666666666666,
+    "60": 0.6666666666666666,
+    "61": 0.6666666666666666,
+    "62": 0.6666666666666666,
+    "63": 0.6666666666666666,
+    "64": 0.6666666666666666,
+    "65": 0.6666666666666666,
+    "66": 0.6666666666666666,
+    "67": 0.6666666666666666,
+    "68": 0.6666666666666666,
+    "69": 0.6666666666666666,
+    "70": 0.6666666666666666,
+    "71": 0.6666666666666666,
+    "72": 0.6666666666666666,
+    "73": 0.6666666666666666,
+    "74": 0.6666666666666666,
+    "75": 0.6666666666666666,
+    "76": 0.6666666666666666,
+    "77": 0.6666666666666666,
+    "78": 0.6666666666666666,
+    "79": 0.6666666666666666,
+    "80": 0.6666666666666666,
+    "81": 0.6666666666666666,
+    "82": 0.6666666666666666,
+    "83": 0.6666666666666666,
+    "84": 0.6666666666666666,
+    "85": 0.6666666666666666,
+    "86": 0.6666666666666666,
+    "87": 0.6666666666666666,
+    "88": 0.6666666666666666,
+    "89": 0.6666666666666666,
+    "90": 0.6666666666666666,
+    "91": 0.6666666666666666,
+    "92": 0.6666666666666666,
+    "93": 0.6666666666666666,
+    "94": 0.6666666666666666,
+    "95": 1.0,
+    "96": 1.0,
+    "97": 1.0,
+    "98": 1.0,
+    "99": 1.0,
+    "100": 1.0,
+    "101": 1.0,
+    "102": 1.0,
+    "103": 1.0,
+    "104": 1.0,
+    "105": 1.0,
+    "106": 1.0,
+    "107": 1.0,
+    "108": 1.0,
+    "109": 1.0,
+    "110": 1.0,
+    "111": 1.0,
+    "112": 1.0,
+    "113": 1.0,
+    "114": 1.0,
+    "115": 1.0,
+    "116": 1.0,
+    "117": 1.0,
+    "118": 1.0,
+    "119": 1.0,
+    "120": 1.0,
+    "121": 1.0,
+    "122": 1.0,
+    "123": 1.0,
+    "124": 1.0,
+    "125": 1.0,
+    "126": 1.0,
+    "127": 1.0,
+    "128": 1.0,
+    "129": 1.0,
+    "130": 1.0,
+    "131": 1.0,
+    "132": 1.0,
+    "133": 1.0,
+    "134": 1.0,
+    "135": 1.0,
+    "136": 1.0,
+    "137": 1.0,
+    "138": 1.0,
+    "139": 1.0,
+    "140": 1.0,
+    "141": 1.0,
+    "142": 1.0,
+    "143": 1.0,
+    "144": 1.0,
+    "145": 1.0,
+    "146": 1.0,
+    "147": 1.0,
+    "148": 1.0,
+    "149": 1.0,
+    "150": 1.0,
+    "151": 1.0,
+    "152": 1.0,
+    "153": 1.0,
+    "154": 1.0,
+    "155": 1.0,
+    "156": 1.0,
+    "157": 1.0,
+    "158": 1.0,
+    "159": 1.0,
+    "160": 1.0,
+    "161": 1.0,
+    "162": 1.0,
+    "163": 1.0,
+    "164": 1.0,
+    "165": 1.0,
+    "166": 1.0,
+    "167": 1.0,
+    "168": 1.0,
+    "169": 1.0,
+    "170": 1.0,
+    "171": 1.0,
+    "172": 1.0,
+    "173": 1.0,
+    "174": 1.0,
+    "175": 1.0,
+    "176": 1.0,
+    "177": 1.0,
+    "178": 1.0,
+    "179": 1.0,
+    "180": 1.0,
+    "181": 1.0,
+    "182": 1.0,
+    "183": 1.0,
+    "184": 1.0,
+    "185": 1.0,
+    "186": 1.0,
+    "187": 1.0,
+    "188": 1.0,
+    "189": 1.0,
+    "190": 1.0,
+    "191": 1.0,
+    "192": 1.0,
+    "193": 1.0,
+    "194": 1.0,
+    "195": 1.0,
+    "196": 1.0,
+    "197": 1.0,
+    "198": 1.0,
+    "199": 1.0,
+    "200": 1.0,
+    "201": 1.0,
+    "202": 1.0,
+    "203": 1.0,
+    "204": 1.0
+  },
+  "gods": [
+    {
+      "id": "app_models_unit_unit",
+      "label": "Unit",
+      "degree": 89
+    },
+    {
+      "id": "app_models_user_user",
+      "label": "User",
+      "degree": 70
+    },
+    {
+      "id": "app_models_project_project",
+      "label": "Project",
+      "degree": 53
+    },
+    {
+      "id": "app_models_cashflowtransaction_cashflowtransaction",
+      "label": "CashflowTransaction",
+      "degree": 49
+    },
+    {
+      "id": "app_livewire_units_show_show",
+      "label": "Show",
+      "degree": 45
+    },
+    {
+      "id": "app_models_worker_worker",
+      "label": "Worker",
+      "degree": 42
+    },
+    {
+      "id": "app_models_workerunitpayroll_workerunitpayroll",
+      "label": "WorkerUnitPayroll",
+      "degree": 30
+    },
+    {
+      "id": "app_models_booking_booking",
+      "label": "Booking",
+      "degree": 29
+    },
+    {
+      "id": "app_models_officialdocument_officialdocument",
+      "label": "OfficialDocument",
+      "degree": 27
+    },
+    {
+      "id": "app_livewire_projects_show_show",
+      "label": "Show",
+      "degree": 26
+    }
+  ],
+  "surprises": [
+    {
+      "source": "DocumentPdfController",
+      "target": "Controller",
+      "source_files": [
+        "app/Http/Controllers/DocumentPdfController.php",
+        "app/Http/Controllers/Controller.php"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "inherits",
+      "why": "bridges separate communities"
+    },
+    {
+      "source": "EmployeeSalarySlipController",
+      "target": "Controller",
+      "source_files": [
+        "app/Http/Controllers/EmployeeSalarySlipController.php",
+        "app/Http/Controllers/Controller.php"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "inherits",
+      "why": "bridges separate communities"
+    },
+    {
+      "source": "InstallmentInvoiceController",
+      "target": "Controller",
+      "source_files": [
+        "app/Http/Controllers/InstallmentInvoiceController.php",
+        "app/Http/Controllers/Controller.php"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "inherits",
+      "why": "bridges separate communities"
+    },
+    {
+      "source": "LandPaymentReceiptController",
+      "target": "Controller",
+      "source_files": [
+        "app/Http/Controllers/LandPaymentReceiptController.php",
+        "app/Http/Controllers/Controller.php"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "inherits",
+      "why": "bridges separate communities"
+    },
+    {
+      "source": "ManualInvoiceController",
+      "target": "Controller",
+      "source_files": [
+        "app/Http/Controllers/ManualInvoiceController.php",
+        "app/Http/Controllers/Controller.php"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "inherits",
+      "why": "bridges separate communities"
+    }
+  ],
+  "questions": [
+    {
+      "type": "bridge_node",
+      "question": "Why does `User` connect `User` to `User.php`, `Controller`, `Project`, `Index`, `CashflowTransaction`, `Index`, `Index`, `Unit`, `Illuminate\\Database\\Seeder`, `OfficialDocument`, `ContractorAndInstallmentCancellationTest`, `InactiveAccountLoginTest`, `ActivityLog`, `ActivityLogger`, `Index`, `Index`?",
+      "why": "High betweenness centrality (0.048) - this node is a cross-community bridge."
+    },
+    {
+      "type": "bridge_node",
+      "question": "Why does `Unit` connect `Unit` to `User.php`, `Controller`, `Project`, `CashflowTransaction`, `Worker`, `Show`, `Index`, `WeeklyMaterialPurchase`, `Show`, `Index`, `Illuminate\\Database\\Eloquent\\Relations\\BelongsTo`, `User`, `Booking`, `Index`, `Illuminate\\Database\\Seeder`, `OfficialDocument`, `LegacySale`, `ContractorAndInstallmentCancellationTest`?",
+      "why": "High betweenness centrality (0.048) - this node is a cross-community bridge."
+    },
+    {
+      "type": "bridge_node",
+      "question": "Why does `Project` connect `Project` to `User.php`, `Controller`, `CashflowTransaction`, `Worker`, `Show`, `WeeklyMaterialPurchase`, `Index`, `Unit`, `User`, `Booking`, `Index`, `Illuminate\\Database\\Seeder`, `OfficialDocument`, `LegacySale`?",
+      "why": "High betweenness centrality (0.031) - this node is a cross-community bridge."
+    },
+    {
+      "type": "verify_inferred",
+      "question": "Are the 75 inferred relationships involving `Unit` (e.g. with `.exportExcel()` and `.exportPdf()`) actually correct?",
+      "why": "`Unit` has 75 INFERRED edges - model-reasoned connections that need verification."
+    },
+    {
+      "type": "verify_inferred",
+      "question": "Are the 57 inferred relationships involving `User` (e.g. with `.login()` and `.switchRole()`) actually correct?",
+      "why": "`User` has 57 INFERRED edges - model-reasoned connections that need verification."
+    },
+    {
+      "type": "verify_inferred",
+      "question": "Are the 42 inferred relationships involving `Project` (e.g. with `.exportPdf()` and `.verify()`) actually correct?",
+      "why": "`Project` has 42 INFERRED edges - model-reasoned connections that need verification."
+    },
+    {
+      "type": "verify_inferred",
+      "question": "Are the 31 inferred relationships involving `CashflowTransaction` (e.g. with `.exportExcel()` and `.exportPdf()`) actually correct?",
+      "why": "`CashflowTransaction` has 31 INFERRED edges - model-reasoned connections that need verification."
+    }
+  ]
+}

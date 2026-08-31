@@ -16,7 +16,7 @@
                 <span>Cetak PDF Rekap</span>
             </x-button>
         @else
-            <x-button variant="outline" size="sm" disabled icon="pdf" title="Belum ada data transaksi pengeluaran/belanja untuk digenerate PDF" class="opacity-50 cursor-not-allowed">
+            <x-button variant="pdf" size="sm" disabled icon="pdf" title="Belum ada data transaksi pengeluaran/belanja untuk digenerate PDF" class="opacity-50 cursor-not-allowed">
                 <span>PDF Rekap (Belum Ada Data)</span>
             </x-button>
         @endif

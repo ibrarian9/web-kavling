@@ -131,13 +131,13 @@
             <div class="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-2.5 pt-3 border-t border-slate-100 shrink-0">
                 <x-button variant="secondary" size="md" type="button" wire:click="closeExportPdfModal">Batal</x-button>
                 <div class="flex items-center gap-2">
-                    <x-button variant="outline" size="md" type="button" 
+                    <x-button variant="pdf" size="md" type="button" 
                               wire:click="openViewerModal('{{ $this->exportPdfUrl }}', 'Pratinjau PDF Daily Activity Report')" 
                               @click="$wire.closeExportPdfModal()">
-                        <svg class="w-4 h-4 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                        <svg class="w-4 h-4 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                         <span>Pratinjau PDF</span>
                     </x-button>
-                    <x-button variant="primary" size="md" href="{{ $this->exportPdfUrl }}" target="_blank" icon="pdf">
+                    <x-button variant="rose" size="md" href="{{ $this->exportPdfUrl }}" target="_blank" icon="pdf">
                         <span>Download PDF</span>
                     </x-button>
                 </div>

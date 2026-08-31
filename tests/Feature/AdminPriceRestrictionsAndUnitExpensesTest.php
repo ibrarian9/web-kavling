@@ -202,6 +202,65 @@ class AdminPriceRestrictionsAndUnitExpensesTest extends TestCase
         $response->assertHeader('content-type', 'application/pdf');
     }
 
+    public function test_unit_detail_realisasi_biaya_matches_pdf_calculation_and_does_not_double_count_contract(): void
+    {
+        // 1. Material Purchase: Rp 2.000.000
+        WeeklyMaterialPurchase::create([
+            'project_id' => $this->project->id,
+            'unit_id' => $this->unit->id,
+            'worker_id' => $this->worker->id,
+            'pengawas_id' => $this->founder->id,
+            'purchase_date' => now()->subDays(2),
+            'item_name' => 'Pasir & Kerikil 2 Truk',
+            'store_name' => 'TB. Sumber Pasir',
+            'quantity' => 2,
+            'unit_measure' => 'truk',
+            'unit_price' => 1000000,
+            'total_price' => 2000000,
+            'payment_status' => 'lunas',
+        ]);
+
+        // 2. Contract Payroll Setup: Rp 10.000.000
+        $payroll = WorkerUnitPayroll::create([
+            'project_id' => $this->project->id,
+            'unit_id' => $this->unit->id,
+            'worker_id' => $this->worker->id,
+            'agreed_salary' => 10000000,
+            'paid_amount' => 4000000,
+            'status' => 'berjalan',
+        ]);
+
+        // 3. Paid Salary Termin: Rp 4.000.000
+        WorkerSalaryPayment::create([
+            'worker_unit_payroll_id' => $payroll->id,
+            'worker_id' => $this->worker->id,
+            'amount_paid' => 4000000,
+            'amount_gross' => 4000000,
+            'loan_deduction' => 0,
+            'payment_date' => now()->subDay(),
+            'payment_method' => 'transfer',
+            'created_by' => $this->founder->id,
+        ]);
+
+        // Expected Realized Cost = Material (2 jt) + Paid Salary (4 jt) = 6 jt.
+        // It must NOT be 2 jt + 10 jt + 4 jt = 16 jt!
+        $component = Livewire::actingAs($this->founder)
+            ->test(\App\Livewire\Units\Show::class, ['id' => $this->unit->id])
+            ->assertStatus(200);
+
+        // Realized expenses card displays Rp 6.000.000
+        $component->assertSee('Rp 6.000.000');
+        $component->assertSee('Subtotal Belanja Material:');
+        $component->assertSee('Subtotal Gaji Terbayar:');
+        $component->assertSee('Total Kontrak Borongan:');
+        $component->assertSee('Total Biaya Terealisasi:');
+
+        // Check PDF also gives exactly Rp 6.000.000 in total
+        $response = $this->actingAs($this->founder)
+            ->get(route('units.expenses-pdf', $this->unit->id));
+        $response->assertStatus(200);
+    }
+
     public function test_projects_table_hides_land_price_and_sales_prices_from_menu_for_admin(): void
     {
         $component = Livewire::actingAs($this->admin)

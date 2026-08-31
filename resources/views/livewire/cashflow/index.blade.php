@@ -1,18 +1,18 @@
 <div class="space-y-6">
 
     <!-- Header Section & Actions -->
-    <div class="card-clean p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div class="card-clean p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
             <div class="flex items-center gap-2 flex-wrap">
-                <h2 class="text-xl font-bold text-slate-900 tracking-tight">Arus Kas & Konsolidasi Keuangan Global</h2>
-                <span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[11px] font-extrabold border border-emerald-200">Real-Time Financial Log</span>
+                <h2 class="text-lg sm:text-xl font-bold text-slate-900 tracking-tight">Arus Kas & Konsolidasi Keuangan Global</h2>
+                <span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] sm:text-[11px] font-extrabold border border-emerald-200">Real-Time Financial Log</span>
             </div>
             <p class="text-slate-500 text-xs mt-0.5">Pemantauan mutasi kas masuk/keluar per-proyek perumahan, per-unit, dan konsolidasi kas global perusahaan.</p>
         </div>
 
         <div class="flex items-center gap-2.5 flex-wrap">
             @if(auth()->user()->isAdminOrFounder() || auth()->user()->isFinance())
-                <x-button variant="emerald" size="sm" wire:click="openManualModal" icon="plus">
+                <x-button variant="emerald" size="sm" wire:click="openManualModal" icon="plus" class="w-full sm:w-auto justify-center">
                     Catat Transaksi Kas Baru
                 </x-button>
             @endif
@@ -20,28 +20,28 @@
     </div>
 
     <!-- Filter Control Panel Header -->
-    <div class="card-clean p-5 space-y-4">
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 pb-4">
-            <!-- View Mode Switcher -->
-            <div class="flex items-center gap-1.5 p-1 bg-slate-100 rounded-2xl">
-                <button wire:click="$set('view_mode', 'global')" class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 {{ $view_mode === 'global' ? 'bg-white text-slate-900 shadow-2xs' : 'text-slate-600 hover:text-slate-900' }}">
-                    <svg class="w-3.5 h-3.5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>
+    <div class="card-clean p-4 sm:p-5 space-y-4">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+            <!-- View Mode Switcher (Touch-friendly 3-grid on mobile, flex on desktop) -->
+            <div class="grid grid-cols-3 sm:flex items-center gap-1.5 p-1.5 bg-slate-100 rounded-2xl w-full sm:w-auto">
+                <button wire:click="$set('view_mode', 'global')" class="px-3 py-2 sm:py-1.5 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 {{ $view_mode === 'global' ? 'bg-white text-slate-900 shadow-2xs' : 'text-slate-600 hover:text-slate-900' }}">
+                    <svg class="w-3.5 h-3.5 text-blue-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>
                     <span>Global</span>
                 </button>
-                <button wire:click="$set('view_mode', 'project')" class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 {{ $view_mode === 'project' ? 'bg-white text-purple-700 shadow-2xs' : 'text-slate-600 hover:text-slate-900' }}">
-                    <svg class="w-3.5 h-3.5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5m3 0h1m-1-4h.01M9 16h.01M9 12h.01M9 8h.01M15 16h.01M15 12h.01M15 8h.01M12 16h.01M12 12h.01M12 8h.01"/></svg>
-                    <span>Per-Proyek</span>
+                <button wire:click="$set('view_mode', 'project')" class="px-3 py-2 sm:py-1.5 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 {{ $view_mode === 'project' ? 'bg-white text-purple-700 shadow-2xs' : 'text-slate-600 hover:text-slate-900' }}">
+                    <svg class="w-3.5 h-3.5 text-purple-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5m3 0h1m-1-4h.01M9 16h.01M9 12h.01M9 8h.01M15 16h.01M15 12h.01M15 8h.01M12 16h.01M12 12h.01M12 8h.01"/></svg>
+                    <span class="truncate">Per-Proyek</span>
                 </button>
-                <button wire:click="$set('view_mode', 'unit')" class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 {{ $view_mode === 'unit' ? 'bg-white text-teal-700 shadow-2xs' : 'text-slate-600 hover:text-slate-900' }}">
-                    <svg class="w-3.5 h-3.5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
-                    <span>Per-Unit Kavling</span>
+                <button wire:click="$set('view_mode', 'unit')" class="px-3 py-2 sm:py-1.5 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 {{ $view_mode === 'unit' ? 'bg-white text-teal-700 shadow-2xs' : 'text-slate-600 hover:text-slate-900' }}">
+                    <svg class="w-3.5 h-3.5 text-teal-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+                    <span class="truncate">Per-Unit</span>
                 </button>
             </div>
 
             <!-- Month Quick Filter -->
-            <div class="flex items-center gap-2 flex-wrap">
-                <span class="text-xs text-slate-500 font-medium">Periode:</span>
-                <input type="month" wire:model.live="filter_month" class="py-1.5 px-3 text-xs bg-slate-50 border border-slate-200 rounded-xl font-mono text-slate-800 font-bold focus:outline-none focus:border-emerald-500" />
+            <div class="flex items-center gap-2 flex-wrap w-full sm:w-auto">
+                <span class="text-xs text-slate-500 font-medium shrink-0">Periode:</span>
+                <input type="month" wire:model.live="filter_month" class="py-1.5 px-3 text-xs bg-slate-50 border border-slate-200 rounded-xl font-mono text-slate-800 font-bold focus:outline-none focus:border-emerald-500 flex-1 sm:flex-none" />
                 <button wire:click="setCurrentMonth" class="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-xl transition">Bulan Ini</button>
                 <button wire:click="setAllTime" class="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-xl transition">Semua Waktu</button>
                 @if($filter_month || $filter_project_id || $filter_unit_id || $view_mode !== 'global')
@@ -80,47 +80,47 @@
     </div>
 
     <!-- Summary KPI Cards Grid (Filtered View Balance) -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-4">
         <!-- Card 1: Total Pemasukan -->
-        <div class="kpi-card-emerald bg-white border border-slate-200/80 rounded-3xl p-5 shadow-xs min-w-0">
-            <div class="flex items-center justify-between">
-                <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Total Kas Masuk (Pemasukan)</span>
-                <div class="p-2.5 rounded-2xl bg-emerald-50 text-emerald-600 border border-emerald-100 shadow-2xs shrink-0">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11l5-5m0 0l5 5m-5-5v12"/></svg>
+        <div class="kpi-card-emerald bg-white border border-slate-200/80 rounded-2xl sm:rounded-3xl p-4 sm:p-5 shadow-xs min-w-0">
+            <div class="flex items-center justify-between gap-1">
+                <span class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-400 truncate">Total Kas Masuk (Pemasukan)</span>
+                <div class="p-2 sm:p-2.5 rounded-xl sm:rounded-2xl bg-emerald-50 text-emerald-600 border border-emerald-100 shadow-2xs shrink-0">
+                    <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11l5-5m0 0l5 5m-5-5v12"/></svg>
                 </div>
             </div>
-            <p class="text-lg sm:text-xl xl:text-2xl font-extrabold text-emerald-700 font-mono tracking-tight truncate mt-2" title="Rp {{ number_format($totalMasuk, 0, ',', '.') }}">
+            <p class="text-base sm:text-xl lg:text-2xl font-extrabold text-emerald-700 font-mono tracking-tight truncate whitespace-nowrap mt-2" title="Rp {{ number_format($totalMasuk, 0, ',', '.') }}">
                 Rp {{ number_format($totalMasuk, 0, ',', '.') }}
             </p>
-            <p class="text-[11px] text-slate-400 mt-1 truncate">Penjualan unit, booking fee & DP</p>
+            <p class="text-[10px] sm:text-[11px] text-slate-400 mt-1 truncate">Penjualan unit, booking fee & DP</p>
         </div>
 
         <!-- Card 2: Total Pengeluaran -->
-        <div class="kpi-card-rose bg-white border border-slate-200/80 rounded-3xl p-5 shadow-xs min-w-0">
-            <div class="flex items-center justify-between">
-                <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Total Kas Keluar (Pengeluaran)</span>
-                <div class="p-2.5 rounded-2xl bg-rose-50 text-rose-600 border border-rose-100 shadow-2xs shrink-0">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 13l-5 5m0 0l-5-5m5 5V6"/></svg>
+        <div class="kpi-card-rose bg-white border border-slate-200/80 rounded-2xl sm:rounded-3xl p-4 sm:p-5 shadow-xs min-w-0">
+            <div class="flex items-center justify-between gap-1">
+                <span class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-400 truncate">Total Kas Keluar (Pengeluaran)</span>
+                <div class="p-2 sm:p-2.5 rounded-xl sm:rounded-2xl bg-rose-50 text-rose-600 border border-rose-100 shadow-2xs shrink-0">
+                    <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 13l-5 5m0 0l-5-5m5 5V6"/></svg>
                 </div>
             </div>
-            <p class="text-lg sm:text-xl xl:text-2xl font-extrabold text-rose-700 font-mono tracking-tight truncate mt-2" title="Rp {{ number_format($totalKeluar, 0, ',', '.') }}">
+            <p class="text-base sm:text-xl lg:text-2xl font-extrabold text-rose-700 font-mono tracking-tight truncate whitespace-nowrap mt-2" title="Rp {{ number_format($totalKeluar, 0, ',', '.') }}">
                 Rp {{ number_format($totalKeluar, 0, ',', '.') }}
             </p>
-            <p class="text-[11px] text-slate-400 mt-1 truncate">Belanja material, upah & operasional</p>
+            <p class="text-[10px] sm:text-[11px] text-slate-400 mt-1 truncate">Belanja material, upah & operasional</p>
         </div>
 
         <!-- Card 3: Saldo Kas Bersih -->
-        <div class="kpi-card-blue bg-white border border-slate-200/80 rounded-3xl p-5 shadow-xs min-w-0 col-span-1 sm:col-span-2 lg:col-span-1">
-            <div class="flex items-center justify-between">
-                <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Saldo Bersih (Net Cashflow)</span>
-                <div class="p-2.5 rounded-2xl bg-purple-50 text-purple-600 border border-purple-100 shadow-2xs shrink-0">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <div class="kpi-card-blue bg-white border border-slate-200/80 rounded-2xl sm:rounded-3xl p-4 sm:p-5 shadow-xs min-w-0 col-span-1 sm:col-span-2 lg:col-span-1">
+            <div class="flex items-center justify-between gap-1">
+                <span class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-400 truncate">Saldo Bersih (Net Cashflow)</span>
+                <div class="p-2 sm:p-2.5 rounded-xl sm:rounded-2xl bg-purple-50 text-purple-600 border border-purple-100 shadow-2xs shrink-0">
+                    <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                 </div>
             </div>
-            <p class="text-lg sm:text-xl xl:text-2xl font-extrabold font-mono tracking-tight truncate mt-2 {{ $netCashflow >= 0 ? 'text-slate-900' : 'text-rose-600' }}" title="Rp {{ number_format($netCashflow, 0, ',', '.') }}">
+            <p class="text-base sm:text-xl lg:text-2xl font-extrabold font-mono tracking-tight truncate whitespace-nowrap mt-2 {{ $netCashflow >= 0 ? 'text-slate-900' : 'text-rose-600' }}" title="Rp {{ number_format($netCashflow, 0, ',', '.') }}">
                 Rp {{ number_format($netCashflow, 0, ',', '.') }}
             </p>
-            <p class="text-[11px] text-slate-400 mt-1 truncate">Akumulasi bersih periode terpilih</p>
+            <p class="text-[10px] sm:text-[11px] text-slate-400 mt-1 truncate">Akumulasi bersih periode terpilih</p>
         </div>
     </div>
 
@@ -238,7 +238,7 @@
                 <div class="space-y-1 text-xs">
                     <div class="flex justify-between items-center font-semibold">
                         <x-category-badge :category="$cat->category" />
-                        <span class="font-mono text-emerald-700 font-bold">Rp {{ number_format($cat->total_amount, 0, ',', '.') }} ({{ $pct }}%)</span>
+                        <span class="font-mono text-emerald-700 font-bold whitespace-nowrap">Rp {{ number_format($cat->total_amount, 0, ',', '.') }} ({{ $pct }}%)</span>
                     </div>
                     <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
                         <div class="bg-emerald-500 h-2 rounded-full transition-all duration-500" style="width: {{ $pct }}%"></div>
@@ -258,7 +258,7 @@
                 <div class="space-y-1 text-xs">
                     <div class="flex justify-between items-center font-semibold">
                         <x-category-badge :category="$cat->category" />
-                        <span class="font-mono text-rose-700 font-bold">Rp {{ number_format($cat->total_amount, 0, ',', '.') }} ({{ $pct }}%)</span>
+                        <span class="font-mono text-rose-700 font-bold whitespace-nowrap">Rp {{ number_format($cat->total_amount, 0, ',', '.') }} ({{ $pct }}%)</span>
                     </div>
                     <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
                         <div class="bg-rose-500 h-2 rounded-full transition-all duration-500" style="width: {{ $pct }}%"></div>
@@ -274,7 +274,7 @@
         <!-- Breakdown per perumahan -->
         <x-card>
             <h3 class="font-extrabold text-slate-900 text-xs uppercase tracking-wider mb-4">Ringkasan Kas Konsolidasi per Perumahan / Proyek</h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-4">
                 @foreach ($projectBreakdown as $pb)
                     <div class="p-4 bg-slate-50/80 border border-slate-200/80 rounded-2xl space-y-2 shadow-2xs hover:bg-white transition">
                         <div class="font-extrabold text-slate-900 text-xs flex justify-between items-center">
@@ -284,15 +284,15 @@
                         <div class="text-xs space-y-1.5 font-mono pt-1">
                             <div class="flex justify-between text-emerald-600 font-medium">
                                 <span class="text-slate-500 font-sans">Kas Masuk:</span>
-                                <span class="font-bold">Rp {{ number_format($pb['masuk'], 0, ',', '.') }}</span>
+                                <span class="font-bold whitespace-nowrap">Rp {{ number_format($pb['masuk'], 0, ',', '.') }}</span>
                             </div>
                             <div class="flex justify-between text-rose-600 font-medium">
                                 <span class="text-slate-500 font-sans">Kas Keluar:</span>
-                                <span class="font-bold">Rp {{ number_format($pb['keluar'], 0, ',', '.') }}</span>
+                                <span class="font-bold whitespace-nowrap">Rp {{ number_format($pb['keluar'], 0, ',', '.') }}</span>
                             </div>
                             <div class="flex justify-between border-t border-slate-200/80 pt-1.5 font-extrabold text-slate-900">
                                 <span class="font-sans text-slate-700">Saldo Bersih:</span>
-                                <span>Rp {{ number_format($pb['net'], 0, ',', '.') }}</span>
+                                <span class="whitespace-nowrap">Rp {{ number_format($pb['net'], 0, ',', '.') }}</span>
                             </div>
                         </div>
                     </div>
@@ -301,22 +301,22 @@
         </x-card>
     @endif
 
-    <!-- Mutasi Arus Kas Table Card (Ultra User-Friendly) -->
+    <!-- Mutasi Arus Kas Card (Mobile-First Cards + Desktop Table) -->
     <div class="space-y-4">
         <!-- Table Search & Filters Control Bar -->
-        <div class="card-clean p-4 border border-slate-200/80 rounded-3xl flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div class="card-clean p-4 border border-slate-200/80 rounded-3xl flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
             <x-search-input placeholder="Cari keterangan, proyek, atau pencatat..." containerClass="w-full sm:w-72" />
 
-            <div class="flex items-center gap-2.5 w-full sm:w-auto justify-end flex-wrap">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 w-full sm:w-auto">
                 <!-- Type Filter -->
-                <select wire:model.live="typeFilter" class="select-clean text-xs font-bold">
+                <select wire:model.live="typeFilter" class="select-clean text-xs font-bold w-full">
                     <option value="">Semua Tipe Kas</option>
                     <option value="masuk">Kas Masuk</option>
                     <option value="keluar">Kas Keluar</option>
                 </select>
 
                 <!-- Category Filter -->
-                <select wire:model.live="categoryFilter" class="select-clean text-xs font-bold">
+                <select wire:model.live="categoryFilter" class="select-clean text-xs font-bold w-full">
                     <option value="">Semua Kategori</option>
                     <optgroup label="Pemasukan (Kas Masuk)">
                         <option value="pembayaran_cicilan_pembeli">Setoran Cicilan Pembeli</option>
@@ -337,27 +337,40 @@
             </div>
         </div>
 
-        <!-- Unified Table of Cashflow Transactions with CSS Table-to-Card Transformation -->
-        <x-table :headers="['Tanggal', 'Proyek Properti', 'Tipe & Kategori', 'Keterangan Transaksi', 'Petugas Pencatat', ['label' => 'Nominal (Rp)', 'class' => 'p-3.5 text-right'], ['label' => 'Aksi & Resi', 'class' => 'p-3.5 text-center']]" loadingTarget="search, typeFilter, categoryFilter, filter_month, filter_project_id, filter_unit_id, page">
+        <!-- 1. MOBILE CARD VIEW (Active on screens < 768px) -->
+        <div class="block md:hidden space-y-3" wire:loading.class="opacity-50 pointer-events-none transition-opacity duration-200" wire:target="search, typeFilter, categoryFilter, filter_month, filter_project_id, filter_unit_id, page">
             @forelse($transactions as $trx)
-                <tr class="hover:bg-slate-50/70 transition duration-150">
-                    <!-- Tanggal -->
-                    <td data-label="Tanggal" class="p-3.5 font-mono whitespace-nowrap">
-                        <span class="font-bold text-slate-800 block text-xs">{{ format_id_date($trx->transaction_date) }}</span>
-                        <span class="text-[10px] text-slate-400 font-sans block">{{ $trx->transaction_date ? $trx->transaction_date->locale('id')->isoFormat('dddd') : '' }}</span>
-                    </td>
-
-                    <!-- Proyek -->
-                    <td data-label="Proyek" class="p-3.5 font-bold text-slate-800 text-xs">
-                        <div class="flex items-center gap-1.5">
-                            <svg class="w-4 h-4 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5m3 0h1m-1-4h.01M9 16h.01M9 12h.01M9 8h.01M15 16h.01M15 12h.01M15 8h.01M12 16h.01M12 12h.01M12 8h.01"/></svg>
-                            <span>{{ $trx->project->name ?? 'Non-Proyek / Kantor Pusat' }}</span>
+                <div class="bg-white border border-slate-200/90 rounded-2xl p-4 space-y-3 shadow-xs transition hover:shadow-md">
+                    <!-- Top Row: Tanggal & Hari (Kiri) + Nominal Besar (Kanan) -->
+                    <div class="flex items-start justify-between gap-3 border-b border-slate-100 pb-2.5">
+                        <div class="min-w-0">
+                            <div class="flex items-center gap-1.5 text-xs font-bold text-slate-800">
+                                <svg class="w-3.5 h-3.5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                <span class="font-mono">{{ format_id_date($trx->transaction_date) }}</span>
+                            </div>
+                            <span class="text-[11px] text-slate-400 font-medium ml-5 block">
+                                {{ $trx->transaction_date ? $trx->transaction_date->locale('id')->isoFormat('dddd') : '-' }}
+                            </span>
                         </div>
-                    </td>
 
-                    <!-- Tipe & Kategori -->
-                    <td data-label="Tipe & Kategori" class="p-3.5">
-                        <div class="space-y-1.5 flex flex-col items-start">
+                        <!-- Nominal Highlight Badge -->
+                        <div class="text-right shrink-0">
+                            <span class="font-mono text-base font-black tracking-tight whitespace-nowrap {{ $trx->type === 'masuk' ? 'text-emerald-600' : 'text-rose-600' }}">
+                                {{ $trx->type === 'masuk' ? '+' : '-' }} Rp {{ number_format($trx->amount, 0, ',', '.') }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Middle: Proyek & Badges -->
+                    <div class="space-y-2">
+                        <!-- Proyek Properti -->
+                        <div class="flex items-center gap-1.5 text-xs font-semibold text-slate-700">
+                            <svg class="w-3.5 h-3.5 text-indigo-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5m3 0h1m-1-4h.01M9 16h.01M9 12h.01M9 8h.01M15 16h.01M15 12h.01M15 8h.01M12 16h.01M12 12h.01M12 8h.01"/></svg>
+                            <span class="truncate font-bold">{{ $trx->project->name ?? 'Non-Proyek / Kantor Pusat' }}</span>
+                        </div>
+
+                        <!-- Badges: Tipe & Kategori Kas -->
+                        <div class="flex items-center gap-1.5 flex-wrap">
                             @if($trx->type === 'masuk')
                                 <x-status-badge status="kas_masuk" label="KAS MASUK" />
                             @else
@@ -365,33 +378,44 @@
                             @endif
                             <x-category-badge :category="$trx->category" />
                         </div>
-                    </td>
 
-                    <!-- Keterangan Transaksi -->
-                    <td data-label="Keterangan" class="p-3.5 max-w-xs">
-                        <p class="font-bold text-slate-800 leading-relaxed text-xs">{{ $trx->description }}</p>
-                        @if($trx->reference_type)
-                            <span class="text-[10px] font-mono text-purple-700 bg-purple-50 px-2 py-0.5 rounded border border-purple-200 mt-1 inline-block">
-                                Ref: {{ class_basename($trx->reference_type) }} #{{ $trx->reference_id }}
-                            </span>
-                        @endif
-                    </td>
+                        <!-- Keterangan Transaksi (Full-Width Natural Left-Aligned) -->
+                        <div class="bg-slate-50/90 rounded-xl p-3 border border-slate-100 space-y-1.5">
+                            <p class="text-xs font-medium text-slate-800 leading-relaxed text-left">
+                                {{ $trx->description }}
+                            </p>
+                            @if($trx->reference_type)
+                                <div class="pt-0.5">
+                                    <span class="text-[10px] font-mono text-purple-700 bg-purple-100/70 px-2 py-0.5 rounded-md border border-purple-200 inline-block font-semibold">
+                                        Ref: {{ class_basename($trx->reference_type) }} #{{ $trx->reference_id }}
+                                    </span>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
 
-                    <!-- Pencatat -->
-                    <td data-label="Pencatat" class="p-3.5">
-                        <p class="font-bold text-slate-700 text-xs">{{ $trx->creator->name ?? 'System' }}</p>
-                        <span class="text-[10px] text-slate-400 font-mono uppercase">{{ $trx->creator->role ?? 'System' }}</span>
-                    </td>
+                    <!-- Bottom Row: Pencatat (Kiri) & Tombol Aksi (Kanan) -->
+                    <div class="flex items-center justify-between gap-2 pt-2 border-t border-slate-100 text-xs">
+                        <!-- Pencatat -->
+                        <div class="min-w-0 flex items-center gap-2 text-slate-500">
+                            <div class="w-6 h-6 rounded-full bg-slate-100 text-slate-700 font-extrabold flex items-center justify-center text-[10px] shrink-0">
+                                {{ strtoupper(substr($trx->creator->name ?? 'S', 0, 1)) }}
+                            </div>
+                            <div class="truncate">
+                                <span class="font-bold text-slate-700 text-[11px] block truncate">{{ $trx->creator->name ?? 'System' }}</span>
+                                <span class="text-[9px] text-slate-400 uppercase font-mono block">{{ $trx->creator->role ?? 'System' }}</span>
+                            </div>
+                        </div>
 
-                    <!-- Nominal -->
-                    <td data-label="Nominal" class="p-3.5 text-right font-mono font-extrabold text-sm whitespace-nowrap {{ $trx->type === 'masuk' ? 'text-emerald-600' : 'text-rose-600' }}">
-                        <span>Rp {{ number_format($trx->amount, 0, ',', '.') }}</span>
-                    </td>
+                        <!-- Action Buttons -->
+                        <div class="flex items-center gap-1.5 shrink-0">
+                            @if ($trx->receipt_photo_url)
+                                <x-button variant="amber" size="xs" wire:click="openImageModal('{{ $trx->receipt_photo_url }}', 'Foto Struk Resi Kas - {{ $trx->description }}')" title="Foto Struk Resi">
+                                    Struk
+                                </x-button>
+                            @endif
 
-                    <!-- Aksi -->
-                    <td data-card-action class="p-3.5 text-center whitespace-nowrap">
-                        <div class="inline-flex items-center justify-center gap-1.5 whitespace-nowrap">
-                            <x-button variant="outline" size="xs" wire:click="openDetailModal({{ $trx->id }})" title="Audit Trail Detail Transaksi">
+                            <x-button variant="outline" size="xs" wire:click="openDetailModal({{ $trx->id }})" title="Detail Audit Trail">
                                 Detail
                             </x-button>
 
@@ -430,12 +454,114 @@
                                 @endif
                             </x-action-dropdown>
                         </div>
-                    </td>
-                </tr>
+                    </div>
+                </div>
             @empty
                 <x-table-empty colspan="7" title="Belum Ada Mutasi Transaksi Kas Ditemukan" message="Coba sesuaikan kata kunci pencarian atau catat transaksi kas baru." />
             @endforelse
-        </x-table>
+        </div>
+
+        <!-- 2. DESKTOP / TABLET TABLE VIEW (Active on screens >= 768px) -->
+        <div class="hidden md:block">
+            <x-table :responsive="false" :headers="['Tanggal', 'Proyek Properti', 'Tipe & Kategori', 'Keterangan Transaksi', 'Petugas Pencatat', ['label' => 'Nominal (Rp)', 'class' => 'p-3.5 text-right'], ['label' => 'Aksi & Resi', 'class' => 'p-3.5 text-center']]" loadingTarget="search, typeFilter, categoryFilter, filter_month, filter_project_id, filter_unit_id, page">
+                @forelse($transactions as $trx)
+                    <tr class="hover:bg-slate-50/70 transition duration-150">
+                        <!-- Tanggal -->
+                        <td class="p-3.5 font-mono whitespace-nowrap">
+                            <span class="font-bold text-slate-800 block text-xs">{{ format_id_date($trx->transaction_date) }}</span>
+                            <span class="text-[10px] text-slate-400 font-sans block">{{ $trx->transaction_date ? $trx->transaction_date->locale('id')->isoFormat('dddd') : '' }}</span>
+                        </td>
+
+                        <!-- Proyek -->
+                        <td class="p-3.5 font-bold text-slate-800 text-xs">
+                            <div class="flex items-center gap-1.5">
+                                <svg class="w-4 h-4 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5m3 0h1m-1-4h.01M9 16h.01M9 12h.01M9 8h.01M15 16h.01M15 12h.01M15 8h.01M12 16h.01M12 12h.01M12 8h.01"/></svg>
+                                <span>{{ $trx->project->name ?? 'Non-Proyek / Kantor Pusat' }}</span>
+                            </div>
+                        </td>
+
+                        <!-- Tipe & Kategori -->
+                        <td class="p-3.5 whitespace-nowrap">
+                            <div class="space-y-1.5 flex flex-col items-start">
+                                @if($trx->type === 'masuk')
+                                    <x-status-badge status="kas_masuk" label="KAS MASUK" />
+                                @else
+                                    <x-status-badge status="kas_keluar" label="KAS KELUAR" />
+                                @endif
+                                <x-category-badge :category="$trx->category" />
+                            </div>
+                        </td>
+
+                        <!-- Keterangan Transaksi -->
+                        <td class="p-3.5 max-w-xs">
+                            <p class="font-bold text-slate-800 leading-relaxed text-xs">{{ $trx->description }}</p>
+                            @if($trx->reference_type)
+                                <span class="text-[10px] font-mono text-purple-700 bg-purple-50 px-2 py-0.5 rounded border border-purple-200 mt-1 inline-block">
+                                    Ref: {{ class_basename($trx->reference_type) }} #{{ $trx->reference_id }}
+                                </span>
+                            @endif
+                        </td>
+
+                        <!-- Pencatat -->
+                        <td class="p-3.5 whitespace-nowrap">
+                            <p class="font-bold text-slate-700 text-xs">{{ $trx->creator->name ?? 'System' }}</p>
+                            <span class="text-[10px] text-slate-400 font-mono uppercase">{{ $trx->creator->role ?? 'System' }}</span>
+                        </td>
+
+                        <!-- Nominal -->
+                        <td class="p-3.5 text-right font-mono font-extrabold text-sm whitespace-nowrap {{ $trx->type === 'masuk' ? 'text-emerald-600' : 'text-rose-600' }}">
+                            <span>Rp {{ number_format($trx->amount, 0, ',', '.') }}</span>
+                        </td>
+
+                        <!-- Aksi -->
+                        <td class="p-3.5 text-center whitespace-nowrap">
+                            <div class="inline-flex items-center justify-center gap-1.5 whitespace-nowrap">
+                                <x-button variant="outline" size="xs" wire:click="openDetailModal({{ $trx->id }})" title="Audit Trail Detail Transaksi">
+                                    Detail
+                                </x-button>
+
+                                <x-action-dropdown title="Menu Opsi Transaksi Kas" size="xs">
+                                    <div class="py-1">
+                                        @if ($trx->receipt_photo_url)
+                                            <button type="button" wire:click="openImageModal('{{ $trx->receipt_photo_url }}', 'Foto Struk Resi Kas - {{ $trx->description }}')" class="w-full text-left px-3.5 py-2 text-amber-700 hover:bg-amber-50 flex items-center gap-2 transition">
+                                                <svg class="w-4 h-4 text-amber-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                                <span>Foto Struk Resi</span>
+                                            </button>
+                                        @endif
+
+                                        @if(auth()->user()->isAdminOrFounder() || auth()->user()->isFinance())
+                                            <button type="button" wire:click="editTransaction({{ $trx->id }})" class="w-full text-left px-3.5 py-2 text-slate-700 hover:bg-slate-50 flex items-center gap-2 transition">
+                                                <svg class="w-4 h-4 text-slate-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                                                <span>Edit Transaksi</span>
+                                            </button>
+                                        @endif
+                                    </div>
+
+                                    @if(auth()->user()->isSuperAdmin())
+                                        <div class="py-1">
+                                            <button type="button" 
+                                                    @click="confirmModalAction({
+                                                        title: 'Hapus Mutasi Transaksi Kas',
+                                                        message: 'Yakin ingin menghapus mutasi transaksi kas #TRX-{{ $trx->id }} ini?',
+                                                        confirmText: 'Hapus Transaksi',
+                                                        btnClass: 'px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5',
+                                                        onConfirm: () => $wire.deleteTransaction({{ $trx->id }})
+                                                    })" 
+                                                    class="w-full text-left px-3.5 py-2 text-rose-600 hover:bg-rose-50 flex items-center gap-2 transition">
+                                                <svg class="w-4 h-4 text-rose-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                                <span>Hapus Transaksi</span>
+                                            </button>
+                                        </div>
+                                    @endif
+                                </x-action-dropdown>
+                            </div>
+                        </td>
+                    </tr>
+                @empty
+                    <x-table-empty colspan="7" title="Belum Ada Mutasi Transaksi Kas Ditemukan" message="Coba sesuaikan kata kunci pencarian atau catat transaksi kas baru." />
+                @endforelse
+            </x-table>
+        </div>
         
         <div>{{ $transactions->links() }}</div>
     </div>

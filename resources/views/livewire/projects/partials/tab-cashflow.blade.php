@@ -1,39 +1,39 @@
 <!-- TAB 3: Laporan Arus Kas Proyek (Inflow & Outflow) -->
 <div class="space-y-4">
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
-        <div class="kpi-card-emerald">
-            <div class="flex items-center justify-between">
-                <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Total Kas Masuk Proyek</span>
-                <div class="p-2.5 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5 sm:gap-5">
+        <div class="kpi-card-emerald min-w-0">
+            <div class="flex items-center justify-between gap-1">
+                <span class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-400 truncate">Total Kas Masuk Proyek</span>
+                <div class="p-2 sm:p-2.5 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100 shadow-2xs shrink-0">
+                    <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                 </div>
             </div>
-            <p class="text-2xl font-extrabold font-mono text-emerald-700 mt-2">Rp {{ number_format($cashflowMasuk, 0, ',', '.') }}</p>
-            <p class="text-[11px] text-slate-400 mt-1">DP, Booking Fee, & Setoran Cicilan</p>
+            <p class="text-base sm:text-xl lg:text-2xl font-extrabold font-mono text-emerald-700 mt-2 truncate whitespace-nowrap">Rp {{ number_format($cashflowMasuk, 0, ',', '.') }}</p>
+            <p class="text-[10px] sm:text-[11px] text-slate-400 mt-1 truncate">DP, Booking Fee, & Setoran Cicilan</p>
         </div>
 
-        <div class="kpi-card-rose">
-            <div class="flex items-center justify-between">
-                <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Total Kas Keluar Proyek</span>
-                <div class="p-2.5 rounded-xl bg-rose-50 text-rose-600 border border-rose-100">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <div class="kpi-card-rose min-w-0">
+            <div class="flex items-center justify-between gap-1">
+                <span class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-400 truncate">Total Kas Keluar Proyek</span>
+                <div class="p-2 sm:p-2.5 rounded-xl bg-rose-50 text-rose-600 border border-rose-100 shadow-2xs shrink-0">
+                    <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                 </div>
             </div>
-            <p class="text-2xl font-extrabold font-mono text-rose-700 mt-2">Rp {{ number_format($cashflowKeluar, 0, ',', '.') }}</p>
-            <p class="text-[11px] text-slate-400 mt-1">Upah Tukang, Material, Lahan, & Operasional</p>
+            <p class="text-base sm:text-xl lg:text-2xl font-extrabold font-mono text-rose-700 mt-2 truncate whitespace-nowrap">Rp {{ number_format($cashflowKeluar, 0, ',', '.') }}</p>
+            <p class="text-[10px] sm:text-[11px] text-slate-400 mt-1 truncate">Upah Tukang, Material, Lahan, & Operasional</p>
         </div>
 
-        <div class="kpi-card-blue">
-            <div class="flex items-center justify-between">
-                <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Saldo Bersih Arus Kas</span>
-                <div class="p-2.5 rounded-xl bg-purple-50 text-purple-600 border border-purple-100">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <div class="kpi-card-blue min-w-0">
+            <div class="flex items-center justify-between gap-1">
+                <span class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-400 truncate">Saldo Bersih Arus Kas</span>
+                <div class="p-2 sm:p-2.5 rounded-xl bg-purple-50 text-purple-600 border border-purple-100 shadow-2xs shrink-0">
+                    <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                 </div>
             </div>
-            <p class="text-2xl font-extrabold font-mono mt-2 {{ $cashflowNet >= 0 ? 'text-emerald-700' : 'text-rose-700' }}">
+            <p class="text-base sm:text-xl lg:text-2xl font-extrabold font-mono mt-2 truncate whitespace-nowrap {{ $cashflowNet >= 0 ? 'text-emerald-700' : 'text-rose-700' }}">
                 Rp {{ number_format($cashflowNet, 0, ',', '.') }}
             </p>
-            <p class="text-[11px] text-slate-400 mt-1">Selisih Mutasi Kas Masuk & Keluar</p>
+            <p class="text-[10px] sm:text-[11px] text-slate-400 mt-1 truncate">Selisih Mutasi Kas Masuk & Keluar</p>
         </div>
     </div>
 
@@ -47,11 +47,11 @@
 
             <div class="flex items-center gap-2">
                 @if(count($cashflowTransactions) > 0)
-                    <x-button variant="outline" size="sm" href="{{ route('cashflow.export-pdf', ['view_mode' => 'project', 'project_id' => $project->id]) }}" target="_blank" icon="pdf">
+                    <x-button variant="pdf" size="sm" href="{{ route('cashflow.export-pdf', ['view_mode' => 'project', 'project_id' => $project->id]) }}" target="_blank" icon="pdf">
                         <span>Lihat PDF Rekap</span>
                     </x-button>
                 @else
-                    <x-button variant="outline" size="sm" disabled icon="pdf" title="Belum ada data arus kas untuk digenerate PDF" class="opacity-50 cursor-not-allowed">
+                    <x-button variant="pdf" size="sm" disabled icon="pdf" title="Belum ada data arus kas untuk digenerate PDF" class="opacity-50 cursor-not-allowed">
                         <span>PDF Rekap (Belum Ada Data)</span>
                     </x-button>
                 @endif
@@ -61,25 +61,35 @@
         <!-- Mobile Card Layout -->
         <div class="md:hidden divide-y divide-slate-100">
             @forelse($cashflowTransactions as $tx)
-                <div class="p-4 space-y-2">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center gap-2">
-                            <span class="font-mono text-slate-700 text-xs font-bold">{{ format_id_date($tx->transaction_date) }}</span>
-                            @if($tx->type === 'masuk')
-                                <span class="px-2 py-0.5 text-[10px] font-bold bg-emerald-100 text-emerald-800 rounded-full border border-emerald-200">MASUK</span>
-                            @else
-                                <span class="px-2 py-0.5 text-[10px] font-bold bg-rose-100 text-rose-800 rounded-full border border-rose-200">KELUAR</span>
-                            @endif
+                <div class="p-4 space-y-3">
+                    <!-- Top Row: Tanggal & Nominal -->
+                    <div class="flex items-start justify-between gap-2 border-b border-slate-100 pb-2">
+                        <div class="flex items-center gap-1.5 text-xs font-bold text-slate-800">
+                            <svg class="w-3.5 h-3.5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                            <span class="font-mono">{{ format_id_date($tx->transaction_date) }}</span>
                         </div>
-                        <span class="font-mono font-extrabold text-sm {{ $tx->type === 'masuk' ? 'text-emerald-700' : 'text-rose-700' }}">
+                        <span class="font-mono font-black text-sm whitespace-nowrap {{ $tx->type === 'masuk' ? 'text-emerald-600' : 'text-rose-600' }}">
                             {{ $tx->type === 'masuk' ? '+' : '-' }} Rp {{ number_format($tx->amount, 0, ',', '.') }}
                         </span>
                     </div>
-                    <div class="flex items-center gap-2 text-xs">
+
+                    <!-- Badges -->
+                    <div class="flex items-center gap-1.5 flex-wrap">
+                        @if($tx->type === 'masuk')
+                            <x-status-badge status="kas_masuk" label="KAS MASUK" />
+                        @else
+                            <x-status-badge status="kas_keluar" label="KAS KELUAR" />
+                        @endif
                         <x-category-badge :category="$tx->category" />
                     </div>
-                    <p class="text-[11px] text-slate-600 leading-relaxed">{{ $tx->description }}</p>
-                    <div class="flex items-center gap-1.5 flex-wrap pt-1">
+
+                    <!-- Description Box -->
+                    <div class="bg-slate-50/90 rounded-xl p-2.5 border border-slate-100">
+                        <p class="text-xs text-slate-700 leading-relaxed font-medium">{{ $tx->description }}</p>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex items-center justify-end gap-1.5 flex-wrap pt-1">
                         @if ($tx->receipt_photo_url)
                             <x-button variant="outline" size="xs" wire:click="openImageModal('{{ $tx->receipt_photo_url }}', 'Foto Struk Resi Kas - {{ $tx->description }}')" class="bg-amber-50 text-amber-800 border-amber-200 hover:bg-amber-100" title="Buka Foto Struk Bukti Transfer / Transaksi">
                                 <svg class="w-3.5 h-3.5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>

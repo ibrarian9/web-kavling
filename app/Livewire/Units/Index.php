@@ -69,6 +69,13 @@ class Index extends Component
         }
     }
 
+    public function setViewMode(string $mode): void
+    {
+        if (in_array($mode, ['table', 'siteplan'])) {
+            $this->viewMode = $mode;
+        }
+    }
+
     public function updated($propertyName)
     {
         if (in_array($propertyName, ['search', 'status_filter', 'category_filter', 'project_id'])) {
@@ -401,6 +408,8 @@ class Index extends Component
             'proposals',
             'activeBooking',
             'bookings',
+            'materialPurchases',
+            'payrolls.payments',
         ]);
 
         if ($this->status_filter) {
@@ -434,6 +443,7 @@ class Index extends Component
         }
 
         $unitPaymentsData = [];
+        $unitExpensesData = [];
         foreach ($units as $unit) {
             $dealPrice = 0;
             $paidAmount = 0;
@@ -468,12 +478,28 @@ class Index extends Component
                 'remaining_amount' => $remainingAmount,
                 'is_sold' => $isSold,
             ];
+
+            // Realisasi Biaya Unit (Belanja Material + Gaji Terbayar)
+            $matCost = (float) $unit->materialPurchases->sum('total_price');
+            $salaryCost = (float) $unit->payrolls->sum(fn($p) => (float)$p->payments->sum('amount_paid'));
+            $contractCost = (float) $unit->payrolls->sum('agreed_salary');
+            $realizedCost = $matCost + $salaryCost;
+            $hasExpenses = ($matCost > 0 || $salaryCost > 0 || $contractCost > 0 || $unit->materialPurchases->isNotEmpty() || $unit->payrolls->isNotEmpty());
+
+            $unitExpensesData[$unit->id] = [
+                'has_expenses' => $hasExpenses,
+                'material_cost' => $matCost,
+                'salary_cost' => $salaryCost,
+                'contract_cost' => $contractCost,
+                'total_realized' => $realizedCost,
+            ];
         }
 
         return view('livewire.units.index', [
             'units' => $units,
             'projects' => $projects,
             'unitPaymentsData' => $unitPaymentsData,
+            'unitExpensesData' => $unitExpensesData,
             'totalUnitsCount' => $totalUnitsCount,
             'availableUnitsCount' => $availableUnitsCount,
             'bookedUnitsCount' => $bookedUnitsCount,

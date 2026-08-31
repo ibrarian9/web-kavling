@@ -12,7 +12,7 @@
         </div>
 
         <div class="flex items-center gap-2 flex-wrap shrink-0">
-            <x-button variant="outline" size="sm" wire:click="openViewerModal('pdf', '{{ route('units.expenses-pdf', $unit->id) }}', 'Pratinjau Laporan Rekapitulasi Tabel Biaya Unit {{ $unit->code }}')" icon="pdf">
+            <x-button variant="pdf" size="sm" wire:click="openViewerModal('pdf', '{{ route('units.expenses-pdf', $unit->id) }}', 'Pratinjau Laporan Rekapitulasi Tabel Biaya Unit {{ $unit->code }}')" icon="pdf">
                 <span>PDF Rekap</span>
             </x-button>
 
@@ -193,5 +193,30 @@
                 @endforelse
             </tbody>
         </table>
+    </div>
+
+    <!-- Ringkasan Total Biaya Pengeluaran Unit (Sinkron dengan PDF Rekap) -->
+    <div class="mt-4 pt-4 border-t border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-4 bg-slate-50/80 rounded-2xl p-4 border border-slate-200/60 shadow-2xs">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 flex-1 text-xs">
+            <div class="bg-white p-2.5 rounded-xl border border-slate-200/70 shadow-2xs">
+                <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Subtotal Belanja Material:</span>
+                <strong class="font-mono text-amber-700 font-extrabold text-sm mt-0.5 block">Rp {{ number_format($totalMaterialCost ?? 0, 0, ',', '.') }}</strong>
+            </div>
+            <div class="bg-white p-2.5 rounded-xl border border-slate-200/70 shadow-2xs">
+                <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Subtotal Gaji Terbayar:</span>
+                <strong class="font-mono text-emerald-700 font-extrabold text-sm mt-0.5 block">Rp {{ number_format($totalSalaryCost ?? 0, 0, ',', '.') }}</strong>
+            </div>
+            <div class="bg-white p-2.5 rounded-xl border border-slate-200/70 shadow-2xs">
+                <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Total Kontrak Borongan:</span>
+                <strong class="font-mono text-purple-700 font-extrabold text-sm mt-0.5 block">Rp {{ number_format($totalPayrollContractCost ?? 0, 0, ',', '.') }}</strong>
+            </div>
+        </div>
+        <div class="md:text-right border-t md:border-t-0 md:border-l border-slate-200 md:pl-5 pt-3 md:pt-0 shrink-0">
+            <span class="text-[11px] font-extrabold text-slate-500 block uppercase tracking-wider">Total Biaya Terealisasi:</span>
+            <strong class="text-lg sm:text-xl font-mono font-black text-emerald-700 block mt-0.5">
+                Rp {{ number_format($totalRealizedExpenses ?? (($totalMaterialCost ?? 0) + ($totalSalaryCost ?? 0)), 0, ',', '.') }}
+            </strong>
+            <span class="text-[10px] text-slate-400 font-medium block mt-0.5">Material + Gaji Worker Terbayar</span>
+        </div>
     </div>
 </x-card>

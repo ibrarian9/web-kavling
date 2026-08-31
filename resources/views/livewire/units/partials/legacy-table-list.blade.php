@@ -61,7 +61,7 @@
                         </a>
 
                         @if($unit->officialDocument)
-                            <x-button variant="emerald" size="xs" wire:click="openViewerModal('pdf', '{{ route('documents.stream', $unit->officialDocument->id) }}', 'Pratinjau Surat SPP Lunas - {{ $unit->code }}')" title="Lihat Surat SPP PDF">
+                            <x-button variant="pdf" size="xs" icon="pdf" wire:click="openViewerModal('pdf', '{{ route('documents.stream', $unit->officialDocument->id) }}', 'Pratinjau Surat SPP Lunas - {{ $unit->code }}')" title="Lihat Surat SPP PDF">
                                 SPP PDF
                             </x-button>
                         @endif

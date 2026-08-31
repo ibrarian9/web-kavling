@@ -86,7 +86,7 @@
                                 Struk
                             </x-button>
                         @endif
-                        <x-button variant="outline" size="xs" wire:click="openViewerModal('pdf', '{{ route('bookings.receipt', $b->id) }}', 'Pratinjau Invoice Booking - {{ $b->buyer_name }}')" title="Lihat PDF Invoice Booking">
+                        <x-button variant="pdf" size="xs" icon="pdf" wire:click="openViewerModal('pdf', '{{ route('bookings.receipt', $b->id) }}', 'Pratinjau Invoice Booking - {{ $b->buyer_name }}')" title="Lihat PDF Invoice Booking">
                             PDF
                         </x-button>
                     </div>

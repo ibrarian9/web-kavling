@@ -119,7 +119,7 @@
                         <div class="flex items-center justify-between text-[10px] text-slate-500 pt-0.5">
                             <span>Sisa: <strong class="font-mono text-amber-700">Rp {{ number_format($rem, 0, ',', '.') }}</strong></span>
                             @if($paid > 0)
-                                <x-button variant="outline" size="xs" wire:click="openViewerModal('pdf', '{{ route('projects.land-payments-pdf', $proj->id) }}', 'Rekap Pembayaran Lahan Proyek {{ $proj->name }}')" title="Lihat Rekap PDF" class="!py-0.5 !px-2 !min-h-[28px] text-rose-600 border-rose-200 hover:bg-rose-50" icon="pdf">
+                                <x-button variant="pdf" size="xs" wire:click="openViewerModal('pdf', '{{ route('projects.land-payments-pdf', $proj->id) }}', 'Rekap Pembayaran Lahan Proyek {{ $proj->name }}')" title="Lihat Rekap PDF" class="!py-0.5 !px-2 !min-h-[28px]" icon="pdf">
                                     <span>PDF</span>
                                 </x-button>
                             @endif
