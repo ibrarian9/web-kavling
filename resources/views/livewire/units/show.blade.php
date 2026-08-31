@@ -14,8 +14,10 @@
             <!-- Assigned Workers (Mandor & Tukang) Card -->
             @include('livewire.units.partials.section-workers')
 
-            <!-- Gaji Borongan Worker Unit Card -->
-            @include('livewire.units.partials.section-payroll-borongan')
+            @if(auth()->user()->canViewUnitExpenses())
+                <!-- Gaji Borongan Worker Unit Card -->
+                @include('livewire.units.partials.section-payroll-borongan')
+            @endif
         </div>
 
         <!-- Right Column: Proposals, SPP, Financials & Costs -->
@@ -31,8 +33,10 @@
                 @include('livewire.units.partials.section-commissions', ['unitCommissions' => $unitCommissions ?? collect()])
             @endif
 
-            <!-- Unit Expenses & Material Purchases Combined Table Card -->
-            @include('livewire.units.partials.section-expenses')
+            @if(auth()->user()->canViewUnitExpenses())
+                <!-- Unit Expenses & Material Purchases Combined Table Card -->
+                @include('livewire.units.partials.section-expenses')
+            @endif
         </div>
     </div>
 

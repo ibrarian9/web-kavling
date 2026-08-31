@@ -110,22 +110,24 @@
             </div>
         @endif
 
-        <!-- Total Construction & Material Expenses -->
-        @php
-            $totalExpenses = $totalRealizedExpenses ?? (collect($combinedExpenses ?? [])->whereIn('source_type', ['material', 'salary_payment'])->sum('amount'));
-        @endphp
-        <div class="card-clean p-5 transition-all duration-200 hover:-translate-y-0.5 border-amber-200/80 bg-gradient-to-br from-white to-amber-50/30">
-            <div class="flex items-center justify-between">
-                <span class="text-[11px] font-bold text-amber-800 uppercase tracking-wider">Realisasi Biaya Lapangan</span>
-                <div class="p-2.5 rounded-xl bg-amber-50 text-amber-600 border border-amber-100 shadow-2xs">
-                    <svg class="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+        @if(auth()->user()->canViewUnitExpenses())
+            <!-- Total Construction & Material Expenses -->
+            @php
+                $totalExpenses = $totalRealizedExpenses ?? (collect($combinedExpenses ?? [])->whereIn('source_type', ['material', 'salary_payment'])->sum('amount'));
+            @endphp
+            <div class="card-clean p-5 transition-all duration-200 hover:-translate-y-0.5 border-amber-200/80 bg-gradient-to-br from-white to-amber-50/30">
+                <div class="flex items-center justify-between">
+                    <span class="text-[11px] font-bold text-amber-800 uppercase tracking-wider">Realisasi Biaya Lapangan</span>
+                    <div class="p-2.5 rounded-xl bg-amber-50 text-amber-600 border border-amber-100 shadow-2xs">
+                        <svg class="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+                    </div>
                 </div>
+                <p class="text-2xl font-extrabold text-amber-800 font-mono mt-2">
+                    Rp {{ number_format($totalExpenses, 0, ',', '.') }}
+                </p>
+                <p class="text-[11px] text-slate-500 mt-1">Material & Upah Tukang Terbayar</p>
             </div>
-            <p class="text-2xl font-extrabold text-amber-800 font-mono mt-2">
-                Rp {{ number_format($totalExpenses, 0, ',', '.') }}
-            </p>
-            <p class="text-[11px] text-slate-500 mt-1">Material & Upah Tukang Terbayar</p>
-        </div>
+        @endif
 
         <!-- Worker / Mandor Bertugas -->
         @php
@@ -147,7 +149,7 @@
 @else
     @if(auth()->user()->canViewSalesPrices())
         <!-- Key Metrics Highlight Cards (Standard Kavling & Rumah - Sales View) -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3.5">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 {{ auth()->user()->canViewUnitExpenses() ? 'xl:grid-cols-5' : 'xl:grid-cols-4' }} gap-3.5">
             <!-- 1. Harga Total Unit (Harga Jual + Kelebihan Luas) -->
             <div class="card-clean p-4 sm:p-5 transition-all duration-200 hover:-translate-y-0.5 border-indigo-200/80 bg-gradient-to-br from-white to-indigo-50/30">
                 <div class="flex items-center justify-between">
@@ -226,26 +228,28 @@
                 <p class="text-[11px] text-slate-400 mt-1 truncate">Total DP & Cicilan Masuk</p>
             </div>
 
-            <!-- 5. Total Construction & Material Expenses -->
-            <div class="card-clean p-4 sm:p-5 transition-all duration-200 hover:-translate-y-0.5">
-                <div class="flex items-center justify-between">
-                    <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Realisasi Biaya</span>
-                    <div class="p-2 rounded-xl bg-amber-50 text-amber-600 border border-amber-100 shadow-2xs shrink-0">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+            @if(auth()->user()->canViewUnitExpenses())
+                <!-- 5. Total Construction & Material Expenses -->
+                <div class="card-clean p-4 sm:p-5 transition-all duration-200 hover:-translate-y-0.5">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Realisasi Biaya</span>
+                        <div class="p-2 rounded-xl bg-amber-50 text-amber-600 border border-amber-100 shadow-2xs shrink-0">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+                        </div>
                     </div>
+                    @php
+                        $totalExpenses = $totalRealizedExpenses ?? (collect($combinedExpenses ?? [])->whereIn('source_type', ['material', 'salary_payment'])->sum('amount'));
+                    @endphp
+                    <p class="text-xl sm:text-2xl font-extrabold text-amber-800 font-mono mt-2 tracking-tight">
+                        Rp {{ number_format($totalExpenses, 0, ',', '.') }}
+                    </p>
+                    <p class="text-[11px] text-slate-400 mt-1 truncate">Material & Tukang Terbayar</p>
                 </div>
-                @php
-                    $totalExpenses = $totalRealizedExpenses ?? (collect($combinedExpenses ?? [])->whereIn('source_type', ['material', 'salary_payment'])->sum('amount'));
-                @endphp
-                <p class="text-xl sm:text-2xl font-extrabold text-amber-800 font-mono mt-2 tracking-tight">
-                    Rp {{ number_format($totalExpenses, 0, ',', '.') }}
-                </p>
-                <p class="text-[11px] text-slate-400 mt-1 truncate">Material & Tukang Terbayar</p>
-            </div>
+            @endif
         </div>
     @else
         <!-- Admin & Operasional View: Physical, Status & Field Cost Highlights -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+        <div class="grid grid-cols-1 sm:grid-cols-2 {{ auth()->user()->canViewUnitExpenses() ? 'lg:grid-cols-4' : 'lg:grid-cols-3' }} gap-3.5">
             <!-- 1. Luas & Dimensi Tanah -->
             <div class="card-clean p-4 sm:p-5 border-blue-200/80 bg-gradient-to-br from-white to-blue-50/30">
                 <div class="flex items-center justify-between">
@@ -295,22 +299,24 @@
                 </p>
             </div>
 
-            <!-- 4. Realisasi Biaya Lapangan (Material & Upah Tukang - Admin BOLEH LIHAT) -->
-            <div class="card-clean p-4 sm:p-5 border-amber-200/80 bg-gradient-to-br from-white to-amber-50/30">
-                <div class="flex items-center justify-between">
-                    <span class="text-[11px] font-bold text-amber-800 uppercase tracking-wider">Biaya Material & Upah</span>
-                    <div class="p-2 rounded-xl bg-amber-50 text-amber-600 border border-amber-100 shadow-2xs shrink-0">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+            @if(auth()->user()->canViewUnitExpenses())
+                <!-- 4. Realisasi Biaya Lapangan (Material & Upah Tukang - Admin BOLEH LIHAT) -->
+                <div class="card-clean p-4 sm:p-5 border-amber-200/80 bg-gradient-to-br from-white to-amber-50/30">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[11px] font-bold text-amber-800 uppercase tracking-wider">Biaya Material & Upah</span>
+                        <div class="p-2 rounded-xl bg-amber-50 text-amber-600 border border-amber-100 shadow-2xs shrink-0">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+                        </div>
                     </div>
+                    @php
+                        $totalExpenses = $totalRealizedExpenses ?? (collect($combinedExpenses ?? [])->whereIn('source_type', ['material', 'salary_payment'])->sum('amount'));
+                    @endphp
+                    <p class="text-xl sm:text-2xl font-extrabold text-amber-800 font-mono mt-2 tracking-tight">
+                        Rp {{ number_format($totalExpenses, 0, ',', '.') }}
+                    </p>
+                    <p class="text-[11px] text-amber-700 font-medium mt-1 truncate">Total Material & Upah Tukang</p>
                 </div>
-                @php
-                    $totalExpenses = $totalRealizedExpenses ?? (collect($combinedExpenses ?? [])->whereIn('source_type', ['material', 'salary_payment'])->sum('amount'));
-                @endphp
-                <p class="text-xl sm:text-2xl font-extrabold text-amber-800 font-mono mt-2 tracking-tight">
-                    Rp {{ number_format($totalExpenses, 0, ',', '.') }}
-                </p>
-                <p class="text-[11px] text-amber-700 font-medium mt-1 truncate">Total Material & Upah Tukang</p>
-            </div>
+            @endif
         </div>
     @endif
 @endif

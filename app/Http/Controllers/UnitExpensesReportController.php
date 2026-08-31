@@ -13,6 +13,11 @@ class UnitExpensesReportController extends Controller
 {
     public function exportPdf(int $id)
     {
+        $user = auth()->user();
+        if ($user && $user->isMarketing()) {
+            abort(403, 'Akses ditolak: Tim Marketing tidak memiliki wewenang untuk mengakses laporan biaya unit.');
+        }
+
         $unit = Unit::with(['project', 'installment'])->findOrFail($id);
 
         $unitPayrolls = WorkerUnitPayroll::with(['worker'])

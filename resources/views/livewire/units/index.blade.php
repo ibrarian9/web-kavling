@@ -218,7 +218,7 @@
                                     ];
                                 @endphp
 
-                                @if($expInfo['has_expenses'])
+                                @if(auth()->user()->canViewUnitExpenses() && $expInfo['has_expenses'])
                                     <span class="inline-flex items-center gap-1 text-[10px] font-black px-2 py-0.5 rounded-md bg-amber-100/90 text-amber-900 border border-amber-300 shadow-2xs" title="Terdapat catatan biaya pengeluaran di detail unit">
                                         <span class="w-1.5 h-1.5 rounded-full bg-amber-600 animate-pulse"></span>
                                         <span>Ada Biaya</span>
@@ -334,7 +334,7 @@
                     </div>
 
                     <!-- Realisasi Biaya Lapangan Info Strip -->
-                    @if($expInfo['has_expenses'])
+                    @if(auth()->user()->canViewUnitExpenses() && $expInfo['has_expenses'])
                         <div class="bg-gradient-to-r from-amber-50 to-orange-50/80 border border-amber-200/90 rounded-2xl p-2.5 flex items-center justify-between text-xs shadow-2xs">
                             <div class="flex items-center gap-1.5 min-w-0">
                                 <div class="p-1 rounded-lg bg-amber-100 text-amber-700 shrink-0">

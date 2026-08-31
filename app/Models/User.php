@@ -95,14 +95,20 @@ class User extends Authenticatable
 
     public function canViewMaterialPrices(): bool
     {
-        // Material & item prices are visible to Founder, Admin, Finance, Supervisor, Pengawas
-        return true;
+        // Material & item prices are visible to all roles except marketing
+        return !$this->isMarketing();
     }
 
     public function canViewWorkerWages(): bool
     {
-        // Worker wages are visible to Founder, Admin, Finance, Supervisor, Pengawas
-        return true;
+        // Worker wages are visible to all roles except marketing
+        return !$this->isMarketing();
+    }
+
+    public function canViewUnitExpenses(): bool
+    {
+        // Unit field expenses, material purchases & payrolls are visible to all roles except marketing
+        return !$this->isMarketing();
     }
 
     public function canViewHpp(): bool

@@ -24,6 +24,7 @@ class AdminPriceRestrictionsAndUnitExpensesTest extends TestCase
     protected User $admin;
     protected User $finance;
     protected User $supervisor;
+    protected User $marketing;
     protected Project $project;
     protected Unit $unit;
     protected Worker $worker;
@@ -36,6 +37,7 @@ class AdminPriceRestrictionsAndUnitExpensesTest extends TestCase
         Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'web']);
         Role::firstOrCreate(['name' => 'finance', 'guard_name' => 'web']);
         Role::firstOrCreate(['name' => 'supervisor', 'guard_name' => 'web']);
+        Role::firstOrCreate(['name' => 'marketing', 'guard_name' => 'web']);
 
         $this->founder = User::create([
             'name' => 'Founder User',
@@ -63,6 +65,15 @@ class AdminPriceRestrictionsAndUnitExpensesTest extends TestCase
             'is_active' => true,
         ]);
         $this->finance->assignRole('finance');
+
+        $this->marketing = User::create([
+            'name' => 'Marketing Staff',
+            'email' => 'marketing@test.com',
+            'password' => bcrypt('password'),
+            'role' => 'marketing',
+            'is_active' => true,
+        ]);
+        $this->marketing->assignRole('marketing');
 
         $this->project = Project::create([
             'name' => 'Kavling Harmoni Indah',
@@ -107,6 +118,7 @@ class AdminPriceRestrictionsAndUnitExpensesTest extends TestCase
         $this->assertTrue($this->admin->canViewLandPrices());
         $this->assertTrue($this->admin->canViewMaterialPrices());
         $this->assertTrue($this->admin->canViewWorkerWages());
+        $this->assertTrue($this->admin->canViewUnitExpenses());
 
         // Founder
         $this->assertTrue($this->founder->canViewSalesPrices());
@@ -114,11 +126,21 @@ class AdminPriceRestrictionsAndUnitExpensesTest extends TestCase
         $this->assertTrue($this->founder->canViewLandPrices());
         $this->assertTrue($this->founder->canViewMaterialPrices());
         $this->assertTrue($this->founder->canViewWorkerWages());
+        $this->assertTrue($this->founder->canViewUnitExpenses());
 
         // Finance
         $this->assertTrue($this->finance->canViewSalesPrices());
         $this->assertTrue($this->finance->canViewHpp());
         $this->assertTrue($this->finance->canViewLandPrices());
+        $this->assertTrue($this->finance->canViewUnitExpenses());
+
+        // Marketing: Can view sales prices, but CANNOT view unit expenses, material prices, or worker wages
+        $this->assertTrue($this->marketing->canViewSalesPrices());
+        $this->assertFalse($this->marketing->canViewHpp());
+        $this->assertFalse($this->marketing->canViewLandPrices());
+        $this->assertFalse($this->marketing->canViewMaterialPrices());
+        $this->assertFalse($this->marketing->canViewWorkerWages());
+        $this->assertFalse($this->marketing->canViewUnitExpenses());
     }
 
     public function test_admin_unit_detail_hides_sales_prices_and_displays_worker_wages_and_materials_with_store_name(): void
@@ -309,5 +331,73 @@ class AdminPriceRestrictionsAndUnitExpensesTest extends TestCase
         $component->assertDontSee('Saldo Kas Bersih Global');
         $component->assertDontSee('Grafik Tren Keuangan Arus Kas');
         $component->assertDontSee('Pengajuan Harga Terbaru');
+    }
+
+    public function test_marketing_unit_detail_and_index_hides_all_expense_cards_badges_and_pdf(): void
+    {
+        // 1. Create material purchase & payroll
+        WeeklyMaterialPurchase::create([
+            'project_id' => $this->project->id,
+            'unit_id' => $this->unit->id,
+            'worker_id' => $this->worker->id,
+            'pengawas_id' => $this->founder->id,
+            'purchase_date' => now()->subDays(2),
+            'item_name' => 'Pasir Cor 1 Truk',
+            'store_name' => 'TB. Maju Jaya',
+            'quantity' => 1,
+            'unit_measure' => 'truk',
+            'unit_price' => 1200000,
+            'total_price' => 1200000,
+            'payment_status' => 'lunas',
+        ]);
+
+        $payroll = WorkerUnitPayroll::create([
+            'project_id' => $this->project->id,
+            'unit_id' => $this->unit->id,
+            'worker_id' => $this->worker->id,
+            'agreed_salary' => 5000000,
+            'paid_amount' => 2000000,
+            'status' => 'berjalan',
+        ]);
+
+        WorkerSalaryPayment::create([
+            'worker_unit_payroll_id' => $payroll->id,
+            'worker_id' => $this->worker->id,
+            'amount_paid' => 2000000,
+            'amount_gross' => 2000000,
+            'loan_deduction' => 0,
+            'payment_date' => now()->subDay(),
+            'payment_method' => 'cash',
+            'created_by' => $this->founder->id,
+        ]);
+
+        // 2. Test Unit Detail for Marketing
+        $showComponent = Livewire::actingAs($this->marketing)
+            ->test(\App\Livewire\Units\Show::class, ['id' => $this->unit->id])
+            ->assertStatus(200);
+
+        // Marketing can see sales price
+        $showComponent->assertSee('Harga Total Unit');
+        $showComponent->assertSee('Harga Jual Disetujui');
+
+        // Marketing CANNOT see Realisasi Biaya or Expense/Payroll tables
+        $showComponent->assertDontSee('Realisasi Biaya');
+        $showComponent->assertDontSee('Rincian Biaya Pengeluaran & Belanja Unit');
+        $showComponent->assertDontSee('Pembayaran Kontrak Pekerja');
+        $showComponent->assertDontSee('Pasir Cor 1 Truk');
+
+        // 3. Test Unit Index for Marketing
+        $indexComponent = Livewire::actingAs($this->marketing)
+            ->test(\App\Livewire\Units\Index::class)
+            ->assertStatus(200);
+
+        // Marketing CANNOT see 'Ada Biaya' marker badge or expense summary strip
+        $indexComponent->assertDontSee('Ada Biaya');
+        $indexComponent->assertDontSee('Biaya di Detail:');
+
+        // 4. Test Expenses PDF export is forbidden for Marketing
+        $response = $this->actingAs($this->marketing)
+            ->get(route('units.expenses-pdf', $this->unit->id));
+        $response->assertStatus(403);
     }
 }
