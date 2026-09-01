@@ -1,7 +1,7 @@
 <!-- Top Navigation & Header -->
 <x-card padding="p-4 sm:p-6">
-    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-        <div class="space-y-1.5">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
+        <div class="space-y-1.5 min-w-0">
             <!-- Breadcrumbs -->
             <nav class="flex items-center gap-1.5 text-xs text-slate-500 flex-wrap">
                 <a href="{{ route('projects.show', $unit->project_id) }}" wire:navigate.hover class="hover:text-emerald-700 font-semibold inline-flex items-center gap-1.5 transition-colors">
@@ -34,14 +34,14 @@
         </div>
 
         <!-- Header Action Toolbar -->
-        <div class="flex items-center gap-2 flex-wrap pt-2 lg:pt-0 border-t lg:border-t-0 border-slate-100">
+        <div class="flex items-center gap-2 flex-wrap justify-start md:justify-end pt-2 md:pt-0 border-t md:border-t-0 border-slate-100">
             <x-button variant="outline" size="sm" onclick="history.back()" icon="back" title="Kembali ke Halaman Sebelumnya">
                 <span>Kembali</span>
             </x-button>
 
             <!-- Main Sales & Booking Action Group -->
             @if($unit->category !== 'infrastruktur' && $unit->status === 'tersedia')
-                <div class="inline-flex rounded-xl shadow-2xs border border-slate-200 overflow-hidden bg-white divide-x divide-slate-100 flex-wrap">
+                <div class="inline-flex rounded-xl shadow-2xs border border-slate-200 overflow-hidden bg-white divide-x divide-slate-100 shrink-0">
                     @if((auth()->user()->isFounder() || auth()->user()->isFinance()))
                         <button type="button" wire:click="openDirectSppModal" title="Terbitkan Surat Pesanan SPP & SPJB PDF (Pembelian Cash)" class="px-3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs transition flex items-center gap-1.5 shadow-2xs">
                             <svg class="w-4 h-4 text-white shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 01-2 2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
@@ -67,7 +67,7 @@
 
             <!-- Unit Management Action Group (Edit & Delete) -->
             @if(auth()->user()->isFounder() || auth()->user()->isFinance() || auth()->user()->isAdmin())
-                <div class="inline-flex rounded-xl shadow-2xs border border-slate-200 overflow-hidden bg-white divide-x divide-slate-100">
+                <div class="inline-flex rounded-xl shadow-2xs border border-slate-200 overflow-hidden bg-white divide-x divide-slate-100 shrink-0">
                     <button type="button" wire:click="openEditUnitModal" title="Edit Spesifikasi Unit" class="px-3 py-2 text-slate-700 hover:text-amber-700 hover:bg-amber-50/60 font-bold text-xs transition flex items-center gap-1.5">
                         <svg class="w-3.5 h-3.5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                         <span>Edit Spesifikasi</span>

@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Units;
 
+use App\Livewire\Traits\WithFileUploadValidation;
 use App\Models\Booking;
 use App\Models\CashflowTransaction;
 use App\Models\InstallmentPayment;
@@ -10,11 +11,11 @@ use App\Models\UnitInstallment;
 use App\Models\WeeklyMaterialPurchase;
 use App\Models\Worker;
 use App\Models\WorkerAssignment;
-use Illuminate\Support\Facades\Auth;
 use App\Models\WorkerSalaryPayment;
 use App\Models\WorkerUnitPayroll;
+use App\Services\ActivityLogger;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use App\Livewire\Traits\WithFileUploadValidation;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
@@ -226,7 +227,7 @@ class Show extends Component
             }
         }
 
-        \App\Services\ActivityLogger::log('DOCUMENT_DELETED', "Dokumen SPP {$docNumber} (ID #{$id}) unit {$unit?->code} telah dihapus via Detail Unit oleh {$user->name}. {$statusMsg}");
+        ActivityLogger::log('DOCUMENT_DELETED', "Dokumen SPP {$docNumber} (ID #{$id}) unit {$unit?->code} telah dihapus via Detail Unit oleh {$user->name}. {$statusMsg}");
 
         $msg = 'Dokumen SPP ' . $docNumber . ' berhasil dihapus. ' . $statusMsg;
         session()->flash('success', $msg);
@@ -292,7 +293,7 @@ class Show extends Component
                 'final_selling_price' => (float)$this->spp_cash_price,
             ]);
 
-            \App\Services\ActivityLogger::log('DOCUMENT_UPDATED', "Dokumen SPP {$doc->document_number} (Unit {$unit->code}) diperbarui oleh {$user->name} via Detail Unit.");
+            ActivityLogger::log('DOCUMENT_UPDATED', "Dokumen SPP {$doc->document_number} (Unit {$unit->code}) diperbarui oleh {$user->name} via Detail Unit.");
 
             $this->showDirectSppModal = false;
             $this->editingSppId = null;
@@ -344,7 +345,7 @@ class Show extends Component
             'issued_at' => now(),
         ]);
 
-        \App\Services\ActivityLogger::log('DOCUMENT_GENERATED', "Dokumen SPP & SPJB PDF {$docNumber} diterbitkan langsung per unit {$unit->code} oleh Founder.");
+        ActivityLogger::log('DOCUMENT_GENERATED', "Dokumen SPP & SPJB PDF {$docNumber} diterbitkan langsung per unit {$unit->code} oleh Founder.");
 
         $this->showDirectSppModal = false;
         $msg = 'Dokumen SPP & SPJB PDF ' . $docNumber . ' berhasil diterbitkan!';
@@ -389,7 +390,7 @@ class Show extends Component
             ]
         );
 
-        \App\Services\ActivityLogger::log(
+        ActivityLogger::log(
             $decision === 'ditolak' ? 'PROPOSAL_REJECTED' : 'PROPOSAL_APPROVED',
             "Pengajuan harga unit {$proposal->unit->code} ({$decision}) oleh " . ucfirst($userRole) . " ({$user->name}) via Detail Unit."
         );
@@ -492,7 +493,7 @@ class Show extends Component
 
         $proposal->delete();
 
-        \App\Services\ActivityLogger::log('PROPOSAL_DELETED', "Pengajuan harga unit {$unitCode} (ID #{$id}) telah dihapus via Detail Unit oleh {$user->name}.");
+        ActivityLogger::log('PROPOSAL_DELETED', "Pengajuan harga unit {$unitCode} (ID #{$id}) telah dihapus via Detail Unit oleh {$user->name}.");
 
         $msg = 'Pengajuan harga unit ' . $unitCode . ' berhasil dihapus.';
         session()->flash('success', $msg);
@@ -550,7 +551,7 @@ class Show extends Component
                 $unit->update(['final_selling_price' => $proposed]);
             }
 
-            \App\Services\ActivityLogger::log('PROPOSAL_UPDATED', "Pengajuan harga unit {$unit->code} (ID #{$proposal->id}) diperbarui via Detail Unit oleh {$user->name}.");
+            ActivityLogger::log('PROPOSAL_UPDATED', "Pengajuan harga unit {$unit->code} (ID #{$proposal->id}) diperbarui via Detail Unit oleh {$user->name}.");
 
             $this->showDirectProposalModal = false;
             $this->editingProposalId = null;
@@ -601,7 +602,7 @@ class Show extends Component
             ]);
         }
 
-        \App\Services\ActivityLogger::log('PROPOSAL_CREATED', "Proposal harga Rp " . number_format($proposed, 0, ',', '.') . " diajukan untuk Unit {$unit->code} via Detail Unit.");
+        ActivityLogger::log('PROPOSAL_CREATED', "Proposal harga Rp " . number_format($proposed, 0, ',', '.') . " diajukan untuk Unit {$unit->code} via Detail Unit.");
 
         $msg = 'Proposal harga berhasil diajukan' . ($user->isAdminOrFounder() ? ' & langsung disetujui!' : '!');
         session()->flash('success', $msg);
@@ -786,7 +787,7 @@ class Show extends Component
             'specifications' => $this->edit_specifications,
         ]);
 
-        \App\Services\ActivityLogger::log('UNIT_UPDATED', "Spesifikasi Unit {$unit->code} diperbarui oleh " . auth()->user()->name . " (Kelebihan tanah: {$excessLandArea} m², Biaya: Rp " . number_format($excessCost, 0, ',', '.') . ").");
+        ActivityLogger::log('UNIT_UPDATED', "Spesifikasi Unit {$unit->code} diperbarui oleh " . auth()->user()->name . " (Kelebihan tanah: {$excessLandArea} m², Biaya: Rp " . number_format($excessCost, 0, ',', '.') . ").");
 
         session()->flash('success', 'Spesifikasi & data unit ' . $unit->code . ' berhasil diperbarui!');
         $this->showEditUnitModal = false;
@@ -824,8 +825,18 @@ class Show extends Component
             session()->flash('error', 'Akses ditolak. Anda tidak memiliki hak akses menghapus penugasan.');
             return;
         }
-        $assign = WorkerAssignment::findOrFail($id);
+        $assign = WorkerAssignment::with(['worker', 'unit'])->findOrFail($id);
+        $workerName = $assign->worker->name ?? 'Pekerja';
+        $unitCode = $assign->unit->code ?? $this->unitId;
+        $userName = auth()->user()->name ?? 'User';
+
         $assign->delete();
+
+        ActivityLogger::log(
+            'WORKER_UNASSIGNED',
+            "Penugasan pekerja {$workerName} pada Unit {$unitCode} dihapus oleh {$userName}."
+        );
+
         session()->flash('success', 'Penugasan pekerja berhasil dihapus!');
     }
 
@@ -841,6 +852,9 @@ class Show extends Component
         ]);
 
         $unit = Unit::findOrFail($this->unitId);
+        $worker = Worker::find($this->worker_id);
+        $workerName = $worker->name ?? 'Pekerja';
+        $userName = auth()->user()->name ?? 'User';
 
         if ($this->editingAssignmentId) {
             $assign = WorkerAssignment::findOrFail($this->editingAssignmentId);
@@ -848,6 +862,12 @@ class Show extends Component
                 'worker_id' => $this->worker_id,
                 'assigned_role' => $this->assigned_role,
             ]);
+
+            ActivityLogger::log(
+                'WORKER_ASSIGNMENT_UPDATED',
+                "Penugasan pekerja {$workerName} ({$this->assigned_role}) pada Unit {$unit->code} diperbarui oleh {$userName}."
+            );
+
             session()->flash('success', 'Penugasan pekerja berhasil diperbarui!');
         } else {
             WorkerAssignment::updateOrCreate([
@@ -857,6 +877,12 @@ class Show extends Component
             ], [
                 'assigned_role' => $this->assigned_role,
             ]);
+
+            ActivityLogger::log(
+                'WORKER_ASSIGNED',
+                "Pekerja {$workerName} ditugaskan pada Unit {$unit->code} sebagai {$this->assigned_role} oleh {$userName}."
+            );
+
             session()->flash('success', 'Mandor/Tukang berhasil ditugaskan ke unit ' . $unit->code . '!');
         }
 
@@ -964,13 +990,24 @@ class Show extends Component
             session()->flash('error', 'Akses ditolak.');
             return;
         }
-        $mat = WeeklyMaterialPurchase::findOrFail($id);
+        $mat = WeeklyMaterialPurchase::with('unit')->findOrFail($id);
+        $itemName = $mat->item_name;
+        $totalPrice = (float)$mat->total_price;
+        $unitCode = $mat->unit->code ?? $this->unitId;
+        $userName = auth()->user()->name ?? 'User';
+
         DB::transaction(function () use ($mat) {
             CashflowTransaction::where('reference_type', WeeklyMaterialPurchase::class)
                 ->where('reference_id', $mat->id)
                 ->delete();
             $mat->delete();
         });
+
+        ActivityLogger::log(
+            'MATERIAL_PURCHASE_DELETED',
+            "Catatan belanja material {$itemName} (Rp " . number_format($totalPrice, 0, ',', '.') . ") pada Unit {$unitCode} dihapus oleh {$userName}."
+        );
+
         session()->flash('success', 'Pencatatan belanja material berhasil dihapus!');
     }
 
@@ -1155,7 +1192,7 @@ class Show extends Component
             });
 
             $itemNames = collect($this->materialRows)->pluck('item_name')->filter()->implode(', ');
-            \App\Services\ActivityLogger::log('MATERIAL_PURCHASE_RECORDED', "Pembelian {$itemCount} item material Unit {$unit->code} ({$itemNames}) dicatat sebesar Rp " . number_format($grandTotal, 0, ',', '.') . " (" . strtoupper($this->material_payment_status) . ")");
+            ActivityLogger::log('MATERIAL_PURCHASE_RECORDED', "Pembelian {$itemCount} item material Unit {$unit->code} ({$itemNames}) dicatat sebesar Rp " . number_format($grandTotal, 0, ',', '.') . " (" . strtoupper($this->material_payment_status) . ")");
             session()->flash('success', "{$itemCount} item belanja material unit {$unit->code} berhasil dicatat sekaligus!");
         }
 
@@ -1198,7 +1235,11 @@ class Show extends Component
             session()->flash('error', 'Akses ditolak.');
             return;
         }
-        $up = WorkerUnitPayroll::findOrFail($id);
+        $up = WorkerUnitPayroll::with(['worker', 'unit'])->findOrFail($id);
+        $workerName = $up->worker->name ?? 'Worker';
+        $unitCode = $up->unit->code ?? $this->unitId;
+        $userName = auth()->user()->name ?? 'User';
+
         DB::transaction(function () use ($up) {
             foreach ($up->payments as $sp) {
                 CashflowTransaction::where('reference_type', WorkerSalaryPayment::class)
@@ -1208,6 +1249,12 @@ class Show extends Component
             }
             $up->delete();
         });
+
+        ActivityLogger::log(
+            'PAYROLL_SETUP_DELETED',
+            "Penetapan gaji borongan Unit {$unitCode} untuk {$workerName} dihapus oleh {$userName}."
+        );
+
         session()->flash('success', 'Penetapan gaji borongan unit berhasil dihapus!');
     }
 
@@ -1224,6 +1271,10 @@ class Show extends Component
         ]);
 
         $unit = Unit::findOrFail($this->unitId);
+        $worker = Worker::find($this->payroll_worker_id);
+        $workerName = $worker->name ?? 'Worker';
+        $userName = auth()->user()->name ?? 'User';
+        $salaryFormatted = number_format($this->payroll_agreed_salary, 0, ',', '.');
 
         if ($this->editingPayrollId) {
             $up = WorkerUnitPayroll::findOrFail($this->editingPayrollId);
@@ -1233,6 +1284,12 @@ class Show extends Component
                 'payment_frequency' => $this->payroll_payment_frequency,
                 'notes' => $this->payroll_notes,
             ]);
+
+            ActivityLogger::log(
+                'PAYROLL_SETUP_UPDATED',
+                "Penetapan gaji borongan Unit {$unit->code} untuk {$workerName} (Rp {$salaryFormatted}) diperbarui oleh {$userName}."
+            );
+
             session()->flash('success', 'Penetapan gaji borongan unit berhasil diperbarui!');
         } else {
             WorkerUnitPayroll::create([
@@ -1245,6 +1302,12 @@ class Show extends Component
                 'notes' => $this->payroll_notes,
                 'created_by' => Auth::id(),
             ]);
+
+            ActivityLogger::log(
+                'PAYROLL_SETUP_CREATED',
+                "Penetapan gaji borongan Unit {$unit->code} untuk {$workerName} (Rp {$salaryFormatted}) dibuat oleh {$userName}."
+            );
+
             session()->flash('success', 'Penetapan gaji unit ' . $unit->code . ' berhasil disimpan!');
         }
 
@@ -1294,15 +1357,18 @@ class Show extends Component
             return;
         }
 
-        $sp = WorkerSalaryPayment::with('payroll')->findOrFail($salaryPaymentId);
+        $sp = WorkerSalaryPayment::with(['payroll.worker', 'payroll.unit'])->findOrFail($salaryPaymentId);
         $payroll = $sp->payroll;
+        $workerName = $payroll->worker->name ?? 'Worker';
+        $unitCode = $payroll->unit->code ?? $this->unitId;
+        $oldGross = (float)$sp->amount_gross;
+        $userName = auth()->user()->name ?? 'User';
 
-        DB::transaction(function () use ($sp, $payroll) {
+        DB::transaction(function () use ($sp, $payroll, $oldGross) {
             CashflowTransaction::where('reference_type', WorkerSalaryPayment::class)
                 ->where('reference_id', $sp->id)
                 ->delete();
 
-            $oldGross = (float)$sp->amount_gross;
             $sp->delete();
 
             if ($payroll) {
@@ -1314,6 +1380,11 @@ class Show extends Component
                 ]);
             }
         });
+
+        ActivityLogger::log(
+            'PAYROLL_PAYMENT_DELETED',
+            "Pencatatan pembayaran gaji worker {$workerName} (Rp " . number_format($oldGross, 0, ',', '.') . ") pada Unit {$unitCode} dihapus oleh {$userName}."
+        );
 
         session()->flash('success', 'Pencatatan pembayaran gaji worker berhasil dihapus!');
     }
@@ -1347,6 +1418,11 @@ class Show extends Component
         if ($this->payroll_receipt_photo) {
             $photoPath = \App\Services\ImageCompressor::compressAndStore($this->payroll_receipt_photo, 'payroll-receipts');
         }
+
+        $workerName = $this->selectedPayroll->worker->name ?? 'Worker';
+        $unitCode = $this->selectedPayroll->unit->code ?? $this->unitId;
+        $userName = auth()->user()->name ?? 'User';
+        $paidFormatted = number_format($amountPaid, 0, ',', '.');
 
         if ($this->editingSalaryPaymentId && $sp) {
             $oldGross = (float)$sp->amount_gross;
@@ -1382,6 +1458,11 @@ class Show extends Component
                     ]);
                 }
             });
+
+            ActivityLogger::log(
+                'PAYROLL_PAYMENT_UPDATED',
+                "Pembayaran gaji worker {$workerName} pada Unit {$unitCode} diperbarui menjadi Rp {$paidFormatted} oleh {$userName}."
+            );
 
             session()->flash('success', 'Pembayaran gaji unit ' . $this->selectedPayroll->unit->code . ' berhasil diperbarui! Perubahan sudah otomatis memperbarui PDF Resi & QR Code.');
         } else {
@@ -1420,6 +1501,11 @@ class Show extends Component
                     'created_by' => Auth::id(),
                 ]);
             });
+
+            ActivityLogger::log(
+                'PAYROLL_PAYMENT_RECORDED',
+                "Pembayaran gaji worker {$workerName} pada Unit {$unitCode} dicatat sebesar Rp {$paidFormatted} oleh {$userName}."
+            );
 
             session()->flash('success', 'Pembayaran gaji unit ' . $this->selectedPayroll->unit->code . ' berhasil disimpan!');
         }
@@ -1475,8 +1561,11 @@ class Show extends Component
             session()->flash('error', 'Akses ditolak. Hanya Founder dan Finance.');
             return;
         }
-        $pay = InstallmentPayment::findOrFail($id);
+        $pay = InstallmentPayment::with('installment.unit')->findOrFail($id);
         $inst = $pay->installment;
+        $unitCode = $inst->unit->code ?? $this->unitId;
+        $amountPaid = (float)$pay->amount_paid;
+        $userName = auth()->user()->name ?? 'User';
 
         DB::transaction(function () use ($pay, $inst) {
             CashflowTransaction::where('reference_type', InstallmentPayment::class)
@@ -1490,6 +1579,11 @@ class Show extends Component
                 $inst->update(['status' => $status]);
             }
         });
+
+        ActivityLogger::log(
+            'INSTALLMENT_PAYMENT_DELETED',
+            "Setoran cicilan pembeli Unit {$unitCode} sebesar Rp " . number_format($amountPaid, 0, ',', '.') . " dihapus oleh {$userName}."
+        );
 
         session()->flash('success', 'Setoran cicilan pembeli berhasil dihapus!');
     }
@@ -1528,6 +1622,8 @@ class Show extends Component
 
         $hasReceiptColPayment = \Illuminate\Support\Facades\Schema::hasColumn('installment_payments', 'receipt_photo_path');
         $hasReceiptColCashflow = \Illuminate\Support\Facades\Schema::hasColumn('cashflow_transactions', 'receipt_photo_path');
+        $amountFormatted = number_format($this->installment_payment_amount, 0, ',', '.');
+        $userName = $user->name ?? 'User';
 
         if ($this->editingInstallmentPaymentId) {
             $pay = InstallmentPayment::findOrFail($this->editingInstallmentPaymentId);
@@ -1565,6 +1661,12 @@ class Show extends Component
                 $status = ($totalPaid >= $inst->total_price) ? 'lunas' : 'berjalan';
                 $inst->update(['status' => $status]);
             });
+
+            ActivityLogger::log(
+                'INSTALLMENT_PAYMENT_UPDATED',
+                "Setoran cicilan pembeli Unit {$unit->code} diperbarui menjadi Rp {$amountFormatted} oleh {$userName}."
+            );
+
             session()->flash('success', 'Setoran cicilan pembeli berhasil diperbarui!');
         } else {
             DB::transaction(function () use ($unit, $inst, $receiptPhotoPath, $hasReceiptColPayment, $hasReceiptColCashflow) {
@@ -1603,6 +1705,12 @@ class Show extends Component
                     $inst->update(['status' => 'lunas']);
                 }
             });
+
+            ActivityLogger::log(
+                'INSTALLMENT_PAYMENT_RECORDED',
+                "Setoran cicilan pembeli Unit {$unit->code} dicatat sebesar Rp {$amountFormatted} oleh {$userName}."
+            );
+
             session()->flash('success', 'Setoran cicilan pembeli Rp ' . number_format($this->installment_payment_amount, 0, ',', '.') . ' berhasil dicatat!');
         }
 
@@ -1688,7 +1796,7 @@ class Show extends Component
             $inst->update(['status' => 'konversi_cash']);
             $unit->update(['status' => 'lunas']);
 
-            \App\Services\ActivityLogger::log('CANCEL_INSTALLMENT_TO_CASH', "Founder/Accounting membatalkan skema cicilan Unit {$unit->code} dan menggantinya ke Pelunasan Cash Lunas sebesar Rp " . number_format($this->cash_payment_amount, 0, ',', '.'));
+            ActivityLogger::log('CANCEL_INSTALLMENT_TO_CASH', "Founder/Accounting membatalkan skema cicilan Unit {$unit->code} dan menggantinya ke Pelunasan Cash Lunas sebesar Rp " . number_format($this->cash_payment_amount, 0, ',', '.'));
         });
 
         session()->flash('success', 'Skema cicilan unit ' . $unit->code . ' berhasil dibatalkan dan dialihkan ke Pelunasan Cash Lunas!');
@@ -1849,7 +1957,7 @@ class Show extends Component
             // 3. Delete unit installment scheme
             $unit->installment->delete();
 
-            \App\Services\ActivityLogger::log(
+            ActivityLogger::log(
                 'DELETE_INSTALLMENT_SCHEME',
                 "Founder menghapus skema cicilan & piutang pembeli untuk Unit {$code}"
             );
@@ -2000,7 +2108,7 @@ class Show extends Component
             'created_by' => $user->id,
         ]);
 
-        \App\Services\ActivityLogger::log(
+        ActivityLogger::log(
             'COMMISSION_DEBT_CREATED',
             "User {$user->name} mencatat hutang komisi penjual '{$comm->seller_name}' untuk Unit {$unit->code} sebesar Rp " . number_format($comm->commission_amount, 0, ',', '.')
         );
@@ -2092,7 +2200,7 @@ class Show extends Component
             $comm->recalculateStatus();
         });
 
-        \App\Services\ActivityLogger::log(
+        ActivityLogger::log(
             'COMMISSION_PAYMENT_RECORDED',
             "User {$user->name} mencatat pembayaran cicilan komisi '{$comm->seller_name}' sebesar Rp " . number_format($this->unit_pay_comm_amount, 0, ',', '.') . " & tercatat di Arus Kas."
         );
@@ -2113,7 +2221,11 @@ class Show extends Component
             return;
         }
 
-        $comm = \App\Models\UnitCommission::where('unit_id', $this->unitId)->findOrFail($commissionId);
+        $comm = \App\Models\UnitCommission::with('unit')->where('unit_id', $this->unitId)->findOrFail($commissionId);
+        $sellerName = $comm->seller_name;
+        $unitCode = $comm->unit->code ?? $this->unitId;
+        $totalCommission = (float)$comm->total_commission;
+        $userName = $user->name ?? 'User';
 
         DB::transaction(function () use ($comm) {
             foreach ($comm->payments as $p) {
@@ -2123,6 +2235,11 @@ class Show extends Component
             }
             $comm->delete();
         });
+
+        ActivityLogger::log(
+            'COMMISSION_DELETED',
+            "Catatan komisi marketing/penjual '{$sellerName}' (Rp " . number_format($totalCommission, 0, ',', '.') . ") pada Unit {$unitCode} dihapus oleh {$userName}."
+        );
 
         session()->flash('success', 'Catatan komisi penjual berhasil dihapus.');
     }
@@ -2304,7 +2421,7 @@ class Show extends Component
 
         DB::transaction(function () use ($unit, $code) {
             \App\Services\CascadeDeletionService::deleteUnit($unit);
-            \App\Services\ActivityLogger::log(
+            ActivityLogger::log(
                 'DELETE_UNIT',
                 "Founder menghapus Unit {$code} dari sistem beserta seluruh histori terikatnya"
             );

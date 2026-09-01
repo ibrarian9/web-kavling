@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\WorkerUnitPayroll;
+use App\Services\ActivityLogger;
 use Barryvdh\DomPDF\Facade\Pdf;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
@@ -49,6 +50,13 @@ class WorkerSpkController extends Controller
         $cleanUnitCode = preg_replace('/[^A-Za-z0-9_-]/', '-', $unit->code);
         $cleanWorkerName = preg_replace('/[^A-Za-z0-9_-]/', '-', $worker->name);
         $fileName = 'SPK-BORONGAN-' . $cleanUnitCode . '-' . $cleanWorkerName . '.pdf';
+
+        $userName = auth()->user()->name ?? 'User';
+        ActivityLogger::log(
+            'PDF_EXPORT_WORKER_SPK',
+            "Pengguna {$userName} mencetak / mengunduh Surat Perintah Kerja ({$spkNumber}) untuk mandor/tukang {$worker->name} (Unit {$unit->code}, Proyek: {$project->name})."
+        );
+
         return $pdf->stream($fileName);
     }
 

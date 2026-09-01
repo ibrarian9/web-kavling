@@ -104,11 +104,6 @@
                             <span class="font-mono opacity-80">({{ (float)$u->land_width }}×{{ (float)$u->land_length }}m)</span>
                         @endif
                     </p>
-                    @if(auth()->user()->canViewUnitExpenses() && $u->has_expenses && $u->realized_expenses > 0)
-                        <p class="text-[10px] font-mono font-bold text-amber-900 mt-1 truncate bg-amber-50/90 px-1.5 py-0.5 rounded border border-amber-200/80">
-                            Biaya: Rp {{ number_format($u->realized_expenses, 0, ',', '.') }}
-                        </p>
-                    @endif
                 </div>
             </div>
 

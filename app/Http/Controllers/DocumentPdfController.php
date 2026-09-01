@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\OfficialDocument;
+use App\Services\ActivityLogger;
 use Barryvdh\DomPDF\Facade\Pdf;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
@@ -29,6 +30,12 @@ class DocumentPdfController extends Controller
         ]);
 
         $cleanUnitCode = preg_replace('/[^A-Za-z0-9_-]/', '-', $doc->unit->code);
+        $userName = auth()->user()->name ?? 'User';
+        ActivityLogger::log(
+            'PDF_EXPORT_SPP_DOCUMENT',
+            "Pengguna {$userName} mencetak / mengunduh Surat Pemesanan Properti (SPP) Dokumen {$doc->document_number} (Unit {$doc->unit->code})."
+        );
+
         return $pdf->stream('Invoice-Pembayaran-' . $cleanUnitCode . '.pdf');
     }
 
@@ -72,6 +79,13 @@ class DocumentPdfController extends Controller
 
         $cleanUnitCode = preg_replace('/[^A-Za-z0-9_-]/', '-', $unit->code);
         $cleanBuyerName = preg_replace('/[^A-Za-z0-9_-]/', '-', $doc->buyer_name);
+        $userName = auth()->user()->name ?? 'User';
+
+        ActivityLogger::log(
+            'PDF_EXPORT_SPJB_DOCUMENT',
+            "Pengguna {$userName} mencetak / mengunduh Surat Perjanjian Jual Beli ({$spjbNumber}) untuk pembeli {$doc->buyer_name} (Unit {$unit->code})."
+        );
+
         return response($pdf->output(), 200, [
             'Content-Type' => 'application/pdf',
             'Content-Disposition' => 'inline; filename="SPJB-Perjanjian-Jual-Beli-' . $cleanUnitCode . '-' . $cleanBuyerName . '.pdf"',

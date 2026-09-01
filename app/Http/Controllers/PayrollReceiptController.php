@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\WorkerSalaryPayment;
+use App\Services\ActivityLogger;
 use Barryvdh\DomPDF\Facade\Pdf;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
@@ -55,6 +56,16 @@ class PayrollReceiptController extends Controller
         ]);
 
         $receiptNo = 'RESI-GAJI-' . substr($payment->uuid, 0, 8);
+        $userName = auth()->user()->name ?? 'User';
+        $wName = $worker->name ?? 'Pekerja';
+        $uCode = $unit->code ?? '-';
+        $pName = $project->name ?? '-';
+
+        ActivityLogger::log(
+            'PDF_EXPORT_PAYROLL_RECEIPT',
+            "Pengguna {$userName} mencetak / mengunduh Resi Pembayaran Gaji ({$receiptNo}) untuk worker {$wName} (Unit {$uCode}, Proyek: {$pName})."
+        );
+
         return $pdf->stream($receiptNo . '.pdf');
     }
 

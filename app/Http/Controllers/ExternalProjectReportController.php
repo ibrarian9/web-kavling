@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ExternalProject;
+use App\Services\ActivityLogger;
 use Barryvdh\DomPDF\Facade\Pdf;
 
 class ExternalProjectReportController extends Controller
@@ -44,6 +45,12 @@ class ExternalProjectReportController extends Controller
 
         $cleanProjectName = preg_replace('/[^A-Za-z0-9_-]/', '-', $project->name);
         $fileName = 'REKAP-BIAYA-PROYEK-LUAR-' . $cleanProjectName . '.pdf';
+
+        $userName = auth()->user()->name ?? 'Founder';
+        ActivityLogger::log(
+            'PDF_EXPORT_EXTERNAL_PROJECT_REPORT',
+            "Pengguna {$userName} mencetak / mengunduh Laporan Rekapitulasi Biaya Proyek Luar: {$project->name} PDF."
+        );
 
         return $pdf->stream($fileName);
     }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Booking;
+use App\Services\ActivityLogger;
 use Barryvdh\DomPDF\Facade\Pdf;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
@@ -32,6 +33,13 @@ class BookingReceiptController extends Controller
         ]);
 
         $invoiceNo = 'INV-BKG-' . ($booking->created_at ? $booking->created_at->format('Ym') : date('Ym')) . '-' . str_pad($booking->id, 3, '0', STR_PAD_LEFT);
+        
+        $userName = auth()->user()->name ?? 'User';
+        ActivityLogger::log(
+            'PDF_EXPORT_BOOKING_RECEIPT',
+            "Pengguna {$userName} mencetak / mengunduh Kuitansi Booking Fee ({$invoiceNo}) untuk pembeli {$booking->buyer_name} (Unit " . ($booking->unit->code ?? '-') . ")."
+        );
+
         return $pdf->stream('Invoice-Pembayaran-' . $invoiceNo . '.pdf');
     }
 

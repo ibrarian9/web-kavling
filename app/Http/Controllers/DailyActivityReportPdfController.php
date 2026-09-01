@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\DailyActivityReport;
 use App\Models\Project;
 use App\Models\User;
+use App\Services\ActivityLogger;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
@@ -131,6 +132,11 @@ class DailyActivityReportPdfController extends Controller
         ]);
 
         $pdfFilename = 'DAILY-ACTIVITY-REPORT-' . strtoupper($period) . '-' . date('Ymd-His') . '.pdf';
+
+        ActivityLogger::log(
+            'PDF_EXPORT_DAILY_REPORT',
+            "Pengguna {$user->name} mencetak / mengunduh Laporan Rekap Aktivitas Harian Marketing ({$periodLabel}) PDF (Petugas: {$staffInfo})."
+        );
 
         return $pdf->stream($pdfFilename);
     }

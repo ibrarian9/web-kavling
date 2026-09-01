@@ -91,21 +91,4 @@ class ActivityLogsNotificationTabTest extends TestCase
             ->assertSee('Notifikasi pembayaran DP')
             ->assertDontSee('Unit A-01 baru ditambahkan');
     }
-
-    public function test_founder_can_clear_database_logs(): void
-    {
-        ActivityLogger::log('UNIT_UPDATED', 'Spesifikasi Unit C-01 diperbarui.', $this->admin);
-        ActivityLogger::logNotification('WORKER_ASSIGNED', 'Notifikasi penugasan Pengawas Lapangan.', $this->founder);
-
-        $this->assertEquals(2, ActivityLog::count());
-
-        $this->actingAs($this->founder);
-
-        Livewire::test(\App\Livewire\ActivityLogs\Index::class)
-            ->call('clearDatabaseLogs');
-
-        // Only the clear log itself remains in DB
-        $this->assertEquals(1, ActivityLog::count());
-        $this->assertEquals('SYSTEM_CLEAR_LOGS', ActivityLog::first()->action);
-    }
 }

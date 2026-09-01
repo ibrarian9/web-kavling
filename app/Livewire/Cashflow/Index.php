@@ -5,6 +5,7 @@ namespace App\Livewire\Cashflow;
 use App\Models\CashflowTransaction;
 use App\Models\Project;
 use App\Models\Unit;
+use App\Services\ActivityLogger;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Livewire\WithPagination;
@@ -477,7 +478,7 @@ class Index extends Component
             $receiptPath = \App\Services\ImageCompressor::compressAndStore($this->receipt_photo, 'receipts/cashflow');
         }
 
-        CashflowTransaction::create([
+        $trx = CashflowTransaction::create([
             'project_id' => !empty($this->project_id) ? (int)$this->project_id : null,
             'type' => $this->type,
             'category' => $this->category ?: 'operasional',
@@ -487,6 +488,14 @@ class Index extends Component
             'receipt_photo_path' => $receiptPath,
             'created_by' => auth()->id(),
         ]);
+
+        $userName = auth()->user()->name ?? 'User';
+        $typeLabel = $this->type === 'masuk' ? 'Kas Masuk' : 'Kas Keluar';
+        $amountFmt = number_format($this->amount, 0, ',', '.');
+        ActivityLogger::log(
+            'CASHFLOW_CREATED',
+            "Pencatatan {$typeLabel} manual sebesar Rp {$amountFmt} ({$this->description}) oleh {$userName}."
+        );
 
         $this->resetForm();
         $this->resetValidation();

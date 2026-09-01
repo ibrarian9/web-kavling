@@ -156,3 +156,39 @@ test('system logs activities on project creation, unit creation, booking, and ma
         'action' => 'DELETE_USER',
     ]);
 });
+
+test('system logs activities on logout and manual cashflow creation', function () {
+    $founder = User::create([
+        'name' => 'Founder Cashflow Audit',
+        'email' => 'founder_cashflow_' . rand(1000, 9999) . '@example.com',
+        'password' => bcrypt('password'),
+        'role' => 'founder',
+        'is_active' => true,
+    ]);
+    $founder->assignRole('founder');
+    $this->actingAs($founder);
+
+    // 1. Manual Cashflow -> CASHFLOW_CREATED
+    Livewire::test(\App\Livewire\Cashflow\Index::class)
+        ->set('type', 'masuk')
+        ->set('category', 'operasional')
+        ->set('amount', 5000000)
+        ->set('transaction_date', now()->toDateString())
+        ->set('description', 'Pemasukan Kas Uji Audit')
+        ->call('saveTransaction')
+        ->assertHasNoErrors();
+
+    $this->assertDatabaseHas('activity_logs', [
+        'user_id' => $founder->id,
+        'action' => 'CASHFLOW_CREATED',
+    ]);
+
+    // 2. Logout -> AUTH_LOGOUT
+    $this->post('/logout');
+
+    $this->assertDatabaseHas('activity_logs', [
+        'user_id' => $founder->id,
+        'action' => 'AUTH_LOGOUT',
+    ]);
+});
+

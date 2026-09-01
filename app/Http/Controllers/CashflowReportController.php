@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\CashflowTransaction;
 use App\Models\Project;
 use App\Models\Unit;
+use App\Services\ActivityLogger;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -87,6 +88,12 @@ class CashflowReportController extends Controller
         ]);
 
         $fileName = 'Laporan-Arus-Kas-' . ($month ?: date('Y-m')) . '.pdf';
+        
+        ActivityLogger::log(
+            'PDF_EXPORT_CASHFLOW_REPORT',
+            "Pengguna {$user->name} mencetak / mengunduh Laporan Arus Kas Global ({$fileName}) PDF."
+        );
+
         return $pdf->stream($fileName);
     }
 
@@ -143,6 +150,11 @@ class CashflowReportController extends Controller
 
         $transactions = $query->latest('transaction_date')->latest('id')->get();
         $fileName = 'Laporan-Arus-Kas-' . ($month ?: date('Y-m')) . '.csv';
+
+        ActivityLogger::log(
+            'EXCEL_EXPORT_CASHFLOW_REPORT',
+            "Pengguna {$user->name} mengunduh data Ekspor Arus Kas CSV/Excel ({$fileName})."
+        );
 
         $response = new StreamedResponse(function () use ($transactions) {
             $handle = fopen('php://output', 'w');

@@ -12,18 +12,7 @@
             <p class="text-xs text-slate-400">Pemantauan aktivitas pengguna, otentikasi, pergeseran peran, notifikasi terkirim, dan log transaksi real-time.</p>
         </div>        
         <div class="flex items-center gap-2 shrink-0">
-            @if(in_array($activeTab, ['database', 'notifications']))
-                <button type="button" @click="confirmModalAction({
-                    title: 'Bersihkan Database Logs',
-                    message: 'Yakin ingin membersihkan seluruh data log aktivitas database dan notifikasi?',
-                    confirmText: 'Clear DB Logs',
-                    btnClass: 'px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5',
-                    onConfirm: () => $wire.clearDatabaseLogs()
-                })" class="px-3.5 py-2 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 rounded-xl text-xs font-bold transition flex items-center gap-1.5">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                    <span>Clear DB Logs</span>
-                </button>
-            @else
+            @if($activeTab === 'file')
                 <button type="button" @click="confirmModalAction({
                     title: 'Kosongkan File Log',
                     message: 'Yakin ingin mengosongkan file storage/logs/laravel.log?',
@@ -94,8 +83,17 @@
     <!-- TAB 1 & 2: Database Audit Logs (Operational or Notifications) -->
     @if(in_array($activeTab, ['database', 'notifications']))
         <div class="space-y-4" wire:poll.15s>
+            @php
+                $tableHeaders = [
+                    ['label' => 'Waktu', 'class' => 'p-2.5 sm:p-3 w-24 md:w-28 lg:w-32 shrink-0 whitespace-nowrap'],
+                    ['label' => 'Pengguna', 'class' => 'p-2.5 sm:p-3 w-36 md:w-40 lg:w-48 shrink-0'],
+                    ['label' => 'Jenis Event', 'class' => 'p-2.5 sm:p-3 w-36 md:w-44 shrink-0 whitespace-nowrap'],
+                    ['label' => 'Detail Log Aktivitas', 'class' => 'p-2.5 sm:p-3 w-full min-w-[260px] md:min-w-[320px]'],
+                    ['label' => 'IP & Client Device', 'class' => 'p-2.5 sm:p-3 w-28 md:w-36 shrink-0 whitespace-nowrap'],
+                ];
+            @endphp
             <!-- Unified Table of Database Logs with CSS Table-to-Card Transformation -->
-            <x-table :headers="['Waktu Presisi', 'Pengguna / Peran', 'Jenis Event / Aksi', 'Detail Log Aktivitas / Notifikasi', 'IP & Client Device']" loadingTarget="search, actionFilter, datePeriod, startDate, endDate, gotoPage, nextPage, previousPage">
+            <x-table :headers="$tableHeaders" loadingTarget="search, actionFilter, datePeriod, startDate, endDate, gotoPage, nextPage, previousPage">
                 @forelse($databaseLogs as $log)
                     @php
                         $isNotif = str_starts_with($log->action, 'NOTIF_') || str_starts_with($log->action, 'NOTIFICATION_');
@@ -108,35 +106,36 @@
                         };
                     @endphp
                     <tr class="hover:bg-slate-50/80 transition">
-                        <td data-label="Waktu" class="p-3.5 font-mono text-[11px] text-slate-600 whitespace-nowrap">
-                            <div class="font-bold text-slate-800">{{ format_id_date($log->created_at) }}</div>
-                            <div class="text-[10px] text-slate-400">{{ $log->created_at->format('H:i:s') }} ({{ format_id_diff($log->created_at) }})</div>
+                        <td data-label="Waktu" class="p-2.5 sm:p-3.5 font-mono text-[10px] md:text-[11px] text-slate-600 w-24 md:w-28 lg:w-32 shrink-0 whitespace-nowrap">
+                            <div class="font-bold text-slate-800 leading-tight">{{ format_id_date($log->created_at) }}</div>
+                            <div class="text-[9px] md:text-[10px] text-slate-400 font-medium mt-0.5">{{ $log->created_at->format('H:i:s') }}</div>
+                            <div class="text-[8px] md:text-[9px] text-slate-400 italic">({{ format_id_diff($log->created_at) }})</div>
                         </td>
-                        <td data-label="Pengguna" class="p-3.5">
+                        <td data-label="Pengguna" class="p-2.5 sm:p-3.5 w-36 md:w-40 lg:w-48 shrink-0">
                             <div class="flex items-center gap-2">
-                                <div class="w-7 h-7 rounded-full {{ $activeTab === 'notifications' ? 'bg-blue-100 text-blue-700' : 'bg-purple-100 text-purple-700' }} font-extrabold flex items-center justify-center text-xs shrink-0">
+                                <div class="w-6 h-6 sm:w-7 sm:h-7 rounded-full {{ $activeTab === 'notifications' ? 'bg-blue-100 text-blue-700' : 'bg-purple-100 text-purple-700' }} font-extrabold flex items-center justify-center text-[10px] sm:text-xs shrink-0">
                                     {{ strtoupper(substr($log->user_name, 0, 1)) }}
                                 </div>
-                                <div>
-                                    <div class="font-bold text-slate-900 text-xs">{{ $log->user_name }}</div>
-                                    <span class="px-1.5 py-0.5 rounded bg-slate-100 border border-slate-200 text-[9px] font-semibold text-slate-600 uppercase">
+                                <div class="min-w-0">
+                                    <div class="font-bold text-slate-900 text-xs truncate" title="{{ $log->user_name }}">{{ $log->user_name }}</div>
+                                    <span class="px-1.5 py-0.5 rounded bg-slate-100 border border-slate-200 text-[9px] font-semibold text-slate-600 uppercase inline-block mt-0.5">
                                         {{ $log->user_role }}
                                     </span>
                                 </div>
                             </div>
                         </td>
-                        <td data-label="Jenis Event" class="p-3.5 whitespace-nowrap">
-                            <span class="px-2.5 py-1 rounded-lg border text-[10px] font-extrabold font-mono uppercase tracking-wider {{ $badgeClass }}">
+                        <td data-label="Jenis Event" class="p-2.5 sm:p-3.5 w-36 md:w-44 shrink-0 whitespace-nowrap">
+                            <span class="px-2 py-1 rounded-lg border text-[9px] md:text-[10px] font-extrabold font-mono uppercase tracking-wider {{ $badgeClass }} inline-block truncate max-w-[170px]" title="{{ $log->action }}">
                                 {{ $log->action }}
                             </span>
                         </td>
-                        <td data-label="Keterangan" class="p-3.5 text-slate-700 font-medium text-xs max-w-md">
+                        <td data-label="Keterangan" class="p-2.5 sm:p-3.5 text-slate-800 font-medium text-xs leading-relaxed break-words">
                             {{ $log->description }}
                         </td>
-                        <td data-label="IP / Device" class="p-3.5 text-[11px] font-mono text-slate-500 whitespace-nowrap">
-                            <div>{{ $log->ip_address ?: '127.0.0.1' }}</div>
-                            <div class="text-[9px] text-slate-400 max-w-xs truncate" title="{{ $log->user_agent }}">
-                                {{ $log->user_agent ? Str::limit($log->user_agent, 30) : '-' }}
+                        <td data-label="IP / Device" class="p-2.5 sm:p-3.5 text-[10px] md:text-[11px] font-mono text-slate-500 w-28 md:w-36 shrink-0 whitespace-nowrap">
+                            <div class="font-semibold text-slate-700">{{ $log->ip_address ?: '127.0.0.1' }}</div>
+                            <div class="text-[9px] text-slate-400 max-w-[120px] truncate mt-0.5" title="{{ $log->user_agent }}">
+                                {{ $log->user_agent ? Str::limit($log->user_agent, 25) : '-' }}
                             </div>
                         </td>
                     </tr>

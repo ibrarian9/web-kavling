@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ManualInvoice;
+use App\Services\ActivityLogger;
 use Barryvdh\DomPDF\Facade\Pdf;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
@@ -39,6 +40,12 @@ class ManualInvoiceController extends Controller
 
         $cleanInvoiceNo = preg_replace('/[^A-Za-z0-9_-]/', '-', $invoice->invoice_number);
         $fileName = 'Invoice-Manual-' . $cleanInvoiceNo . '.pdf';
+
+        ActivityLogger::log(
+            'PDF_EXPORT_MANUAL_INVOICE',
+            "Pengguna {$user->name} mencetak / mengunduh Invoice Tagihan Manual ({$invoice->invoice_number}) kepada {$invoice->customer_name} (Rp " . number_format($invoice->amount, 0, ',', '.') . ")."
+        );
+
         return $pdf->stream($fileName);
     }
 

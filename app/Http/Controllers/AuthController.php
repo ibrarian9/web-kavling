@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Services\ActivityLogger;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -35,7 +36,7 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-            \App\Services\ActivityLogger::log('AUTH_LOGIN', 'Pengguna ' . auth()->user()->name . ' berhasil login ke dalam sistem.');
+            ActivityLogger::log('AUTH_LOGIN', 'Pengguna ' . auth()->user()->name . ' berhasil login ke dalam sistem.');
             return redirect()->intended('/dashboard');
         }
 
@@ -50,7 +51,7 @@ class AuthController extends Controller
         if ($user) {
             Auth::login($user);
             $request->session()->regenerate();
-            \App\Services\ActivityLogger::log('AUTH_SWITCH_ROLE', 'Beralih peran menjadi: ' . strtoupper($role));
+            ActivityLogger::log('AUTH_SWITCH_ROLE', 'Beralih peran menjadi: ' . strtoupper($role));
             return redirect()->route('dashboard')->with('success', 'Berhasil beralih peran sebagai: ' . strtoupper($role));
         }
 
@@ -59,6 +60,9 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
+        $userName = auth()->user()->name ?? 'Pengguna';
+        ActivityLogger::log('AUTH_LOGOUT', "Pengguna {$userName} berhasil logout dari sistem.");
+
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();

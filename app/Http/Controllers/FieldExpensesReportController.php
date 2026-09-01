@@ -6,6 +6,7 @@ use App\Models\Project;
 use App\Models\Unit;
 use App\Models\WeeklyMaterialPurchase;
 use App\Models\WorkerSalaryPayment;
+use App\Services\ActivityLogger;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
@@ -136,6 +137,13 @@ class FieldExpensesReportController extends Controller
             'verifyUrl' => $verifyUrl,
             'qrCodeUrl' => $qrCodeUrl,
         ]);
+
+        $userName = auth()->user()->name ?? 'User';
+        $projName = $projectInfo ?: 'Semua Proyek';
+        ActivityLogger::log(
+            'PDF_EXPORT_FIELD_EXPENSES_REPORT',
+            "Pengguna {$userName} mencetak / mengunduh Laporan Belanja Material & Gaji Worker PDF (Proyek: {$projName})."
+        );
 
         return $pdf->stream('LAPORAN-BELANJA-DAN-GAJI-WORKER.pdf');
     }

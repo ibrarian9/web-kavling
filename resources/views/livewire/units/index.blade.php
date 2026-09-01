@@ -187,7 +187,9 @@
         <!-- Units Grid Cards -->
         <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4 sm:gap-5">
         @forelse($units as $unit)
-            <div class="bg-white border-2 border-slate-200/90 hover:border-emerald-300 rounded-3xl p-4 sm:p-5 space-y-3.5 flex flex-col justify-between hover:shadow-md transition-all duration-200 shadow-xs">
+            <div x-data 
+                 @click="if (!$event.target.closest('button, a, input, select, textarea')) { Livewire.navigate('{{ route('units.show', $unit->id) }}') }"
+                 class="bg-white border-2 border-slate-200/90 hover:border-emerald-300 rounded-3xl p-4 sm:p-5 space-y-3.5 flex flex-col justify-between hover:shadow-md transition-all duration-200 shadow-xs cursor-pointer group">
                 <div class="space-y-3">
                     <!-- Top Badge & Code -->
                     <div class="flex items-start justify-between gap-2">
@@ -332,32 +334,6 @@
                             @endif
                         @endif
                     </div>
-
-                    <!-- Realisasi Biaya Lapangan Info Strip -->
-                    @if(auth()->user()->canViewUnitExpenses() && $expInfo['has_expenses'])
-                        <div class="bg-gradient-to-r from-amber-50 to-orange-50/80 border border-amber-200/90 rounded-2xl p-2.5 flex items-center justify-between text-xs shadow-2xs">
-                            <div class="flex items-center gap-1.5 min-w-0">
-                                <div class="p-1 rounded-lg bg-amber-100 text-amber-700 shrink-0">
-                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                </div>
-                                <div class="min-w-0">
-                                    <span class="font-extrabold text-amber-900 text-[11px] block truncate">Biaya di Detail:</span>
-                                    <span class="text-[9px] text-amber-700 font-semibold block truncate">
-                                        @if($expInfo['total_realized'] > 0)
-                                            Material & Upah Terbayar
-                                        @else
-                                            Kontrak Borongan Kerja
-                                        @endif
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="text-right shrink-0">
-                                <span class="font-mono font-black text-amber-900 text-xs sm:text-sm block">
-                                    Rp {{ number_format($expInfo['total_realized'] > 0 ? $expInfo['total_realized'] : $expInfo['contract_cost'], 0, ',', '.') }}
-                                </span>
-                            </div>
-                        </div>
-                    @endif
                 </div>
 
                 <!-- Price Info & Financial Status -->
@@ -410,10 +386,10 @@
 
                 <!-- Footer Actions & Booking Button -->
                 <div class="pt-3 border-t border-slate-100 flex items-center justify-between gap-2 whitespace-nowrap flex-nowrap">
-                    <x-button variant="outline" size="xs" href="{{ route('units.show', $unit->id) }}" wire:navigate.hover>
-                        <svg class="w-3.5 h-3.5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-                        <span>Detail Unit</span>
-                    </x-button>
+                    <div class="flex items-center gap-1 text-[11px] font-semibold text-slate-400 group-hover:text-emerald-700 transition-colors">
+                        <span>Lihat detail</span>
+                        <svg class="w-3.5 h-3.5 transform group-hover:translate-x-0.5 transition-transform text-slate-400 group-hover:text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                    </div>
 
                     <div class="flex items-center gap-1.5 whitespace-nowrap flex-nowrap">
                         @if(!auth()->user()->isPengawasProject() && $unit->category !== 'infrastruktur' && $unit->status === 'tersedia')

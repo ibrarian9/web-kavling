@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\InstallmentPayment;
+use App\Services\ActivityLogger;
 use Barryvdh\DomPDF\Facade\Pdf;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
@@ -55,6 +56,12 @@ class InstallmentInvoiceController extends Controller
         ]);
 
         $invoiceNo = 'INVOICE-SETORAN-' . substr($payment->uuid, 0, 8);
+        $buyerName = $officialDoc->buyer_name ?? ($installment->buyer_name ?? 'Pembeli');
+        ActivityLogger::log(
+            'PDF_EXPORT_INSTALLMENT_INVOICE',
+            "Pengguna {$user->name} mencetak / mengunduh Invoice Setoran Cicilan ({$invoiceNo}) pembeli {$buyerName} (Unit {$unit->code})."
+        );
+
         return $pdf->stream($invoiceNo . '.pdf');
     }
 
@@ -118,6 +125,12 @@ class InstallmentInvoiceController extends Controller
 
         $cleanUnitCode = preg_replace('/[^A-Za-z0-9_-]/', '-', $unit->code);
         $fileName = 'REKAP-CICILAN-UNIT-' . strtoupper($cleanUnitCode) . '-' . \Illuminate\Support\Str::slug($installment->buyer_name) . '.pdf';
+
+        ActivityLogger::log(
+            'PDF_EXPORT_STATEMENT',
+            "Pengguna {$user->name} mencetak / mengunduh Rekapitulasi Kartu Kontrol Cicilan Unit {$unit->code} (Pembeli: {$installment->buyer_name})."
+        );
+
         return $pdf->stream($fileName);
     }
 

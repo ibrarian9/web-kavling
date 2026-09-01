@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ProjectPayment;
+use App\Services\ActivityLogger;
 use Barryvdh\DomPDF\Facade\Pdf;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
@@ -46,6 +47,14 @@ class LandPaymentReceiptController extends Controller
         ]);
 
         $receiptNo = 'RESI-LAHAN-' . substr($payment->uuid, 0, 8);
+        $userName = auth()->user()->name ?? 'User';
+        $pName = $project->name ?? '-';
+
+        ActivityLogger::log(
+            'PDF_EXPORT_LAND_PAYMENT_RECEIPT',
+            "Pengguna {$userName} mencetak / mengunduh Resi Pembayaran Lahan Proyek {$pName} ({$receiptNo}) sebesar Rp " . number_format($payment->amount_paid, 0, ',', '.') . " PDF."
+        );
+
         return $pdf->stream($receiptNo . '.pdf');
     }
 

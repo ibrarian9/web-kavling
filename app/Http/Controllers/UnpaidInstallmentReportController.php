@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Project;
 use App\Models\UnitInstallment;
+use App\Services\ActivityLogger;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
@@ -74,6 +75,12 @@ class UnpaidInstallmentReportController extends Controller
             'qrCodeUrl' => $qrCodeUrl,
             'generatedAt' => now()->locale('id')->isoFormat('DD MMMM YYYY HH:mm'),
         ]);
+
+        $userName = auth()->user()->name ?? 'User';
+        ActivityLogger::log(
+            'PDF_EXPORT_UNPAID_INSTALLMENTS_REPORT',
+            "Pengguna {$userName} mencetak / mengunduh Rekapitulasi Piutang & Tunggakan Cicilan ({$periodName}) PDF (Proyek: {$projectInfo})."
+        );
 
         return $pdf->stream('LAPORAN-TUNGGAKAN-CICILAN-' . strtoupper(\Illuminate\Support\Str::slug($periodName)) . '.pdf');
     }

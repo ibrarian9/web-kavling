@@ -113,7 +113,7 @@ test('external projects index has 4-card grid on tablet and whitespace-nowrap fo
     $test = Livewire::test(\App\Livewire\ExternalProjects\Index::class);
     $html = $test->html();
 
-    expect($html)->toContain('grid-cols-2 md:grid-cols-4')
+    expect($html)->toContain('grid-cols-2 xl:grid-cols-4')
         ->toContain('whitespace-nowrap')
         ->toContain('Proyek Renovasi Ruko');
 });

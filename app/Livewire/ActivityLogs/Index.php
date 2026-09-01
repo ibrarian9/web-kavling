@@ -3,8 +3,10 @@
 namespace App\Livewire\ActivityLogs;
 
 use App\Models\ActivityLog;
+use App\Services\ActivityLogger;
 use App\Traits\WithDatePeriodFilter;
 use Illuminate\Support\Facades\File;
+use Illuminate\View\View;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -13,9 +15,9 @@ class Index extends Component
     use WithPagination;
     use WithDatePeriodFilter;
 
-    public $activeTab = 'database'; // 'database' (operational), 'notifications', or 'file'
-    public $search = '';
-    public $actionFilter = '';
+    public string $activeTab = 'database'; // 'database' (operational), 'notifications', or 'file'
+    public string $search = '';
+    public string $actionFilter = '';
 
     protected $queryString = [
         'activeTab' => ['except' => 'database'],
@@ -26,60 +28,78 @@ class Index extends Component
         'endDate' => ['except' => ''],
     ];
 
-    public function mount()
+    public function mount(): void
     {
         if (!auth()->user() || !auth()->user()->isSuperAdmin()) {
             abort(403, 'Akses khusus untuk Admin Utama / Supervisor.');
         }
     }
 
-    public function setTab($tab)
+    public function setTab(string $tab): void
     {
         $this->activeTab = $tab;
         $this->resetPage();
     }
 
-    public function updatingSearch()
+    public function updatingSearch(): void
     {
         $this->resetPage();
     }
 
-    public function updatingActionFilter()
+    public function updatingActionFilter(): void
     {
         $this->resetPage();
     }
 
-    public function clearDatabaseLogs()
-    {
-        if (!auth()->user()->isSuperAdmin()) return;
-        
-        ActivityLog::query()->delete();
-        \App\Services\ActivityLogger::log('SYSTEM_CLEAR_LOGS', auth()->user()->name . ' membersihkan seluruh riwayat Log Aktivitas Sistem di database.');
-        session()->flash('success', 'Riwayat Log Aktivitas Database berhasil dibersihkan.');
-    }
-
-    public function clearFileLog()
+    public function clearFileLog(): void
     {
         if (!auth()->user()->isSuperAdmin()) return;
 
         $logPath = storage_path('logs/laravel.log');
         if (File::exists($logPath)) {
             File::put($logPath, '');
-            \App\Services\ActivityLogger::log('SYSTEM_CLEAR_FILE_LOG', auth()->user()->name . ' membersihkan isi file laravel.log.');
+            ActivityLogger::log('SYSTEM_CLEAR_FILE_LOG', auth()->user()->name . ' membersihkan isi file laravel.log.');
             session()->flash('success', 'File storage/logs/laravel.log berhasil dikosongkan.');
         }
     }
 
-    public function clearDeprecationLog()
+    public function clearDeprecationLog(): void
     {
         if (!auth()->user()->isSuperAdmin()) return;
 
         $depPath = storage_path('logs/php-deprecation-warnings.log');
         if (File::exists($depPath)) {
             File::put($depPath, '');
-            \App\Services\ActivityLogger::log('SYSTEM_CLEAR_DEP_LOG', auth()->user()->name . ' membersihkan isi file log deprecations.');
+            ActivityLogger::log('SYSTEM_CLEAR_DEP_LOG', auth()->user()->name . ' membersihkan isi file log deprecations.');
             session()->flash('success', 'File storage/logs/php-deprecation-warnings.log berhasil dikosongkan.');
         }
+    }
+
+    /**
+     * Efficiently read the last N lines from a log file without loading whole file into memory.
+     */
+    private function readLastLogLines(string $filePath, int $maxLines = 300): array
+    {
+        if (!File::exists($filePath)) {
+            return [];
+        }
+
+        $lines = [];
+        $file = new \SplFileObject($filePath, 'r');
+        $file->seek(PHP_INT_MAX);
+        $totalLines = $file->key();
+
+        $startLine = max(0, $totalLines - $maxLines);
+        $file->seek($startLine);
+
+        while (!$file->eof()) {
+            $line = trim($file->fgets());
+            if ($line !== '') {
+                $lines[] = $line;
+            }
+        }
+
+        return array_reverse($lines);
     }
 
     public function render()
@@ -128,13 +148,11 @@ class Index extends Component
 
         $databaseLogs = $logsQuery->paginate(25);
 
-        // Parse raw laravel.log lines
+        // Parse raw laravel.log lines (only if file tab is active or search active)
         $rawLogLines = [];
-        $logPath = storage_path('logs/laravel.log');
-        if (File::exists($logPath)) {
-            $content = File::get($logPath);
-            $lines = array_filter(explode("\n", $content));
-            $lines = array_reverse(array_slice($lines, -300)); // Get last 300 lines
+        if ($this->activeTab === 'file' || $this->search) {
+            $logPath = storage_path('logs/laravel.log');
+            $lines = $this->readLastLogLines($logPath, 300);
 
             foreach ($lines as $line) {
                 if ($this->search && stripos($line, $this->search) === false) {
@@ -146,21 +164,18 @@ class Index extends Component
 
         // Parse Deprecations Log lines
         $deprecationLines = [];
-        $depPath = storage_path('logs/php-deprecation-warnings.log');
-        if (File::exists($depPath)) {
-            $depContent = File::get($depPath);
-            $depLines = array_filter(explode("\n", $depContent));
-            $depLines = array_reverse(array_slice($depLines, -300));
+        if ($this->activeTab === 'file' || $this->search) {
+            $depPath = storage_path('logs/php-deprecation-warnings.log');
+            $depLines = $this->readLastLogLines($depPath, 300);
+
             foreach ($depLines as $line) {
                 if ($this->search && stripos($line, $this->search) === false) {
                     continue;
                 }
                 $deprecationLines[] = $line;
             }
-        }
-        
-        // Also include deprecation entries from laravel.log
-        if (File::exists($logPath)) {
+            
+            // Also include deprecation entries from laravel.log
             foreach ($rawLogLines as $line) {
                 if (stripos($line, 'deprecated') !== false || stripos($line, 'deprecation') !== false) {
                     if (!in_array($line, $deprecationLines)) {

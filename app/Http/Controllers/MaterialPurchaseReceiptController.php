@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\WeeklyMaterialPurchase;
+use App\Services\ActivityLogger;
 use Barryvdh\DomPDF\Facade\Pdf;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
@@ -49,6 +50,15 @@ class MaterialPurchaseReceiptController extends Controller
         ]);
 
         $receiptNo = 'RESI-MATERIAL-' . $material->id;
+        $userName = auth()->user()->name ?? 'User';
+        $uCode = $material->unit->code ?? '-';
+        $pName = $material->project->name ?? '-';
+
+        ActivityLogger::log(
+            'PDF_EXPORT_MATERIAL_RECEIPT',
+            "Pengguna {$userName} mencetak / mengunduh Bukti Pembelian Material ({$material->item_name} - {$receiptNo}) pada Unit {$uCode} (Proyek: {$pName})."
+        );
+
         return $pdf->stream($receiptNo . '.pdf');
     }
 

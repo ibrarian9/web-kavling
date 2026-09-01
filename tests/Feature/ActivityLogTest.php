@@ -129,34 +129,6 @@ class ActivityLogTest extends TestCase
             ->assertDontSee('Special test description for filter test');
     }
 
-    public function test_livewire_founder_can_clear_database_logs(): void
-    {
-        $founder = User::where('role', 'founder')->firstOrFail();
-
-        ActivityLog::create([
-            'user_id' => $founder->id,
-            'user_name' => $founder->name,
-            'user_role' => $founder->role,
-            'action' => 'OLD_ACTION',
-            'description' => 'Old activity log before clear',
-        ]);
-
-        Livewire::actingAs($founder)
-            ->test(\App\Livewire\ActivityLogs\Index::class)
-            ->call('clearDatabaseLogs')
-            ->assertStatus(200);
-
-        // Old action should be wiped
-        $this->assertDatabaseMissing('activity_logs', [
-            'action' => 'OLD_ACTION',
-        ]);
-
-        // The system clear log itself should be recorded
-        $this->assertDatabaseHas('activity_logs', [
-            'action' => 'SYSTEM_CLEAR_LOGS',
-        ]);
-    }
-
     public function test_livewire_founder_can_clear_file_log(): void
     {
         $founder = User::where('role', 'founder')->firstOrFail();

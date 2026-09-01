@@ -6,6 +6,7 @@ use App\Models\Unit;
 use App\Models\WeeklyMaterialPurchase;
 use App\Models\WorkerSalaryPayment;
 use App\Models\WorkerUnitPayroll;
+use App\Services\ActivityLogger;
 use Barryvdh\DomPDF\Facade\Pdf;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
@@ -50,33 +51,33 @@ class UnitExpensesReportController extends Controller
             ]);
         }
 
-        foreach ($salaryPayments as $sp) {
-            $combinedExpenses->push((object)[
-                'id' => $sp->id,
-                'source_type' => 'salary_payment',
-                'date' => $sp->payment_date,
-                'category_badge' => 'Gaji Worker',
-                'worker_name' => $sp->payroll->worker->name ?? 'Pekerja Lapangan',
-                'store_name' => null,
-                'description' => 'Pembayaran Gaji ' . ($sp->payroll->worker->name ?? 'Pekerja Lapangan') . ' (' . str_replace('_', ' ', $sp->payment_method) . ')',
-                'notes' => $sp->notes,
-                'amount' => $sp->amount_paid,
-                'created_at' => $sp->created_at,
-            ]);
-        }
-
         foreach ($materialPurchases as $mp) {
             $combinedExpenses->push((object)[
                 'id' => $mp->id,
                 'source_type' => 'material',
                 'date' => $mp->purchase_date,
-                'category_badge' => 'Belanja Material',
-                'worker_name' => $mp->worker->name ?? null,
-                'store_name' => $mp->store_name ?: '-',
-                'description' => $mp->item_name . ' (' . number_format($mp->quantity, 0, ',', '.') . ' ' . $mp->unit_measure . ' @ Rp ' . number_format($mp->unit_price, 0, ',', '.') . ')' . ($mp->store_name ? ' [Toko: ' . $mp->store_name . ']' : ''),
+                'category_badge' => 'Material Unit',
+                'worker_name' => $mp->worker->name ?? 'Pekerja Lapangan',
+                'store_name' => $mp->store_name,
+                'description' => $mp->item_name . ' (' . $mp->quantity . ' ' . $mp->unit_measurement . ' @ Rp ' . number_format($mp->price_per_unit, 0, ',', '.') . ')',
                 'notes' => $mp->notes,
                 'amount' => $mp->total_price,
                 'created_at' => $mp->created_at,
+            ]);
+        }
+
+        foreach ($salaryPayments as $sp) {
+            $combinedExpenses->push((object)[
+                'id' => $sp->id,
+                'source_type' => 'salary_payment',
+                'date' => $sp->payment_date,
+                'category_badge' => 'Setoran Gaji',
+                'worker_name' => $sp->payroll->worker->name ?? 'Pekerja Lapangan',
+                'store_name' => null,
+                'description' => 'Pembayaran Upah Kerja ' . ($sp->payroll->worker->name ?? 'Pekerja Lapangan') . ' (' . $sp->payment_method . ')',
+                'notes' => $sp->notes,
+                'amount' => $sp->amount_paid,
+                'created_at' => $sp->created_at,
             ]);
         }
 
@@ -84,9 +85,9 @@ class UnitExpensesReportController extends Controller
             return ($item->date ? $item->date->format('Y-m-d') : '0000-00-00') . '_' . $item->id;
         })->values();
 
-        $totalMaterialCost = $materialPurchases->sum('total_price');
-        $totalSalaryCost = $salaryPayments->sum('amount_paid');
-        $totalPayrollContractCost = $unitPayrolls->sum('agreed_salary');
+        $totalMaterialCost = (float) $materialPurchases->sum('total_price');
+        $totalSalaryCost = (float) $salaryPayments->sum('amount_paid');
+        $totalPayrollContractCost = (float) $unitPayrolls->sum('agreed_salary');
         $totalExpenses = $totalMaterialCost + $totalSalaryCost;
 
         $verifyUrl = route('verify.unit-expenses', $unit->id);
@@ -110,6 +111,13 @@ class UnitExpensesReportController extends Controller
 
         $cleanUnitCode = preg_replace('/[^A-Za-z0-9_-]/', '-', strtoupper($unit->code));
         $filename = 'LAPORAN-BIAYA-UNIT-' . $cleanUnitCode . '.pdf';
+        
+        $userName = auth()->user()->name ?? 'User';
+        ActivityLogger::log(
+            'PDF_EXPORT_UNIT_EXPENSES_REPORT',
+            "Pengguna {$userName} mencetak / mengunduh Rekapitulasi Rincian Biaya Pengeluaran & Belanja Unit {$unit->code} PDF (Proyek: " . ($unit->project->name ?? '-') . ")."
+        );
+
         return $pdf->stream($filename);
     }
 

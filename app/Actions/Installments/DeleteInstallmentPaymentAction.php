@@ -5,6 +5,7 @@ namespace App\Actions\Installments;
 use App\Models\CashflowTransaction;
 use App\Models\InstallmentPayment;
 use App\Models\UnitInstallment;
+use App\Services\ActivityLogger;
 use Illuminate\Support\Facades\DB;
 
 class DeleteInstallmentPaymentAction
@@ -29,6 +30,11 @@ class DeleteInstallmentPaymentAction
                 $status = ($totalPaid >= (float)$inst->total_price) ? 'lunas' : 'berjalan';
                 $inst->update(['status' => $status]);
             }
+
+            ActivityLogger::log(
+                'INSTALLMENT_PAYMENT_DELETED',
+                "Setoran cicilan Unit {$unitCode} sebesar Rp " . number_format($amount, 0, ',', '.') . " dihapus dari sistem."
+            );
 
             return [
                 'unit_installment_id' => $instId,
