@@ -95,8 +95,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "app_actions_installments_deleteinstallmentschemeaction_deleteinstallmentschemeaction",
-      "community": 5,
-      "community_name": "Index",
+      "community": 16,
+      "community_name": "InstallmentPayment",
       "norm_label": "deleteinstallmentschemeaction"
     },
     {
@@ -107,8 +107,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_actions_installments_deleteinstallmentschemeaction_deleteinstallmentschemeaction_execute",
-      "community": 5,
-      "community_name": "Index",
+      "community": 16,
+      "community_name": "InstallmentPayment",
       "norm_label": ".execute()"
     },
     {
@@ -946,8 +946,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "app_http_controllers_installmentinvoicecontroller_installmentinvoicecontroller",
-      "community": 16,
-      "community_name": "InstallmentPayment",
+      "community": 220,
+      "community_name": "InstallmentInvoiceController",
       "norm_label": "installmentinvoicecontroller"
     },
     {
@@ -958,8 +958,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_http_controllers_installmentinvoicecontroller_installmentinvoicecontroller_streaminvoice",
-      "community": 16,
-      "community_name": "InstallmentPayment",
+      "community": 220,
+      "community_name": "InstallmentInvoiceController",
       "norm_label": ".streaminvoice()"
     },
     {
@@ -970,8 +970,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_http_controllers_installmentinvoicecontroller_installmentinvoicecontroller_streamstatementpdf",
-      "community": 16,
-      "community_name": "InstallmentPayment",
+      "community": 220,
+      "community_name": "InstallmentInvoiceController",
       "norm_label": ".streamstatementpdf()"
     },
     {
@@ -982,8 +982,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_http_controllers_installmentinvoicecontroller_installmentinvoicecontroller_verifystatement",
-      "community": 16,
-      "community_name": "InstallmentPayment",
+      "community": 220,
+      "community_name": "InstallmentInvoiceController",
       "norm_label": ".verifystatement()"
     },
     {
@@ -994,8 +994,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_http_controllers_installmentinvoicecontroller_installmentinvoicecontroller_verify",
-      "community": 16,
-      "community_name": "InstallmentPayment",
+      "community": 220,
+      "community_name": "InstallmentInvoiceController",
       "norm_label": ".verify()"
     },
     {
@@ -1006,8 +1006,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_http_controllers_installmentinvoicecontroller_installmentinvoicecontroller_generateqrbase64",
-      "community": 16,
-      "community_name": "InstallmentPayment",
+      "community": 220,
+      "community_name": "InstallmentInvoiceController",
       "norm_label": ".generateqrbase64()"
     },
     {
@@ -1018,8 +1018,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_http_controllers_installmentinvoicecontroller_installmentinvoicecontroller_terbilang",
-      "community": 16,
-      "community_name": "InstallmentPayment",
+      "community": 220,
+      "community_name": "InstallmentInvoiceController",
       "norm_label": ".terbilang()"
     },
     {
@@ -3693,8 +3693,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_installments_index_index_closedetailmodal",
-      "community": 5,
-      "community_name": "Index",
+      "community": 16,
+      "community_name": "InstallmentPayment",
       "norm_label": ".closedetailmodal()"
     },
     {
@@ -3705,8 +3705,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_installments_index_index_deleteinstallment",
-      "community": 5,
-      "community_name": "Index",
+      "community": 16,
+      "community_name": "InstallmentPayment",
       "norm_label": ".deleteinstallment()"
     },
     {
@@ -3741,8 +3741,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_installments_index_index_closelandpaymentmodal",
-      "community": 265,
-      "community_name": ".execute",
+      "community": 5,
+      "community_name": "Index",
       "norm_label": ".closelandpaymentmodal()"
     },
     {
@@ -3753,8 +3753,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "app_livewire_installments_index_index_submitlandpayment",
-      "community": 265,
-      "community_name": ".execute",
+      "community": 5,
+      "community_name": "Index",
       "norm_label": ".submitlandpayment()"
     },
     {
@@ -11041,8 +11041,8 @@
       "source_location": "L57",
       "_origin": "ast",
       "id": "composer_scripts_dev",
-      "community": 220,
-      "community_name": "dev",
+      "community": 9,
+      "community_name": "scripts",
       "norm_label": "dev"
     },
     {
@@ -11052,8 +11052,8 @@
       "source_location": "L57",
       "_origin": "ast",
       "id": "ref_composer_config_disableprocesstimeout",
-      "community": 220,
-      "community_name": "dev",
+      "community": 9,
+      "community_name": "scripts",
       "norm_label": "composer\\\\config::disableprocesstimeout"
     },
     {
@@ -11063,8 +11063,8 @@
       "source_location": "L57",
       "_origin": "ast",
       "id": "ref_npx_concurrently_c_93c5fd_c4b5fd_fb7185_fdba74_php_artisan_octane_start_server_roadrunner_port_8001_php_artisan_queue_listen_tries_1_timeout_0_php_artisan_pail_timeout_0_npm_run_dev_names_octane_queue_logs_vite_kill_others",
-      "community": 220,
-      "community_name": "dev",
+      "community": 9,
+      "community_name": "scripts",
       "norm_label": "npx concurrently -c \\\"#93c5fd,#c4b5fd,#fb7185,#fdba74\\\" \\\"php artisan octane:start --server=roadrunner --port=8001\\\" \\\"php artisan queue:listen --tries=1 --timeout=0\\\" \\\"php artisan pail --timeout=0\\\" \\\"npm run dev\\\" --names=octane,queue,logs,vite --kill-others"
     },
     {
@@ -11195,8 +11195,8 @@
       "source_location": "L78",
       "_origin": "ast",
       "id": "composer_scripts_post_create_project_cmd",
-      "community": 9,
-      "community_name": "scripts",
+      "community": 235,
+      "community_name": "post-create-project-cmd",
       "norm_label": "post-create-project-cmd"
     },
     {
@@ -11206,8 +11206,8 @@
       "source_location": "L78",
       "_origin": "ast",
       "id": "ref_php_artisan_key_generate_ansi",
-      "community": 9,
-      "community_name": "scripts",
+      "community": 235,
+      "community_name": "post-create-project-cmd",
       "norm_label": "@php artisan key:generate --ansi"
     },
     {
@@ -11217,8 +11217,8 @@
       "source_location": "L78",
       "_origin": "ast",
       "id": "ref_php_r_file_exists_database_database_sqlite_touch_database_database_sqlite",
-      "community": 9,
-      "community_name": "scripts",
+      "community": 235,
+      "community_name": "post-create-project-cmd",
       "norm_label": "@php -r \\\"file_exists('database/database.sqlite') || touch('database/database.sqlite');\\"
     },
     {
@@ -11228,8 +11228,8 @@
       "source_location": "L78",
       "_origin": "ast",
       "id": "ref_php_artisan_migrate_graceful_ansi",
-      "community": 9,
-      "community_name": "scripts",
+      "community": 235,
+      "community_name": "post-create-project-cmd",
       "norm_label": "@php artisan migrate --graceful --ansi"
     },
     {
@@ -16497,6 +16497,50 @@
       "norm_label": "$set("
     },
     {
+      "label": "openCreateBillModal",
+      "file_type": "code",
+      "source_file": "resources/views/livewire/payables/index.blade.php",
+      "source_location": null,
+      "_origin": "ast",
+      "id": "opencreatebillmodal",
+      "community": 263,
+      "community_name": "payables/index.blade.php",
+      "norm_label": "opencreatebillmodal"
+    },
+    {
+      "label": "openCreateCommissionModal",
+      "file_type": "code",
+      "source_file": "resources/views/livewire/payables/index.blade.php",
+      "source_location": null,
+      "_origin": "ast",
+      "id": "opencreatecommissionmodal",
+      "community": 263,
+      "community_name": "payables/index.blade.php",
+      "norm_label": "opencreatecommissionmodal"
+    },
+    {
+      "label": "openCreateDebtModal",
+      "file_type": "code",
+      "source_file": "resources/views/livewire/payables/index.blade.php",
+      "source_location": null,
+      "_origin": "ast",
+      "id": "opencreatedebtmodal",
+      "community": 263,
+      "community_name": "payables/index.blade.php",
+      "norm_label": "opencreatedebtmodal"
+    },
+    {
+      "label": "openCreateReceivableModal",
+      "file_type": "code",
+      "source_file": "resources/views/livewire/payables/index.blade.php",
+      "source_location": null,
+      "_origin": "ast",
+      "id": "opencreatereceivablemodal",
+      "community": 263,
+      "community_name": "payables/index.blade.php",
+      "norm_label": "opencreatereceivablemodal"
+    },
+    {
       "label": "modal-create-bill.blade.php",
       "file_type": "code",
       "source_file": "resources/views/livewire/payables/partials/modal-create-bill.blade.php",
@@ -16706,17 +16750,6 @@
       "norm_label": "tab-company-debts.blade.php"
     },
     {
-      "label": "openCreateDebtModal",
-      "file_type": "code",
-      "source_file": "resources/views/livewire/payables/partials/tab-company-debts.blade.php",
-      "source_location": null,
-      "_origin": "ast",
-      "id": "opencreatedebtmodal",
-      "community": 341,
-      "community_name": "tab-company-debts.blade.php",
-      "norm_label": "opencreatedebtmodal"
-    },
-    {
       "label": "openViewerModal(",
       "file_type": "code",
       "source_file": "resources/views/livewire/payables/partials/tab-company-debts.blade.php",
@@ -16746,19 +16779,8 @@
       "_origin": "ast",
       "id": "resources_views_livewire_payables_partials_tab_company_receivables_blade",
       "community": 270,
-      "community_name": "tab-company-receivables.blade.php",
+      "community_name": "openPayReceivableModal({{ $r->id }})",
       "norm_label": "tab-company-receivables.blade.php"
-    },
-    {
-      "label": "openCreateReceivableModal",
-      "file_type": "code",
-      "source_file": "resources/views/livewire/payables/partials/tab-company-receivables.blade.php",
-      "source_location": null,
-      "_origin": "ast",
-      "id": "opencreatereceivablemodal",
-      "community": 270,
-      "community_name": "tab-company-receivables.blade.php",
-      "norm_label": "opencreatereceivablemodal"
     },
     {
       "label": "openPayReceivableModal({{ $r->id }})",
@@ -16768,7 +16790,7 @@
       "_origin": "ast",
       "id": "openpayreceivablemodal_r_id",
       "community": 270,
-      "community_name": "tab-company-receivables.blade.php",
+      "community_name": "openPayReceivableModal({{ $r->id }})",
       "norm_label": "openpayreceivablemodal({{ $r->id }})"
     },
     {
@@ -16779,19 +16801,8 @@
       "_origin": "ast",
       "id": "resources_views_livewire_payables_partials_tab_material_bills_blade",
       "community": 268,
-      "community_name": "tab-material-bills.blade.php",
+      "community_name": "openSettleModal({{ $m->id }})",
       "norm_label": "tab-material-bills.blade.php"
-    },
-    {
-      "label": "openCreateBillModal",
-      "file_type": "code",
-      "source_file": "resources/views/livewire/payables/partials/tab-material-bills.blade.php",
-      "source_location": null,
-      "_origin": "ast",
-      "id": "opencreatebillmodal",
-      "community": 268,
-      "community_name": "tab-material-bills.blade.php",
-      "norm_label": "opencreatebillmodal"
     },
     {
       "label": "openSettleModal({{ $m->id }})",
@@ -16801,7 +16812,7 @@
       "_origin": "ast",
       "id": "opensettlemodal_m_id",
       "community": 268,
-      "community_name": "tab-material-bills.blade.php",
+      "community_name": "openSettleModal({{ $m->id }})",
       "norm_label": "opensettlemodal({{ $m->id }})"
     },
     {
@@ -16823,19 +16834,8 @@
       "_origin": "ast",
       "id": "resources_views_livewire_payables_partials_tab_unit_commissions_blade",
       "community": 267,
-      "community_name": "tab-unit-commissions.blade.php",
+      "community_name": "openSettleCommissionModal({{ $c->id }})",
       "norm_label": "tab-unit-commissions.blade.php"
-    },
-    {
-      "label": "openCreateCommissionModal",
-      "file_type": "code",
-      "source_file": "resources/views/livewire/payables/partials/tab-unit-commissions.blade.php",
-      "source_location": null,
-      "_origin": "ast",
-      "id": "opencreatecommissionmodal",
-      "community": 267,
-      "community_name": "tab-unit-commissions.blade.php",
-      "norm_label": "opencreatecommissionmodal"
     },
     {
       "label": "openSettleCommissionModal({{ $c->id }})",
@@ -16845,7 +16845,7 @@
       "_origin": "ast",
       "id": "opensettlecommissionmodal_c_id",
       "community": 267,
-      "community_name": "tab-unit-commissions.blade.php",
+      "community_name": "openSettleCommissionModal({{ $c->id }})",
       "norm_label": "opensettlecommissionmodal({{ $c->id }})"
     },
     {
@@ -63030,6 +63030,50 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "resources_views_livewire_payables_index_blade",
+      "target": "opencreatebillmodal"
+    },
+    {
+      "relation": "binds_method",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "resources/views/livewire/payables/index.blade.php",
+      "source_location": null,
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "resources_views_livewire_payables_index_blade",
+      "target": "opencreatecommissionmodal"
+    },
+    {
+      "relation": "binds_method",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "resources/views/livewire/payables/index.blade.php",
+      "source_location": null,
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "resources_views_livewire_payables_index_blade",
+      "target": "opencreatedebtmodal"
+    },
+    {
+      "relation": "binds_method",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "resources/views/livewire/payables/index.blade.php",
+      "source_location": null,
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "resources_views_livewire_payables_index_blade",
+      "target": "opencreatereceivablemodal"
+    },
+    {
+      "relation": "binds_method",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "resources/views/livewire/payables/index.blade.php",
+      "source_location": null,
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "resources_views_livewire_payables_index_blade",
       "target": "resources_views_livewire_payables_index_blade_php_set"
     },
     {
@@ -63151,17 +63195,6 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "resources_views_livewire_payables_partials_tab_company_debts_blade",
-      "target": "opencreatedebtmodal"
-    },
-    {
-      "relation": "binds_method",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "resources/views/livewire/payables/partials/tab-company-debts.blade.php",
-      "source_location": null,
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "resources_views_livewire_payables_partials_tab_company_debts_blade",
       "target": "openpaydebtmodal_d_id"
     },
     {
@@ -63184,17 +63217,6 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "resources_views_livewire_payables_partials_tab_company_receivables_blade",
-      "target": "opencreatereceivablemodal"
-    },
-    {
-      "relation": "binds_method",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "resources/views/livewire/payables/partials/tab-company-receivables.blade.php",
-      "source_location": null,
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "resources_views_livewire_payables_partials_tab_company_receivables_blade",
       "target": "openpayreceivablemodal_r_id"
     },
     {
@@ -63206,29 +63228,7 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "resources_views_livewire_payables_partials_tab_material_bills_blade",
-      "target": "opencreatebillmodal"
-    },
-    {
-      "relation": "binds_method",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "resources/views/livewire/payables/partials/tab-material-bills.blade.php",
-      "source_location": null,
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "resources_views_livewire_payables_partials_tab_material_bills_blade",
       "target": "opensettlemodal_m_id"
-    },
-    {
-      "relation": "binds_method",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "resources/views/livewire/payables/partials/tab-unit-commissions.blade.php",
-      "source_location": null,
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "resources_views_livewire_payables_partials_tab_unit_commissions_blade",
-      "target": "opencreatecommissionmodal"
     },
     {
       "relation": "binds_method",

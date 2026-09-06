@@ -1,11 +1,11 @@
 # Graph Report - web-kavling  (2026-09-06)
 
 ## Corpus Check
-- 491 files · ~356,672 words
+- 491 files · ~242,009 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 2049 nodes · 3891 edges · 349 communities (224 shown, 125 thin omitted)
+- 2049 nodes · 3891 edges · 350 communities (223 shown, 127 thin omitted)
 - Extraction: 82% EXTRACTED · 18% INFERRED · 0% AMBIGUOUS · INFERRED: 689 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
 
@@ -128,7 +128,7 @@
 - modal-payment-process.blade.php
 - Index
 - require
-- dev
+- InstallmentInvoiceController
 - UserFactory
 - rules/graphify.md
 - workflows/graphify.md
@@ -141,6 +141,7 @@
 - OfficialDocument
 - modal-direct-proposal.blade.php
 - Index
+- post-create-project-cmd
 - require-dev
 - daily-activity-reports/index.blade.php
 - tab-unit-installments.blade.php
@@ -160,9 +161,9 @@
 - section-commissions.blade.php
 - .execute
 - search-input.blade.php
-- tab-unit-commissions.blade.php
-- tab-material-bills.blade.php
-- tab-company-receivables.blade.php
+- openSettleCommissionModal({{ $c->id }})
+- openSettleModal({{ $m->id }})
+- openPayReceivableModal({{ $r->id }})
 - modal-commission.blade.php
 - modal-commission-payment.blade.php
 - openWorkerPaymentModal({{ $w->id }})
@@ -242,7 +243,7 @@
 ## Import Cycles
 - None detected.
 
-## Communities (349 total, 125 thin omitted)
+## Communities (350 total, 127 thin omitted)
 
 ### Community 3 - "composer.json"
 Cohesion: 0.14
@@ -250,7 +251,7 @@ Nodes (13): autoload-dev, psr-4, description, extra, laravel, dont-discover, lic
 
 ### Community 9 - "scripts"
 Cohesion: 0.12
-Nodes (17): scripts, octane, post-autoload-dump, post-create-project-cmd, post-update-cmd, pre-package-uninstall, test, Illuminate\\Foundation\\ComposerScripts::postAutoloadDump (+9 more)
+Nodes (16): scripts, dev, octane, post-autoload-dump, post-update-cmd, pre-package-uninstall, test, Composer\\Config::disableProcessTimeout (+8 more)
 
 ### Community 10 - "Booking"
 Cohesion: 0.09
@@ -269,8 +270,8 @@ Cohesion: 0.19
 Nodes (3): Approval, HasOne, PriceProposal
 
 ### Community 16 - "InstallmentPayment"
-Cohesion: 0.17
-Nodes (3): ConvertInstallmentToCashAction, InstallmentInvoiceController, InstallmentPayment
+Cohesion: 0.15
+Nodes (3): ConvertInstallmentToCashAction, DeleteInstallmentSchemeAction, InstallmentPayment
 
 ### Community 18 - "package.json"
 Cohesion: 0.10
@@ -448,10 +449,6 @@ Nodes (3): AuditOrphanCashflows, OrphanCashflowAuditor, Illuminate\Console\Comma
 Cohesion: 0.18
 Nodes (11): require, barryvdh/laravel-dompdf, laravel/framework, laravel/octane, laravel/tinker, livewire/livewire, php, simplesoftwareio/simple-qrcode (+3 more)
 
-### Community 220 - "dev"
-Cohesion: 0.67
-Nodes (3): dev, Composer\\Config::disableProcessTimeout, npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan octane:start --server=roadrunner --port=8001\" \"php artisan queue:listen --tries=1 --timeout=0\" \"php artisan pail --timeout=0\" \"npm run dev\" --names=octane,queue,logs,vite --kill-others
-
 ### Community 224 - "UnitInstallment"
 Cohesion: 0.16
 Nodes (3): DeleteInstallmentPaymentAction, SetupInstallmentSchemeAction, UnitInstallment
@@ -463,6 +460,10 @@ Nodes (17): AuthController, BookingReceiptController, CashflowVerificationContro
 ### Community 227 - "ExternalProject"
 Cohesion: 0.06
 Nodes (6): Index, Show, ExternalProject, ExternalProjectMaterial, ExternalProjectWorkerWage, ExternalProjectsModuleTest
+
+### Community 235 - "post-create-project-cmd"
+Cohesion: 0.50
+Nodes (4): post-create-project-cmd, @php artisan key:generate --ansi, @php artisan migrate --graceful --ansi, @php -r \"file_exists('database/database.sqlite') || touch('database/database.sqlite');\
 
 ### Community 236 - "require-dev"
 Cohesion: 0.22
@@ -493,15 +494,15 @@ Cohesion: 0.29
 Nodes (7): autoload, files, psr-4, App\\, Database\\Factories\\, Database\\Seeders\\, app/helpers.php
 
 ### Community 263 - "payables/index.blade.php"
-Cohesion: 0.11
-Nodes (17): livewire.payables.partials.modal-create-bill, livewire.payables.partials.modal-create-commission, livewire.payables.partials.modal-create-debt, livewire.payables.partials.modal-create-receivable, livewire.payables.partials.modal-pay-debt, livewire.payables.partials.modal-pay-receivable, livewire.payables.partials.modal-settle-commission, livewire.payables.partials.modal-settle-material (+9 more)
+Cohesion: 0.09
+Nodes (21): livewire.payables.partials.modal-create-bill, livewire.payables.partials.modal-create-commission, livewire.payables.partials.modal-create-debt, livewire.payables.partials.modal-create-receivable, livewire.payables.partials.modal-pay-debt, livewire.payables.partials.modal-pay-receivable, livewire.payables.partials.modal-settle-commission, livewire.payables.partials.modal-settle-material (+13 more)
 
 ### Community 264 - "section-commissions.blade.php"
 Cohesion: 0.50
 Nodes (3): openCommissionModal, openCommissionPaymentModal({{ $comm->id }}), openViewerModal(
 
 ### Community 265 - ".execute"
-Cohesion: 0.22
+Cohesion: 0.29
 Nodes (3): RecordInstallmentPaymentAction, RecordLandPaymentAction, ImageCompressor
 
 ### Community 279 - "Livewire\Component"
@@ -524,10 +525,6 @@ Nodes (3): keywords, framework, laravel
 Cohesion: 0.22
 Nodes (8): openMaterialModal({{ $mat->id }}), openWageModal, openWageModal({{ $w->id }}), removeMaterialRow({{ $index }}), addMaterialRow, openMaterialModal, openViewerModal(, $set(
 
-### Community 341 - "tab-company-debts.blade.php"
-Cohesion: 0.50
-Nodes (3): openCreateDebtModal, openPayDebtModal({{ $d->id }}), openViewerModal(
-
 ### Community 342 - "WeeklyMaterialPurchase"
 Cohesion: 0.10
 Nodes (3): MaterialPurchaseReceiptController, WeeklyMaterialPurchase, AdminPriceRestrictionsAndUnitExpensesTest
@@ -543,7 +540,7 @@ Nodes (4): openModal({{ $proj->id }}), closeModal, openModal, openViewerModal(
 ## Knowledge Gaps
 - **462 isolated node(s):** `$schema`, `name`, `type`, `description`, `laravel` (+457 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **125 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **127 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_

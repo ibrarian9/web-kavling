@@ -1,13 +1,18 @@
 <!-- TAB 4: PIUTANG & KASBON STAF / WORKERS -->
 @if($activeTab === 'company_receivables')
     <div class="space-y-3">
-        <div class="flex items-center justify-between">
+        <div class="flex items-center justify-between flex-wrap gap-2.5">
             <h3 class="font-extrabold text-slate-800 text-sm flex items-center gap-2">
                 <span>Daftar Piutang / Uang Dipinjam Staf & Workers (Kasbon)</span>
                 <span class="text-xs text-slate-500 font-normal">({{ $companyReceivables->total() }} Peminjam)</span>
             </h3>
-            <div class="text-xs font-mono font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-xl">
-                Subtotal Total Piutang: Rp {{ number_format($totalCompanyReceivables, 0, ',', '.') }}
+            <div class="flex items-center gap-2.5">
+                <div class="text-xs font-mono font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-xl">
+                    Subtotal Total Piutang: Rp {{ number_format($totalCompanyReceivables, 0, ',', '.') }}
+                </div>
+                @if(auth()->user()->isFounder() || auth()->user()->isFinance())
+                    <x-button variant="emerald" icon="plus" wire:click="openCreateReceivableModal">Catat Pinjaman / Kasbon</x-button>
+                @endif
             </div>
         </div>
 

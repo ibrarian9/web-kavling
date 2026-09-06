@@ -1,13 +1,18 @@
 <!-- TAB 3: HUTANG KOMISI PENJUAL UNIT -->
 @if($activeTab === 'unit_commissions')
     <div class="space-y-3">
-        <div class="flex items-center justify-between">
+        <div class="flex items-center justify-between flex-wrap gap-2.5">
             <h3 class="font-extrabold text-slate-800 text-sm flex items-center gap-2">
                 <span>Daftar Hutang Komisi / Fee Penjual per Unit</span>
                 <span class="text-xs text-slate-500 font-normal">({{ $unitCommissions->total() }} Komisi)</span>
             </h3>
-            <div class="text-xs font-mono font-bold text-purple-700 bg-purple-50 border border-purple-200 px-3 py-1 rounded-xl">
-                Subtotal Hutang Komisi: Rp {{ number_format($totalUnpaidCommissions, 0, ',', '.') }}
+            <div class="flex items-center gap-2.5">
+                <div class="text-xs font-mono font-bold text-purple-700 bg-purple-50 border border-purple-200 px-3 py-1.5 rounded-xl">
+                    Subtotal Hutang Komisi: Rp {{ number_format($totalUnpaidCommissions, 0, ',', '.') }}
+                </div>
+                @if(auth()->user()->isFounder() || auth()->user()->isFinance())
+                    <x-button variant="purple" icon="plus" wire:click="openCreateCommissionModal">Catat Komisi Penjual</x-button>
+                @endif
             </div>
         </div>
 

@@ -1,0 +1,214 @@
+- generic [ref=f5e2]:
+  - complementary [ref=f5e3]:
+    - generic [ref=f5e4]:
+      - link "A ATLANTIK PERKASA SIM Proyek Kavling" [ref=f5e5] [cursor=pointer]:
+        - /url: http://127.0.0.1:8001/dashboard
+        - generic [ref=f5e6]: A
+        - generic [ref=f5e7]:
+          - heading "ATLANTIK PERKASA" [level=2] [ref=f5e8]
+          - paragraph [ref=f5e9]: SIM Proyek Kavling
+      - button "Ciutkan Sidebar (Mode Mini)" [ref=f5e10]
+    - navigation [ref=f5e13]:
+      - generic [ref=f5e14]:
+        - generic [ref=f5e15]:
+          - generic [ref=f5e16]: Navigasi Utama
+          - link "Dashboard" [ref=f5e19] [cursor=pointer]:
+            - /url: http://127.0.0.1:8001/dashboard
+          - link "Tutorial System" [ref=f5e25] [cursor=pointer]:
+            - /url: http://127.0.0.1:8001/tutorial
+        - generic [ref=f5e31]:
+          - button "Master Properti" [ref=f5e32]
+          - generic [ref=f5e38]:
+            - link "Proyek Properti" [ref=f5e39] [cursor=pointer]:
+              - /url: http://127.0.0.1:8001/projects
+            - link "Unit Kavling & Rumah" [ref=f5e45] [cursor=pointer]:
+              - /url: http://127.0.0.1:8001/units
+            - link "Proyek Luar" [ref=f5e51] [cursor=pointer]:
+              - /url: http://127.0.0.1:8001/external-projects
+            - link "Input Penjualan Lalu" [ref=f5e57] [cursor=pointer]:
+              - /url: http://127.0.0.1:8001/units/legacy-sale
+        - generic [ref=f5e63]:
+          - button "Pekerja Lapangan" [ref=f5e64]
+          - generic [ref=f5e70]:
+            - link "Mandor & Tukang" [ref=f5e71] [cursor=pointer]:
+              - /url: http://127.0.0.1:8001/workers
+            - link "Belanja & Upah" [ref=f5e77] [cursor=pointer]:
+              - /url: http://127.0.0.1:8001/field-expenses
+        - generic [ref=f5e83]:
+          - button "Penjualan & Legalitas" [ref=f5e84]
+          - generic [ref=f5e90]:
+            - link "Daily Activity Report" [ref=f5e91] [cursor=pointer]:
+              - /url: http://127.0.0.1:8001/daily-activity-reports
+            - link "Pengajuan & Approval" [ref=f5e97] [cursor=pointer]:
+              - /url: http://127.0.0.1:8001/proposals
+            - link "Surat Resmi SPP (PDF)" [ref=f5e103] [cursor=pointer]:
+              - /url: http://127.0.0.1:8001/documents
+        - generic [ref=f5e109]:
+          - button "Keuangan & Arus Kas" [ref=f5e110]
+          - generic [ref=f5e116]:
+            - link "Booking Fee & DP" [ref=f5e117] [cursor=pointer]:
+              - /url: http://127.0.0.1:8001/bookings
+            - link "Cicilan & Piutang" [ref=f5e123] [cursor=pointer]:
+              - /url: http://127.0.0.1:8001/installments
+            - link "Arus Kas Global" [ref=f5e129] [cursor=pointer]:
+              - /url: http://127.0.0.1:8001/cashflow
+            - link "Hutang & Piutang" [ref=f5e135] [cursor=pointer]:
+              - /url: http://127.0.0.1:8001/payables
+            - link "Invoice Manual" [ref=f5e142] [cursor=pointer]:
+              - /url: http://127.0.0.1:8001/manual-invoices
+            - link "Penggajian Karyawan" [ref=f5e148] [cursor=pointer]:
+              - /url: http://127.0.0.1:8001/employee-salaries
+        - generic [ref=f5e154]:
+          - button "Administrasi Sistem" [ref=f5e155]
+          - generic [ref=f5e161]:
+            - link "Profil" [ref=f5e162] [cursor=pointer]:
+              - /url: http://127.0.0.1:8001/profile
+            - link "Manajemen User" [ref=f5e168] [cursor=pointer]:
+              - /url: http://127.0.0.1:8001/users
+            - link "Audit Log & Sistem" [ref=f5e174] [cursor=pointer]:
+              - /url: http://127.0.0.1:8001/activity-logs
+    - generic [ref=f5e180]:
+      - generic [ref=f5e181]:
+        - generic [ref=f5e182]:
+          - paragraph [ref=f5e183]: Pengguna
+          - paragraph [ref=f5e184]: Marwansyah
+        - generic [ref=f5e185]: FOUNDER
+      - button "Keluar dari Sistem" [ref=f5e188]
+  - generic [ref=f5e192]:
+    - banner [ref=f5e193]:
+      - generic [ref=f5e194]:
+        - button "Ciutkan Sidebar (Mode Mini)" [ref=f5e195]
+        - heading "Hutang & Piutang Perusahaan" [level=1] [ref=f5e198]
+      - generic [ref=f5e199]:
+        - button "Cari... Ctrl K" [ref=f5e201]:
+          - generic [ref=f5e202]: Cari...
+          - generic [ref=f5e206]: Ctrl K
+        - generic [ref=f5e207]:
+          - paragraph [ref=f5e208]: Marwansyah
+          - paragraph [ref=f5e209]: marwansyah@simatlantik.my.id
+        - generic [ref=f5e210]: Founder
+    - main [ref=f5e211]:
+      - generic [ref=f5e212]:
+        - generic [ref=f5e214]:
+          - generic [ref=f5e215]:
+            - generic [ref=f5e216]: Modul Keuangan Terpadu
+            - heading "Hutang & Piutang Perusahaan" [level=1] [ref=f5e220]
+            - paragraph [ref=f5e221]: Pusat pemantauan hutang toko material, sisa upah tukang, komisi marketing, utang sub-kon & vendor luar proyek, serta piutang kasbon staf yang terintegrasi langsung dengan Arus Kas Global.
+          - generic [ref=f5e222]:
+            - generic [ref=f5e223]:
+              - generic [ref=f5e224]: Hutang Perusahaan
+              - generic [ref=f5e227]: Rp 78.200.000
+              - paragraph [ref=f5e228]: Toko + Upah + Komisi + Sub-kon/Vendor
+            - generic [ref=f5e229]:
+              - generic [ref=f5e230]: Piutang / Kasbon Staf
+              - generic [ref=f5e233]: Rp 3.000.000
+              - paragraph [ref=f5e234]: Kasbon Mandor, Tukang, & Marketing
+        - generic [ref=f5e235]:
+          - generic [ref=f5e236]:
+            - generic [ref=f5e237]:
+              - button "Toko Material 4" [ref=f5e238]:
+                - generic [ref=f5e241]: Toko Material
+                - generic [ref=f5e242]: "4"
+              - button "Upah Pekerja 4" [ref=f5e243]:
+                - generic [ref=f5e246]: Upah Pekerja
+                - generic [ref=f5e247]: "4"
+              - button "Komisi Penjual 3" [ref=f5e248]:
+                - generic [ref=f5e251]: Komisi Penjual
+                - generic [ref=f5e252]: "3"
+              - button "Sub-kon & Vendor 2" [active] [ref=f5e253]:
+                - generic [ref=f5e256]: Sub-kon & Vendor
+                - generic [ref=f5e257]: "2"
+              - button "Piutang Staf 4" [ref=f5e259]:
+                - generic [ref=f5e262]: Piutang Staf
+                - generic [ref=f5e263]: "4"
+              - button "Riwayat Lunas Global" [ref=f5e264]
+            - generic [ref=f5e268]:
+              - textbox "Cari toko, barang, sub-kon, vendor, penerima..." [ref=f5e271]
+              - button "Catat Utang Baru" [ref=f5e394]
+            - generic [ref=f5e276]:
+              - generic [ref=f5e277]: "Filter:"
+              - combobox [ref=f5e284] [cursor=pointer]:
+                - option "Semua Periode Tanggal" [selected]
+                - option "Hari Ini (Today)"
+                - option "Kemarin (Yesterday)"
+                - option "Minggu Ini (This Week)"
+                - option "Bulan Ini (This Month)"
+                - option "Bulan Lalu (Last Month)"
+                - option "Tahun Ini (This Year)"
+                - option "Rentang Tanggal Custom..."
+              - combobox [ref=f5e285] [cursor=pointer]:
+                - option "Semua Proyek" [selected]
+                - option "apa kek"
+                - option "Cluster Mutiara Tenayan City"
+                - option "Cluster Permata Arifin Ahmad"
+                - option "Grand Kavling Panam Residence"
+                - option "Griya Asri Payung Sekaki"
+                - option "Kavling Graha Rumbai Asri"
+              - combobox [ref=f5e286] [cursor=pointer]:
+                - option "Belum Lunas / Terutang" [selected]
+                - option "Sudah Lunas"
+                - option "Semua Status"
+          - generic [ref=f5e397]:
+            - generic [ref=f5e398]:
+              - generic [ref=f5e399]:
+                - heading "Catatan Utang Sub-kon, Vendor & Non-Proyek (2 Catatan)" [level=3] [ref=f5e400]:
+                  - generic [ref=f5e401]: Catatan Utang Sub-kon, Vendor & Non-Proyek
+                  - generic [ref=f5e402]: (2 Catatan)
+                - paragraph [ref=f5e403]: Pencatatan kewajiban utang ke sub-kontraktor, vendor, talangan modal, maupun operasional di luar proyek.
+              - generic [ref=f5e404]: "Sisa Utang Belum Lunas: Rp 20.700.000"
+            - table [ref=f5e407]:
+              - rowgroup [ref=f5e408]:
+                - row [ref=f5e409]:
+                  - columnheader "Tanggal & Tempo" [ref=f5e410]
+                  - columnheader "Kategori & Kreditur" [ref=f5e411]
+                  - columnheader "Keperluan & Proyek" [ref=f5e412]
+                  - columnheader "Total Utang" [ref=f5e413]
+                  - columnheader "Sudah Dibayar" [ref=f5e414]
+                  - columnheader "Sisa Utang" [ref=f5e415]
+                  - columnheader "Status" [ref=f5e416]
+                  - columnheader "Aksi" [ref=f5e417]
+              - rowgroup [ref=f5e418]:
+                - row [ref=f5e419]:
+                  - 'cell "2 Sep 2026 Tempo: 16 Sep 2026" [ref=f5e420]':
+                    - generic [ref=f5e421]: 2 Sep 2026
+                    - generic [ref=f5e422]:
+                      - generic [ref=f5e423]: "Tempo:"
+                      - generic [ref=f5e424]: 16 Sep 2026
+                  - 'cell "Vendor PT Surya Logistik Prima WA/HP: 085712345678" [ref=f5e425]':
+                    - generic [ref=f5e426]: Vendor
+                    - generic [ref=f5e428]: PT Surya Logistik Prima
+                    - generic [ref=f5e429]: "WA/HP: 085712345678"
+                  - cell "Sewa Genset Daya Tinggi & Mobilisasi Eksternal Kantor Di Luar Proyek Invoice jatuh tempo akhir bulan" [ref=f5e430]:
+                    - generic [ref=f5e431]: Sewa Genset Daya Tinggi & Mobilisasi Eksternal Kantor
+                    - generic [ref=f5e432]: Di Luar Proyek
+                    - generic [ref=f5e435]: Invoice jatuh tempo akhir bulan
+                  - cell "Rp 7.200.000" [ref=f5e436]
+                  - cell "Rp 0" [ref=f5e437]
+                  - cell "Rp 7.200.000" [ref=f5e438]
+                  - cell "BELUM LUNAS" [ref=f5e439]
+                  - cell [ref=f5e443]:
+                    - generic [ref=f5e444]:
+                      - button "Bayar Cicilan" [ref=f5e445]
+                      - button "Hapus" [ref=f5e449]
+                - row [ref=f5e453]:
+                  - 'cell "25 Agt 2026 Tempo: 20 Sep 2026" [ref=f5e454]':
+                    - generic [ref=f5e455]: 25 Agt 2026
+                    - generic [ref=f5e456]:
+                      - generic [ref=f5e457]: "Tempo:"
+                      - generic [ref=f5e458]: 20 Sep 2026
+                  - 'cell "Sub-kon CV Mandiri Perkasa (Pak Sugeng) WA/HP: 081298765432" [ref=f5e459]':
+                    - generic [ref=f5e460]: Sub-kon
+                    - generic [ref=f5e462]: CV Mandiri Perkasa (Pak Sugeng)
+                    - generic [ref=f5e463]: "WA/HP: 081298765432"
+                  - cell "Borongan Paving Blok Jalan Utama & Saluran U-Ditch Grand Kavling Panam Residence Termin 1 DP 5jt telah dibayar, pelunasan saat selesai 100%" [ref=f5e464]:
+                    - generic [ref=f5e465]: Borongan Paving Blok Jalan Utama & Saluran U-Ditch
+                    - generic [ref=f5e466]: Grand Kavling Panam Residence
+                    - generic [ref=f5e471]: Termin 1 DP 5jt telah dibayar, pelunasan saat selesai 100%
+                  - cell "Rp 18.500.000" [ref=f5e472]
+                  - cell "Rp 5.000.000" [ref=f5e473]
+                  - cell "Rp 13.500.000" [ref=f5e474]
+                  - cell "BELUM LUNAS" [ref=f5e475]
+                  - cell [ref=f5e479]:
+                    - generic [ref=f5e480]:
+                      - button "Bayar Cicilan" [ref=f5e481]
+                      - button "Hapus" [ref=f5e485]

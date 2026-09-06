@@ -1,13 +1,18 @@
 <!-- TAB 1: TAGIHAN MATERIAL TOKO -->
 @if($activeTab === 'material_bills')
     <div class="space-y-3">
-        <div class="flex items-center justify-between">
+        <div class="flex items-center justify-between flex-wrap gap-2.5">
             <h3 class="font-extrabold text-slate-800 text-sm flex items-center gap-2">
                 <span>Daftar Tagihan Belanja Material & Operasional</span>
                 <span class="text-xs text-slate-500 font-normal">({{ $materialBills->total() }} Item)</span>
             </h3>
-            <div class="text-xs font-mono font-bold text-rose-700 bg-rose-50 border border-rose-200 px-3 py-1 rounded-xl">
-                Subtotal Hutang Toko: Rp {{ number_format($totalUnpaidMaterialBills, 0, ',', '.') }}
+            <div class="flex items-center gap-2.5">
+                <div class="text-xs font-mono font-bold text-rose-700 bg-rose-50 border border-rose-200 px-3 py-1.5 rounded-xl">
+                    Subtotal Hutang Toko: Rp {{ number_format($totalUnpaidMaterialBills, 0, ',', '.') }}
+                </div>
+                @if(auth()->user()->isFounder() || auth()->user()->isFinance())
+                    <x-button variant="rose" icon="plus" wire:click="openCreateBillModal">Catat Tagihan Material</x-button>
+                @endif
             </div>
         </div>
 

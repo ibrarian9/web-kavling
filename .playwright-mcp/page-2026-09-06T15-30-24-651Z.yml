@@ -1,0 +1,148 @@
+- generic [ref=f1e3]:
+  - banner [ref=f1e4]:
+    - generic [ref=f1e5]:
+      - button "Buka Menu Navigasi" [ref=f1e6]
+      - heading "Hutang & Piutang Perusahaan" [level=1] [ref=f1e9]
+    - generic [ref=f1e10]:
+      - button "Cari... Ctrl K" [ref=f1e12]:
+        - generic [ref=f1e13]: Cari...
+        - generic [ref=f1e17]: Ctrl K
+      - generic [ref=f1e18]: Founder
+  - main [ref=f1e19]:
+    - generic [ref=f1e20]:
+      - generic [ref=f1e22]:
+        - generic [ref=f1e23]:
+          - generic [ref=f1e24]: Modul Keuangan Terpadu
+          - heading "Hutang & Piutang Perusahaan" [level=1] [ref=f1e28]
+          - paragraph [ref=f1e29]: Pusat pemantauan hutang toko material, sisa upah tukang, komisi marketing, utang sub-kon & vendor luar proyek, serta piutang kasbon staf yang terintegrasi langsung dengan Arus Kas Global.
+        - generic [ref=f1e30]:
+          - generic [ref=f1e31]:
+            - generic [ref=f1e32]: Hutang Perusahaan
+            - generic [ref=f1e35]: Rp 78.200.000
+            - paragraph [ref=f1e36]: Toko + Upah + Komisi + Sub-kon/Vendor
+          - generic [ref=f1e37]:
+            - generic [ref=f1e38]: Piutang / Kasbon Staf
+            - generic [ref=f1e41]: Rp 3.000.000
+            - paragraph [ref=f1e42]: Kasbon Mandor, Tukang, & Marketing
+      - generic [ref=f1e43]:
+        - generic [ref=f1e44]:
+          - generic [ref=f1e45]:
+            - generic [ref=f1e46]:
+              - button "Hutang Toko Material 4" [ref=f1e47]:
+                - generic [ref=f1e50]: Hutang Toko Material
+                - generic [ref=f1e51]: "4"
+              - button "Sisa Upah Pekerja 4" [ref=f1e52]:
+                - generic [ref=f1e55]: Sisa Upah Pekerja
+                - generic [ref=f1e56]: "4"
+              - button "Komisi Penjual Unit 3" [ref=f1e57]:
+                - generic [ref=f1e60]: Komisi Penjual Unit
+                - generic [ref=f1e61]: "3"
+              - button "Utang Sub-kon, Vendor & Lainnya 2" [ref=f1e62]:
+                - generic [ref=f1e65]: Utang Sub-kon, Vendor & Lainnya
+                - generic [ref=f1e66]: "2"
+              - button "Piutang & Kasbon Staf 4" [ref=f1e67]:
+                - generic [ref=f1e70]: Piutang & Kasbon Staf
+                - generic [ref=f1e71]: "4"
+              - button "Riwayat Lunas Global" [ref=f1e72]
+            - generic [ref=f1e76]:
+              - combobox [ref=f1e80] [cursor=pointer]:
+                - option "Semua Periode Tanggal" [selected]
+                - option "Hari Ini (Today)"
+                - option "Kemarin (Yesterday)"
+                - option "Minggu Ini (This Week)"
+                - option "Bulan Ini (This Month)"
+                - option "Bulan Lalu (Last Month)"
+                - option "Tahun Ini (This Year)"
+                - option "Rentang Tanggal Custom..."
+              - combobox [ref=f1e81] [cursor=pointer]:
+                - option "Semua Proyek" [selected]
+                - option "apa kek"
+                - option "Cluster Mutiara Tenayan City"
+                - option "Cluster Permata Arifin Ahmad"
+                - option "Grand Kavling Panam Residence"
+                - option "Griya Asri Payung Sekaki"
+                - option "Kavling Graha Rumbai Asri"
+              - combobox [ref=f1e82] [cursor=pointer]:
+                - option "BELUM LUNAS / TERUTANG" [selected]
+                - option "LUNAS / TERBAYAR"
+                - option "SEMUA STATUS"
+          - generic [ref=f1e83]:
+            - textbox "Cari toko / barang / unit / sub-kon / vendor..." [ref=f1e85]
+            - button "Catat Tagihan Material" [ref=f1e87]
+        - generic [ref=f1e90]:
+          - generic [ref=f1e91]:
+            - heading "Daftar Tagihan Belanja Material & Operasional (4 Item)" [level=3] [ref=f1e92]:
+              - generic [ref=f1e93]: Daftar Tagihan Belanja Material & Operasional
+              - generic [ref=f1e94]: (4 Item)
+            - generic [ref=f1e95]: "Subtotal Hutang Toko: Rp 16.000.000"
+          - table [ref=f1e98]:
+            - rowgroup [ref=f1e99]:
+              - row [ref=f1e100]:
+                - columnheader "Tanggal Beli" [ref=f1e101]
+                - columnheader "Proyek & Unit" [ref=f1e102]
+                - columnheader "Toko / Supplier" [ref=f1e103]
+                - columnheader "Barang / Uraian" [ref=f1e104]
+                - columnheader "Total Nominal" [ref=f1e105]
+                - columnheader "Status" [ref=f1e106]
+                - columnheader "Aksi" [ref=f1e107]
+            - rowgroup [ref=f1e108]:
+              - row [ref=f1e109]:
+                - cell "3 Sep 2026" [ref=f1e110]
+                - 'cell "Grand Kavling Panam Residence Unit: A-01" [ref=f1e111]':
+                  - generic [ref=f1e112]: Grand Kavling Panam Residence
+                  - text: "Unit: A-01"
+                - cell "Toko Besi Maju Sejahtera" [ref=f1e113]
+                - cell "Besi Ulir 12mm 50 Batang 50.00 btg @ Rp 95.000" [ref=f1e114]:
+                  - text: Besi Ulir 12mm 50 Batang
+                  - generic [ref=f1e115]: 50.00 btg @ Rp 95.000
+                - cell "Rp 4.750.000" [ref=f1e116]
+                - cell "BELUM LUNAS" [ref=f1e117]
+                - cell [ref=f1e121]:
+                  - generic [ref=f1e122]:
+                    - button "Bayar Lunas" [ref=f1e123]
+                    - button "Hapus" [ref=f1e127]
+              - row [ref=f1e131]:
+                - cell "1 Sep 2026" [ref=f1e132]
+                - 'cell "Grand Kavling Panam Residence Unit: A-01" [ref=f1e133]':
+                  - generic [ref=f1e134]: Grand Kavling Panam Residence
+                  - text: "Unit: A-01"
+                - cell "TB Harapan Jaya" [ref=f1e135]
+                - cell "Semen Gresik 50 Sak (Pondasi Utama) 50.00 sak @ Rp 65.000" [ref=f1e136]:
+                  - text: Semen Gresik 50 Sak (Pondasi Utama)
+                  - generic [ref=f1e137]: 50.00 sak @ Rp 65.000
+                - cell "Rp 3.250.000" [ref=f1e138]
+                - cell "BELUM LUNAS" [ref=f1e139]
+                - cell [ref=f1e143]:
+                  - generic [ref=f1e144]:
+                    - button "Bayar Lunas" [ref=f1e145]
+                    - button "Hapus" [ref=f1e149]
+              - row [ref=f1e153]:
+                - cell "14 Agt 2026" [ref=f1e154]
+                - 'cell "Grand Kavling Panam Residence Unit: A-01" [ref=f1e155]':
+                  - generic [ref=f1e156]: Grand Kavling Panam Residence
+                  - text: "Unit: A-01"
+                - cell "Toko Besi Maju Sejahtera" [ref=f1e157]
+                - cell "Besi Ulir 12mm 50 Batang 50.00 btg @ Rp 95.000" [ref=f1e158]:
+                  - text: Besi Ulir 12mm 50 Batang
+                  - generic [ref=f1e159]: 50.00 btg @ Rp 95.000
+                - cell "Rp 4.750.000" [ref=f1e160]
+                - cell "BELUM LUNAS" [ref=f1e161]
+                - cell [ref=f1e165]:
+                  - generic [ref=f1e166]:
+                    - button "Bayar Lunas" [ref=f1e167]
+                    - button "Hapus" [ref=f1e171]
+              - row [ref=f1e175]:
+                - cell "12 Agt 2026" [ref=f1e176]
+                - 'cell "Grand Kavling Panam Residence Unit: A-01" [ref=f1e177]':
+                  - generic [ref=f1e178]: Grand Kavling Panam Residence
+                  - text: "Unit: A-01"
+                - cell "TB Harapan Jaya" [ref=f1e179]
+                - cell "Semen Gresik 50 Sak (Pondasi Utama) 50.00 sak @ Rp 65.000" [ref=f1e180]:
+                  - text: Semen Gresik 50 Sak (Pondasi Utama)
+                  - generic [ref=f1e181]: 50.00 sak @ Rp 65.000
+                - cell "Rp 3.250.000" [ref=f1e182]
+                - cell "BELUM LUNAS" [ref=f1e183]
+                - cell [ref=f1e187]:
+                  - generic [ref=f1e188]:
+                    - button "Bayar Lunas" [ref=f1e189]
+                    - button "Hapus" [ref=f1e193]

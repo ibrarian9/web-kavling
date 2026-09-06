@@ -3,6 +3,8 @@
 namespace Database\Seeders;
 
 use App\Models\CashflowTransaction;
+use App\Models\CompanyDebt;
+use App\Models\CompanyDebtPayment;
 use App\Models\CompanyReceivable;
 use App\Models\Project;
 use App\Models\ReceivablePayment;
@@ -316,6 +318,62 @@ class PayablesAndReceivablesSeeder extends Seeder
             'loan_date' => now()->subDays(2)->toDateString(),
             'status' => 'belum_lunas',
             'notes' => 'Pinjaman talangan bensin & brosur iklan',
+            'created_by' => $founder->id,
+        ]);
+
+        // -------------------------------------------------------------
+        // 5. SEED TAB 5: UTANG SUB-KON, VENDOR & LUAR PROYEK
+        // -------------------------------------------------------------
+        // Sub-kon Paving (Dalam Proyek)
+        $debtSubkon = CompanyDebt::create([
+            'creditor_type' => 'subkon',
+            'creditor_name' => 'CV Mandiri Perkasa (Pak Sugeng)',
+            'creditor_phone' => '081298765432',
+            'project_id' => $project->id,
+            'title' => 'Borongan Paving Blok Jalan Utama & Saluran U-Ditch',
+            'amount' => 18500000,
+            'paid_amount' => 5000000,
+            'debt_date' => now()->subDays(12)->toDateString(),
+            'due_date' => now()->addDays(14)->toDateString(),
+            'status' => 'belum_lunas',
+            'notes' => 'Termin 1 DP 5jt telah dibayar, pelunasan saat selesai 100%',
+            'created_by' => $founder->id,
+        ]);
+
+        $debtPayment1 = CompanyDebtPayment::create([
+            'company_debt_id' => $debtSubkon->id,
+            'payment_date' => now()->subDays(10)->toDateString(),
+            'amount' => 5000000,
+            'payment_method' => 'Transfer Bank',
+            'notes' => 'Pembayaran Termin ke-1 (DP Pekerjaan)',
+            'created_by' => $finance->id,
+        ]);
+
+        CashflowTransaction::create([
+            'project_id' => $debtSubkon->project_id,
+            'type' => 'keluar',
+            'category' => 'subkon',
+            'amount' => 5000000,
+            'transaction_date' => now()->subDays(10)->toDateString(),
+            'description' => "Pembayaran Utang ({$debtSubkon->creditor_name}): {$debtSubkon->title} - Rp 5.000.000",
+            'reference_type' => CompanyDebtPayment::class,
+            'reference_id' => $debtPayment1->id,
+            'created_by' => $finance->id,
+        ]);
+
+        // Vendor Alat & Logistik (Di Luar Proyek / Non-Projek)
+        CompanyDebt::create([
+            'creditor_type' => 'vendor',
+            'creditor_name' => 'PT Surya Logistik Prima',
+            'creditor_phone' => '085712345678',
+            'project_id' => null, // Di Luar Proyek
+            'title' => 'Sewa Genset Daya Tinggi & Mobilisasi Eksternal Kantor',
+            'amount' => 7200000,
+            'paid_amount' => 0,
+            'debt_date' => now()->subDays(4)->toDateString(),
+            'due_date' => now()->addDays(10)->toDateString(),
+            'status' => 'belum_lunas',
+            'notes' => 'Invoice jatuh tempo akhir bulan',
             'created_by' => $founder->id,
         ]);
     }

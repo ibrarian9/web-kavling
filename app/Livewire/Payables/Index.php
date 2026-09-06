@@ -3,6 +3,8 @@
 namespace App\Livewire\Payables;
 
 use App\Models\CashflowTransaction;
+use App\Models\CompanyDebt;
+use App\Models\CompanyDebtPayment;
 use App\Models\CompanyReceivable;
 use App\Models\Project;
 use App\Models\ReceivablePayment;
@@ -114,6 +116,27 @@ class Index extends Component
     public string $pay_rec_notes = '';
     public $pay_rec_photo = null;
 
+    // Tab 6 (or new tab): Company Debts Modal Properties (Utang Sub-kon, Vendor & Luar Proyek)
+    public bool $showCreateDebtModal = false;
+    public string $debt_creditor_type = 'subkon'; // 'subkon', 'vendor', 'operasional_luar', 'talangan_modal', 'lainnya'
+    public string $debt_creditor_name = '';
+    public string $debt_creditor_phone = '';
+    public string $debt_project_id = '';
+    public string $debt_title = '';
+    public $debt_amount = 0;
+    public string $debt_date = '';
+    public string $debt_due_date = '';
+    public string $debt_notes = '';
+    public $debt_attachment = null;
+
+    public bool $showPayDebtModal = false;
+    public ?int $settlingDebtId = null;
+    public $pay_debt_amount = 0;
+    public string $pay_debt_date = '';
+    public string $pay_debt_method = 'Transfer Bank';
+    public string $pay_debt_notes = '';
+    public $pay_debt_photo = null;
+
     // Universal Media Viewer Modal
     public bool $showViewerModal = false;
     public string $viewerType = 'auto';
@@ -149,6 +172,8 @@ class Index extends Component
         $this->settle_comm_date = now()->toDateString();
         $this->rec_loan_date = now()->toDateString();
         $this->pay_rec_date = now()->toDateString();
+        $this->debt_date = now()->toDateString();
+        $this->pay_debt_date = now()->toDateString();
     }
 
     public function resetAllPages(): void
@@ -157,6 +182,7 @@ class Index extends Component
         $this->resetPage('wrk_page');
         $this->resetPage('com_page');
         $this->resetPage('rec_page');
+        $this->resetPage('debt_page');
         $this->resetPage('his_page');
     }
 
@@ -844,6 +870,207 @@ class Index extends Component
         $this->dispatch('notify', ['type' => 'success', 'title' => 'Kas Masuk Diterima!', 'message' => $msg]);
     }
 
+    // --- TAB 6: COMPANY DEBTS (Utang Sub-kon, Vendor & Luar Proyek) ---
+    public function openCreateDebtModal(): void
+    {
+        $user = auth()->user();
+        if (!$user || (!$user->isAdminOrFounder() && !$user->isFinance())) {
+            session()->flash('error', 'Hanya Founder dan Tim Finance yang berhak mencatat utang perusahaan.');
+            return;
+        }
+
+        $this->resetValidation();
+        $this->debt_creditor_type = 'subkon';
+        $this->debt_creditor_name = '';
+        $this->debt_creditor_phone = '';
+        $this->debt_project_id = '';
+        $this->debt_title = '';
+        $this->debt_amount = 0;
+        $this->debt_date = now()->toDateString();
+        $this->debt_due_date = '';
+        $this->debt_notes = '';
+        $this->debt_attachment = null;
+        $this->showCreateDebtModal = true;
+    }
+
+    public function saveDebt(): void
+    {
+        $user = auth()->user();
+        if (!$user || (!$user->isAdminOrFounder() && !$user->isFinance())) {
+            session()->flash('error', 'Hanya Founder dan Tim Finance yang berhak mencatat utang perusahaan.');
+            return;
+        }
+
+        $this->validate([
+            'debt_creditor_type' => 'required|in:subkon,vendor,operasional_luar,talangan_modal,lainnya',
+            'debt_creditor_name' => 'required|string|max:255',
+            'debt_creditor_phone' => 'nullable|string|max:50',
+            'debt_project_id' => 'nullable|exists:projects,id',
+            'debt_title' => 'required|string|max:255',
+            'debt_amount' => 'required|numeric|min:1000',
+            'debt_date' => 'required|date',
+            'debt_due_date' => 'nullable|date',
+            'debt_notes' => 'nullable|string',
+            'debt_attachment' => 'nullable|file|mimes:jpg,jpeg,png,webp,heic,heif,pdf|max:5120',
+        ]);
+
+        $attachmentPath = null;
+        if ($this->debt_attachment) {
+            $attachmentPath = \App\Services\ImageCompressor::compressAndStore($this->debt_attachment, 'debt-attachments');
+        }
+
+        $debt = CompanyDebt::create([
+            'creditor_type' => $this->debt_creditor_type,
+            'creditor_name' => $this->debt_creditor_name,
+            'creditor_phone' => $this->debt_creditor_phone ?: null,
+            'project_id' => $this->debt_project_id ? (int)$this->debt_project_id : null,
+            'title' => $this->debt_title,
+            'amount' => $this->debt_amount,
+            'paid_amount' => 0,
+            'debt_date' => $this->debt_date,
+            'due_date' => $this->debt_due_date ?: null,
+            'status' => 'belum_lunas',
+            'notes' => $this->debt_notes,
+            'attachment_path' => $attachmentPath,
+            'created_by' => $user->id,
+        ]);
+
+        \App\Services\ActivityLogger::log(
+            'COMPANY_DEBT_CREATED',
+            "User {$user->name} mencatat utang baru kepada {$debt->creditor_type_label} '{$debt->creditor_name}' ({$debt->title}) sebesar Rp " . number_format($debt->amount, 0, ',', '.')
+        );
+
+        $this->showCreateDebtModal = false;
+        $msg = "Catatan utang ke '{$debt->creditor_name}' berhasil disimpan!";
+        session()->flash('success', $msg);
+        $this->dispatch('notify', ['type' => 'success', 'title' => 'Utang Dicatat!', 'message' => $msg]);
+    }
+
+    public function openPayDebtModal(int $debtId): void
+    {
+        $user = auth()->user();
+        if (!$user || (!$user->isAdminOrFounder() && !$user->isFinance())) {
+            session()->flash('error', 'Hanya Founder dan Tim Finance yang berhak memproses pembayaran utang.');
+            return;
+        }
+
+        $debt = CompanyDebt::with(['payments'])->findOrFail($debtId);
+        $remaining = max(0, (float)$debt->amount - (float)$debt->paid_amount);
+
+        $this->settlingDebtId = $debt->id;
+        $this->pay_debt_amount = $remaining;
+        $this->pay_debt_date = now()->toDateString();
+        $this->pay_debt_method = 'Transfer Bank';
+        $this->pay_debt_notes = "Pembayaran utang kepada {$debt->creditor_name} - {$debt->title}";
+        $this->pay_debt_photo = null;
+        $this->showPayDebtModal = true;
+    }
+
+    public function processDebtPayment(): void
+    {
+        if (!$this->settlingDebtId) {
+            return;
+        }
+
+        $user = auth()->user();
+        if (!$user || (!$user->isAdminOrFounder() && !$user->isFinance())) {
+            session()->flash('error', 'Hanya Founder dan Tim Finance yang berhak memproses pembayaran utang.');
+            return;
+        }
+
+        $this->validate([
+            'pay_debt_amount' => 'required|numeric|min:1000',
+            'pay_debt_date' => 'required|date',
+            'pay_debt_method' => 'required|string',
+            'pay_debt_notes' => 'nullable|string',
+            'pay_debt_photo' => 'nullable|file|mimes:jpg,jpeg,png,webp,heic,heif,pdf|max:5120',
+        ]);
+
+        $debt = CompanyDebt::findOrFail($this->settlingDebtId);
+
+        $photoPath = null;
+        if ($this->pay_debt_photo) {
+            $photoPath = \App\Services\ImageCompressor::compressAndStore($this->pay_debt_photo, 'debt-receipts');
+        }
+
+        DB::transaction(function () use ($debt, $photoPath, $user) {
+            $payment = CompanyDebtPayment::create([
+                'company_debt_id' => $debt->id,
+                'payment_date' => $this->pay_debt_date,
+                'amount' => $this->pay_debt_amount,
+                'payment_method' => $this->pay_debt_method,
+                'notes' => $this->pay_debt_notes,
+                'receipt_photo_path' => $photoPath,
+                'created_by' => $user->id,
+            ]);
+
+            $newPaid = (float)$debt->paid_amount + (float)$this->pay_debt_amount;
+            $newStatus = ($newPaid >= (float)$debt->amount) ? 'lunas' : 'belum_lunas';
+
+            $debt->update([
+                'paid_amount' => $newPaid,
+                'status' => $newStatus,
+            ]);
+
+            // KAS KELUAR ke Arus Kas Global saat utang dibayarkan!
+            $category = match ($debt->creditor_type) {
+                'subkon' => 'subkon',
+                'operasional_luar' => 'operasional',
+                default => 'lain_lain',
+            };
+
+            $description = "Pembayaran Utang ({$debt->creditor_name}): {$debt->title} - Rp " . number_format($this->pay_debt_amount, 0, ',', '.');
+
+            CashflowTransaction::create([
+                'project_id' => $debt->project_id, // Null jika di luar proyek (Kas Keluar Global)
+                'type' => 'keluar',
+                'category' => $category,
+                'amount' => $this->pay_debt_amount,
+                'transaction_date' => $this->pay_debt_date,
+                'description' => $description,
+                'reference_type' => CompanyDebtPayment::class,
+                'reference_id' => $payment->id,
+                'receipt_photo_path' => $photoPath,
+                'created_by' => $user->id,
+            ]);
+        });
+
+        \App\Services\ActivityLogger::log(
+            'DEBT_PAYMENT_RECORDED',
+            "User {$user->name} mencatat pembayaran utang ke '{$debt->creditor_name}' ({$debt->title}) sebesar Rp " . number_format($this->pay_debt_amount, 0, ',', '.') . " & tercatat di Arus Kas Keluar."
+        );
+
+        $this->showPayDebtModal = false;
+        $this->settlingDebtId = null;
+
+        $msg = "Pembayaran utang ke '{$debt->creditor_name}' sebesar Rp " . number_format($this->pay_debt_amount, 0, ',', '.') . " berhasil dicatat ke Arus Kas Keluar!";
+        session()->flash('success', $msg);
+        $this->dispatch('notify', ['type' => 'success', 'title' => 'Pembayaran Dicatat!', 'message' => $msg]);
+    }
+
+    public function deleteDebt(int $id): void
+    {
+        $user = auth()->user();
+        if (!$user->isSuperAdmin()) {
+            session()->flash('error', 'Hanya Founder dan Super Admin yang berhak menghapus catatan utang.');
+            return;
+        }
+
+        $debt = CompanyDebt::findOrFail($id);
+        DB::transaction(function () use ($debt) {
+            foreach ($debt->payments as $p) {
+                CashflowTransaction::where('reference_type', CompanyDebtPayment::class)
+                    ->where('reference_id', $p->id)
+                    ->delete();
+                $p->delete();
+            }
+            $debt->delete();
+        });
+
+        session()->flash('success', 'Catatan utang berhasil dihapus.');
+        $this->dispatch('notify', ['type' => 'success', 'title' => 'Dihapus!', 'message' => 'Catatan utang berhasil dihapus.']);
+    }
+
     // --- FOUNDER & SUPERVISOR DELETION METHODS ---
     public function deleteMaterialPurchase(int $id): void
     {
@@ -1070,8 +1297,46 @@ class Index extends Component
             ->selectRaw('SUM(amount - paid_amount) as total_unpaid')
             ->value('total_unpaid') ?? 0;
 
-        // TOTAL HUTANG PERUSAHAAN = Toko + Upah Worker + Komisi Penjual
-        $totalCompanyPayables = $totalUnpaidMaterialBills + $totalUnpaidWorkerWages + $totalUnpaidCommissions;
+        // 5. Company Debts Query (Tab 6 - Utang Sub-kon, Vendor & Luar Proyek)
+        $debtQuery = CompanyDebt::with(['project', 'creator', 'payments']);
+
+        if ($this->filter_project_id) {
+            $debtQuery->where('project_id', $this->filter_project_id);
+        }
+
+        if ($this->filter_status === 'belum_lunas') {
+            $debtQuery->where('status', 'belum_lunas');
+        } elseif ($this->filter_status === 'lunas') {
+            $debtQuery->where('status', 'lunas');
+        }
+
+        if (trim($this->search) !== '') {
+            $s = '%' . trim($this->search) . '%';
+            $debtQuery->where(function ($q) use ($s) {
+                $q->where('creditor_name', 'like', $s)
+                    ->orWhere('title', 'like', $s)
+                    ->orWhere('notes', 'like', $s);
+            });
+        }
+
+        if ($this->datePeriod !== 'all') {
+            $this->applyDatePeriodFilter($debtQuery, 'debt_date');
+        }
+
+        $companyDebts = (clone $debtQuery)->latest('debt_date')->paginate(10, ['*'], 'debt_page');
+
+        // Total Unpaid Company Debts KPI
+        $totalUnpaidCompanyDebts = CompanyDebt::where('status', 'belum_lunas')
+            ->when($this->filter_project_id, fn($q) => $q->where('project_id', $this->filter_project_id))
+            ->selectRaw('SUM(amount - paid_amount) as total_unpaid')
+            ->value('total_unpaid') ?? 0;
+
+        $totalUnpaidCompanyDebtsCount = CompanyDebt::where('status', 'belum_lunas')
+            ->when($this->filter_project_id, fn($q) => $q->where('project_id', $this->filter_project_id))
+            ->count();
+
+        // TOTAL HUTANG PERUSAHAAN = Toko + Upah Worker + Komisi Penjual + Utang Sub-kon/Vendor/Luar Proyek
+        $totalCompanyPayables = $totalUnpaidMaterialBills + $totalUnpaidWorkerWages + $totalUnpaidCommissions + $totalUnpaidCompanyDebts;
 
         // 5. Global Settled History Collection (Tab 5: Riwayat Lunas Global)
         $settledHistory = collect();
@@ -1159,6 +1424,28 @@ class Index extends Component
             ]);
         }
 
+        // Company Debt Payments (Cicilan/Pelunasan Utang Sub-kon & Vendor Terbayar)
+        $debtPayments = CompanyDebtPayment::with(['debt.project', 'creator'])
+            ->when($this->filter_project_id, fn($q) => $q->whereHas('debt', fn($dq) => $dq->where('project_id', $this->filter_project_id)))
+            ->get();
+
+        foreach ($debtPayments as $dp) {
+            $projName = $dp->debt->project ? 'Proyek ' . $dp->debt->project->name : 'Di Luar Proyek';
+            $settledHistory->push((object)[
+                'id' => $dp->id,
+                'category_type' => 'company_debt',
+                'category_name' => 'Utang Sub-kon / Vendor / Luar Proyek',
+                'badge_class' => 'bg-rose-100 text-rose-800 border-rose-200',
+                'title' => 'Bayar Utang ' . ($dp->debt->creditor_name ?? 'Kreditur') . ' (' . ($dp->debt->title ?? '-') . ')',
+                'sub_info' => $projName . ' • ' . ($dp->debt->creditor_type_label ?? 'Utang') . ' • Method: ' . $dp->payment_method,
+                'date' => $dp->payment_date,
+                'amount' => (float)$dp->amount,
+                'status_label' => 'KAS KELUAR TERBAYAR',
+                'notes' => $dp->notes,
+                'model' => $dp,
+            ]);
+        }
+
         // Search filter for Settled History
         if (trim($this->search) !== '') {
             $term = strtolower(trim($this->search));
@@ -1236,6 +1523,7 @@ class Index extends Component
             'workerPayrolls' => $workerPayrolls,
             'unitCommissions' => $unitCommissions,
             'companyReceivables' => $companyReceivables,
+            'companyDebts' => $companyDebts,
             'settledHistory' => $paginatedSettledHistory,
             'projects' => $projects,
             'allUsers' => $allUsers,
@@ -1245,6 +1533,8 @@ class Index extends Component
             'totalUnpaidMaterialBills' => $totalUnpaidMaterialBills,
             'totalUnpaidWorkerWages' => $totalUnpaidWorkerWages,
             'totalUnpaidCommissions' => $totalUnpaidCommissions,
+            'totalUnpaidCompanyDebts' => $totalUnpaidCompanyDebts,
+            'totalUnpaidCompanyDebtsCount' => $totalUnpaidCompanyDebtsCount,
             'totalCompanyPayables' => $totalCompanyPayables,
             'totalCompanyReceivables' => $totalCompanyReceivables,
             'showCreateBillModal' => $this->showCreateBillModal,

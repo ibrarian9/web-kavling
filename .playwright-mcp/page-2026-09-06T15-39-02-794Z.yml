@@ -1,0 +1,224 @@
+- generic [ref=f20e2]:
+  - complementary [ref=f20e3]:
+    - generic [ref=f20e4]:
+      - link "A ATLANTIK PERKASA SIM Proyek Kavling" [ref=f20e5] [cursor=pointer]:
+        - /url: http://127.0.0.1:8001/dashboard
+        - generic [ref=f20e6]: A
+        - generic [ref=f20e7]:
+          - heading "ATLANTIK PERKASA" [level=2] [ref=f20e8]
+          - paragraph [ref=f20e9]: SIM Proyek Kavling
+      - button "Ciutkan Sidebar (Mode Mini)" [ref=f20e10]
+    - navigation [ref=f20e13]:
+      - generic [ref=f20e14]:
+        - generic [ref=f20e15]:
+          - generic [ref=f20e16]: Navigasi Utama
+          - link "Dashboard" [ref=f20e19] [cursor=pointer]:
+            - /url: http://127.0.0.1:8001/dashboard
+          - link "Tutorial System" [ref=f20e25] [cursor=pointer]:
+            - /url: http://127.0.0.1:8001/tutorial
+        - generic [ref=f20e31]:
+          - button "Master Properti" [ref=f20e32]
+          - generic [ref=f20e38]:
+            - link "Proyek Properti" [ref=f20e39] [cursor=pointer]:
+              - /url: http://127.0.0.1:8001/projects
+            - link "Unit Kavling & Rumah" [ref=f20e45] [cursor=pointer]:
+              - /url: http://127.0.0.1:8001/units
+            - link "Proyek Luar" [ref=f20e51] [cursor=pointer]:
+              - /url: http://127.0.0.1:8001/external-projects
+            - link "Input Penjualan Lalu" [ref=f20e57] [cursor=pointer]:
+              - /url: http://127.0.0.1:8001/units/legacy-sale
+        - generic [ref=f20e63]:
+          - button "Pekerja Lapangan" [ref=f20e64]
+          - generic [ref=f20e70]:
+            - link "Mandor & Tukang" [ref=f20e71] [cursor=pointer]:
+              - /url: http://127.0.0.1:8001/workers
+            - link "Belanja & Upah" [ref=f20e77] [cursor=pointer]:
+              - /url: http://127.0.0.1:8001/field-expenses
+        - generic [ref=f20e83]:
+          - button "Penjualan & Legalitas" [ref=f20e84]
+          - generic [ref=f20e90]:
+            - link "Daily Activity Report" [ref=f20e91] [cursor=pointer]:
+              - /url: http://127.0.0.1:8001/daily-activity-reports
+            - link "Pengajuan & Approval" [ref=f20e97] [cursor=pointer]:
+              - /url: http://127.0.0.1:8001/proposals
+            - link "Surat Resmi SPP (PDF)" [ref=f20e103] [cursor=pointer]:
+              - /url: http://127.0.0.1:8001/documents
+        - generic [ref=f20e109]:
+          - button "Keuangan & Arus Kas" [ref=f20e110]
+          - generic [ref=f20e116]:
+            - link "Booking Fee & DP" [ref=f20e117] [cursor=pointer]:
+              - /url: http://127.0.0.1:8001/bookings
+            - link "Cicilan & Piutang" [ref=f20e123] [cursor=pointer]:
+              - /url: http://127.0.0.1:8001/installments
+            - link "Arus Kas Global" [ref=f20e129] [cursor=pointer]:
+              - /url: http://127.0.0.1:8001/cashflow
+            - link "Hutang & Piutang" [ref=f20e135] [cursor=pointer]:
+              - /url: http://127.0.0.1:8001/payables
+            - link "Invoice Manual" [ref=f20e142] [cursor=pointer]:
+              - /url: http://127.0.0.1:8001/manual-invoices
+            - link "Penggajian Karyawan" [ref=f20e148] [cursor=pointer]:
+              - /url: http://127.0.0.1:8001/employee-salaries
+        - generic [ref=f20e154]:
+          - button "Administrasi Sistem" [ref=f20e155]
+          - generic [ref=f20e161]:
+            - link "Profil" [ref=f20e162] [cursor=pointer]:
+              - /url: http://127.0.0.1:8001/profile
+            - link "Manajemen User" [ref=f20e168] [cursor=pointer]:
+              - /url: http://127.0.0.1:8001/users
+            - link "Audit Log & Sistem" [ref=f20e174] [cursor=pointer]:
+              - /url: http://127.0.0.1:8001/activity-logs
+    - generic [ref=f20e180]:
+      - generic [ref=f20e181]:
+        - generic [ref=f20e182]:
+          - paragraph [ref=f20e183]: Pengguna
+          - paragraph [ref=f20e184]: Marwansyah
+        - generic [ref=f20e185]: FOUNDER
+      - button "Keluar dari Sistem" [ref=f20e188]
+  - generic [ref=f20e192]:
+    - banner [ref=f20e193]:
+      - generic [ref=f20e194]:
+        - button "Ciutkan Sidebar (Mode Mini)" [ref=f20e195]
+        - heading "Hutang & Piutang Perusahaan" [level=1] [ref=f20e198]
+      - generic [ref=f20e199]:
+        - button "Cari... Ctrl K" [ref=f20e201]:
+          - generic [ref=f20e202]: Cari...
+          - generic [ref=f20e206]: Ctrl K
+        - generic [ref=f20e207]:
+          - paragraph [ref=f20e208]: Marwansyah
+          - paragraph [ref=f20e209]: marwansyah@simatlantik.my.id
+        - generic [ref=f20e210]: Founder
+    - main [ref=f20e211]:
+      - generic [ref=f20e212]:
+        - generic [ref=f20e214]:
+          - generic [ref=f20e215]:
+            - generic [ref=f20e216]: Modul Keuangan Terpadu
+            - heading "Hutang & Piutang Perusahaan" [level=1] [ref=f20e220]
+            - paragraph [ref=f20e221]: Pusat pemantauan hutang toko material, sisa upah tukang, komisi marketing, utang sub-kon & vendor luar proyek, serta piutang kasbon staf yang terintegrasi langsung dengan Arus Kas Global.
+          - generic [ref=f20e222]:
+            - generic [ref=f20e223]:
+              - generic [ref=f20e224]: Hutang Perusahaan
+              - generic [ref=f20e227]: Rp 78.200.000
+              - paragraph [ref=f20e228]: Toko + Upah + Komisi + Sub-kon/Vendor
+            - generic [ref=f20e229]:
+              - generic [ref=f20e230]: Piutang / Kasbon Staf
+              - generic [ref=f20e233]: Rp 3.000.000
+              - paragraph [ref=f20e234]: Kasbon Mandor, Tukang, & Marketing
+        - generic [ref=f20e235]:
+          - generic [ref=f20e236]:
+            - generic [ref=f20e237]:
+              - button "Toko Material 4" [ref=f20e238]:
+                - generic [ref=f20e241]: Toko Material
+                - generic [ref=f20e242]: "4"
+              - button "Upah Pekerja 4" [active] [ref=f20e243]:
+                - generic [ref=f20e246]: Upah Pekerja
+                - generic [ref=f20e247]: "4"
+              - button "Komisi Penjual 3" [ref=f20e248]:
+                - generic [ref=f20e251]: Komisi Penjual
+                - generic [ref=f20e252]: "3"
+              - button "Sub-kon & Vendor 2" [ref=f20e253]:
+                - generic [ref=f20e256]: Sub-kon & Vendor
+                - generic [ref=f20e257]: "2"
+              - button "Piutang Staf 4" [ref=f20e259]:
+                - generic [ref=f20e262]: Piutang Staf
+                - generic [ref=f20e263]: "4"
+              - button "Riwayat Lunas" [ref=f20e265]
+            - generic [ref=f20e269]:
+              - textbox "Cari data catatan..." [ref=f20e272]
+              - combobox [ref=f20e276] [cursor=pointer]:
+                - option "Semua Periode Tanggal" [selected]
+                - option "Hari Ini (Today)"
+                - option "Kemarin (Yesterday)"
+                - option "Minggu Ini (This Week)"
+                - option "Bulan Ini (This Month)"
+                - option "Bulan Lalu (Last Month)"
+                - option "Tahun Ini (This Year)"
+                - option "Rentang Tanggal Custom..."
+              - combobox [ref=f20e761] [cursor=pointer]:
+                - option "Semua Proyek" [selected]
+                - option "apa kek"
+                - option "Cluster Mutiara Tenayan City"
+                - option "Cluster Permata Arifin Ahmad"
+                - option "Grand Kavling Panam Residence"
+                - option "Griya Asri Payung Sekaki"
+                - option "Kavling Graha Rumbai Asri"
+              - combobox [ref=f20e762] [cursor=pointer]:
+                - option "Belum Lunas" [selected]
+                - option "Sudah Lunas"
+                - option "Semua Status"
+          - generic [ref=f20e763]:
+            - generic [ref=f20e764]:
+              - heading "Daftar Sisa Upah Terutang Pekerja Lapangan (4 Kontrak)" [level=3] [ref=f20e765]:
+                - generic [ref=f20e766]: Daftar Sisa Upah Terutang Pekerja Lapangan
+                - generic [ref=f20e767]: (4 Kontrak)
+              - generic [ref=f20e768]: "Subtotal Sisa Upah Worker: Rp 32.000.000"
+            - table [ref=f20e771]:
+              - rowgroup [ref=f20e772]:
+                - row [ref=f20e773]:
+                  - columnheader "Nama Pekerja / Tukang" [ref=f20e774]
+                  - columnheader "Proyek & Unit" [ref=f20e775]
+                  - columnheader "Uraian Pekerjaan" [ref=f20e776]
+                  - columnheader "Total Kontrak" [ref=f20e777]
+                  - columnheader "Sudah Dibayar" [ref=f20e778]
+                  - columnheader "Sisa Terutang" [ref=f20e779]
+                  - columnheader "Aksi" [ref=f20e780]
+              - rowgroup [ref=f20e781]:
+                - row [ref=f20e782]:
+                  - cell "Mandor Sugeng Riau mandor" [ref=f20e783]:
+                    - text: Mandor Sugeng Riau
+                    - generic [ref=f20e784]: mandor
+                  - 'cell "Grand Kavling Panam Residence Unit: A-01" [ref=f20e785]':
+                    - generic [ref=f20e786]: Grand Kavling Panam Residence
+                    - text: "Unit: A-01"
+                  - cell "Pekerjaan Sloof, Kolom & Pondasi Blok A1" [ref=f20e787]
+                  - cell "Rp 15.000.000" [ref=f20e788]
+                  - cell "Rp 10.000.000" [ref=f20e789]
+                  - cell "Rp 5.000.000" [ref=f20e790]
+                  - cell [ref=f20e791]:
+                    - generic [ref=f20e792]:
+                      - button "Bayar Upah" [ref=f20e793]
+                      - button "Hapus" [ref=f20e797]
+                - row [ref=f20e801]:
+                  - cell "Tukang Bejo Panam tukang" [ref=f20e802]:
+                    - text: Tukang Bejo Panam
+                    - generic [ref=f20e803]: tukang
+                  - 'cell "apa kek Unit: PARIT" [ref=f20e804]':
+                    - generic [ref=f20e805]: apa kek
+                    - text: "Unit: PARIT"
+                  - cell "Pekerjaan Borongan Unit" [ref=f20e806]
+                  - cell "Rp 20.000.000" [ref=f20e807]
+                  - cell "Rp 0" [ref=f20e808]
+                  - cell "Rp 20.000.000" [ref=f20e809]
+                  - cell [ref=f20e810]:
+                    - generic [ref=f20e811]:
+                      - button "Bayar Upah" [ref=f20e812]
+                      - button "Hapus" [ref=f20e816]
+                - row [ref=f20e820]:
+                  - cell "Mandor Sugeng Riau mandor" [ref=f20e821]:
+                    - text: Mandor Sugeng Riau
+                    - generic [ref=f20e822]: mandor
+                  - 'cell "Cluster Mutiara Tenayan City Unit: E-05" [ref=f20e823]':
+                    - generic [ref=f20e824]: Cluster Mutiara Tenayan City
+                    - text: "Unit: E-05"
+                  - cell "Pekerjaan Borongan Unit" [ref=f20e825]
+                  - cell "Rp 2.000.000" [ref=f20e826]
+                  - cell "Rp 0" [ref=f20e827]
+                  - cell "Rp 2.000.000" [ref=f20e828]
+                  - cell [ref=f20e829]:
+                    - generic [ref=f20e830]:
+                      - button "Bayar Upah" [ref=f20e831]
+                      - button "Hapus" [ref=f20e835]
+                - row [ref=f20e839]:
+                  - cell "Mandor Sugeng Riau mandor" [ref=f20e840]:
+                    - text: Mandor Sugeng Riau
+                    - generic [ref=f20e841]: mandor
+                  - 'cell "Grand Kavling Panam Residence Unit: A-01" [ref=f20e842]':
+                    - generic [ref=f20e843]: Grand Kavling Panam Residence
+                    - text: "Unit: A-01"
+                  - cell "Pekerjaan Sloof, Kolom & Pondasi Blok A1" [ref=f20e844]
+                  - cell "Rp 15.000.000" [ref=f20e845]
+                  - cell "Rp 10.000.000" [ref=f20e846]
+                  - cell "Rp 5.000.000" [ref=f20e847]
+                  - cell [ref=f20e848]:
+                    - generic [ref=f20e849]:
+                      - button "Bayar Upah" [ref=f20e850]
+                      - button "Hapus" [ref=f20e854]

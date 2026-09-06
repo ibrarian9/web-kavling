@@ -1,0 +1,17 @@
+- generic [ref=e2]:
+  - generic [ref=e3]:
+    - heading "Sistem Informasi Manajemen Proyek Properti" [level=1] [ref=e7]
+    - heading "PT. Atlantik Perkasa Abadi" [level=1] [ref=e8]
+  - generic [ref=e10]:
+    - generic [ref=e11]:
+      - generic [ref=e12]: Email
+      - textbox "Email" [ref=e13]:
+        - /placeholder: email@kavling.com
+    - generic [ref=e14]:
+      - generic [ref=e15]: Password
+      - generic [ref=e16]:
+        - textbox "Password" [ref=e17]:
+          - /placeholder: ••••••••
+        - button "Tampilkan / Sembunyikan Password" [ref=e18]
+    - button "Masuk ke Dashboard" [ref=e22]
+  - paragraph [ref=e26]: Internal Application © 2026 Manajemen Proyek Properti
