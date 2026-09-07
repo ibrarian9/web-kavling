@@ -24,7 +24,9 @@
             </h2>
 
             <p class="text-slate-300 text-xs sm:text-sm max-w-3xl leading-relaxed">
-                @if($user->isAdmin() || $user->isPengawasProject())
+                @if($user->isAdmin())
+                    Akses Operasional: Pemantauan data proyek perumahan, ketersediaan stok fisik unit kavling & rumah, dan penugasan mandor & tukang.
+                @elseif($user->isPengawasProject())
                     Akses Operasional & Lapangan: Pemantauan data proyek perumahan, ketersediaan stok fisik unit, penugasan mandor & tukang, serta pencatatan belanja material.
                 @elseif($user->isFounder())
                     Akses Executive Founder: Pemantauan arus kas global, rincian ketersediaan unit kavling, dan persetujuan pengajuan harga.
@@ -48,10 +50,12 @@
                         <svg class="w-3.5 h-3.5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
                         <span>Mandor & Tukang</span>
                     </a>
-                    <a href="{{ route('field-expenses.index') }}" wire:navigate.hover class="px-3.5 py-1.5 bg-emerald-600/90 hover:bg-emerald-600 text-white font-bold rounded-xl text-xs shadow-sm transition flex items-center gap-1.5">
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                        <span>Belanja Material</span>
-                    </a>
+                    @if(!$user->isAdmin())
+                        <a href="{{ route('field-expenses.index') }}" wire:navigate.hover class="px-3.5 py-1.5 bg-emerald-600/90 hover:bg-emerald-600 text-white font-bold rounded-xl text-xs shadow-sm transition flex items-center gap-1.5">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            <span>Belanja Material</span>
+                        </a>
+                    @endif
                 @elseif($user->isFounder() || $user->isFinance())
                     <a href="{{ route('cashflow.index') }}" wire:navigate.hover class="px-3.5 py-1.5 bg-emerald-600/90 hover:bg-emerald-600 text-white font-bold rounded-xl text-xs shadow-sm transition flex items-center gap-1.5">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
@@ -173,8 +177,26 @@
             </div>
         @endif
 
-        <!-- Stat Card 4: Belanja Material Bulan Ini (Admin / Pengawas) vs Saldo Kas (Founder/Finance) vs Daily Activity (Marketing) -->
-        @if($user->isAdmin() || $user->isPengawasProject())
+        {{-- Stat Card 4: Total Nilai Unit (Admin) vs Belanja Material (Pengawas) vs Saldo Kas (Founder/Finance) vs Daily Activity (Marketing) --}}
+        @if($user->isAdmin())
+            <div class="kpi-card-dark p-4 sm:p-5 flex flex-col justify-between min-w-0 shadow-2xs rounded-2xl">
+                <div class="flex items-start justify-between gap-1">
+                    <span class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-400 leading-snug">Total Nilai Unit</span>
+                    <div class="p-1.5 sm:p-2 rounded-xl bg-slate-800 text-emerald-400 border border-slate-700 shadow-2xs shrink-0">
+                        <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    </div>
+                </div>
+                <div class="mt-3 min-w-0">
+                    <p class="text-base sm:text-xl xl:text-2xl font-black text-emerald-400 font-mono tracking-tight truncate whitespace-nowrap" title="Rp {{ number_format($totalUnitsSellingPrice ?? 0, 0, ',', '.') }}">
+                        Rp {{ number_format($totalUnitsSellingPrice ?? 0, 0, ',', '.') }}
+                    </p>
+                    <p class="text-[10px] sm:text-[11px] text-slate-400 mt-1 flex items-center gap-1 truncate">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0"></span>
+                        <span class="truncate">Harga jual unit & kavling</span>
+                    </p>
+                </div>
+            </div>
+        @elseif($user->isPengawasProject())
             <div class="kpi-card-dark p-4 sm:p-5 flex flex-col justify-between min-w-0 shadow-2xs rounded-2xl">
                 <div class="flex items-start justify-between gap-1">
                     <span class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-400 leading-snug">Belanja Material</span>
@@ -321,8 +343,8 @@
                 </a>
             @endif
 
-            <!-- Shortcut 5: Belanja Material (Admin / Pengawas) vs Daily Activity (Marketing) vs Mandor (Founder/Finance) -->
-            @if($user->isAdmin() || $user->isPengawasProject())
+            {{-- Shortcut 5: Belanja Material (Pengawas) vs Daily Activity (Admin/Marketing) vs Mandor (Founder/Finance) --}}
+            @if($user->isPengawasProject())
                 <a href="{{ route('field-expenses.index') }}" wire:navigate.hover class="p-3.5 rounded-2xl border border-slate-200/80 hover:border-emerald-300 hover:bg-emerald-50/40 transition-all duration-150 text-left group flex flex-col justify-between shadow-2xs">
                     <div class="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center mb-2 group-hover:scale-110 transition">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
@@ -332,7 +354,7 @@
                         <p class="text-[10px] text-slate-500 mt-0.5">Log belanja lapangan</p>
                     </div>
                 </a>
-            @elseif($user->isMarketing())
+            @elseif($user->isAdmin() || $user->isMarketing())
                 <a href="{{ route('daily-activity-reports.index') }}" wire:navigate.hover class="p-3.5 rounded-2xl border border-slate-200/80 hover:border-teal-300 hover:bg-teal-50/40 transition-all duration-150 text-left group flex flex-col justify-between shadow-2xs">
                     <div class="w-8 h-8 rounded-xl bg-teal-100 text-teal-700 flex items-center justify-center mb-2 group-hover:scale-110 transition">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
@@ -379,8 +401,8 @@
         </div>
     </div>
 
-    <!-- Informasi Penetapan Gaji Karyawan dari Founder (Khusus Karyawan / Non-Founder) -->
-    @if(!$user->isFounder())
+    <!-- Informasi Penetapan Gaji Karyawan dari Founder (Khusus Karyawan / Non-Founder, Non-Admin) -->
+    @if(!$user->isFounder() && !$user->isAdmin())
         <div class="card-clean p-5 sm:p-6 border border-slate-200/90 shadow-2xs relative overflow-hidden bg-gradient-to-br from-white via-slate-50/40 to-emerald-50/20">
             <!-- Header Section -->
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
@@ -572,52 +594,100 @@
                 </div>
             </div>
 
-            <!-- Table 2 (Admin/Pengawas): Log Belanja Material Lapangan Terbaru -->
-            <div class="card-clean overflow-hidden flex flex-col justify-between">
-                <div>
-                    <div class="p-4 border-b border-slate-100 flex items-center justify-between">
-                        <h3 class="text-xs font-extrabold text-slate-900 uppercase tracking-wider">Aktivitas Belanja Material Terbaru</h3>
-                        <a href="{{ route('field-expenses.index') }}" wire:navigate.hover class="text-xs text-emerald-700 font-bold hover:underline">Lihat Log &rarr;</a>
-                    </div>
+            @if($user->isAdmin())
+                <!-- Table 2 (Admin): Ringkasan Harga Jual Unit & Kavling Terbaru -->
+                <div class="card-clean overflow-hidden flex flex-col justify-between">
+                    <div>
+                        <div class="p-4 border-b border-slate-100 flex items-center justify-between">
+                            <h3 class="text-xs font-extrabold text-slate-900 uppercase tracking-wider">Harga Total Jual Unit & Kavling</h3>
+                            <a href="{{ route('units.index') }}" wire:navigate.hover class="text-xs text-emerald-700 font-bold hover:underline">Lihat Semua &rarr;</a>
+                        </div>
 
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left text-xs">
-                            <thead class="bg-slate-50/80 text-slate-500 uppercase text-[10px] font-bold tracking-wider border-b border-slate-100">
-                                <tr>
-                                    <th class="py-3 px-4 whitespace-nowrap">Tanggal</th>
-                                    <th class="py-3 px-4">Proyek & Unit</th>
-                                    <th class="py-3 px-4">Barang / Toko</th>
-                                    <th class="py-3 px-4 text-right whitespace-nowrap">Total Belanja</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-slate-100">
-                                @forelse($recentMaterialPurchases as $mat)
-                                    <tr class="hover:bg-slate-50/60 transition">
-                                        <td class="py-3.5 px-4 font-mono text-slate-600 text-xs whitespace-nowrap">
-                                            {{ format_id_date($mat->purchase_date) }}
-                                        </td>
-                                        <td class="py-3.5 px-4 font-extrabold text-slate-800">
-                                            <span>{{ $mat->unit?->project?->name ?? $mat->project?->name ?? 'Proyek' }}</span>
-                                            <span class="text-[10px] text-slate-500 font-mono block">Unit {{ $mat->unit?->code ?? '-' }}</span>
-                                        </td>
-                                        <td class="py-3.5 px-4 text-slate-700 text-xs">
-                                            <p class="font-bold text-slate-800">{{ $mat->item_name }}</p>
-                                            <p class="text-[10px] text-amber-700">{{ $mat->store_name ?: '-' }}</p>
-                                        </td>
-                                        <td class="py-3.5 px-4 font-mono font-extrabold text-emerald-700 text-right whitespace-nowrap">
-                                            Rp {{ number_format($mat->total_price, 0, ',', '.') }}
-                                        </td>
-                                    </tr>
-                                @empty
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-xs">
+                                <thead class="bg-slate-50/80 text-slate-500 uppercase text-[10px] font-bold tracking-wider border-b border-slate-100">
                                     <tr>
-                                        <td colspan="4" class="py-8 text-center text-slate-400 italic">Belum ada catatan belanja material.</td>
+                                        <th class="py-3 px-4 whitespace-nowrap">Kode Unit</th>
+                                        <th class="py-3 px-4">Proyek</th>
+                                        <th class="py-3 px-4 text-right whitespace-nowrap">Harga Total Jual</th>
+                                        <th class="py-3 px-4 text-center whitespace-nowrap">Status</th>
                                     </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody class="divide-y divide-slate-100">
+                                    @forelse($recentUnits as $unit)
+                                        <tr class="hover:bg-slate-50/60 transition">
+                                            <td class="py-3.5 px-4 font-extrabold text-slate-800 whitespace-nowrap">
+                                                <a href="{{ route('units.show', $unit->id) }}" wire:navigate.hover class="hover:text-emerald-600 transition font-mono">
+                                                    Unit {{ $unit->code }}
+                                                </a>
+                                                <span class="text-[10px] font-semibold text-slate-500 uppercase block">({{ $unit->category ?? $unit->type }})</span>
+                                            </td>
+                                            <td class="py-3.5 px-4 text-slate-600 font-medium">{{ $unit->project?->name ?? 'Proyek' }}</td>
+                                            <td class="py-3.5 px-4 font-mono font-extrabold text-emerald-700 text-right whitespace-nowrap">
+                                                Rp {{ number_format($unit->total_price, 0, ',', '.') }}
+                                            </td>
+                                            <td class="py-3.5 px-4 text-center whitespace-nowrap">
+                                                <x-status-badge :status="$unit->status" />
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="4" class="py-8 text-center text-slate-400 italic">Belum ada unit kavling tercatat.</td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
-            </div>
+            @else
+                <!-- Table 2 (Pengawas): Log Belanja Material Lapangan Terbaru -->
+                <div class="card-clean overflow-hidden flex flex-col justify-between">
+                    <div>
+                        <div class="p-4 border-b border-slate-100 flex items-center justify-between">
+                            <h3 class="text-xs font-extrabold text-slate-900 uppercase tracking-wider">Aktivitas Belanja Material Terbaru</h3>
+                            <a href="{{ route('field-expenses.index') }}" wire:navigate.hover class="text-xs text-emerald-700 font-bold hover:underline">Lihat Log &rarr;</a>
+                        </div>
+
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-xs">
+                                <thead class="bg-slate-50/80 text-slate-500 uppercase text-[10px] font-bold tracking-wider border-b border-slate-100">
+                                    <tr>
+                                        <th class="py-3 px-4 whitespace-nowrap">Tanggal</th>
+                                        <th class="py-3 px-4">Proyek & Unit</th>
+                                        <th class="py-3 px-4">Barang / Toko</th>
+                                        <th class="py-3 px-4 text-right whitespace-nowrap">Total Belanja</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-100">
+                                    @forelse($recentMaterialPurchases as $mat)
+                                        <tr class="hover:bg-slate-50/60 transition">
+                                            <td class="py-3.5 px-4 font-mono text-slate-600 text-xs whitespace-nowrap">
+                                                {{ format_id_date($mat->purchase_date) }}
+                                            </td>
+                                            <td class="py-3.5 px-4 font-extrabold text-slate-800">
+                                                <span>{{ $mat->unit?->project?->name ?? $mat->project?->name ?? 'Proyek' }}</span>
+                                                <span class="text-[10px] text-slate-500 font-mono block">Unit {{ $mat->unit?->code ?? '-' }}</span>
+                                            </td>
+                                            <td class="py-3.5 px-4 text-slate-700 text-xs">
+                                                <p class="font-bold text-slate-800">{{ $mat->item_name }}</p>
+                                                <p class="text-[10px] text-amber-700">{{ $mat->store_name ?: '-' }}</p>
+                                            </td>
+                                            <td class="py-3.5 px-4 font-mono font-extrabold text-emerald-700 text-right whitespace-nowrap">
+                                                Rp {{ number_format($mat->total_price, 0, ',', '.') }}
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="4" class="py-8 text-center text-slate-400 italic">Belum ada catatan belanja material.</td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            @endif
         @else
             <!-- Table 1 (Founder/Finance/Marketing): Recent Proposals -->
             <div class="card-clean overflow-hidden flex flex-col justify-between">

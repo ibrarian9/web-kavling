@@ -87,14 +87,14 @@ beforeEach(function () {
     ]);
 });
 
-test('admin can execute operational tasks and view land, material, and worker prices', function () {
+test('admin can view unit sales prices but is restricted from HPP, material prices, and worker wages', function () {
     expect($this->admin->isAdmin())->toBeTrue();
     expect($this->admin->isAdminOrFounder())->toBeTrue();
-    expect($this->admin->canViewSalesPrices())->toBeFalse();
+    expect($this->admin->canViewSalesPrices())->toBeTrue();
     expect($this->admin->canViewHpp())->toBeFalse();
-    expect($this->admin->canViewLandPrices())->toBeTrue();
-    expect($this->admin->canViewMaterialPrices())->toBeTrue();
-    expect($this->admin->canViewWorkerWages())->toBeTrue();
+    expect($this->admin->canViewMaterialPrices())->toBeFalse();
+    expect($this->admin->canViewWorkerWages())->toBeFalse();
+    expect($this->admin->canViewUnitExpenses())->toBeFalse();
 });
 
 test('admin is forbidden 403 from accessing activity logs, user management, and employee salaries', function () {

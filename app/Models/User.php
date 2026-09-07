@@ -80,11 +80,7 @@ class User extends Authenticatable
 
     public function canViewSalesPrices(): bool
     {
-        // Admin cannot view property sales prices, unit prices, booking fees, installments, or commissions
-        if ($this->isAdmin()) {
-            return false;
-        }
-        return $this->isFounder() || $this->isFinance() || $this->isMarketing() || $this->isSupervisor();
+        return $this->isFounder() || $this->isAdmin() || $this->isFinance() || $this->isMarketing() || $this->isSupervisor();
     }
 
     public function canViewLandPrices(): bool
@@ -95,20 +91,20 @@ class User extends Authenticatable
 
     public function canViewMaterialPrices(): bool
     {
-        // Material & item prices are visible to all roles except marketing
-        return !$this->isMarketing();
+        // Material & item prices are hidden for marketing and admin
+        return !$this->isMarketing() && !$this->isAdmin();
     }
 
     public function canViewWorkerWages(): bool
     {
-        // Worker wages are visible to all roles except marketing
-        return !$this->isMarketing();
+        // Worker wages are hidden for marketing and admin
+        return !$this->isMarketing() && !$this->isAdmin();
     }
 
     public function canViewUnitExpenses(): bool
     {
-        // Unit field expenses, material purchases & payrolls are visible to all roles except marketing
-        return !$this->isMarketing();
+        // Unit field expenses, material purchases & payrolls are hidden for marketing and admin
+        return !$this->isMarketing() && !$this->isAdmin();
     }
 
     public function canViewHpp(): bool

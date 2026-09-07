@@ -98,8 +98,8 @@ class LegacySale extends Component
     public function mount(): void
     {
         $user = Auth::user();
-        if (!$user || !$user->isAdminOrFounder()) {
-            abort(403, 'Akses Ditolak: Hanya Admin dan Founder yang berhak mencatat penjualan unit masa lalu / lunas.');
+        if (!$user || $user->isAdmin() || !$user->isAdminOrFounder()) {
+            abort(403, 'Akses Ditolak: Role Administrator tidak memiliki akses ke menu input penjualan lalu.');
         }
 
         $this->sale_date = now()->subYear()->toDateString();

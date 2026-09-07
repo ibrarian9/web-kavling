@@ -111,9 +111,21 @@
             <div class="pt-2 border-t {{ $footerBorder }} flex items-center justify-between text-xs">
                 @if(auth()->user()->canViewSalesPrices())
                     <div class="min-w-0">
-                        <span class="font-mono font-black {{ $priceColor }} block truncate text-xs sm:text-sm">
-                            Rp {{ number_format($u->final_selling_price ?? $u->hpp ?? 0, 0, ',', '.') }}
-                        </span>
+                        @if($isInfra)
+                            @if(auth()->user()->canViewHpp())
+                                <span class="font-mono font-black {{ $priceColor }} block truncate text-xs sm:text-sm">
+                                    Rp {{ number_format($u->hpp ?? 0, 0, ',', '.') }}
+                                </span>
+                            @else
+                                <span class="text-[11px] font-bold text-indigo-700 block truncate">
+                                    Fasilitas Umum
+                                </span>
+                            @endif
+                        @else
+                            <span class="font-mono font-black {{ $priceColor }} block truncate text-xs sm:text-sm">
+                                Rp {{ number_format($u->total_price ?? $u->final_selling_price ?? 0, 0, ',', '.') }}
+                            </span>
+                        @endif
                     </div>
                     <div class="w-6 h-6 rounded-lg {{ $actionIcon }} border flex items-center justify-center transition-colors shrink-0 shadow-2xs">
                         <svg class="w-3.5 h-3.5 transform group-hover:translate-x-0.5 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>

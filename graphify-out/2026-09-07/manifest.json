@@ -85,8 +85,8 @@
     "semantic_hash": "f85698324c7ea456d236a2bf63317ff4"
   },
   "app/Http/Controllers/UnitExpensesReportController.php": {
-    "mtime": 1788752161.0851066,
-    "ast_hash": "2055a90be8ac18bf954ebf57d91522e5",
+    "mtime": 1788235204.5920148,
+    "ast_hash": "522aca0addb88354fd0a090e1f103a05",
     "semantic_hash": ""
   },
   "app/Http/Controllers/UnpaidInstallmentReportController.php": {
@@ -120,8 +120,8 @@
     "semantic_hash": ""
   },
   "app/Livewire/Dashboard.php": {
-    "mtime": 1788752078.6006293,
-    "ast_hash": "0ff9b16050c47effbe2ffb78e467f588",
+    "mtime": 1787658153.6071622,
+    "ast_hash": "a70bf9062110a4887841bd9d75b8d4ef",
     "semantic_hash": ""
   },
   "app/Livewire/Documents/Index.php": {
@@ -135,8 +135,8 @@
     "semantic_hash": ""
   },
   "app/Livewire/FieldExpenses/Index.php": {
-    "mtime": 1788751025.3890157,
-    "ast_hash": "87dc6fde2ce2f7eb907af222c8447ee4",
+    "mtime": 1787058691.6969614,
+    "ast_hash": "278372a8ec57a460f7bac5aea1fca25f",
     "semantic_hash": ""
   },
   "app/Livewire/GlobalSearch.php": {
@@ -165,8 +165,8 @@
     "semantic_hash": ""
   },
   "app/Livewire/Projects/Show.php": {
-    "mtime": 1788751006.6611812,
-    "ast_hash": "bda9128b1a157c077fe673037064b701",
+    "mtime": 1787821403.832923,
+    "ast_hash": "a5071a53f36aaeef013f836d231d1242",
     "semantic_hash": ""
   },
   "app/Livewire/Proposals/Index.php": {
@@ -185,8 +185,8 @@
     "semantic_hash": ""
   },
   "app/Livewire/Units/LegacySale.php": {
-    "mtime": 1788751034.6584103,
-    "ast_hash": "682ff69dd9b49fc0db5adaad6960a8d9",
+    "mtime": 1786430114.4106715,
+    "ast_hash": "f85d8a19308ff2b67f7dd6e43fe1e8c7",
     "semantic_hash": ""
   },
   "app/Livewire/Units/Show.php": {
@@ -275,8 +275,8 @@
     "semantic_hash": ""
   },
   "app/Models/User.php": {
-    "mtime": 1788750995.41702,
-    "ast_hash": "170ed464a12a61321b95ac7a7af89577",
+    "mtime": 1788197496.5327163,
+    "ast_hash": "dac2e7aba2187232632887f59fc31674",
     "semantic_hash": ""
   },
   "app/Models/WeeklyMaterialPurchase.php": {
@@ -670,8 +670,8 @@
     "semantic_hash": ""
   },
   "resources/views/components/layouts/partials/nav-links.blade.php": {
-    "mtime": 1788751054.590891,
-    "ast_hash": "b2bfe8252ffce21f9976c4d1c31b1075",
+    "mtime": 1787669745.5288458,
+    "ast_hash": "e337b241b40eb403bfdb1706e21f4d4f",
     "semantic_hash": ""
   },
   "resources/views/components/layouts/partials/sidebar-desktop.blade.php": {
@@ -790,8 +790,8 @@
     "semantic_hash": ""
   },
   "resources/views/livewire/dashboard.blade.php": {
-    "mtime": 1788752330.3141727,
-    "ast_hash": "6b9cc2ee55bda219ed32b3f081ed7b64",
+    "mtime": 1787824829.049205,
+    "ast_hash": "57cd19d2c402a8c1ecbcd7a4eb6b2424",
     "semantic_hash": ""
   },
   "resources/views/livewire/documents/index.blade.php": {
@@ -875,8 +875,8 @@
     "semantic_hash": ""
   },
   "resources/views/livewire/projects/index.blade.php": {
-    "mtime": 1788751079.8563302,
-    "ast_hash": "13c6a28181d38a43bc471c0207c6489a",
+    "mtime": 1787657815.643398,
+    "ast_hash": "f4239798ad82100f0ddb202f84f1df3a",
     "semantic_hash": ""
   },
   "resources/views/livewire/projects/partials/header.blade.php": {
@@ -995,8 +995,8 @@
     "semantic_hash": ""
   },
   "resources/views/livewire/units/index.blade.php": {
-    "mtime": 1788751962.2135513,
-    "ast_hash": "946a8e28642b855e5c415094dcd07a4b",
+    "mtime": 1788236548.0908628,
+    "ast_hash": "8f2fd48e69ee236426ed5abbc540d80d",
     "semantic_hash": ""
   },
   "resources/views/livewire/units/legacy-sale.blade.php": {
@@ -1005,8 +1005,8 @@
     "semantic_hash": "3adf506210539491bda930fd201b45ce"
   },
   "resources/views/livewire/units/partials/header-actions.blade.php": {
-    "mtime": 1788751899.2655659,
-    "ast_hash": "bdf64cf491c2a67c4ba497b651b6bfd1",
+    "mtime": 1788232530.1986122,
+    "ast_hash": "5e875067cb0a8c049fd966a2c01824b2",
     "semantic_hash": ""
   },
   "resources/views/livewire/units/partials/legacy-create-modal.blade.php": {
@@ -1100,8 +1100,8 @@
     "semantic_hash": ""
   },
   "resources/views/livewire/units/partials/section-specifications.blade.php": {
-    "mtime": 1788751925.022222,
-    "ast_hash": "46de21fc0c225c3fbbb086b9476c00e7",
+    "mtime": 1787651826.8739614,
+    "ast_hash": "efa39cec2baa9fd673b937751af790a2",
     "semantic_hash": ""
   },
   "resources/views/livewire/units/partials/section-workers.blade.php": {
@@ -1110,8 +1110,8 @@
     "semantic_hash": ""
   },
   "resources/views/livewire/units/show.blade.php": {
-    "mtime": 1788751941.2718644,
-    "ast_hash": "4372ba14fd2c5d854a22428c04c06317",
+    "mtime": 1788197524.8439481,
+    "ast_hash": "5d7a6db5e57bfbce4e12afc8f22000d7",
     "semantic_hash": ""
   },
   "resources/views/livewire/users/index.blade.php": {
@@ -1800,8 +1800,8 @@
     "semantic_hash": ""
   },
   "tests/Feature/AdminRolePermissionsTest.php": {
-    "mtime": 1788752094.7684395,
-    "ast_hash": "c8809aff6cf9474f79739ee208cba7f8",
+    "mtime": 1787669761.1199794,
+    "ast_hash": "abbaaf5391d7903b2699f143fd12b20a",
     "semantic_hash": ""
   },
   "database/migrations/2026_08_11_000002_add_receipt_photo_path_to_installment_payments_table.php": {
@@ -2320,8 +2320,8 @@
     "semantic_hash": ""
   },
   "tests/Feature/DashboardEmployeeSalaryVisibilityTest.php": {
-    "mtime": 1788752126.3467424,
-    "ast_hash": "4c5151bcd8e4570b80f62d499f9a2610",
+    "mtime": 1787824860.6269684,
+    "ast_hash": "c47670b6db7958b63238d7b8563dc0b9",
     "semantic_hash": ""
   },
   "resources/views/components/table-empty.blade.php": {
@@ -2395,13 +2395,13 @@
     "semantic_hash": ""
   },
   "tests/Feature/AdminPriceRestrictionsAndUnitExpensesTest.php": {
-    "mtime": 1788752210.0312598,
-    "ast_hash": "358740f69142e26122616c539ff6f72e",
+    "mtime": 1788197580.5714064,
+    "ast_hash": "0f9fb4cbd39858b7f8aa198a0317647f",
     "semantic_hash": ""
   },
   "resources/views/components/siteplan-visual-grid.blade.php": {
-    "mtime": 1788751978.8181405,
-    "ast_hash": "511ef4210a172efafd84ff6c1e9c84d5",
+    "mtime": 1788231811.5551212,
+    "ast_hash": "c54532edfe6a20d5cc9876e76cb8f290",
     "semantic_hash": ""
   },
   "tests/Feature/ProjectsDetailMobileLayoutTest.php": {

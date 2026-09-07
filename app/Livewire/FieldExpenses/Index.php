@@ -52,6 +52,14 @@ class Index extends Component
         $this->viewerUrl = '';
     }
 
+    public function mount(): void
+    {
+        $user = auth()->user();
+        if (!$user || $user->isAdmin() || $user->isMarketing()) {
+            abort(403, 'Akses Ditolak: Anda tidak memiliki izin mengakses menu belanja & upah proyek.');
+        }
+    }
+
     public function updatedProjectId(): void
     {
         $this->unit_id = '';

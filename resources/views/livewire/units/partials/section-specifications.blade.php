@@ -38,7 +38,7 @@
                 <span class="font-mono text-slate-700">{{ number_format($unit->project->standard_land_area, 0, ',', '.') }} m²</span>
             </div>
 
-            @if(auth()->user()->canViewSalesPrices())
+            @if(auth()->user()->canViewSalesPrices() && !auth()->user()->isAdmin())
                 <div class="flex items-center justify-between py-1.5 border-b border-slate-50">
                     <span class="text-slate-500 font-medium">Harga Jual Standar:</span>
                     <span class="font-mono font-bold text-slate-800">Rp {{ number_format($unit->project->base_price ?? $unit->base_price, 0, ',', '.') }}</span>
@@ -50,7 +50,7 @@
                     <span class="text-[11px]">Kelebihan Tanah:</span>
                     <span class="font-mono font-extrabold text-xs text-amber-800">
                         +{{ number_format($unit->excess_land_area, 0, ',', '.') }} m²
-                        @if(auth()->user()->canViewSalesPrices())
+                        @if(auth()->user()->canViewSalesPrices() && !auth()->user()->isAdmin())
                             (+Rp {{ number_format($unit->excess_cost, 0, ',', '.') }})
                         @endif
                     </span>

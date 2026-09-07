@@ -4,41 +4,56 @@
     @include('livewire.units.partials.header-actions')
 
     <!-- Main Grid Structure: Left Column (Physical & Workers) & Right Column (Sales, Installment, Expenses) -->
-    <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
-
-        <!-- Left Column: Specs & Physical Details & Worker Management -->
-        <div class="space-y-6 xl:col-span-1">
+    @if(auth()->user()->isAdmin())
+        <!-- Administrator View: Clean Specs & Worker Management Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- Physical Specifications Card -->
-            @include('livewire.units.partials.section-specifications')
+            <div>
+                @include('livewire.units.partials.section-specifications')
+            </div>
 
             <!-- Assigned Workers (Mandor & Tukang) Card -->
-            @include('livewire.units.partials.section-workers')
-
-            @if(auth()->user()->canViewUnitExpenses())
-                <!-- Gaji Borongan Worker Unit Card -->
-                @include('livewire.units.partials.section-payroll-borongan')
-            @endif
+            <div>
+                @include('livewire.units.partials.section-workers')
+            </div>
         </div>
+    @else
+        <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
 
-        <!-- Right Column: Proposals, SPP, Financials & Costs -->
-        <div class="space-y-6 xl:col-span-2">
-            @if($unit->category !== 'infrastruktur' && auth()->user()->canViewSalesPrices())
-                <!-- Proposal & Official Document (SPP) Status Card -->
-                @include('livewire.units.partials.section-proposals-spp')
+            <!-- Left Column: Specs & Physical Details & Worker Management -->
+            <div class="space-y-6 xl:col-span-1">
+                <!-- Physical Specifications Card -->
+                @include('livewire.units.partials.section-specifications')
 
-                <!-- Installment & Buyer Payments Card -->
-                @include('livewire.units.partials.section-installments')
+                <!-- Assigned Workers (Mandor & Tukang) Card -->
+                @include('livewire.units.partials.section-workers')
 
-                <!-- Unit Seller Commission & Installments Card -->
-                @include('livewire.units.partials.section-commissions', ['unitCommissions' => $unitCommissions ?? collect()])
-            @endif
+                @if(auth()->user()->canViewUnitExpenses())
+                    <!-- Gaji Borongan Worker Unit Card -->
+                    @include('livewire.units.partials.section-payroll-borongan')
+                @endif
+            </div>
 
-            @if(auth()->user()->canViewUnitExpenses())
-                <!-- Unit Expenses & Material Purchases Combined Table Card -->
-                @include('livewire.units.partials.section-expenses')
-            @endif
+            <!-- Right Column: Proposals, SPP, Financials & Costs -->
+            <div class="space-y-6 xl:col-span-2">
+                @if($unit->category !== 'infrastruktur' && auth()->user()->canViewSalesPrices())
+                    <!-- Proposal & Official Document (SPP) Status Card -->
+                    @include('livewire.units.partials.section-proposals-spp')
+
+                    <!-- Installment & Buyer Payments Card -->
+                    @include('livewire.units.partials.section-installments')
+
+                    <!-- Unit Seller Commission & Installments Card -->
+                    @include('livewire.units.partials.section-commissions', ['unitCommissions' => $unitCommissions ?? collect()])
+                @endif
+
+                @if(auth()->user()->canViewUnitExpenses())
+                    <!-- Unit Expenses & Material Purchases Combined Table Card -->
+                    @include('livewire.units.partials.section-expenses')
+                @endif
+            </div>
         </div>
-    </div>
+    @endif
 
     <!-- Include Floating Modals -->
     @include('livewire.units.partials.modal-worker-assignment')
@@ -48,7 +63,7 @@
     @include('livewire.units.partials.modal-viewer')
     @include('livewire.units.partials.modal-edit-unit')
 
-    @if($unit->category !== 'infrastruktur')
+    @if($unit->category !== 'infrastruktur' && !auth()->user()->isAdmin())
         @include('livewire.units.partials.modal-booking')
         @include('livewire.units.partials.modal-installment-payment')
         @include('livewire.units.partials.modal-setup-installment')

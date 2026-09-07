@@ -348,12 +348,14 @@
                 @if(auth()->user()->canViewSalesPrices())
                     <div class="pt-3 border-t border-slate-100 space-y-1.5 text-xs">
                         @if($unit->category === 'infrastruktur')
-                            <div class="flex justify-between items-baseline bg-slate-50 px-2.5 py-1.5 rounded-lg border border-slate-200/60">
-                                <span class="text-slate-500 font-medium">Anggaran Infra:</span>
-                                <span class="font-mono font-bold text-slate-800">
-                                    {{ $unit->hpp ? 'Rp ' . number_format($unit->hpp, 0, ',', '.') : 'Belum Diset' }}
-                                </span>
-                            </div>
+                            @if(auth()->user()->canViewHpp())
+                                <div class="flex justify-between items-baseline bg-slate-50 px-2.5 py-1.5 rounded-lg border border-slate-200/60">
+                                    <span class="text-slate-500 font-medium">Anggaran Infra:</span>
+                                    <span class="font-mono font-bold text-slate-800">
+                                        {{ $unit->hpp ? 'Rp ' . number_format($unit->hpp, 0, ',', '.') : 'Belum Diset' }}
+                                    </span>
+                                </div>
+                            @endif
                         @else
                             <div class="flex justify-between items-baseline text-slate-900 font-extrabold pt-0.5">
                                 <span class="text-slate-600">Harga Total:</span>
@@ -363,7 +365,7 @@
                             </div>
                         @endif
 
-                        @if($payInfo['deal_price'] > 0 && $unit->category !== 'infrastruktur')
+                        @if(!auth()->user()->isAdmin() && $payInfo['deal_price'] > 0 && $unit->category !== 'infrastruktur')
                             <div class="flex justify-between items-baseline text-emerald-700 font-bold">
                                 <span>Harga Deal Unit:</span>
                                 <span class="font-mono">Rp {{ number_format($payInfo['deal_price'], 0, ',', '.') }}</span>
@@ -392,7 +394,7 @@
                     </div>
 
                     <div class="flex items-center gap-1.5 whitespace-nowrap flex-nowrap">
-                        @if(!auth()->user()->isPengawasProject() && $unit->category !== 'infrastruktur' && $unit->status === 'tersedia')
+                        @if(!auth()->user()->isPengawasProject() && !auth()->user()->isAdmin() && $unit->category !== 'infrastruktur' && $unit->status === 'tersedia')
                             <x-button variant="blue" size="xs" wire:click="openBookingModal({{ $unit->id }})">
                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                                 <span>Booking</span>

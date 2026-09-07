@@ -76,7 +76,7 @@
     <!-- Projects Table -->
     @php
         $headers = ['Nama Proyek & Lokasi', 'Pengawas Proyek', 'Luas Standar (m²)'];
-        if(auth()->user()->canViewSalesPrices()) {
+        if(auth()->user()->canViewSalesPrices() && !auth()->user()->isAdmin()) {
             $headers[] = 'Harga Dasar Standar (HPP)';
             $headers[] = 'Tarif Kelebihan / m²';
         }
@@ -92,9 +92,15 @@
             @endphp
             <tr class="hover:bg-slate-50/80 transition duration-150">
                 <td data-label="Nama Proyek & Lokasi" class="p-3.5">
-                    <a href="{{ route('projects.show', $p->id) }}" wire:navigate.hover class="font-bold text-slate-900 text-sm hover:text-emerald-600 transition block">
-                        {{ $p->name }}
-                    </a>
+                    @if(auth()->user()->isAdmin())
+                        <a href="{{ route('units.index', ['project_id' => $p->id]) }}" wire:navigate.hover class="font-bold text-slate-900 text-sm hover:text-emerald-600 transition block">
+                            {{ $p->name }}
+                        </a>
+                    @else
+                        <a href="{{ route('projects.show', $p->id) }}" wire:navigate.hover class="font-bold text-slate-900 text-sm hover:text-emerald-600 transition block">
+                            {{ $p->name }}
+                        </a>
+                    @endif
                     <p class="text-slate-500 text-[11px] flex items-center gap-1 mt-0.5">
                         <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/></svg>
                         {{ $p->location }}
@@ -126,7 +132,7 @@
                     </div>
                 </td>
                 <td data-label="Luas Standar" class="p-3.5 font-mono font-medium text-slate-700 whitespace-nowrap">{{ number_format($p->standard_land_area, 0, ',', '.') }} m²</td>
-                @if(auth()->user()->canViewSalesPrices())
+                @if(auth()->user()->canViewSalesPrices() && !auth()->user()->isAdmin())
                     <td data-label="Harga Dasar (HPP)" class="p-3.5 font-mono text-emerald-700 font-bold whitespace-nowrap">Rp {{ number_format($p->base_price, 0, ',', '.') }}</td>
                     <td data-label="Tarif Kelebihan" class="p-3.5 font-mono text-slate-700 whitespace-nowrap">Rp {{ number_format($p->excess_price_per_sqm, 0, ',', '.') }} / m²</td>
                 @endif
@@ -143,9 +149,11 @@
 
                         <x-action-dropdown title="Menu Opsi Proyek" size="xs">
                             <div class="py-1">
-                                <x-dropdown-item icon="detail" href="{{ route('projects.show', $p->id) }}" wire:navigate.hover>
-                                    Detail Dashboard
-                                </x-dropdown-item>
+                                @if(!auth()->user()->isAdmin())
+                                    <x-dropdown-item icon="detail" href="{{ route('projects.show', $p->id) }}" wire:navigate.hover>
+                                        Detail Dashboard
+                                    </x-dropdown-item>
+                                @endif
 
                                 @if(auth()->user()->isAdminOrFounder() || auth()->user()->isSupervisor())
                                     <x-dropdown-item icon="edit" wire:click="editProject({{ $p->id }})">

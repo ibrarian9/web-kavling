@@ -113,12 +113,12 @@ class AdminPriceRestrictionsAndUnitExpensesTest extends TestCase
     public function test_price_visibility_helper_methods(): void
     {
         // Admin
-        $this->assertFalse($this->admin->canViewSalesPrices());
+        $this->assertTrue($this->admin->canViewSalesPrices());
         $this->assertFalse($this->admin->canViewHpp());
         $this->assertTrue($this->admin->canViewLandPrices());
-        $this->assertTrue($this->admin->canViewMaterialPrices());
-        $this->assertTrue($this->admin->canViewWorkerWages());
-        $this->assertTrue($this->admin->canViewUnitExpenses());
+        $this->assertFalse($this->admin->canViewMaterialPrices());
+        $this->assertFalse($this->admin->canViewWorkerWages());
+        $this->assertFalse($this->admin->canViewUnitExpenses());
 
         // Founder
         $this->assertTrue($this->founder->canViewSalesPrices());
@@ -143,7 +143,7 @@ class AdminPriceRestrictionsAndUnitExpensesTest extends TestCase
         $this->assertFalse($this->marketing->canViewUnitExpenses());
     }
 
-    public function test_admin_unit_detail_hides_sales_prices_and_displays_worker_wages_and_materials_with_store_name(): void
+    public function test_admin_unit_detail_shows_total_selling_price_and_hides_worker_wages_and_materials(): void
     {
         // Create material purchase with store_name
         WeeklyMaterialPurchase::create([
@@ -186,27 +186,27 @@ class AdminPriceRestrictionsAndUnitExpensesTest extends TestCase
             ->test(\App\Livewire\Units\Show::class, ['id' => $this->unit->id])
             ->assertStatus(200);
 
-        // Store name is displayed in the expenses table
-        $component->assertSee('TB. Sinar Abadi Sentosa');
-        $component->assertSee('Semen Padang 50kg');
-        $component->assertSee('Mandor Sutrisno');
+        // Sales Price (Harga Total Unit) is visible for Admin
+        $component->assertSee('Harga Total Unit');
+        $component->assertSee('Rp 160.000.000');
 
-        // Material prices and worker wages ARE visible
-        $component->assertSee('Rp 1.300.000');
-        $component->assertSee('Rp 8.500.000');
+        // Material prices and worker wages are NOT visible for Admin
+        $component->assertDontSee('TB. Sinar Abadi Sentosa');
+        $component->assertDontSee('Semen Padang 50kg');
+        $component->assertDontSee('Realisasi Biaya Lapangan');
+        $component->assertDontSee('Rincian Biaya Pengeluaran');
 
-        // Sales Price and Proposal cards are NOT rendered for Admin
-        $component->assertDontSee('Harga Jual Disetujui');
+        // Sales proposal & document cards are NOT rendered for Admin
         $component->assertDontSee('Proposal SPP');
     }
 
-    public function test_expenses_pdf_report_displays_store_name_for_materials(): void
+    public function test_expenses_pdf_report_displays_store_name_for_materials_and_forbids_admin(): void
     {
         WeeklyMaterialPurchase::create([
             'project_id' => $this->project->id,
             'unit_id' => $this->unit->id,
             'worker_id' => $this->worker->id,
-            'pengawas_id' => $this->admin->id,
+            'pengawas_id' => $this->founder->id,
             'purchase_date' => now()->subDays(2),
             'item_name' => 'Besi Beton 10mm',
             'store_name' => 'Toko Besi Jaya Abadi',
@@ -217,11 +217,16 @@ class AdminPriceRestrictionsAndUnitExpensesTest extends TestCase
             'payment_status' => 'lunas',
         ]);
 
-        $response = $this->actingAs($this->admin)
+        // Admin is forbidden from expenses PDF
+        $responseAdmin = $this->actingAs($this->admin)
             ->get(route('units.expenses-pdf', $this->unit->id));
+        $responseAdmin->assertStatus(403);
 
-        $response->assertStatus(200);
-        $response->assertHeader('content-type', 'application/pdf');
+        // Founder can access expenses PDF
+        $responseFounder = $this->actingAs($this->founder)
+            ->get(route('units.expenses-pdf', $this->unit->id));
+        $responseFounder->assertStatus(200);
+        $responseFounder->assertHeader('content-type', 'application/pdf');
     }
 
     public function test_unit_detail_realisasi_biaya_matches_pdf_calculation_and_does_not_double_count_contract(): void
@@ -321,13 +326,14 @@ class AdminPriceRestrictionsAndUnitExpensesTest extends TestCase
         $component = Livewire::test(\App\Livewire\Dashboard::class)
             ->assertStatus(200);
 
-        // Shows operational and field view
-        $component->assertSee('Akses Operasional & Lapangan', false);
+        // Shows operational and physical unit view
+        $component->assertSee('Akses Operasional', false);
         $component->assertSee('Mandor & Tukang', false);
-        $component->assertSee('Belanja Material');
+        $component->assertDontSee('Belanja Material');
         $component->assertSee('Status Stok & Unit Properti', false);
+        $component->assertSee('Harga Total Jual Unit & Kavling', false);
 
-        // Hides executive financial cashflow and pricing charts
+        // Hides executive financial cashflow, pricing charts, and expenses
         $component->assertDontSee('Saldo Kas Bersih Global');
         $component->assertDontSee('Grafik Tren Keuangan Arus Kas');
         $component->assertDontSee('Pengajuan Harga Terbaru');

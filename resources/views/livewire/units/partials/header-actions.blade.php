@@ -4,10 +4,17 @@
         <div class="space-y-1.5 min-w-0">
             <!-- Breadcrumbs -->
             <nav class="flex items-center gap-1.5 text-xs text-slate-500 flex-wrap">
-                <a href="{{ route('projects.show', $unit->project_id) }}" wire:navigate.hover class="hover:text-emerald-700 font-semibold inline-flex items-center gap-1.5 transition-colors">
-                    <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5m0 0h5m-5 0v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
-                    <span>{{ $unit->project->name }}</span>
-                </a>
+                @if(auth()->user()->isAdmin())
+                    <a href="{{ route('units.index', ['project_id' => $unit->project_id]) }}" wire:navigate.hover class="hover:text-emerald-700 font-semibold inline-flex items-center gap-1.5 transition-colors">
+                        <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5m0 0h5m-5 0v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                        <span>{{ $unit->project->name }}</span>
+                    </a>
+                @else
+                    <a href="{{ route('projects.show', $unit->project_id) }}" wire:navigate.hover class="hover:text-emerald-700 font-semibold inline-flex items-center gap-1.5 transition-colors">
+                        <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5m0 0h5m-5 0v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                        <span>{{ $unit->project->name }}</span>
+                    </a>
+                @endif
                 <span class="text-slate-300">/</span>
                 <span class="font-bold text-slate-700">Detail Unit {{ $unit->code }}</span>
             </nav>
@@ -49,7 +56,7 @@
                         </button>
                     @endif
 
-                    @if(!auth()->user()->isPengawasProject())
+                    @if(!auth()->user()->isPengawasProject() && !auth()->user()->isAdmin())
                         <button type="button" wire:click="openBookingModal" title="Booking Unit Ini" class="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs transition flex items-center gap-1.5 shadow-2xs">
                             <svg class="w-4 h-4 text-white shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                             <span>Booking Unit Ini</span>
@@ -129,6 +136,22 @@
             </div>
         @endif
 
+        @if(!auth()->user()->canViewHpp() && !auth()->user()->canViewUnitExpenses())
+            <!-- Luas Pengerjaan Fasum -->
+            <div class="card-clean p-5 transition-all duration-200 hover:-translate-y-0.5 border-blue-200/80 bg-gradient-to-br from-white to-blue-50/30">
+                <div class="flex items-center justify-between">
+                    <span class="text-[11px] font-bold text-blue-800 uppercase tracking-wider">Luas Fasum</span>
+                    <div class="p-2.5 rounded-xl bg-blue-50 text-blue-600 border border-blue-100 shadow-2xs">
+                        <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6z"/></svg>
+                    </div>
+                </div>
+                <p class="text-2xl font-extrabold text-blue-900 font-mono mt-2">
+                    {{ number_format($unit->work_area ?? $unit->land_area, 0, ',', '.') }} m²
+                </p>
+                <p class="text-[11px] text-slate-500 mt-1">Luas pengerjaan infrastruktur</p>
+            </div>
+        @endif
+
         <!-- Worker / Mandor Bertugas -->
         @php
             $activeWorkersCount = $unit->assignments->where('status', 'active')->count();
@@ -147,7 +170,75 @@
         </div>
     </div>
 @else
-    @if(auth()->user()->canViewSalesPrices())
+    @if(auth()->user()->isAdmin())
+        <!-- Key Metrics for Administrator (Hanya Harga Total Jual & Detail Fisik) -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+            <!-- 1. Harga Total Unit -->
+            <div class="card-clean p-4 sm:p-5 transition-all duration-200 hover:-translate-y-0.5 border-emerald-200/80 bg-gradient-to-br from-white to-emerald-50/30">
+                <div class="flex items-center justify-between">
+                    <span class="text-[11px] font-bold text-emerald-800 uppercase tracking-wider">Harga Total Unit</span>
+                    <div class="p-2 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100 shadow-2xs shrink-0">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    </div>
+                </div>
+                <p class="text-xl sm:text-2xl font-extrabold text-emerald-700 font-mono mt-2 tracking-tight">
+                    Rp {{ number_format($unit->total_price, 0, ',', '.') }}
+                </p>
+                <p class="text-[11px] text-emerald-600 font-medium mt-1 truncate">
+                    Total Nilai Jual Unit / Kavling
+                </p>
+            </div>
+
+            <!-- 2. Luas & Dimensi Tanah -->
+            <div class="card-clean p-4 sm:p-5 border-blue-200/80 bg-gradient-to-br from-white to-blue-50/30">
+                <div class="flex items-center justify-between">
+                    <span class="text-[11px] font-bold text-blue-800 uppercase tracking-wider">Luas Tanah</span>
+                    <div class="p-2 rounded-xl bg-blue-50 text-blue-600 border border-blue-100 shadow-2xs shrink-0">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6z"/></svg>
+                    </div>
+                </div>
+                <p class="text-xl sm:text-2xl font-extrabold text-blue-900 font-mono mt-2 tracking-tight">
+                    {{ number_format($unit->land_area, 0, ',', '.') }} m²
+                </p>
+                <p class="text-[11px] text-blue-600 font-medium mt-1 truncate">
+                    Dimensi: {{ $unit->land_length }}m &times; {{ $unit->land_width }}m
+                </p>
+            </div>
+
+            <!-- 3. Status Ketersediaan Unit -->
+            <div class="card-clean p-4 sm:p-5">
+                <div class="flex items-center justify-between">
+                    <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Status Unit</span>
+                    <div class="p-2 rounded-xl bg-slate-100 text-slate-600 border border-slate-200 shadow-2xs shrink-0">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    </div>
+                </div>
+                <div class="mt-2">
+                    <x-status-badge :status="$unit->status" />
+                </div>
+                <p class="text-[11px] text-slate-400 mt-2 truncate">Kategori: {{ ucfirst($unit->category ?? $unit->type) }}</p>
+            </div>
+
+            <!-- 4. Pekerja Lapangan -->
+            @php
+                $activeWorkers = $unit->activeAssignments->where('status', 'active');
+            @endphp
+            <div class="card-clean p-4 sm:p-5">
+                <div class="flex items-center justify-between">
+                    <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Pekerja Lapangan</span>
+                    <div class="p-2 rounded-xl bg-purple-50 text-purple-600 border border-purple-100 shadow-2xs shrink-0">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                    </div>
+                </div>
+                <p class="text-xl sm:text-2xl font-extrabold text-purple-900 font-mono mt-2 tracking-tight">
+                    {{ $activeWorkers->count() }} Orang
+                </p>
+                <p class="text-[11px] text-slate-400 mt-1 truncate">
+                    {{ $activeWorkers->first()?->worker?->name ?? 'Belum ada penugasan' }}
+                </p>
+            </div>
+        </div>
+    @elseif(auth()->user()->canViewSalesPrices())
         <!-- Key Metrics Highlight Cards (Standard Kavling & Rumah - Sales View) -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 {{ auth()->user()->canViewUnitExpenses() ? 'xl:grid-cols-5' : 'xl:grid-cols-4' }} gap-3.5">
             <!-- 1. Harga Total Unit (Harga Jual + Kelebihan Luas) -->

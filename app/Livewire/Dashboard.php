@@ -86,10 +86,13 @@ class Dashboard extends Component
             $chartKeluar[] = (float)$mKeluar;
         }
 
-        // 7. Employee Salary Info for Non-Founder Users
+        // 6. Monthly Cashflow Trend Chart Data (Last 6 Months) optimized in 1 batch query
+        $totalUnitsSellingPrice = Unit::where('category', '!=', 'infrastruktur')->with('project')->get()->sum(fn($u) => $u->total_price);
+
+        // 7. Employee Salary Info for Non-Founder and Non-Admin Users
         $userSalary = null;
         $latestSalaryPayment = null;
-        if (!$user->isFounder()) {
+        if (!$user->isFounder() && !$user->isAdmin()) {
             $userSalary = EmployeeSalary::with(['payrollPayments' => fn($q) => $q->latest('payment_date')])
                 ->where(function ($q) use ($user) {
                     $q->where('user_id', $user->id)
@@ -148,6 +151,7 @@ class Dashboard extends Component
             'recentUnits' => $recentUnits,
             'recentMaterialPurchases' => $recentMaterialPurchases,
             'totalMaterialPurchasesThisMonth' => $totalMaterialPurchasesThisMonth,
+            'totalUnitsSellingPrice' => $totalUnitsSellingPrice,
             'activeWorkerAssignments' => $activeWorkerAssignments,
             'chartLabels' => $chartLabels,
             'chartMasuk' => $chartMasuk,

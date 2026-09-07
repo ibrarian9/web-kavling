@@ -478,6 +478,10 @@ class Show extends Component
 
     public function mount($id)
     {
+        if (auth()->user() && auth()->user()->isAdmin()) {
+            abort(403, 'Akses Ditolak: Role Administrator tidak memiliki izin mengakses Dashboard Proyek.');
+        }
+
         $this->projectId = $id;
         $this->payment_date = date('Y-m-d');
 

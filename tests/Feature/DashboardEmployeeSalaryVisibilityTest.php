@@ -129,7 +129,7 @@ test('admin does not see financial stats or cashflow chart on dashboard and sees
     Livewire::actingAs($admin)
         ->test(Dashboard::class)
         ->assertStatus(200)
-        ->assertSee('Informasi Penetapan Gaji Anda')
+        ->assertDontSee('Informasi Penetapan Gaji Anda')
         ->assertSee('Proyek Properti')
         ->assertSee('Stok Unit')
         ->assertSee('Mandor & Tukang', false)
