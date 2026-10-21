@@ -2,25 +2,20 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Resi Booking Fee {{ $booking->buyer_name }}</title>
+    <title>Kwitansi Tanda Jadi Booking {{ $booking->buyer_name }}</title>
     <style>
         * {
             box-sizing: border-box;
         }
         @page {
             size: A5 landscape;
-            margin: 8mm 10mm;
-        }
-        html, body {
-            margin: 0;
-            padding: 0;
-            height: 100%;
+            margin: 8mm 12mm;
         }
         body {
             font-family: 'Helvetica', 'Arial', sans-serif;
             font-size: 10px;
             color: #1e293b;
-            line-height: 1.3;
+            line-height: 1.4;
             page-break-inside: avoid;
         }
         table, tr, td, div {
@@ -28,11 +23,11 @@
         }
         .header {
             border-bottom: 2px solid #059669;
-            padding-bottom: 5px;
-            margin-bottom: 8px;
+            padding-bottom: 8px;
+            margin-bottom: 11px;
         }
         .brand-title {
-            font-size: 14px;
+            font-size: 13.5px;
             font-weight: bold;
             color: #065f46;
             letter-spacing: 0.5px;
@@ -41,31 +36,32 @@
         .brand-sub {
             font-size: 8.5px;
             color: #64748b;
+            line-height: 1.35;
         }
         .doc-title {
             text-align: center;
-            font-size: 12px;
+            font-size: 11.5px;
             font-weight: bold;
             color: #0f172a;
-            margin-bottom: 8px;
+            margin-bottom: 11px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             background: #f0fdf4;
-            padding: 4px;
+            padding: 4.5px 10px;
             border: 1px solid #a7f3d0;
-            border-radius: 5px;
+            border-radius: 4px;
         }
         .table-data {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 8px;
+            margin-bottom: 11px;
         }
         .table-data td {
-            padding: 3px 6px;
+            padding: 3.5px 6px;
             vertical-align: top;
         }
         .label {
-            width: 30%;
+            width: 28%;
             font-weight: bold;
             color: #475569;
         }
@@ -73,15 +69,15 @@
             width: 2%;
         }
         .value {
-            width: 68%;
+            width: 70%;
             color: #0f172a;
         }
         .amount-box {
             background-color: #ecfdf5;
             border: 1px dashed #059669;
-            padding: 6px 10px;
+            padding: 7px 14px;
             border-radius: 6px;
-            margin-bottom: 8px;
+            margin-bottom: 11px;
         }
         .amount-num {
             font-size: 14px;
@@ -91,35 +87,36 @@
         }
         .terbilang {
             font-style: italic;
-            font-size: 9px;
+            font-size: 8.5px;
             color: #065f46;
-            margin-top: 2px;
+            margin-top: 3px;
         }
         .footer-section {
             width: 100%;
-            margin-top: 6px;
+            margin-top: 8px;
         }
         .footer-note {
-            font-size: 8.5px;
+            font-size: 8px;
             color: #64748b;
-            width: 65%;
+            width: 63%;
             float: left;
+            line-height: 1.4;
         }
         .qr-section {
-            width: 30%;
+            width: 32%;
             float: right;
             text-align: center;
         }
         .qr-img {
-            width: 58px;
-            height: 58px;
+            width: 56px;
+            height: 56px;
             border: 1px solid #cbd5e1;
             padding: 2px;
             background: #fff;
             border-radius: 4px;
         }
         .qr-label {
-            font-size: 8px;
+            font-size: 7.5px;
             color: #475569;
             margin-top: 2px;
             font-weight: bold;
@@ -141,7 +138,7 @@
                     <div class="brand-sub">Kota Pekanbaru, Provinsi Riau | Telp/WA: 0813-3484-0193</div>
                 </td>
                 <td style="width: 35%; text-align: right;">
-                    <div style="font-size: 10px; font-weight: bold; color: #047857;">INVOICE PEMBAYARAN RESMI</div>
+                    <div style="font-size: 10px; font-weight: bold; color: #047857;">KWITANSI & INVOICE RESMI</div>
                     <div style="font-size: 9px; font-family: monospace; color: #475569;">
                         No: INV-BKG/{{ $booking->created_at ? $booking->created_at->format('Y/m') : date('Y/m') }}/{{ str_pad($booking->id, 3, '0', STR_PAD_LEFT) }}
                     </div>
@@ -152,7 +149,7 @@
     </div>
 
     <!-- Title -->
-    <div class="doc-title">INVOICE PEMBAYARAN</div>
+    <div class="doc-title">KWITANSI TANDA JADI BOOKING</div>
 
     <!-- Transaction Data Table -->
     <table class="table-data">
@@ -184,12 +181,19 @@
             <td class="label">Status Verifikasi Kas</td>
             <td class="colon">:</td>
             <td class="value">
+                @php
+                    $isAutoVerified = ($booking->is_created_by_admin_or_founder ?? false) 
+                        || (method_exists($booking, 'isCreatedByAdminOrFounder') && $booking->isCreatedByAdminOrFounder()) 
+                        || ($booking->creator && ($booking->creator->isFounder() || $booking->creator->isAdmin() || $booking->creator->isSuperAdmin() || $booking->creator->isAdminOrFounder()));
+                @endphp
                 @if($booking->status === 'converted')
                     <span style="color: #047857; font-weight: bold;">[ DIVERIFIKASI ]</span> - Dicatat oleh Finance
                 @elseif($booking->status === 'cancelled')
                     <span style="color: #b91c1c; font-weight: bold;">[ DITOLAK ]</span> - Ditolak oleh Manajemen
                 @elseif($booking->status === 'refunded')
                     <span style="color: #d97706; font-weight: bold;">[ DIREFUND ]</span> - DP Telah Dikembalikan
+                @elseif($isAutoVerified)
+                    <span style="color: #047857; font-weight: bold;">[ DIVERIFIKASI RESMI ]</span> - Disetujui Langsung oleh {{ $booking->creator && $booking->creator->isFounder() ? 'Founder' : 'Admin Utama' }}
                 @else
                     <span style="color: #2563eb; font-weight: bold;">[ MENUNGGU ACC FINANCE ]</span> - Menunggu Verifikasi
                 @endif

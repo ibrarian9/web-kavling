@@ -23,14 +23,23 @@
         </div>
 
         <!-- Verification Status Badge -->
-        @if($booking->status === 'converted')
+        @php
+            $isAutoVerified = ($booking->is_created_by_admin_or_founder ?? false) 
+                || (method_exists($booking, 'isCreatedByAdminOrFounder') && $booking->isCreatedByAdminOrFounder()) 
+                || ($booking->creator && ($booking->creator->isFounder() || $booking->creator->isAdmin() || $booking->creator->isSuperAdmin() || $booking->creator->isAdminOrFounder()));
+        @endphp
+        @if($booking->status === 'converted' || ($isAutoVerified && $booking->status === 'active'))
             <div class="bg-emerald-950/80 border border-emerald-500/50 rounded-2xl p-4 text-center space-y-2 shadow-inner">
                 <div class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-emerald-500 text-slate-950 font-bold mb-1 shadow-md">
                     ✓
                 </div>
                 <h2 class="text-sm font-extrabold text-emerald-300 uppercase tracking-wider">INVOICE PEMBAYARAN TERVERIFIKASI RESMI</h2>
                 <p class="text-[11px] text-emerald-400/90 leading-relaxed">
-                    Invoice Pembayaran ini terdaftar secara sah dan disetujui oleh tim Finance / Founder.
+                    @if($booking->status === 'converted')
+                        Invoice Pembayaran ini terdaftar secara sah dan disetujui oleh tim Finance / Founder.
+                    @else
+                        Invoice Pembayaran ini terdaftar secara sah dan disetujui langsung oleh {{ $booking->creator && $booking->creator->isFounder() ? 'Founder' : 'Admin Utama' }}.
+                    @endif
                 </p>
             </div>
         @elseif($booking->status === 'cancelled')
@@ -117,6 +126,10 @@
                 @elseif($booking->status === 'refunded')
                     <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40">
                         REFUND
+                    </span>
+                @elseif($isAutoVerified)
+                    <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
+                        DIVERIFIKASI RESMI
                     </span>
                 @else
                     <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-blue-500/20 text-blue-300 border border-blue-500/40">

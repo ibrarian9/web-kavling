@@ -40,7 +40,10 @@ class BookingReceiptController extends Controller
             "Pengguna {$userName} mencetak / mengunduh Kuitansi Booking Fee ({$invoiceNo}) untuk pembeli {$booking->buyer_name} (Unit " . ($booking->unit->code ?? '-') . ")."
         );
 
-        return $pdf->stream('Invoice-Pembayaran-' . $invoiceNo . '.pdf');
+        return $pdf->stream('Invoice-Pembayaran-' . $invoiceNo . '.pdf')
+            ->header('Cache-Control', 'no-cache, no-store, must-revalidate')
+            ->header('Pragma', 'no-cache')
+            ->header('Expires', '0');
     }
 
     private function generateQrBase64(string $url): string

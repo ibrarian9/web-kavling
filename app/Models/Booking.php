@@ -52,4 +52,23 @@ class Booking extends Model
     {
         return $this->receipt_photo_path ? asset('storage/' . $this->receipt_photo_path) : null;
     }
+
+    public function isCreatedByAdminOrFounder(): bool
+    {
+        if (!$this->relationLoaded('creator')) {
+            $this->load('creator');
+        }
+
+        return (bool) ($this->creator && (
+            $this->creator->isFounder() ||
+            $this->creator->isAdmin() ||
+            $this->creator->isSuperAdmin() ||
+            $this->creator->isAdminOrFounder()
+        ));
+    }
+
+    public function getIsCreatedByAdminOrFounderAttribute(): bool
+    {
+        return $this->isCreatedByAdminOrFounder();
+    }
 }

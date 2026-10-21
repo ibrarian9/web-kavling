@@ -2018,7 +2018,7 @@ class Show extends Component
             $receiptPath = $this->receipt_photo->store('receipts/bookings', 'public');
         }
 
-        Booking::create([
+        $booking = Booking::create([
             'project_id' => $unit->project_id,
             'unit_id' => $unit->id,
             'buyer_name' => $this->buyer_name,
@@ -2034,11 +2034,12 @@ class Show extends Component
             'created_by' => Auth::id(),
         ]);
 
-
         $unit->update(['status' => 'booked']);
 
         session()->flash('success', 'Booking unit ' . $unit->code . ' atas nama ' . $this->buyer_name . ' berhasil dicatat!');
         $this->showBookingModal = false;
+
+        $this->openViewerModal('pdf', route('bookings.receipt', $booking->id) . '?v=' . now()->timestamp, 'Kwitansi Tanda Jadi Booking - ' . $booking->buyer_name . ' (' . $unit->code . ')');
     }
 
     public function openCommissionModal(): void

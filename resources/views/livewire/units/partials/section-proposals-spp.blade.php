@@ -14,8 +14,13 @@
                         </span>
                         <h4 class="font-extrabold text-teal-950 text-xs sm:text-sm">Rincian Booking Fee & Tanda Jadi Pembeli</h4>
                     </div>
-                    <span class="px-2.5 py-0.5 rounded-lg text-[10px] font-extrabold shadow-2xs {{ $activeBooking->status === 'converted' ? 'bg-emerald-600 text-white' : 'bg-teal-700 text-white' }}">
-                        {{ $activeBooking->status === 'converted' ? 'DP ACC' : 'Booking Active' }}
+                    @php
+                        $isAutoVerified = ($activeBooking->is_created_by_admin_or_founder ?? false) 
+                            || (method_exists($activeBooking, 'isCreatedByAdminOrFounder') && $activeBooking->isCreatedByAdminOrFounder()) 
+                            || ($activeBooking->creator && ($activeBooking->creator->isFounder() || $activeBooking->creator->isAdmin() || $activeBooking->creator->isSuperAdmin() || $activeBooking->creator->isAdminOrFounder()));
+                    @endphp
+                    <span class="px-2.5 py-0.5 rounded-lg text-[10px] font-extrabold shadow-2xs {{ ($activeBooking->status === 'converted' || $isAutoVerified) ? 'bg-emerald-600 text-white' : 'bg-teal-700 text-white' }}">
+                        {{ $activeBooking->status === 'converted' ? 'DP ACC' : ($isAutoVerified ? 'Resmi (ACC Admin/Founder)' : 'Booking Active') }}
                     </span>
                 </div>
 
@@ -35,15 +40,21 @@
                     </div>
                 </div>
 
-                @if($activeBooking->receipt_photo_path)
-                    <div class="pt-1 flex items-center justify-between text-[11px]">
-                        <span class="text-slate-600">Bukti Struk Transfer / Resi Terlampir</span>
-                        <button wire:click="openViewerModal('image', '{{ asset('storage/' . $activeBooking->receipt_photo_path) }}', 'Foto Struk Resi Booking - {{ $activeBooking->buyer_name }}')" class="text-teal-700 hover:text-teal-900 font-bold underline flex items-center gap-1">
-                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-                            <span>Lihat Foto Resi Bukti Transfer</span>
-                        </button>
+                <div class="pt-2 border-t border-teal-200/60 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-[11px]">
+                    <span class="text-slate-600 font-medium">Dokumen Bukti & Tanda Jadi:</span>
+                    <div class="flex items-center gap-2 flex-wrap">
+                        @if($activeBooking->receipt_photo_path)
+                            <button wire:click="openViewerModal('image', '{{ asset('storage/' . $activeBooking->receipt_photo_path) }}', 'Foto Struk Resi Booking - {{ $activeBooking->buyer_name }}')" class="text-teal-700 hover:text-teal-900 font-bold underline flex items-center gap-1 transition">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                                <span>Lihat Foto Resi Bukti Transfer</span>
+                            </button>
+                        @endif
+
+                        <x-button variant="pdf" size="xs" wire:click="openViewerModal('pdf', '{{ route('bookings.receipt', $activeBooking->id) }}?v={{ now()->timestamp }}', 'Kwitansi Tanda Jadi Booking - {{ $activeBooking->buyer_name }}')" icon="pdf">
+                            <span>Kwitansi Tanda Jadi (PDF)</span>
+                        </x-button>
                     </div>
-                @endif
+                </div>
             </div>
         @endif
 
@@ -51,37 +62,21 @@
             <div class="bg-emerald-50/90 border border-emerald-200 rounded-2xl p-4 space-y-3 text-xs shadow-2xs mt-3">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-emerald-900 border-b border-emerald-200/70 pb-2.5">
                     <div class="flex items-center gap-2">
-                        <span class="font-mono font-extrabold text-sm sm:text-base text-emerald-950">{{ $unit->officialDocument->document_number }}</span>
-                        <span class="bg-emerald-700 text-white font-extrabold text-[10px] px-2.5 py-0.5 rounded-lg shadow-2xs">Resmi Terbit</span>
+                        <span class="p-1 rounded bg-emerald-200 text-emerald-800 shrink-0">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 01-2 2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                        </span>
+                        <div>
+                            <h4 class="font-extrabold text-emerald-950 text-xs sm:text-sm">
+                                SPP {{ $unit->project->name ?? 'Perumahan' }}
+                            </h4>
+                            <span class="font-mono font-semibold text-[11px] text-emerald-800 block">
+                                No: {{ $unit->officialDocument->document_number }}
+                            </span>
+                        </div>
                     </div>
-                    <div class="flex items-center gap-1.5 flex-wrap shrink-0 self-start sm:self-center">
-                        <x-button variant="pdf" size="xs" wire:click="openViewerModal('pdf', '{{ route('documents.stream', ['id' => $unit->officialDocument->id]) }}', 'PDF Surat Pesanan Penjualan - {{ $unit->officialDocument->document_number }}')" icon="pdf">
-                            <span>SPP PDF</span>
-                        </x-button>
-                        <x-button variant="pdf" size="xs" wire:click="openViewerModal('pdf', '{{ route('documents.spjb-pdf', ['id' => $unit->officialDocument->id]) }}', 'Pratinjau Surat Perjanjian Jual Beli (SPJB) - {{ $unit->code }}')" icon="pdf">
-                            <span>SPJB PDF</span>
-                        </x-button>
-
-                        @if(auth()->user()->isAdminOrFounder() || auth()->user()->isFinance())
-                            <x-button variant="outline" size="xs" wire:click="editDirectSpp({{ $unit->officialDocument->id }})" title="Edit Data Dokumen SPP">
-                                <svg class="w-3.5 h-3.5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-                                <span>Edit SPP</span>
-                            </x-button>
-                        @endif
-
-                        @if(auth()->user()->isAdminOrFounder())
-                            <button type="button" @click="confirmModalAction({
-                                title: 'Hapus Dokumen SPP & SPJB',
-                                message: 'Yakin ingin menghapus dokumen SPP resmi ini? Status unit akan disesuaikan kembali.',
-                                confirmText: 'Hapus Dokumen',
-                                btnClass: 'px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5',
-                                onConfirm: () => $wire.deleteDirectSpp({{ $unit->officialDocument->id }})
-                            })" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200 text-xs font-bold transition shadow-2xs" title="Hapus Dokumen SPP">
-                                <svg class="w-3.5 h-3.5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                                <span>Hapus SPP</span>
-                            </button>
-                        @endif
-                    </div>
+                    <span class="bg-emerald-700 text-white font-extrabold text-[10px] px-2.5 py-0.5 rounded-lg shadow-2xs self-start sm:self-center">
+                        Resmi Terbit
+                    </span>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-slate-700 pt-1">
                     <div class="bg-white/80 p-2.5 rounded-xl border border-emerald-100">
@@ -105,6 +100,36 @@
                         <span class="text-slate-500 block text-[10px] uppercase font-bold">Alamat Pembeli:</span>
                         <span class="font-medium text-slate-800">{{ $unit->officialDocument->buyer_address }}</span>
                     </div>
+                </div>
+
+                <!-- Tombol Dokumen SPP: Di bawah nama SPP + Nama Perumahan pada ujung kanan bawah card -->
+                <div class="pt-3 border-t border-emerald-200/70 flex items-center justify-end gap-1.5 flex-wrap">
+                    <x-button variant="pdf" size="xs" wire:click="openViewerModal('pdf', '{{ route('documents.stream', ['id' => $unit->officialDocument->id]) }}', 'PDF Surat Pesanan Penjualan - {{ $unit->officialDocument->document_number }}')" icon="pdf">
+                        <span>SPP PDF</span>
+                    </x-button>
+                    <x-button variant="pdf" size="xs" wire:click="openViewerModal('pdf', '{{ route('documents.spjb-pdf', ['id' => $unit->officialDocument->id]) }}', 'Pratinjau Surat Perjanjian Jual Beli (SPJB) - {{ $unit->code }}')" icon="pdf">
+                        <span>SPJB PDF</span>
+                    </x-button>
+
+                    @if(auth()->user()->isAdminOrFounder() || auth()->user()->isFinance())
+                        <x-button variant="outline" size="xs" wire:click="editDirectSpp({{ $unit->officialDocument->id }})" title="Edit Data Dokumen SPP">
+                            <svg class="w-3.5 h-3.5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                            <span>Edit SPP</span>
+                        </x-button>
+                    @endif
+
+                    @if(auth()->user()->isAdminOrFounder())
+                        <button type="button" @click="confirmModalAction({
+                            title: 'Hapus Dokumen SPP & SPJB',
+                            message: 'Yakin ingin menghapus dokumen SPP resmi ini? Status unit akan disesuaikan kembali.',
+                            confirmText: 'Hapus Dokumen',
+                            btnClass: 'px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5',
+                            onConfirm: () => $wire.deleteDirectSpp({{ $unit->officialDocument->id }})
+                        })" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200 text-xs font-bold transition shadow-2xs" title="Hapus Dokumen SPP">
+                            <svg class="w-3.5 h-3.5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                            <span>Hapus SPP</span>
+                        </button>
+                    @endif
                 </div>
             </div>
         @else
