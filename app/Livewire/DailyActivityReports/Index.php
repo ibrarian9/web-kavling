@@ -181,12 +181,17 @@ class Index extends Component
         $this->follow_up_date = '';
     }
 
+    protected function canManageAllMarketingReports(User $user): bool
+    {
+        return $user->isAdminOrFounder() || $user->isSupervisor();
+    }
+
     public function editReport(int $id): void
     {
         $report = DailyActivityReport::findOrFail($id);
         $user = auth()->user();
 
-        if (!$user->isAdminOrFounder() && !$user->isSupervisor() && $report->user_id !== $user->id) {
+        if (!$this->canManageAllMarketingReports($user) && $report->user_id !== $user->id) {
             $msg = 'Anda hanya dapat mengedit laporan aktivitas harian Anda sendiri.';
             session()->flash('error', $msg);
             $this->dispatch('notify', ['type' => 'error', 'title' => 'Gagal!', 'message' => $msg]);
@@ -214,7 +219,17 @@ class Index extends Component
 
     public function showReportDetail(int $id): void
     {
-        $this->selectedReport = DailyActivityReport::with(['user', 'project', 'unit'])->findOrFail($id);
+        $report = DailyActivityReport::with(['user', 'project', 'unit'])->findOrFail($id);
+        $user = auth()->user();
+
+        if (!$this->canManageAllMarketingReports($user) && !$user->isFinance() && $report->user_id !== $user->id) {
+            $msg = 'Anda hanya dapat melihat detail laporan aktivitas harian Anda sendiri.';
+            session()->flash('error', $msg);
+            $this->dispatch('notify', ['type' => 'error', 'title' => 'Gagal!', 'message' => $msg]);
+            return;
+        }
+
+        $this->selectedReport = $report;
         $this->showDetailModal = true;
     }
 
@@ -228,6 +243,13 @@ class Index extends Component
     {
         $user = auth()->user();
 
+        if (!$this->canManageAllMarketingReports($user) && $this->user_id && (int) $this->user_id !== (int) $user->id) {
+            $msg = 'Akses ditolak: Anda tidak dapat menginput data atas nama marketing lain (khusus Admin Utama).';
+            session()->flash('error', $msg);
+            $this->dispatch('notify', ['type' => 'error', 'title' => 'Akses Ditolak!', 'message' => $msg]);
+            return;
+        }
+
         $this->validate([
             'client_name' => 'required|string|max:255',
             'client_phone' => 'required|string|max:50',
@@ -239,7 +261,9 @@ class Index extends Component
             'deal_amount' => 'nullable|numeric|min:0',
         ]);
 
-        $assignedUserId = ($user->isAdminOrFounder() || $user->isSupervisor()) && $this->user_id ? $this->user_id : auth()->id();
+        $assignedUserId = $this->canManageAllMarketingReports($user) && $this->user_id
+            ? (int) $this->user_id
+            : (int) auth()->id();
 
         $payload = [
             'user_id' => $assignedUserId,
@@ -307,8 +331,9 @@ class Index extends Component
         $user = auth()->user();
         $query = DailyActivityReport::with(['user', 'project', 'unit']);
 
-        // Non-founder/non-supervisor marketing users see their own reports by default, unless Founder or Admin
-        if (!$user->isAdminOrFounder() && !$user->isSupervisor() && $user->isMarketing()) {
+        // Non-admin-utama marketing users strictly see only their own reports
+        $scopeOwnReports = !$this->canManageAllMarketingReports($user) && !$user->isFinance();
+        if ($scopeOwnReports) {
             $query->where('user_id', $user->id);
         } elseif ($this->filter_user_id) {
             $query->where('user_id', $this->filter_user_id);
@@ -349,14 +374,14 @@ class Index extends Component
 
         // Stats summary calculation
         $baseStatsQuery = DailyActivityReport::query();
-        if (!$user->isAdminOrFounder() && !$user->isSupervisor() && $user->isMarketing()) {
+        if ($scopeOwnReports) {
             $baseStatsQuery->where('user_id', $user->id);
         }
 
         $totalReportsCount = (clone $baseStatsQuery)->count();
         $todayReportsCount = (clone $baseStatsQuery)->whereDate('report_date', now()->toDateString())->count();
-        $hotDealsCount = (clone $baseStatsQuery)->whereIn('lead_stage', ['hot_deal', 'booking', 'cash_lunas'])->count();
-        $totalDealVolume = (clone $baseStatsQuery)->whereIn('lead_stage', ['booking', 'cash_lunas'])->sum('deal_amount');
+        $hotDealsCount = (clone $baseStatsQuery)->whereIn('lead_stage', DailyActivityReport::HOT_DEAL_STAGES)->count();
+        $totalDealVolume = (clone $baseStatsQuery)->whereIn('lead_stage', DailyActivityReport::CLOSED_DEAL_STAGES)->sum('deal_amount');
 
         // Lead source distribution
         $topLeadSources = (clone $baseStatsQuery)
@@ -367,7 +392,7 @@ class Index extends Component
             ->get();
 
         $allProjects = Project::where('status', 'aktif')->orderBy('name')->get();
-        $allMarketingUsers = User::whereIn('role', ['marketing', 'founder', 'supervisor'])->orderBy('name')->get();
+        $allMarketingUsers = User::whereIn('role', ['marketing', 'founder', 'supervisor', 'admin'])->orderBy('name')->get();
         
         $availableUnits = collect();
         if ($this->project_id) {

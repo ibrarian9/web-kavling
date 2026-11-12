@@ -11,6 +11,11 @@ class BookingReceiptController extends Controller
 {
     public function streamReceipt($id)
     {
+        $user = auth()->user();
+        if ($user && ($user->isAdmin() || $user->isMarketing() || $user->isPengawasProject())) {
+            abort(403, 'Akses ditolak. Anda tidak memiliki hak akses kuitansi booking.');
+        }
+
         $booking = Booking::with(['project', 'unit', 'creator'])->findOrFail($id);
 
         $verifyUrl = route('verify.receipt', $booking->id);

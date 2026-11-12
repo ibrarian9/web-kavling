@@ -13,10 +13,11 @@ use Illuminate\Support\Str;
 beforeEach(function () {
     Role::firstOrCreate(['name' => 'founder']);
     Role::firstOrCreate(['name' => 'supervisor']);
+    Role::firstOrCreate(['name' => 'finance']);
     Role::firstOrCreate(['name' => 'marketing']);
 });
 
-test('end to end price proposal workflow: marketing submits proposal -> founder approves -> selling price updates -> official document generated', function () {
+test('end to end price proposal workflow: finance submits proposal -> founder approves -> selling price updates -> official document generated', function () {
     // 1. Setup Users
     $founder = User::create([
         'name' => 'Founder Proposal E2E',
@@ -35,6 +36,15 @@ test('end to end price proposal workflow: marketing submits proposal -> founder 
         'is_active' => true,
     ]);
     $supervisor->assignRole('supervisor');
+
+    $finance = User::create([
+        'name' => 'Finance Proposal E2E',
+        'email' => 'finance_prop_' . Str::random(5) . '@test.com',
+        'password' => bcrypt('password'),
+        'role' => 'finance',
+        'is_active' => true,
+    ]);
+    $finance->assignRole('finance');
 
     $marketing = User::create([
         'name' => 'Marketing Proposal E2E',
@@ -69,14 +79,19 @@ test('end to end price proposal workflow: marketing submits proposal -> founder 
         'created_by' => $founder->id,
     ]);
 
-    // 3. Marketing Submits Special Price Proposal (Discounted to 140,000,000)
+    // Marketing is blocked from accessing ProposalIndex
     Livewire::actingAs($marketing)
+        ->test(ProposalIndex::class)
+        ->assertStatus(403);
+
+    // 3. Finance Submits Special Price Proposal (Discounted to 140,000,000)
+    Livewire::actingAs($finance)
         ->test(ProposalIndex::class)
         ->call('openCreateModal')
         ->set('unit_id', $unit->id)
         ->set('proposed_price', 140000000)
         ->set('discount_reason', 'Diskon promo akhir tahun')
-        ->set('proposal_notes', 'Disetujui nego Marketing')
+        ->set('proposal_notes', 'Disetujui nego Finance')
         ->call('submitProposal')
         ->assertHasNoErrors();
 
@@ -111,8 +126,8 @@ test('end to end price proposal workflow: marketing submits proposal -> founder 
     $document = OfficialDocument::where('price_proposal_id', $proposal->id)->first();
     expect($document)->not->toBeNull();
 
-    // 5. Marketing Issues SPP for Buyer
-    Livewire::actingAs($marketing)
+    // 5. Finance Issues SPP for Buyer
+    Livewire::actingAs($finance)
         ->test(ProposalIndex::class)
         ->call('openDocModal', $proposal->id)
         ->set('buyer_name', 'Hendra Gunawan')

@@ -13,6 +13,11 @@ class UnpaidInstallmentReportController extends Controller
 {
     public function exportPdf(Request $request)
     {
+        $user = auth()->user();
+        if (!$user || $user->isAdmin() || $user->isMarketing() || $user->isPengawasProject()) {
+            abort(403, 'Akses ditolak. Anda tidak memiliki hak akses laporan tunggakan cicilan.');
+        }
+
         $projectId = $request->query('project_id');
         $search = $request->query('search');
         $month = (int) $request->query('month', now()->month);

@@ -220,7 +220,7 @@
                                     ];
                                 @endphp
 
-                                @if(auth()->user()->canViewUnitExpenses() && $expInfo['has_expenses'])
+                                @if((auth()->user()->canViewUnitExpenses() || (auth()->user()->isMarketing() && in_array($unit->id, $dealtUnitIds ?? [], true))) && $expInfo['has_expenses'])
                                     <span class="inline-flex items-center gap-1 text-[10px] font-black px-2 py-0.5 rounded-md bg-amber-100/90 text-amber-900 border border-amber-300 shadow-2xs" title="Terdapat catatan biaya pengeluaran di detail unit">
                                         <span class="w-1.5 h-1.5 rounded-full bg-amber-600 animate-pulse"></span>
                                         <span>Ada Biaya</span>
@@ -365,7 +365,7 @@
                             </div>
                         @endif
 
-                        @if(!auth()->user()->isAdmin() && $payInfo['deal_price'] > 0 && $unit->category !== 'infrastruktur')
+                        @if(!auth()->user()->isAdmin() && (!auth()->user()->isMarketing() || in_array($unit->id, $dealtUnitIds ?? [], true)) && $payInfo['deal_price'] > 0 && $unit->category !== 'infrastruktur')
                             <div class="flex justify-between items-baseline text-emerald-700 font-bold">
                                 <span>Harga Deal Unit:</span>
                                 <span class="font-mono">Rp {{ number_format($payInfo['deal_price'], 0, ',', '.') }}</span>
@@ -394,7 +394,7 @@
                     </div>
 
                     <div class="flex items-center gap-1.5 whitespace-nowrap flex-nowrap">
-                        @if(!auth()->user()->isPengawasProject() && !auth()->user()->isAdmin() && $unit->category !== 'infrastruktur' && $unit->status === 'tersedia')
+                        @if(!auth()->user()->isPengawasProject() && !auth()->user()->isAdmin() && !auth()->user()->isMarketing() && $unit->category !== 'infrastruktur' && $unit->status === 'tersedia')
                             <x-button variant="blue" size="xs" wire:click="openBookingModal({{ $unit->id }})">
                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                                 <span>Booking</span>
@@ -402,41 +402,42 @@
                         @endif
 
                         <!-- Dropdown Opsi Unit Card -->
-                        <x-action-dropdown title="Opsi Tindakan Unit" size="xs">
-                            <div class="py-1">
-                                @if((auth()->user()->isAdminOrFounder() || auth()->user()->isFinance()) && $unit->category !== 'infrastruktur' && $unit->status === 'tersedia')
-                                    <x-dropdown-item icon="plus" variant="success" href="{{ route('units.show', $unit->id) }}">
-                                        Pembelian Cash
-                                    </x-dropdown-item>
-                                @endif
-
-                                @if(auth()->user()->isMarketing() && $unit->category !== 'infrastruktur' && $unit->status === 'tersedia')
-                                    <x-dropdown-item icon="plus" variant="info" href="{{ route('proposals.index', ['create_unit_id' => $unit->id]) }}">
-                                        Ajukan Harga
-                                    </x-dropdown-item>
-                                @endif
-
-                                @if(auth()->user()->isAdminOrFounder() || auth()->user()->isSupervisor())
-                                    <x-dropdown-item icon="edit" wire:click="editUnit({{ $unit->id }})">
-                                        Edit Unit
-                                    </x-dropdown-item>
-                                @endif
-                            </div>
-
-                            @if(auth()->user()->isSuperAdmin())
+                        @php
+                            $canCashOption = (auth()->user()->isAdminOrFounder() || auth()->user()->isFinance()) && $unit->category !== 'infrastruktur' && $unit->status === 'tersedia';
+                            $canEditUnitOption = auth()->user()->isAdminOrFounder() || auth()->user()->isSupervisor();
+                            $canDeleteUnitOption = auth()->user()->isSuperAdmin();
+                        @endphp
+                        @if($canCashOption || $canEditUnitOption || $canDeleteUnitOption)
+                            <x-action-dropdown title="Opsi Tindakan Unit" size="xs">
                                 <div class="py-1">
-                                    <x-dropdown-item icon="delete" variant="danger" @click="confirmModalAction({
-                                        title: 'Hapus Unit Kavling/Rumah',
-                                        message: 'Yakin ingin menghapus unit {{ $unit->code }} dari sistem beserta seluruh histori terikatnya?',
-                                        confirmText: 'Hapus Unit',
-                                        btnClass: 'px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5',
-                                        onConfirm: () => $wire.deleteUnit({{ $unit->id }})
-                                    })">
-                                        Hapus Unit
-                                    </x-dropdown-item>
+                                    @if($canCashOption)
+                                        <x-dropdown-item icon="plus" variant="success" href="{{ route('units.show', $unit->id) }}">
+                                            Pembelian Cash
+                                        </x-dropdown-item>
+                                    @endif
+
+                                    @if($canEditUnitOption)
+                                        <x-dropdown-item icon="edit" wire:click="editUnit({{ $unit->id }})">
+                                            Edit Unit
+                                        </x-dropdown-item>
+                                    @endif
                                 </div>
-                            @endif
-                        </x-action-dropdown>
+
+                                @if($canDeleteUnitOption)
+                                    <div class="py-1">
+                                        <x-dropdown-item icon="delete" variant="danger" @click="confirmModalAction({
+                                            title: 'Hapus Unit Kavling/Rumah',
+                                            message: 'Yakin ingin menghapus unit {{ $unit->code }} dari sistem beserta seluruh histori terikatnya?',
+                                            confirmText: 'Hapus Unit',
+                                            btnClass: 'px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-1.5',
+                                            onConfirm: () => $wire.deleteUnit({{ $unit->id }})
+                                        })">
+                                            Hapus Unit
+                                        </x-dropdown-item>
+                                    </div>
+                                @endif
+                            </x-action-dropdown>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -614,7 +615,7 @@
     @endif
 
     <!-- Modal Form Booking Unit Langsung (Req #2) -->
-    @if($showBookingModal)
+    @if($showBookingModal && !auth()->user()->isMarketing())
         <x-modal-dialog show="showBookingModal" 
                         title="Booking Unit {{ $bookingUnitCode }}" 
                         subTitle="Pencatatan booking unit & bukti DP langsung di dalam sistem" 

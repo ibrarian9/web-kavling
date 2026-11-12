@@ -5,8 +5,8 @@
     "semantic_hash": ""
   },
   "app/Http/Controllers/BookingReceiptController.php": {
-    "mtime": 1792581933.4674175,
-    "ast_hash": "fc1134048a68806a8745dfb1bff56dec",
+    "mtime": 1794382485.7936826,
+    "ast_hash": "41d48ba846f7dfa821e2551cb7015605",
     "semantic_hash": ""
   },
   "app/Http/Controllers/CashflowReportController.php": {
@@ -45,8 +45,8 @@
     "semantic_hash": ""
   },
   "app/Http/Controllers/InstallmentInvoiceController.php": {
-    "mtime": 1788235163.5122995,
-    "ast_hash": "c09d681b4b5af11e39ccbca25a388cc2",
+    "mtime": 1794477015.2416277,
+    "ast_hash": "7a6c5bf9e55827301334d689ba0ffa97",
     "semantic_hash": ""
   },
   "app/Http/Controllers/LandPaymentReceiptController.php": {
@@ -85,13 +85,13 @@
     "semantic_hash": "f85698324c7ea456d236a2bf63317ff4"
   },
   "app/Http/Controllers/UnitExpensesReportController.php": {
-    "mtime": 1788752161.0851066,
-    "ast_hash": "2055a90be8ac18bf954ebf57d91522e5",
+    "mtime": 1794477010.670591,
+    "ast_hash": "c9132aaa430670b14c74be48fdcfa5b3",
     "semantic_hash": ""
   },
   "app/Http/Controllers/UnpaidInstallmentReportController.php": {
-    "mtime": 1788235253.9207544,
-    "ast_hash": "416e8c6b736f879781e722badb134fd0",
+    "mtime": 1794382487.87276,
+    "ast_hash": "bd5225fb43650e9451db04f233598154",
     "semantic_hash": ""
   },
   "app/Http/Controllers/WorkerSpkController.php": {
@@ -110,8 +110,8 @@
     "semantic_hash": ""
   },
   "app/Livewire/Bookings/Index.php": {
-    "mtime": 1787662678.014549,
-    "ast_hash": "a0072b4bc03fe31a73e88ec664c690ca",
+    "mtime": 1794382475.773476,
+    "ast_hash": "64ddd5161e0a0a7495369f60a1e8db65",
     "semantic_hash": ""
   },
   "app/Livewire/Cashflow/Index.php": {
@@ -120,8 +120,8 @@
     "semantic_hash": ""
   },
   "app/Livewire/Dashboard.php": {
-    "mtime": 1788752078.6006293,
-    "ast_hash": "0ff9b16050c47effbe2ffb78e467f588",
+    "mtime": 1794466635.9488251,
+    "ast_hash": "01803e4bfa52838efbe62e2158bd7e78",
     "semantic_hash": ""
   },
   "app/Livewire/Documents/Index.php": {
@@ -140,13 +140,13 @@
     "semantic_hash": ""
   },
   "app/Livewire/GlobalSearch.php": {
-    "mtime": 1787662645.6928272,
-    "ast_hash": "c94afd5f20d8f4c5a7a4fe03df55107d",
+    "mtime": 1794382326.3468235,
+    "ast_hash": "7851d514f390fa3a1f11c6c83e2fa8d6",
     "semantic_hash": ""
   },
   "app/Livewire/Installments/Index.php": {
-    "mtime": 1787662688.2008064,
-    "ast_hash": "1b13f2c3df9a9262f6bba3d9d6f7d978",
+    "mtime": 1794382481.6285608,
+    "ast_hash": "f8cfb461f6f8db46735c38a7ba36ff16",
     "semantic_hash": ""
   },
   "app/Livewire/ManualInvoices/Index.php": {
@@ -165,13 +165,13 @@
     "semantic_hash": ""
   },
   "app/Livewire/Projects/Show.php": {
-    "mtime": 1788751006.6611812,
-    "ast_hash": "bda9128b1a157c077fe673037064b701",
+    "mtime": 1794477145.992711,
+    "ast_hash": "1c11ff8bd37cadd01f444c18717d87a3",
     "semantic_hash": ""
   },
   "app/Livewire/Proposals/Index.php": {
-    "mtime": 1787662657.3710701,
-    "ast_hash": "8441d52942e23f66ef563c91111a1c9f",
+    "mtime": 1794382509.4050598,
+    "ast_hash": "0649a03ebe7233f48c90ac8f2b7fac4d",
     "semantic_hash": ""
   },
   "app/Livewire/Tutorial/Index.php": {
@@ -180,8 +180,8 @@
     "semantic_hash": ""
   },
   "app/Livewire/Units/Index.php": {
-    "mtime": 1788174943.7029912,
-    "ast_hash": "b425f5462065be191eda7af6ceaed65c",
+    "mtime": 1794477139.2586539,
+    "ast_hash": "cc36da9d1322a5ed36744835b9422315",
     "semantic_hash": ""
   },
   "app/Livewire/Units/LegacySale.php": {
@@ -190,8 +190,8 @@
     "semantic_hash": ""
   },
   "app/Livewire/Units/Show.php": {
-    "mtime": 1792585183.5645812,
-    "ast_hash": "f41628706430b01be8f1af6a4f78394a",
+    "mtime": 1794477000.2905083,
+    "ast_hash": "391db372021fab4c28d7396411d95070",
     "semantic_hash": ""
   },
   "app/Livewire/Users/Index.php": {
@@ -275,8 +275,8 @@
     "semantic_hash": ""
   },
   "app/Models/User.php": {
-    "mtime": 1788750995.41702,
-    "ast_hash": "170ed464a12a61321b95ac7a7af89577",
+    "mtime": 1794476863.9254775,
+    "ast_hash": "bcb2e2d9431c9ad4ca963861b547e8a5",
     "semantic_hash": ""
   },
   "app/Models/WeeklyMaterialPurchase.php": {
@@ -670,8 +670,8 @@
     "semantic_hash": ""
   },
   "resources/views/components/layouts/partials/nav-links.blade.php": {
-    "mtime": 1788751054.590891,
-    "ast_hash": "b2bfe8252ffce21f9976c4d1c31b1075",
+    "mtime": 1794382322.3767936,
+    "ast_hash": "6683f1b74df26a3dbd5412ed6ef2320d",
     "semantic_hash": ""
   },
   "resources/views/components/layouts/partials/sidebar-desktop.blade.php": {
@@ -765,8 +765,8 @@
     "semantic_hash": ""
   },
   "resources/views/livewire/bookings/partials/booking-table-list.blade.php": {
-    "mtime": 1787819069.08731,
-    "ast_hash": "25adc4fa487b28b71160f36886766e23",
+    "mtime": 1794382528.3192372,
+    "ast_hash": "40b04d27260e09d179942331a8a9f992",
     "semantic_hash": ""
   },
   "resources/views/livewire/bookings/partials/booking-viewer-modal.blade.php": {
@@ -790,8 +790,8 @@
     "semantic_hash": ""
   },
   "resources/views/livewire/dashboard.blade.php": {
-    "mtime": 1788752330.3141727,
-    "ast_hash": "6b9cc2ee55bda219ed32b3f081ed7b64",
+    "mtime": 1794458790.7247694,
+    "ast_hash": "300357e5f5160f0e4c4f83991062aab6",
     "semantic_hash": ""
   },
   "resources/views/livewire/documents/index.blade.php": {
@@ -925,8 +925,8 @@
     "semantic_hash": ""
   },
   "resources/views/livewire/projects/partials/tab-units.blade.php": {
-    "mtime": 1787821479.5517983,
-    "ast_hash": "bf6b52c0e68bdf78c855f5dd9b9c5550",
+    "mtime": 1794477149.5627413,
+    "ast_hash": "5e0f554d2e6ac8ad7c4efb26ca31da0c",
     "semantic_hash": ""
   },
   "resources/views/livewire/projects/show.blade.php": {
@@ -950,8 +950,8 @@
     "semantic_hash": ""
   },
   "resources/views/livewire/proposals/partials/proposal-header.blade.php": {
-    "mtime": 1786902750.3507164,
-    "ast_hash": "5fd2bc063efb7c3ffc2e9eb198ab4261",
+    "mtime": 1794382530.8987021,
+    "ast_hash": "25f1e2118dbe73f753cb98f02ac5097e",
     "semantic_hash": ""
   },
   "resources/views/livewire/proposals/partials/proposal-kpi-summary.blade.php": {
@@ -995,8 +995,8 @@
     "semantic_hash": ""
   },
   "resources/views/livewire/units/index.blade.php": {
-    "mtime": 1788751962.2135513,
-    "ast_hash": "946a8e28642b855e5c415094dcd07a4b",
+    "mtime": 1794477143.4406893,
+    "ast_hash": "76a872a422f54cb3bca9666ecdce51de",
     "semantic_hash": ""
   },
   "resources/views/livewire/units/legacy-sale.blade.php": {
@@ -1005,8 +1005,8 @@
     "semantic_hash": "3adf506210539491bda930fd201b45ce"
   },
   "resources/views/livewire/units/partials/header-actions.blade.php": {
-    "mtime": 1788751899.2655659,
-    "ast_hash": "bdf64cf491c2a67c4ba497b651b6bfd1",
+    "mtime": 1794477094.5282774,
+    "ast_hash": "b8cf11646f876ff1ba72b0ccfc37e9f0",
     "semantic_hash": ""
   },
   "resources/views/livewire/units/partials/legacy-create-modal.blade.php": {
@@ -1085,18 +1085,18 @@
     "semantic_hash": ""
   },
   "resources/views/livewire/units/partials/section-installments.blade.php": {
-    "mtime": 1787819098.8444698,
-    "ast_hash": "62a858de516a8049724f70362d19eca6",
+    "mtime": 1794477089.785238,
+    "ast_hash": "e356c6a0b6e5cd70ab73f7ed0a505a16",
     "semantic_hash": ""
   },
   "resources/views/livewire/units/partials/section-payroll-borongan.blade.php": {
-    "mtime": 1787811141.4566019,
-    "ast_hash": "6c587b3e61d5af7c9a10e6f53be60ca3",
+    "mtime": 1794477060.7439976,
+    "ast_hash": "cdee1f1d2d4b4613504012451ef2cab3",
     "semantic_hash": ""
   },
   "resources/views/livewire/units/partials/section-proposals-spp.blade.php": {
-    "mtime": 1792582220.9884381,
-    "ast_hash": "30d490f766fecd2b938c97441ef19466",
+    "mtime": 1794477329.72031,
+    "ast_hash": "861374cebe354656c314eb31a233aa51",
     "semantic_hash": ""
   },
   "resources/views/livewire/units/partials/section-specifications.blade.php": {
@@ -1110,8 +1110,8 @@
     "semantic_hash": ""
   },
   "resources/views/livewire/units/show.blade.php": {
-    "mtime": 1788751941.2718644,
-    "ast_hash": "4372ba14fd2c5d854a22428c04c06317",
+    "mtime": 1794477048.3348958,
+    "ast_hash": "6954dcb3f26048e3fdb0ccc44f652b67",
     "semantic_hash": ""
   },
   "resources/views/livewire/users/index.blade.php": {
@@ -1270,8 +1270,8 @@
     "semantic_hash": ""
   },
   "tests/Feature/BookingRejectionAndHppVisibilityTest.php": {
-    "mtime": 1787664166.7711709,
-    "ast_hash": "3bdb036b9757c13718395b9e76aaa2ea",
+    "mtime": 1794382619.7393274,
+    "ast_hash": "548255137926db5c0d64def7b4527e32",
     "semantic_hash": ""
   },
   "tests/Feature/CashflowAuditTrailTest.php": {
@@ -1360,9 +1360,9 @@
     "semantic_hash": "e6193b33ef3ee8664de96861c7c8c202"
   },
   "tests/Feature/Integration/EndToEndBookingCancellationAndConversionIntegrationTest.php": {
-    "mtime": 1786190790.2931032,
-    "ast_hash": "5df6ae55b53ce6490b9c31b5422dec1d",
-    "semantic_hash": "5df6ae55b53ce6490b9c31b5422dec1d"
+    "mtime": 1794382628.7215512,
+    "ast_hash": "9ce8a547e0de53f9873b6fb6bba6b79e",
+    "semantic_hash": ""
   },
   "tests/Feature/Integration/EndToEndCashflowReportingIntegrationTest.php": {
     "mtime": 1786190294.3975327,
@@ -1380,9 +1380,9 @@
     "semantic_hash": "f3f1963bd664d6f404502258152eea6c"
   },
   "tests/Feature/Integration/EndToEndPriceProposalIntegrationTest.php": {
-    "mtime": 1786190289.5324755,
-    "ast_hash": "ef6a7bc966718d47ec8b5c6da34e66f8",
-    "semantic_hash": "ef6a7bc966718d47ec8b5c6da34e66f8"
+    "mtime": 1794382623.735874,
+    "ast_hash": "87afe5c868f7db398eb149f0b3312567",
+    "semantic_hash": ""
   },
   "tests/Feature/Integration/EndToEndProjectLandPaymentIntegrationTest.php": {
     "mtime": 1786191655.7252693,
@@ -1390,9 +1390,9 @@
     "semantic_hash": "b56f9dbac45a307a7c580a2103d186a1"
   },
   "tests/Feature/Integration/EndToEndPropertySaleIntegrationTest.php": {
-    "mtime": 1786189963.6324618,
-    "ast_hash": "c1a5a7de6280324b699e26594577fd29",
-    "semantic_hash": "c1a5a7de6280324b699e26594577fd29"
+    "mtime": 1794382626.2542167,
+    "ast_hash": "3e17ab58f19d3c9ff475da54c3aa77cf",
+    "semantic_hash": ""
   },
   "tests/Feature/Integration/EndToEndWorkerAndConstructionIntegrationTest.php": {
     "mtime": 1787131929.4645026,
@@ -1735,13 +1735,13 @@
     "semantic_hash": ""
   },
   "app/Livewire/DailyActivityReports/Index.php": {
-    "mtime": 1787047161.010852,
-    "ast_hash": "cbccc652855e5fc0cc5fdf88ee146913",
+    "mtime": 1794476939.8310368,
+    "ast_hash": "2363c221d8069526fd4cb56583d5196a",
     "semantic_hash": ""
   },
   "app/Models/DailyActivityReport.php": {
-    "mtime": 1786349866.2778745,
-    "ast_hash": "349fb3bdf7821ca59b5c5438b2f92edc",
+    "mtime": 1794466633.1567464,
+    "ast_hash": "50f5272435ab7658c645326a63edb9d5",
     "semantic_hash": ""
   },
   "database/migrations/2026_08_10_000001_create_daily_activity_reports_table.php": {
@@ -1755,8 +1755,8 @@
     "semantic_hash": ""
   },
   "tests/Feature/DailyActivityReportTest.php": {
-    "mtime": 1786349936.1143928,
-    "ast_hash": "11aad339f20031fa6c822ede45dd158d",
+    "mtime": 1794466657.754443,
+    "ast_hash": "8d1fcde72ec665f548c63ee1709bf447",
     "semantic_hash": ""
   },
   "database/seeders/DailyActivityReportSeeder.php": {
@@ -1765,8 +1765,8 @@
     "semantic_hash": ""
   },
   "resources/views/livewire/daily-activity-reports/partials/filter-bar.blade.php": {
-    "mtime": 1787046784.3683188,
-    "ast_hash": "199c8334741708d474a618709cc369ab",
+    "mtime": 1794391762.4690351,
+    "ast_hash": "a134aceff1b957a7ee35e05e533839d8",
     "semantic_hash": ""
   },
   "resources/views/livewire/daily-activity-reports/partials/header-banner.blade.php": {
@@ -1775,18 +1775,18 @@
     "semantic_hash": ""
   },
   "resources/views/livewire/daily-activity-reports/partials/modal-detail.blade.php": {
-    "mtime": 1787043798.9056807,
-    "ast_hash": "c64bf25fdf33f53a31c328d349bf39cc",
+    "mtime": 1794382514.6236615,
+    "ast_hash": "0dc559ba65a306459026c221fb3fc054",
     "semantic_hash": ""
   },
   "resources/views/livewire/daily-activity-reports/partials/modal-form.blade.php": {
-    "mtime": 1786902768.21285,
-    "ast_hash": "61b3c7b2a74c584d111b0bcc5cbd6eb2",
+    "mtime": 1794476941.723051,
+    "ast_hash": "d05b0e8361182245c04226950efb1eaa",
     "semantic_hash": ""
   },
   "resources/views/livewire/daily-activity-reports/partials/table-list.blade.php": {
-    "mtime": 1787157232.7889876,
-    "ast_hash": "bcc5f735d1613b6c8354dbcc9af2fa81",
+    "mtime": 1794382512.7573235,
+    "ast_hash": "a25a9e3ae2ab6d5f19d68e415ef1d68e",
     "semantic_hash": ""
   },
   "tests/Feature/DailyActivityReportComprehensiveTest.php": {
@@ -1800,8 +1800,8 @@
     "semantic_hash": ""
   },
   "tests/Feature/AdminRolePermissionsTest.php": {
-    "mtime": 1788752094.7684395,
-    "ast_hash": "c8809aff6cf9474f79739ee208cba7f8",
+    "mtime": 1794382617.7840588,
+    "ast_hash": "484197eda27d747a98f9be9d8d4978b9",
     "semantic_hash": ""
   },
   "database/migrations/2026_08_11_000002_add_receipt_photo_path_to_installment_payments_table.php": {
@@ -1815,13 +1815,13 @@
     "semantic_hash": ""
   },
   "app/Http/Controllers/DailyActivityReportPdfController.php": {
-    "mtime": 1788235358.063982,
-    "ast_hash": "062baa57729e917561bf655850b6d026",
+    "mtime": 1794466642.1520007,
+    "ast_hash": "374d0b52d91088cbb9677c4ffbf30111",
     "semantic_hash": ""
   },
   "resources/views/daily_activity_reports/pdf_report.blade.php": {
-    "mtime": 1787044416.7059076,
-    "ast_hash": "9cbe4f3140267b8a61b5138637106d66",
+    "mtime": 1794466645.3180902,
+    "ast_hash": "6645e63da4be4439898fe184b5540b9f",
     "semantic_hash": ""
   },
   "resources/views/livewire/daily-activity-reports/partials/modal-export-pdf.blade.php": {
@@ -1865,8 +1865,8 @@
     "semantic_hash": ""
   },
   "app/Livewire/Payables/Index.php": {
-    "mtime": 1788707885.5740554,
-    "ast_hash": "4da53ed9dcde96e0087c25926fe05c1a",
+    "mtime": 1794382483.5176103,
+    "ast_hash": "68abdfe0da8aefb7712a6f2e6d06231f",
     "semantic_hash": ""
   },
   "database/migrations/2026_08_13_000001_add_payment_fields_to_weekly_material_purchases_table.php": {
@@ -2045,8 +2045,8 @@
     "semantic_hash": ""
   },
   "resources/views/components/button.blade.php": {
-    "mtime": 1787810907.6193473,
-    "ast_hash": "678d50059fc6ac52b888b536b8d314bc",
+    "mtime": 1794457557.1866634,
+    "ast_hash": "4cf8a22b5c50a9938acaf40f6a27569b",
     "semantic_hash": ""
   },
   "resources/views/components/card.blade.php": {
@@ -2135,8 +2135,8 @@
     "semantic_hash": ""
   },
   "tests/Feature/SystemE2ESuiteTest.php": {
-    "mtime": 1786963028.4247038,
-    "ast_hash": "3af9b4cec99d408d73c2763fd739af22",
+    "mtime": 1794382633.2421613,
+    "ast_hash": "e034a288ba08b43eb77cbd8c4f56457f",
     "semantic_hash": ""
   },
   "resources/views/components/category-badge.blade.php": {
@@ -2310,8 +2310,8 @@
     "semantic_hash": ""
   },
   "tests/Feature/CustomPricingAndExcessLandTest.php": {
-    "mtime": 1787150124.7264984,
-    "ast_hash": "38e487bfac7a8664a3f1e7cb68ab6841",
+    "mtime": 1794382621.2225306,
+    "ast_hash": "cbe781bb7f8037c148a0f80b1e2d6207",
     "semantic_hash": ""
   },
   "tests/Feature/BulkMaterialPurchaseTest.php": {
@@ -2465,33 +2465,53 @@
     "semantic_hash": ""
   },
   "app/Livewire/Units/Concerns/HasUnitBookingsAndCommissions.php": {
-    "mtime": 1792585007.0308142,
-    "ast_hash": "b58877e7830ad5864e6ac86745b1c219",
+    "mtime": 1794382454.8983276,
+    "ast_hash": "416e6767a479dc52f260c963d641e39b",
     "semantic_hash": ""
   },
   "app/Livewire/Units/Concerns/HasUnitInstallments.php": {
-    "mtime": 1792585069.797545,
-    "ast_hash": "fac78cf844fd085d5f4c950dcb3867e6",
+    "mtime": 1794477009.1435788,
+    "ast_hash": "51fd578ce5e7896ec74ee8dfa52603d6",
     "semantic_hash": ""
   },
   "app/Livewire/Units/Concerns/HasUnitMaterials.php": {
-    "mtime": 1792585101.2383962,
-    "ast_hash": "2b86fb0fe4aced4d41fc2528ba4d9f5d",
+    "mtime": 1794477006.8385603,
+    "ast_hash": "dd08e7deaa1978e8d863e4a1379f4b18",
     "semantic_hash": ""
   },
   "app/Livewire/Units/Concerns/HasUnitPayroll.php": {
-    "mtime": 1792585033.237542,
-    "ast_hash": "c68c2e5d1111292e55dd45e66e9f3255",
+    "mtime": 1794477004.6025426,
+    "ast_hash": "e31b7c7c9d267c7cf27d8c01027e9451",
     "semantic_hash": ""
   },
   "app/Livewire/Units/Concerns/HasUnitProposalsAndSpp.php": {
-    "mtime": 1792585141.111462,
-    "ast_hash": "67c982489a3c6cbc2dfdc3f381f3142b",
+    "mtime": 1794382473.9764724,
+    "ast_hash": "5360bb6bfe015565397b8bc826232e23",
     "semantic_hash": ""
   },
   "app/Livewire/Units/Concerns/HasUnitWorkers.php": {
     "mtime": 1792584981.2240894,
     "ast_hash": "a6eefca1bd8c1e8ccc3eb9dfc5af4d6f",
+    "semantic_hash": ""
+  },
+  "tests/Feature/MarketingRestrictionsAndDailyReportWhatsappTest.php": {
+    "mtime": 1794457999.5109096,
+    "ast_hash": "c4374145a6057c844907e3b8dca79074",
+    "semantic_hash": ""
+  },
+  "resources/views/livewire/dashboard/partials/recent-daily-activity-table.blade.php": {
+    "mtime": 1794458928.8208706,
+    "ast_hash": "cc5430c71529e7edd424d327105b8567",
+    "semantic_hash": ""
+  },
+  "resources/views/components/dashboard-feed-card.blade.php": {
+    "mtime": 1794458806.248113,
+    "ast_hash": "b4c8821ba39e8fb69963a15dc65541db",
+    "semantic_hash": ""
+  },
+  "tests/Feature/MarketingDealScopingAndIsolationTest.php": {
+    "mtime": 1794477331.7193277,
+    "ast_hash": "d00693782be630f70e686566fdf87cc3",
     "semantic_hash": ""
   }
 }

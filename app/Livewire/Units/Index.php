@@ -282,6 +282,12 @@ class Index extends Component
     // Direct In-System Booking Methods
     public function openBookingModal($unitId)
     {
+        $user = auth()->user();
+        if (!$user || (!$user->isFinance() && !$user->isFounder())) {
+            session()->flash('error', 'Hanya tim Finance dan Founder yang berhak mendaftarkan booking unit.');
+            return;
+        }
+
         $unit = Unit::findOrFail($unitId);
         if ($unit->category === 'infrastruktur' || $unit->status === 'infrastruktur') {
             session()->flash('error', 'Unit Fasilitas Umum / Infrastruktur tidak dapat dibooking untuk penjualan.');
@@ -311,8 +317,8 @@ class Index extends Component
     public function saveBooking()
     {
         $user = auth()->user();
-        if (!$user->isMarketing() && !$user->isFinance() && !$user->isFounder()) {
-            session()->flash('error', 'Hanya tim Sales Marketing, Finance, dan Founder yang berhak mendaftarkan booking unit.');
+        if (!$user || (!$user->isFinance() && !$user->isFounder())) {
+            session()->flash('error', 'Hanya tim Finance dan Founder yang berhak mendaftarkan booking unit.');
             return;
         }
 
@@ -442,62 +448,89 @@ class Index extends Component
             $projects = Project::where('status', 'aktif')->get();
         }
 
+        $isMarketing = $user && $user->isMarketing();
+        $dealtUnitIds = $isMarketing ? $user->dealtUnitIds() : [];
+        $canViewGlobalExpenses = $user ? $user->canViewUnitExpenses() : false;
+
         $unitPaymentsData = [];
         $unitExpensesData = [];
         foreach ($units as $unit) {
-            $dealPrice = 0;
-            $paidAmount = 0;
-            $isSold = in_array($unit->status, ['disetujui', 'booked', 'terjual', 'converted']);
+            $canSeeUnitInstallments = !$isMarketing || in_array($unit->id, $dealtUnitIds, true);
+            $canSeeUnitExpenses = $canViewGlobalExpenses || ($isMarketing && in_array($unit->id, $dealtUnitIds, true));
 
-            if ($unit->installment) {
-                $dealPrice = (float)$unit->installment->total_price;
-                $paidAmount = (float)$unit->installment->down_payment + (float)$unit->installment->payments->sum('amount_paid');
-            } elseif ($unit->final_selling_price > 0) {
-                $dealPrice = (float)$unit->final_selling_price;
-            } elseif ($unit->officialDocument) {
-                $dealPrice = (float)($unit->officialDocument->proposal->proposed_price ?? 0);
-            } elseif ($prop = $unit->proposals->where('status', 'disetujui')->first()) {
-                $dealPrice = (float)$prop->proposed_price;
-            }
+            if ($canSeeUnitInstallments) {
+                $dealPrice = 0;
+                $paidAmount = 0;
+                $isSold = in_array($unit->status, ['disetujui', 'booked', 'terjual', 'converted']);
 
-            $booking = $unit->activeBooking ?? $unit->bookings->first();
-            if ($booking) {
-                if (!$unit->installment) {
-                    if ($dealPrice <= 0) {
-                        $dealPrice = (float)($booking->total_price ?? $booking->booking_amount);
-                    }
-                    $paidAmount = (float)$booking->booking_amount + (float)$booking->dp_amount;
+                if ($unit->installment) {
+                    $dealPrice = (float)$unit->installment->total_price;
+                    $paidAmount = (float)$unit->installment->down_payment + (float)$unit->installment->payments->sum('amount_paid');
+                } elseif ($unit->final_selling_price > 0) {
+                    $dealPrice = (float)$unit->final_selling_price;
+                } elseif ($unit->officialDocument) {
+                    $dealPrice = (float)($unit->officialDocument->proposal->proposed_price ?? 0);
+                } elseif ($prop = $unit->proposals->where('status', 'disetujui')->first()) {
+                    $dealPrice = (float)$prop->proposed_price;
                 }
+
+                $booking = $unit->activeBooking ?? $unit->bookings->first();
+                if ($booking) {
+                    if (!$unit->installment) {
+                        if ($dealPrice <= 0) {
+                            $dealPrice = (float)($booking->total_price ?? $booking->booking_amount);
+                        }
+                        $paidAmount = (float)$booking->booking_amount + (float)$booking->dp_amount;
+                    }
+                }
+
+                $remainingAmount = max(0, $dealPrice - $paidAmount);
+
+                $unitPaymentsData[$unit->id] = [
+                    'deal_price' => $dealPrice,
+                    'paid_amount' => $paidAmount,
+                    'remaining_amount' => $remainingAmount,
+                    'is_sold' => $isSold,
+                ];
+            } else {
+                $unitPaymentsData[$unit->id] = [
+                    'deal_price' => 0,
+                    'paid_amount' => 0,
+                    'remaining_amount' => 0,
+                    'is_sold' => false,
+                ];
             }
 
-            $remainingAmount = max(0, $dealPrice - $paidAmount);
+            if ($canSeeUnitExpenses) {
+                // Realisasi Biaya Unit (Belanja Material + Gaji Terbayar)
+                $matCost = (float) $unit->materialPurchases->sum('total_price');
+                $salaryCost = (float) $unit->payrolls->sum(fn($p) => (float)$p->payments->sum('amount_paid'));
+                $contractCost = (float) $unit->payrolls->sum('agreed_salary');
+                $realizedCost = $matCost + $salaryCost;
+                $hasExpenses = ($matCost > 0 || $salaryCost > 0 || $contractCost > 0 || $unit->materialPurchases->isNotEmpty() || $unit->payrolls->isNotEmpty());
 
-            $unitPaymentsData[$unit->id] = [
-                'deal_price' => $dealPrice,
-                'paid_amount' => $paidAmount,
-                'remaining_amount' => $remainingAmount,
-                'is_sold' => $isSold,
-            ];
-
-            // Realisasi Biaya Unit (Belanja Material + Gaji Terbayar)
-            $matCost = (float) $unit->materialPurchases->sum('total_price');
-            $salaryCost = (float) $unit->payrolls->sum(fn($p) => (float)$p->payments->sum('amount_paid'));
-            $contractCost = (float) $unit->payrolls->sum('agreed_salary');
-            $realizedCost = $matCost + $salaryCost;
-            $hasExpenses = ($matCost > 0 || $salaryCost > 0 || $contractCost > 0 || $unit->materialPurchases->isNotEmpty() || $unit->payrolls->isNotEmpty());
-
-            $unitExpensesData[$unit->id] = [
-                'has_expenses' => $hasExpenses,
-                'material_cost' => $matCost,
-                'salary_cost' => $salaryCost,
-                'contract_cost' => $contractCost,
-                'total_realized' => $realizedCost,
-            ];
+                $unitExpensesData[$unit->id] = [
+                    'has_expenses' => $hasExpenses,
+                    'material_cost' => $matCost,
+                    'salary_cost' => $salaryCost,
+                    'contract_cost' => $contractCost,
+                    'total_realized' => $realizedCost,
+                ];
+            } else {
+                $unitExpensesData[$unit->id] = [
+                    'has_expenses' => false,
+                    'material_cost' => 0,
+                    'salary_cost' => 0,
+                    'contract_cost' => 0,
+                    'total_realized' => 0,
+                ];
+            }
         }
 
         return view('livewire.units.index', [
             'units' => $units,
             'projects' => $projects,
+            'dealtUnitIds' => $dealtUnitIds,
             'unitPaymentsData' => $unitPaymentsData,
             'unitExpensesData' => $unitExpensesData,
             'totalUnitsCount' => $totalUnitsCount,

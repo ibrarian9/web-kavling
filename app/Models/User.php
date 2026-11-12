@@ -107,6 +107,68 @@ class User extends Authenticatable
         return !$this->isMarketing() && !$this->isAdmin();
     }
 
+    /**
+     * Collect all Unit IDs where this user is the closing/handling marketing rep.
+     *
+     * @return array<int>
+     */
+    public function dealtUnitIds(): array
+    {
+        $fromReports = DailyActivityReport::where('user_id', $this->id)
+            ->whereNotNull('unit_id')
+            ->whereIn('lead_stage', DailyActivityReport::CLOSED_DEAL_STAGES)
+            ->pluck('unit_id')
+            ->all();
+
+        $fromCommissions = UnitCommission::where('marketing_id', $this->id)
+            ->pluck('unit_id')
+            ->all();
+
+        $fromBookings = Booking::where('created_by', $this->id)
+            ->where('status', '!=', 'cancelled')
+            ->pluck('unit_id')
+            ->all();
+
+        $fromProposals = PriceProposal::where('proposed_by', $this->id)
+            ->where('status', 'disetujui')
+            ->pluck('unit_id')
+            ->all();
+
+        return array_values(array_unique(array_map('intval', array_filter(array_merge(
+            $fromReports,
+            $fromCommissions,
+            $fromBookings,
+            $fromProposals,
+        )))));
+    }
+
+    public function hasDealtUnit(int $unitId): bool
+    {
+        return in_array($unitId, $this->dealtUnitIds(), true);
+    }
+
+    public function canViewUnitExpensesFor(?Unit $unit = null): bool
+    {
+        if ($this->isMarketing()) {
+            return $unit !== null && $this->hasDealtUnit($unit->id);
+        }
+
+        return $this->canViewUnitExpenses();
+    }
+
+    public function canViewUnitInstallmentsFor(?Unit $unit = null): bool
+    {
+        if ($this->isPengawasProject()) {
+            return false;
+        }
+
+        if ($this->isMarketing()) {
+            return $unit !== null && $this->hasDealtUnit($unit->id);
+        }
+
+        return true;
+    }
+
     public function canViewHpp(): bool
     {
         if ($this->isAdmin()) {

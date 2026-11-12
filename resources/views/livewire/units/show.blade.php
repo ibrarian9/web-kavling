@@ -28,7 +28,7 @@
                 <!-- Assigned Workers (Mandor & Tukang) Card -->
                 @include('livewire.units.partials.section-workers')
 
-                @if(auth()->user()->canViewUnitExpenses())
+                @if($canViewUnitExpenses)
                     <!-- Gaji Borongan Worker Unit Card -->
                     @include('livewire.units.partials.section-payroll-borongan')
                 @endif
@@ -40,14 +40,18 @@
                     <!-- Proposal & Official Document (SPP) Status Card -->
                     @include('livewire.units.partials.section-proposals-spp')
 
-                    <!-- Installment & Buyer Payments Card -->
-                    @include('livewire.units.partials.section-installments')
+                    @if($canViewUnitInstallments)
+                        <!-- Installment & Buyer Payments Card -->
+                        @include('livewire.units.partials.section-installments')
+                    @endif
 
-                    <!-- Unit Seller Commission & Installments Card -->
-                    @include('livewire.units.partials.section-commissions', ['unitCommissions' => $unitCommissions ?? collect()])
+                    @if(!auth()->user()->isMarketing() || $canViewUnitInstallments)
+                        <!-- Unit Seller Commission & Installments Card -->
+                        @include('livewire.units.partials.section-commissions', ['unitCommissions' => $unitCommissions ?? collect()])
+                    @endif
                 @endif
 
-                @if(auth()->user()->canViewUnitExpenses())
+                @if($canViewUnitExpenses)
                     <!-- Unit Expenses & Material Purchases Combined Table Card -->
                     @include('livewire.units.partials.section-expenses')
                 @endif
@@ -64,13 +68,15 @@
     @include('livewire.units.partials.modal-edit-unit')
 
     @if($unit->category !== 'infrastruktur' && !auth()->user()->isAdmin())
-        @include('livewire.units.partials.modal-booking')
+        @if(!auth()->user()->isMarketing())
+            @include('livewire.units.partials.modal-booking')
+            @include('livewire.units.partials.modal-direct-proposal')
+        @endif
         @include('livewire.units.partials.modal-installment-payment')
         @include('livewire.units.partials.modal-setup-installment')
         @include('livewire.units.partials.modal-commission')
         @include('livewire.units.partials.modal-commission-payment')
         @include('livewire.units.partials.modal-convert-to-cash')
         @include('livewire.units.partials.modal-direct-spp')
-        @include('livewire.units.partials.modal-direct-proposal')
     @endif
 </div>

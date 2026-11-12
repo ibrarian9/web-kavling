@@ -133,3 +133,38 @@ test('filtering daily activity reports by lead stage and project', function () {
         ->assertSee('Klien Facebook')
         ->assertDontSee('Klien TikTok');
 });
+
+test('deal stage is available in lead stages and works across form, filter, metrics, and pdf export', function () {
+    expect(DailyActivityReport::leadStages())->toHaveKey('deal', 'Deal');
+
+    $this->actingAs($this->marketing);
+
+    Livewire::test(\App\Livewire\DailyActivityReports\Index::class)
+        ->call('openCreateModal')
+        ->set('client_name', 'Ibu Maya Deal Stage')
+        ->set('client_phone', '081288889999')
+        ->set('lead_source', 'whatsapp')
+        ->set('interaction_type', 'presentasi')
+        ->set('lead_stage', 'deal')
+        ->set('payment_type', 'dp_booking')
+        ->set('deal_amount', 25000000)
+        ->set('project_id', $this->project->id)
+        ->set('unit_id', $this->unit->id)
+        ->call('saveReport')
+        ->assertHasNoErrors();
+
+    $report = DailyActivityReport::where('client_name', 'Ibu Maya Deal Stage')->first();
+    expect($report)->not->toBeNull();
+    expect($report->lead_stage)->toBe('deal');
+    expect($report->lead_stage_label)->toBe('Deal');
+    expect($report->stage_badge_class)->toContain('bg-green-100');
+
+    Livewire::test(\App\Livewire\DailyActivityReports\Index::class)
+        ->set('filter_lead_stage', 'deal')
+        ->assertSee('Ibu Maya Deal Stage')
+        ->assertViewHas('hotDealsCount', 1)
+        ->assertViewHas('totalDealVolume', fn ($val) => (float) $val === 25000000.0);
+
+    $this->get(route('daily-activity-reports.export-pdf', ['lead_stage' => 'deal']))
+        ->assertStatus(200);
+});

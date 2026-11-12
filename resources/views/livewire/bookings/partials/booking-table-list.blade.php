@@ -94,13 +94,13 @@
                 <td data-card-action class="p-3.5 text-center whitespace-nowrap">
                     <div class="inline-flex items-center justify-center gap-1.5 whitespace-nowrap">
                         @if ($b->status === 'active')
-                            @if (auth()->user()->isFounder() || auth()->user()->isMarketing() || auth()->user()->isSupervisor() || auth()->user()->isFinance())
+                            @if (auth()->user()->isFounder() || auth()->user()->isSupervisor() || auth()->user()->isFinance())
                                 <x-button variant="emerald" size="xs" href="{{ route('proposals.index', ['booking_id' => $b->id, 'unit_id' => $b->unit_id]) }}" wire:navigate.hover title="Ajukan Proposal SPP" icon="plus">
                                     <span>Proposal SPP</span>
                                 </x-button>
                             @endif
 
-                            @if (auth()->user()->isAdminOrFounder() || auth()->user()->isMarketing() || auth()->user()->isSupervisor() || auth()->user()->isFinance())
+                            @if (auth()->user()->isAdminOrFounder() || auth()->user()->isSupervisor() || auth()->user()->isFinance())
                                 <x-action-dropdown title="Menu Opsi Booking" size="xs">
                                     <div class="py-1">
                                         <x-dropdown-item icon="edit" wire:click="editBooking({{ $b->id }})">

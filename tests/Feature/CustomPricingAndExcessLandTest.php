@@ -90,7 +90,9 @@ test('founder can use price per m2 mode in direct SPP calculation', function () 
     expect((float)$unit->final_selling_price)->toBe(165000000.0);
 });
 
-test('marketing can propose price using price per m2 mode and founder can approve or edit', function () {
+test('founder can propose price using price per m2 mode and marketing is blocked from direct proposals', function () {
+    Role::findOrCreate('finance', 'web');
+
     $founder = User::create([
         'name' => 'Founder Leader',
         'email' => 'founder_lead@example.com',
@@ -99,6 +101,15 @@ test('marketing can propose price using price per m2 mode and founder can approv
         'is_active' => true,
     ]);
     $founder->assignRole('founder');
+
+    $finance = User::create([
+        'name' => 'Finance Proposer',
+        'email' => 'finance_prop@example.com',
+        'password' => bcrypt('password'),
+        'role' => 'finance',
+        'is_active' => true,
+    ]);
+    $finance->assignRole('finance');
 
     $marketing = User::create([
         'name' => 'Marketing Agent',
@@ -133,27 +144,38 @@ test('marketing can propose price using price per m2 mode and founder can approv
         'created_by' => $founder->id,
     ]);
 
-    // Marketing opens modal and uses per_sqm mode
+    // Marketing cannot open or submit direct price proposal
     Livewire::actingAs($marketing)
+        ->test(\App\Livewire\Units\Show::class, ['id' => $unit->id])
+        ->call('openDirectProposalModal')
+        ->assertSet('showDirectProposalModal', false)
+        ->set('prop_proposed_price', 180000000)
+        ->call('saveDirectProposal');
+
+    expect(PriceProposal::where('unit_id', $unit->id)->count())->toBe(0);
+
+    // Finance submits pending proposal via Proposals\Index
+    Livewire::actingAs($finance)
+        ->test(\App\Livewire\Proposals\Index::class)
+        ->call('openCreateModal')
+        ->set('unit_id', $unit->id)
+        ->set('proposed_price', 175000000)
+        ->set('proposal_notes', 'Pengajuan harga awal')
+        ->call('submitProposal')
+        ->assertHasNoErrors();
+
+    $proposal = PriceProposal::where('unit_id', $unit->id)->first();
+    expect($proposal)->not->toBeNull();
+    expect($proposal->status)->toBe('menunggu');
+
+    // Founder opens direct proposal modal with per_sqm mode & approves proposal
+    Livewire::actingAs($founder)
         ->test(\App\Livewire\Units\Show::class, ['id' => $unit->id])
         ->call('openDirectProposalModal')
         ->assertSet('showDirectProposalModal', true)
         ->set('prop_price_mode', 'per_sqm')
         ->set('prop_price_per_sqm', 1500000)
         ->assertSet('prop_proposed_price', 180000000) // 120 m2 * 1.500.000
-        ->set('prop_notes', 'Nego harga per meter sesuai kesepakatan buyer')
-        ->call('saveDirectProposal')
-        ->assertHasNoErrors()
-        ->assertSet('showDirectProposalModal', false);
-
-    $proposal = PriceProposal::where('unit_id', $unit->id)->first();
-    expect($proposal)->not->toBeNull();
-    expect((float)$proposal->proposed_price)->toBe(180000000.0);
-    expect($proposal->status)->toBe('menunggu');
-
-    // Founder can edit or approve proposal
-    Livewire::actingAs($founder)
-        ->test(\App\Livewire\Units\Show::class, ['id' => $unit->id])
         ->call('editDirectProposal', $proposal->id)
         ->assertSet('showDirectProposalModal', true)
         ->assertSet('editingProposalId', $proposal->id)

@@ -41,6 +41,11 @@ trait HasUnitInstallments
 
     public function openInstallmentPaymentModal(): void
     {
+        if (!$this->canManageFinancial()) {
+            session()->flash('error', 'Akses ditolak. Hanya Founder dan Finance.');
+            return;
+        }
+
         $unit = Unit::with('installment')->findOrFail($this->unitId);
         if (!$unit->installment) {
             session()->flash('error', 'Unit ini belum memiliki skema cicilan aktif.');

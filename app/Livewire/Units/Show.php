@@ -254,110 +254,128 @@ class Show extends Component
             })
             ->get();
 
-        $manualInvoices = ManualInvoice::with('creator')
-            ->where('unit_id', $unit->id)
-            ->latest('invoice_date')
-            ->get();
+        $authUser = auth()->user();
+        $canViewUnitExpenses = $authUser ? $authUser->canViewUnitExpensesFor($unit) : false;
+        $canViewUnitInstallments = $authUser ? $authUser->canViewUnitInstallmentsFor($unit) : false;
 
-        $manualInvoiceCashIn = $manualInvoices->where('status', 'lunas')->where('type', 'masuk')->sum('amount');
-        $totalCashIn = $manualInvoiceCashIn;
+        $manualInvoices = collect();
+        $totalCashIn = 0;
 
-        if ($unit->installment) {
-            $totalCashIn += $unit->installment->down_payment;
-            $totalCashIn += $unit->installment->payments->sum('amount_paid');
-        } else {
-            $bookingPaid = $unit->bookings->where('status', '!=', 'cancelled')->sum(fn($b) => (float)$b->booking_amount + (float)$b->dp_amount);
-            $totalCashIn += $bookingPaid;
+        if ($canViewUnitInstallments) {
+            $manualInvoices = ManualInvoice::with('creator')
+                ->where('unit_id', $unit->id)
+                ->latest('invoice_date')
+                ->get();
+
+            $manualInvoiceCashIn = $manualInvoices->where('status', 'lunas')->where('type', 'masuk')->sum('amount');
+            $totalCashIn = $manualInvoiceCashIn;
+
+            if ($unit->installment) {
+                $totalCashIn += $unit->installment->down_payment;
+                $totalCashIn += $unit->installment->payments->sum('amount_paid');
+            } else {
+                $bookingPaid = $unit->bookings->where('status', '!=', 'cancelled')->sum(fn($b) => (float)$b->booking_amount + (float)$b->dp_amount);
+                $totalCashIn += $bookingPaid;
+            }
         }
 
-        $unitPayrolls = WorkerUnitPayroll::with(['worker', 'payments'])
-            ->where('unit_id', $unit->id)
-            ->latest('id')
-            ->get();
-
-        $salaryPayments = WorkerSalaryPayment::whereHas('payroll', function($q) use ($unit) {
-            $q->where('unit_id', $unit->id);
-        })->with(['payroll.worker'])->get();
-
-        $materialPurchases = WeeklyMaterialPurchase::with(['worker', 'pengawas'])
-            ->where('unit_id', $unit->id)
-            ->get();
-
+        $unitPayrolls = collect();
+        $salaryPayments = collect();
+        $materialPurchases = collect();
         $combinedExpenses = collect();
 
-        foreach ($unitPayrolls as $up) {
-            $combinedExpenses->push((object)[
-                'id' => $up->id,
-                'source_type' => 'payroll_setup',
-                'date' => $up->created_at,
-                'category_badge' => 'Kontrak Gaji',
-                'badge_class' => 'bg-purple-100 text-purple-800 border-purple-200',
-                'description' => 'Kontrak Borongan Gaji ' . ($up->worker->name ?? 'Pekerja Lapangan') . ' (' . strtoupper($up->status) . ' - Terbayar Rp ' . number_format($up->paid_amount, 0, ',', '.') . ' / Total Rp ' . number_format($up->agreed_salary, 0, ',', '.') . ')',
-                'notes' => $up->notes,
-                'worker_name' => $up->worker->name ?? 'Pekerja Lapangan',
-                'store_name' => null,
-                'amount' => $up->agreed_salary,
-                'gross_amount' => $up->agreed_salary,
-                'loan_deduction' => 0,
-                'receipt_photo_path' => null,
-                'pdf_url' => null,
-                'qr_url' => null,
-                'created_at' => $up->created_at,
-            ]);
-        }
+        if ($canViewUnitExpenses) {
+            $unitPayrolls = WorkerUnitPayroll::with(['worker', 'payments'])
+                ->where('unit_id', $unit->id)
+                ->latest('id')
+                ->get();
 
-        foreach ($salaryPayments as $sp) {
-            $combinedExpenses->push((object)[
-                'id' => $sp->id,
-                'source_type' => 'salary_payment',
-                'date' => $sp->payment_date,
-                'category_badge' => 'Gaji Worker',
-                'badge_class' => 'bg-emerald-100 text-emerald-800 border-emerald-200',
-                'description' => 'Pembayaran Gaji ' . ($sp->payroll->worker->name ?? 'Pekerja Lapangan') . ' (' . str_replace('_', ' ', $sp->payment_method) . ')',
-                'notes' => $sp->notes,
-                'worker_name' => $sp->payroll->worker->name ?? 'Pekerja Lapangan',
-                'store_name' => null,
-                'amount' => $sp->amount_paid,
-                'gross_amount' => $sp->amount_gross,
-                'loan_deduction' => $sp->loan_deduction,
-                'receipt_photo_path' => $sp->receipt_photo_path,
-                'pdf_url' => route('payroll.receipt', $sp->uuid),
-                'qr_url' => route('verify.payroll', $sp->uuid),
-                'created_at' => $sp->created_at,
-            ]);
-        }
+            $salaryPayments = WorkerSalaryPayment::whereHas('payroll', function($q) use ($unit) {
+                $q->where('unit_id', $unit->id);
+            })->with(['payroll.worker'])->get();
 
-        foreach ($materialPurchases as $mp) {
-            $combinedExpenses->push((object)[
-                'id' => $mp->id,
-                'source_type' => 'material',
-                'date' => $mp->purchase_date,
-                'category_badge' => 'Barang / Material',
-                'badge_class' => 'bg-amber-100 text-amber-800 border-amber-200',
-                'description' => $mp->item_name . ' (' . number_format($mp->quantity, 0, ',', '.') . ' ' . $mp->unit_measure . ' @ Rp ' . number_format($mp->unit_price, 0, ',', '.') . ')',
-                'notes' => $mp->notes,
-                'worker_name' => $mp->worker->name ?? null,
-                'store_name' => $mp->store_name ?: '-',
-                'amount' => $mp->total_price,
-                'gross_amount' => $mp->total_price,
-                'loan_deduction' => 0,
-                'receipt_photo_path' => $mp->receipt_photo_path,
-                'pdf_url' => route('material-purchases.receipt', $mp->id),
-                'qr_url' => route('verify.material-purchase', $mp->id),
-                'created_at' => $mp->created_at,
-            ]);
-        }
+            $materialPurchases = WeeklyMaterialPurchase::with(['worker', 'pengawas'])
+                ->where('unit_id', $unit->id)
+                ->get();
 
-        $combinedExpenses = $combinedExpenses->sortByDesc(function ($item) {
-            return ($item->date ? $item->date->format('Y-m-d') : '0000-00-00') . '_' . $item->id;
-        })->values();
+            foreach ($unitPayrolls as $up) {
+                $combinedExpenses->push((object)[
+                    'id' => $up->id,
+                    'source_type' => 'payroll_setup',
+                    'date' => $up->created_at,
+                    'category_badge' => 'Kontrak Gaji',
+                    'badge_class' => 'bg-purple-100 text-purple-800 border-purple-200',
+                    'description' => 'Kontrak Borongan Gaji ' . ($up->worker->name ?? 'Pekerja Lapangan') . ' (' . strtoupper($up->status) . ' - Terbayar Rp ' . number_format($up->paid_amount, 0, ',', '.') . ' / Total Rp ' . number_format($up->agreed_salary, 0, ',', '.') . ')',
+                    'notes' => $up->notes,
+                    'worker_name' => $up->worker->name ?? 'Pekerja Lapangan',
+                    'store_name' => null,
+                    'amount' => $up->agreed_salary,
+                    'gross_amount' => $up->agreed_salary,
+                    'loan_deduction' => 0,
+                    'receipt_photo_path' => null,
+                    'pdf_url' => null,
+                    'qr_url' => null,
+                    'created_at' => $up->created_at,
+                ]);
+            }
+
+            foreach ($salaryPayments as $sp) {
+                $combinedExpenses->push((object)[
+                    'id' => $sp->id,
+                    'source_type' => 'salary_payment',
+                    'date' => $sp->payment_date,
+                    'category_badge' => 'Gaji Worker',
+                    'badge_class' => 'bg-emerald-100 text-emerald-800 border-emerald-200',
+                    'description' => 'Pembayaran Gaji ' . ($sp->payroll->worker->name ?? 'Pekerja Lapangan') . ' (' . str_replace('_', ' ', $sp->payment_method) . ')',
+                    'notes' => $sp->notes,
+                    'worker_name' => $sp->payroll->worker->name ?? 'Pekerja Lapangan',
+                    'store_name' => null,
+                    'amount' => $sp->amount_paid,
+                    'gross_amount' => $sp->amount_gross,
+                    'loan_deduction' => $sp->loan_deduction,
+                    'receipt_photo_path' => $sp->receipt_photo_path,
+                    'pdf_url' => route('payroll.receipt', $sp->uuid),
+                    'qr_url' => route('verify.payroll', $sp->uuid),
+                    'created_at' => $sp->created_at,
+                ]);
+            }
+
+            foreach ($materialPurchases as $mp) {
+                $combinedExpenses->push((object)[
+                    'id' => $mp->id,
+                    'source_type' => 'material',
+                    'date' => $mp->purchase_date,
+                    'category_badge' => 'Barang / Material',
+                    'badge_class' => 'bg-amber-100 text-amber-800 border-amber-200',
+                    'description' => $mp->item_name . ' (' . number_format($mp->quantity, 0, ',', '.') . ' ' . $mp->unit_measure . ' @ Rp ' . number_format($mp->unit_price, 0, ',', '.') . ')',
+                    'notes' => $mp->notes,
+                    'worker_name' => $mp->worker->name ?? null,
+                    'store_name' => $mp->store_name ?: '-',
+                    'amount' => $mp->total_price,
+                    'gross_amount' => $mp->total_price,
+                    'loan_deduction' => 0,
+                    'receipt_photo_path' => $mp->receipt_photo_path,
+                    'pdf_url' => route('material-purchases.receipt', $mp->id),
+                    'qr_url' => route('verify.material-purchase', $mp->id),
+                    'created_at' => $mp->created_at,
+                ]);
+            }
+
+            $combinedExpenses = $combinedExpenses->sortByDesc(function ($item) {
+                return ($item->date ? $item->date->format('Y-m-d') : '0000-00-00') . '_' . $item->id;
+            })->values();
+        }
 
         $allWorkers = Worker::where('status', 'active')->orderBy('name')->get();
 
-        $unitCommissions = UnitCommission::with(['payments.creator', 'marketing', 'creator'])
-            ->where('unit_id', $unit->id)
-            ->latest('id')
-            ->get();
+        $commissionsQuery = UnitCommission::with(['payments.creator', 'marketing', 'creator'])
+            ->where('unit_id', $unit->id);
+
+        if ($authUser && $authUser->isMarketing()) {
+            $commissionsQuery->where('marketing_id', $authUser->id);
+        }
+
+        $unitCommissions = $commissionsQuery->latest('id')->get();
 
         $totalMaterialCost = (float) $materialPurchases->sum('total_price');
         $totalSalaryCost = (float) $salaryPayments->sum('amount_paid');
@@ -366,6 +384,8 @@ class Show extends Component
 
         return view('livewire.units.show', [
             'unit' => $unit,
+            'canViewUnitExpenses' => $canViewUnitExpenses,
+            'canViewUnitInstallments' => $canViewUnitInstallments,
             'unitAssignments' => $unitAssignments,
             'materialPurchases' => $materialPurchases,
             'manualInvoices' => $manualInvoices,

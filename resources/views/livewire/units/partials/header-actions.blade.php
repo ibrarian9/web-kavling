@@ -47,7 +47,7 @@
             </x-button>
 
             <!-- Main Sales & Booking Action Group -->
-            @if($unit->category !== 'infrastruktur' && $unit->status === 'tersedia')
+            @if($unit->category !== 'infrastruktur' && $unit->status === 'tersedia' && !auth()->user()->isPengawasProject() && !auth()->user()->isAdmin() && !auth()->user()->isMarketing())
                 <div class="inline-flex rounded-xl shadow-2xs border border-slate-200 overflow-hidden bg-white divide-x divide-slate-100 shrink-0">
                     @if((auth()->user()->isFounder() || auth()->user()->isFinance()))
                         <button type="button" wire:click="openDirectSppModal" title="Terbitkan Surat Pesanan SPP & SPJB PDF (Pembelian Cash)" class="px-3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs transition flex items-center gap-1.5 shadow-2xs">
@@ -56,19 +56,10 @@
                         </button>
                     @endif
 
-                    @if(!auth()->user()->isPengawasProject() && !auth()->user()->isAdmin())
-                        <button type="button" wire:click="openBookingModal" title="Booking Unit Ini" class="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs transition flex items-center gap-1.5 shadow-2xs">
-                            <svg class="w-4 h-4 text-white shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                            <span>Booking Unit Ini</span>
-                        </button>
-                    @endif
-
-                    @if(auth()->user()->isMarketing())
-                        <a href="{{ route('proposals.index', ['create_unit_id' => $unit->id]) }}" class="px-3 py-2 bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs transition flex items-center gap-1.5 shadow-2xs">
-                            <svg class="w-4 h-4 text-white shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                            <span>Ajukan Penawaran Harga &rarr;</span>
-                        </a>
-                    @endif
+                    <button type="button" wire:click="openBookingModal" title="Booking Unit Ini" class="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs transition flex items-center gap-1.5 shadow-2xs">
+                        <svg class="w-4 h-4 text-white shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                        <span>Booking Unit Ini</span>
+                    </button>
                 </div>
             @endif
 
@@ -239,8 +230,16 @@
             </div>
         </div>
     @elseif(auth()->user()->canViewSalesPrices())
+        @php
+            $salesCardColsClass = match (2 + ($canViewUnitInstallments ? 2 : 0) + ($canViewUnitExpenses ? 1 : 0)) {
+                5 => 'xl:grid-cols-5',
+                4 => 'xl:grid-cols-4',
+                3 => 'xl:grid-cols-3',
+                default => 'xl:grid-cols-2',
+            };
+        @endphp
         <!-- Key Metrics Highlight Cards (Standard Kavling & Rumah - Sales View) -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 {{ auth()->user()->canViewUnitExpenses() ? 'xl:grid-cols-5' : 'xl:grid-cols-4' }} gap-3.5">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 {{ $salesCardColsClass }} gap-3.5">
             <!-- 1. Harga Total Unit (Harga Jual + Kelebihan Luas) -->
             <div class="card-clean p-4 sm:p-5 transition-all duration-200 hover:-translate-y-0.5 border-indigo-200/80 bg-gradient-to-br from-white to-indigo-50/30">
                 <div class="flex items-center justify-between">
@@ -275,51 +274,53 @@
                 <p class="text-[11px] text-slate-400 mt-1 truncate">Status: {{ ucfirst($unit->status) }}</p>
             </div>
 
-            <!-- 3. Booking Fee / Tanda Jadi Unit (Financial Metric) -->
-            @php
-                $activeB = $unit->activeBooking ?? $unit->bookings->first();
-                $bookingFeeAmount = $activeB ? $activeB->booking_amount : 5000000;
-            @endphp
-            <div class="card-clean p-4 sm:p-5 transition-all duration-200 hover:-translate-y-0.5 border-teal-200/80 bg-gradient-to-br from-white to-teal-50/30">
-                <div class="flex items-center justify-between">
-                    <span class="text-[11px] font-bold text-teal-800 uppercase tracking-wider">Booking Fee</span>
-                    <div class="p-2 rounded-xl bg-teal-50 text-teal-600 border border-teal-100 shadow-2xs shrink-0">
-                        <svg class="w-4 h-4 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5h14a2 2 0 012 2v3a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2zm0 8h14a2 2 0 012 2v3a2 2 0 01-2 2H5a2 2 0 01-2-2v-3a2 2 0 01-2-2z"/></svg>
-                    </div>
-                </div>
-                <p class="text-xl sm:text-2xl font-extrabold text-teal-800 font-mono mt-2 tracking-tight">
-                    Rp {{ number_format($bookingFeeAmount, 0, ',', '.') }}
-                </p>
-                <p class="text-[11px] text-slate-500 mt-1 truncate">
-                    @if($activeB)
-                        <span class="font-semibold text-teal-900">{{ $activeB->buyer_name }}</span> ({{ ucfirst($activeB->status) }})
-                    @else
-                        <span class="text-slate-400">Patokan Standar</span>
-                    @endif
-                </p>
-            </div>
-
-            <!-- 4. Total Setoran Pembeli -->
-            <div class="card-clean p-4 sm:p-5 transition-all duration-200 hover:-translate-y-0.5">
-                <div class="flex items-center justify-between">
-                    <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Total Setoran</span>
-                    <div class="p-2 rounded-xl bg-purple-50 text-purple-600 border border-purple-100 shadow-2xs shrink-0">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-                    </div>
-                </div>
+            @if($canViewUnitInstallments)
+                <!-- 3. Booking Fee / Tanda Jadi Unit (Financial Metric) -->
                 @php
-                    $cashIn = 0;
-                    if ($unit->installment) {
-                        $cashIn = (float)$unit->installment->down_payment + (float)$unit->installment->payments->sum('amount_paid');
-                    }
+                    $activeB = $unit->activeBooking ?? $unit->bookings->first();
+                    $bookingFeeAmount = $activeB ? $activeB->booking_amount : 5000000;
                 @endphp
-                <p class="text-xl sm:text-2xl font-extrabold text-purple-900 font-mono mt-2 tracking-tight">
-                    Rp {{ number_format($cashIn, 0, ',', '.') }}
-                </p>
-                <p class="text-[11px] text-slate-400 mt-1 truncate">Total DP & Cicilan Masuk</p>
-            </div>
+                <div class="card-clean p-4 sm:p-5 transition-all duration-200 hover:-translate-y-0.5 border-teal-200/80 bg-gradient-to-br from-white to-teal-50/30">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[11px] font-bold text-teal-800 uppercase tracking-wider">Booking Fee</span>
+                        <div class="p-2 rounded-xl bg-teal-50 text-teal-600 border border-teal-100 shadow-2xs shrink-0">
+                            <svg class="w-4 h-4 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5h14a2 2 0 012 2v3a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2zm0 8h14a2 2 0 012 2v3a2 2 0 01-2 2H5a2 2 0 01-2-2v-3a2 2 0 01-2-2z"/></svg>
+                        </div>
+                    </div>
+                    <p class="text-xl sm:text-2xl font-extrabold text-teal-800 font-mono mt-2 tracking-tight">
+                        Rp {{ number_format($bookingFeeAmount, 0, ',', '.') }}
+                    </p>
+                    <p class="text-[11px] text-slate-500 mt-1 truncate">
+                        @if($activeB)
+                            <span class="font-semibold text-teal-900">{{ $activeB->buyer_name }}</span> ({{ ucfirst($activeB->status) }})
+                        @else
+                            <span class="text-slate-400">Patokan Standar</span>
+                        @endif
+                    </p>
+                </div>
 
-            @if(auth()->user()->canViewUnitExpenses())
+                <!-- 4. Total Setoran Pembeli -->
+                <div class="card-clean p-4 sm:p-5 transition-all duration-200 hover:-translate-y-0.5">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Total Setoran</span>
+                        <div class="p-2 rounded-xl bg-purple-50 text-purple-600 border border-purple-100 shadow-2xs shrink-0">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                        </div>
+                    </div>
+                    @php
+                        $cashIn = 0;
+                        if ($unit->installment) {
+                            $cashIn = (float)$unit->installment->down_payment + (float)$unit->installment->payments->sum('amount_paid');
+                        }
+                    @endphp
+                    <p class="text-xl sm:text-2xl font-extrabold text-purple-900 font-mono mt-2 tracking-tight">
+                        Rp {{ number_format($cashIn, 0, ',', '.') }}
+                    </p>
+                    <p class="text-[11px] text-slate-400 mt-1 truncate">Total DP & Cicilan Masuk</p>
+                </div>
+            @endif
+
+            @if($canViewUnitExpenses)
                 <!-- 5. Total Construction & Material Expenses -->
                 <div class="card-clean p-4 sm:p-5 transition-all duration-200 hover:-translate-y-0.5">
                     <div class="flex items-center justify-between">
@@ -340,7 +341,7 @@
         </div>
     @else
         <!-- Admin & Operasional View: Physical, Status & Field Cost Highlights -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 {{ auth()->user()->canViewUnitExpenses() ? 'lg:grid-cols-4' : 'lg:grid-cols-3' }} gap-3.5">
+        <div class="grid grid-cols-1 sm:grid-cols-2 {{ $canViewUnitExpenses ? 'lg:grid-cols-4' : 'lg:grid-cols-3' }} gap-3.5">
             <!-- 1. Luas & Dimensi Tanah -->
             <div class="card-clean p-4 sm:p-5 border-blue-200/80 bg-gradient-to-br from-white to-blue-50/30">
                 <div class="flex items-center justify-between">
@@ -390,7 +391,7 @@
                 </p>
             </div>
 
-            @if(auth()->user()->canViewUnitExpenses())
+            @if($canViewUnitExpenses)
                 <!-- 4. Realisasi Biaya Lapangan (Material & Upah Tukang - Admin BOLEH LIHAT) -->
                 <div class="card-clean p-4 sm:p-5 border-amber-200/80 bg-gradient-to-br from-white to-amber-50/30">
                     <div class="flex items-center justify-between">

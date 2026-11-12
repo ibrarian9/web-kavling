@@ -14,12 +14,11 @@ class UnitExpensesReportController extends Controller
 {
     public function exportPdf(int $id)
     {
+        $unit = Unit::with(['project', 'installment'])->findOrFail($id);
         $user = auth()->user();
-        if ($user && !$user->canViewUnitExpenses()) {
+        if ($user && !$user->canViewUnitExpensesFor($unit)) {
             abort(403, 'Akses ditolak: Anda tidak memiliki wewenang untuk mengakses laporan biaya unit.');
         }
-
-        $unit = Unit::with(['project', 'installment'])->findOrFail($id);
 
         $unitPayrolls = WorkerUnitPayroll::with(['worker'])
             ->where('unit_id', $unit->id)

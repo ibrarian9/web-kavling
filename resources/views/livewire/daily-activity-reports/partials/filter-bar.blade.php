@@ -22,8 +22,8 @@
 
     <!-- Dropdown Filter Controls -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs pt-1">
-        <!-- Filter Sales Marketing (Founder / Supervisor Only) -->
-        @if(auth()->user()->isFounder() || auth()->user()->isSupervisor())
+        <!-- Filter Sales Marketing (Founder / Admin / Supervisor Only) -->
+        @if(auth()->user()->isAdminOrFounder())
             <div>
                 <label class="block font-bold text-slate-600 mb-1 text-[11px] flex items-center gap-1">
                     <svg class="w-3 h-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>

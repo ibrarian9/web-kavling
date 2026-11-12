@@ -727,10 +727,14 @@ class Show extends Component
         $totalPaidRevenue = 0;
         $totalOutstandingReceivable = 0;
         $totalHppSold = 0;
+        $authUser = auth()->user();
+        $isMarketing = $authUser && $authUser->isMarketing();
+        $dealtUnitIds = $isMarketing ? $authUser->dealtUnitIds() : [];
         $unitPerformances = [];
 
         foreach ($allUnits as $unit) {
             $hpp = (float)$unit->hpp;
+            $canSeeUnitDeals = !$isMarketing || in_array($unit->id, $dealtUnitIds, true);
 
             // Determine selling price (Harga Deal) & paid amount
             $sellingPrice = 0;
@@ -787,7 +791,7 @@ class Show extends Component
                 $totalHppSold += $hpp;
             }
 
-            $unitPerformances[$unit->id] = [
+            $unitPerformances[$unit->id] = $canSeeUnitDeals ? [
                 'unit' => $unit,
                 'selling_price' => $sellingPrice,
                 'paid_amount' => $paidAmount,
@@ -797,6 +801,18 @@ class Show extends Component
                 'profit' => $profit,
                 'buyer_name' => $buyerName,
                 'is_sold' => $isSold,
+                'can_view_deal_finance' => true,
+            ] : [
+                'unit' => $unit,
+                'selling_price' => 0,
+                'paid_amount' => 0,
+                'remaining_amount' => 0,
+                'hpp' => $hpp,
+                'unit_costs' => 0,
+                'profit' => 0,
+                'buyer_name' => '-',
+                'is_sold' => false,
+                'can_view_deal_finance' => false,
             ];
         }
 

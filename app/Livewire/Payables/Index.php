@@ -165,6 +165,9 @@ class Index extends Component
         if (!$user) {
             return redirect()->route('login');
         }
+        if ($user->isMarketing()) {
+            abort(403, 'Akses modul Hutang & Piutang tidak diizinkan untuk role Marketing.');
+        }
 
         $this->settle_payment_date = now()->toDateString();
         $this->worker_payment_date = now()->toDateString();

@@ -239,7 +239,7 @@
                     @endif
                 </a>
 
-                @if(!$isA)
+                @if(!$isA && !$isM)
                     <a href="{{ route('proposals.index') }}" wire:navigate.hover @click="mobileMenuOpen = false" 
                        :title="!sidebarExpanded ? 'Pengajuan & Approval' : ''"
                        :class="sidebarExpanded ? 'justify-between px-3 py-2' : 'justify-center p-2.5'"
@@ -254,7 +254,9 @@
                             <span x-show="sidebarExpanded" class="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-sm"></span>
                         @endif
                     </a>
+                @endif
 
+                @if(!$isA)
                     <a href="{{ route('documents.index') }}" wire:navigate.hover @click="mobileMenuOpen = false" 
                        :title="!sidebarExpanded ? 'Surat Resmi SPP (PDF)' : ''"
                        :class="sidebarExpanded ? 'justify-between px-3 py-2' : 'justify-center p-2.5'"
@@ -277,7 +279,7 @@
     <!-- ========================================== -->
     <!-- SECTION 5: KEUANGAN & ARUS KAS (ACCORDION)-->
     <!-- ========================================== -->
-    @if(($isF || $isS || $isFI || $isM) && !$isA)
+    @if(($isF || $isS || $isFI) && !$isA)
         <div class="space-y-1 pt-2 border-t border-slate-800/60">
             <!-- Accordion Header -->
             <button type="button" 

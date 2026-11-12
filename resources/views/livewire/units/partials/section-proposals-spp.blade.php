@@ -5,7 +5,7 @@
         @php
             $activeBooking = $unit->activeBooking ?? $unit->bookings->first();
         @endphp
-        @if($activeBooking)
+        @if($activeBooking && (!auth()->user()->isMarketing() || $canViewUnitInstallments))
             <div class="bg-teal-50/90 border border-teal-200 rounded-2xl p-4 space-y-3 text-xs shadow-2xs">
                 <div class="flex items-center justify-between border-b border-teal-200/80 pb-2.5">
                     <div class="flex items-center gap-2">
@@ -50,9 +50,11 @@
                             </button>
                         @endif
 
-                        <x-button variant="pdf" size="xs" wire:click="openViewerModal('pdf', '{{ route('bookings.receipt', $activeBooking->id) }}?v={{ now()->timestamp }}', 'Kwitansi Tanda Jadi Booking - {{ $activeBooking->buyer_name }}')" icon="pdf">
-                            <span>Kwitansi Tanda Jadi (PDF)</span>
-                        </x-button>
+                        @if(!auth()->user()->isMarketing())
+                            <x-button variant="pdf" size="xs" wire:click="openViewerModal('pdf', '{{ route('bookings.receipt', $activeBooking->id) }}?v={{ now()->timestamp }}', 'Kwitansi Tanda Jadi Booking - {{ $activeBooking->buyer_name }}')" icon="pdf">
+                                <span>Kwitansi Tanda Jadi (PDF)</span>
+                            </x-button>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -135,7 +137,7 @@
         @else
             <div class="text-xs text-slate-500 bg-slate-50/80 p-4 rounded-2xl border border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 mt-3">
                 <span class="font-medium">Belum ada dokumen SPP resmi terbit untuk unit ini.</span>
-                @if(auth()->user()->isMarketing() || auth()->user()->isFinance() || auth()->user()->isAdminOrFounder())
+                @if(auth()->user()->isFinance() || auth()->user()->isAdminOrFounder() || (auth()->user()->isMarketing() && ($canViewUnitInstallments || $unit->status === 'tersedia')))
                     <x-button variant="emerald" size="xs" wire:click="openDirectSppModal" icon="plus">
                         <span>Terbitkan Dokumen SPP & SPJB PDF</span>
                     </x-button>
@@ -147,7 +149,7 @@
         <div class="pt-3 space-y-3">
             <div class="flex items-center justify-between gap-2">
                 <p class="text-xs font-extrabold text-slate-800">Riwayat Proposal Harga Jual:</p>
-                @if((auth()->user()->isMarketing() || auth()->user()->isAdminOrFounder()) && $unit->category !== 'infrastruktur' && in_array($unit->status, ['tersedia', 'booked', 'ditolak']))
+                @if(auth()->user()->isAdminOrFounder() && $unit->category !== 'infrastruktur' && in_array($unit->status, ['tersedia', 'booked', 'ditolak']))
                     <x-button variant="outline" size="xs" wire:click="openDirectProposalModal" icon="plus">
                         <span>Ajukan Proposal Baru</span>
                     </x-button>
@@ -174,7 +176,7 @@
                                 </x-button>
                             @endif
 
-                            @if(auth()->user()->isAdminOrFounder() || auth()->user()->isMarketing())
+                            @if(auth()->user()->isAdminOrFounder())
                                 <button type="button" 
                                         wire:click="editDirectProposal({{ $prop->id }})" 
                                         class="p-1.5 rounded-lg border border-slate-200 text-slate-600 hover:text-indigo-600 hover:border-indigo-200 bg-white transition-all" 

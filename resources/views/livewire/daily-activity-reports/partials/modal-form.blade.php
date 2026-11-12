@@ -13,8 +13,8 @@
 
             <!-- Modal Form Body -->
             <form wire:submit.prevent="saveReport" class="space-y-4 text-xs sm:text-sm flex-1 overflow-y-auto pr-1">
-                <!-- Founder/Supervisor Select Sales -->
-                @if(auth()->user()->isFounder() || auth()->user()->isSupervisor())
+                <!-- Admin Utama (Admin / Founder / Supervisor) Select Sales -->
+                @if(auth()->user()->isAdminOrFounder())
                     <div>
                         <label class="block font-bold text-slate-700 mb-1 text-xs">Sales / Marketing Penanggung Jawab <span class="text-rose-500">*</span></label>
                         <select wire:model="user_id" class="input-clean w-full text-xs font-medium text-slate-800">

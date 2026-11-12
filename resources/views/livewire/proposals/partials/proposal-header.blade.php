@@ -5,7 +5,7 @@
         <p class="text-slate-500 text-xs mt-0.5">Alur approval berjenjang & paralel (Founder & Supervisor) sebelum penerbitan Surat Resmi</p>
     </div>
 
-    @if(auth()->user()->isMarketing() || auth()->user()->isAdminOrFounder())
+    @if(auth()->user()->isAdminOrFounder() || auth()->user()->isFinance())
         <x-button variant="primary" size="sm" wire:click="openCreateModal" icon="plus">
             <span>Buat Pengajuan Harga</span>
         </x-button>

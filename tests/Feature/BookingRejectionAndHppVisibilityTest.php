@@ -121,12 +121,19 @@ class BookingRejectionAndHppVisibilityTest extends TestCase
             'booking_amount' => 5000000,
             'booking_date' => now()->toDateString(),
             'status' => 'active',
-            'created_by' => User::where('role', 'marketing')->firstOrFail()->id,
+            'created_by' => User::where('role', 'finance')->firstOrFail()->id,
         ]);
 
         $marketing = User::where('role', 'marketing')->firstOrFail();
+        $pengawas = User::where('role', 'pengawas_project')->firstOrFail();
 
+        // Marketing is completely forbidden 403 from Bookings module
         Livewire::actingAs($marketing)
+            ->test(\App\Livewire\Bookings\Index::class)
+            ->assertStatus(403);
+
+        // Pengawas cannot approve or reject booking
+        Livewire::actingAs($pengawas)
             ->test(\App\Livewire\Bookings\Index::class)
             ->call('rejectDp', $booking->id)
             ->assertDispatched('notify');

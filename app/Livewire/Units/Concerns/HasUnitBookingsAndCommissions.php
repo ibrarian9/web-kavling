@@ -46,6 +46,12 @@ trait HasUnitBookingsAndCommissions
 
     public function openBookingModal(): void
     {
+        $user = auth()->user();
+        if (!$user || (!$user->isFinance() && !$user->isFounder())) {
+            session()->flash('error', 'Hanya tim Finance dan Founder yang berhak mendaftarkan booking unit.');
+            return;
+        }
+
         $unit = Unit::findOrFail($this->unitId);
         $this->buyer_name = '';
         $this->buyer_phone = '';
@@ -68,8 +74,8 @@ trait HasUnitBookingsAndCommissions
     public function saveBooking(): void
     {
         $user = auth()->user();
-        if (!$user->isMarketing() && !$user->isFinance() && !$user->isFounder()) {
-            session()->flash('error', 'Hanya tim Sales Marketing, Finance, dan Founder yang berhak mendaftarkan booking unit.');
+        if (!$user || (!$user->isFinance() && !$user->isFounder())) {
+            session()->flash('error', 'Hanya tim Finance dan Founder yang berhak mendaftarkan booking unit.');
             return;
         }
 

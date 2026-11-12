@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Models\Booking;
 use App\Models\CashflowTransaction;
+use App\Models\DailyActivityReport;
 use App\Models\EmployeeSalary;
 use App\Models\PriceProposal;
 use App\Models\Project;
@@ -43,14 +44,24 @@ class Dashboard extends Component
         $marketingDailyReportCount = 0;
         $marketingHotDealsCount = 0;
         if ($user->isMarketing()) {
-            $marketingDailyReportCount = \App\Models\DailyActivityReport::where('user_id', $user->id)->count();
-            $marketingHotDealsCount = \App\Models\DailyActivityReport::where('user_id', $user->id)->whereIn('lead_stage', ['hot_deal', 'booking', 'cash_lunas'])->count();
+            $marketingDailyReportCount = DailyActivityReport::where('user_id', $user->id)->count();
+            $marketingHotDealsCount = DailyActivityReport::where('user_id', $user->id)->whereIn('lead_stage', DailyActivityReport::HOT_DEAL_STAGES)->count();
         } else {
-            $marketingDailyReportCount = \App\Models\DailyActivityReport::count();
-            $marketingHotDealsCount = \App\Models\DailyActivityReport::whereIn('lead_stage', ['hot_deal', 'booking', 'cash_lunas'])->count();
+            $marketingDailyReportCount = DailyActivityReport::count();
+            $marketingHotDealsCount = DailyActivityReport::whereIn('lead_stage', DailyActivityReport::HOT_DEAL_STAGES)->count();
         }
 
         // 5. Recent Data Feeds
+        $recentDailyReports = collect();
+        if ($user->isMarketing() || $user->isAdmin() || $user->isFounder()) {
+            $recentDailyReports = DailyActivityReport::with(['user', 'project', 'unit'])
+                ->when($user->isMarketing(), fn ($q) => $q->where('user_id', $user->id))
+                ->latest('report_date')
+                ->latest('id')
+                ->take(5)
+                ->get();
+        }
+
         $recentProposals = PriceProposal::with(['unit.project', 'proposer', 'approvals.approver'])
             ->latest()
             ->take(5)
@@ -149,6 +160,7 @@ class Dashboard extends Component
             'marketingHotDealsCount' => $marketingHotDealsCount,
             'recentProposals' => $recentProposals,
             'recentUnits' => $recentUnits,
+            'recentDailyReports' => $recentDailyReports,
             'recentMaterialPurchases' => $recentMaterialPurchases,
             'totalMaterialPurchasesThisMonth' => $totalMaterialPurchasesThisMonth,
             'totalUnitsSellingPrice' => $totalUnitsSellingPrice,

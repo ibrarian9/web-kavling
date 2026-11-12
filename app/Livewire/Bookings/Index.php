@@ -40,8 +40,9 @@ class Index extends Component
 
     public function mount(): void
     {
-        if (auth()->user()?->isAdmin()) {
-            abort(403, 'Akses modul Booking Fee & DP tidak diizinkan untuk role Admin.');
+        $user = auth()->user();
+        if ($user?->isAdmin() || $user?->isMarketing()) {
+            abort(403, 'Akses modul Booking Fee & DP tidak diizinkan untuk role Anda.');
         }
     }
 

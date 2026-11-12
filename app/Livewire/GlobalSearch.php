@@ -47,11 +47,16 @@ class GlobalSearch extends Component
             ['title' => 'Dashboard Utama', 'category' => 'Menu', 'url' => route('dashboard'), 'icon' => 'home'],
             ['title' => 'Proyek Properti', 'category' => 'Menu', 'url' => route('projects.index'), 'icon' => 'office-building'],
             ['title' => 'Unit Kavling & Rumah', 'category' => 'Menu', 'url' => route('units.index'), 'icon' => 'home'],
-            ...($u && !$u->isAdmin() ? [
+            ...($u && !$u->isAdmin() && !$u->isMarketing() ? [
                 ['title' => 'Booking Fee & DP', 'category' => 'Menu', 'url' => route('bookings.index'), 'icon' => 'cash'],
                 ['title' => 'Pengajuan & Approval Proposal', 'category' => 'Menu', 'url' => route('proposals.index'), 'icon' => 'clipboard-check'],
-                ['title' => 'Surat Resmi SPP (PDF)', 'category' => 'Menu', 'url' => route('documents.index'), 'icon' => 'document-text'],
                 ['title' => 'Cicilan Pembeli & Skema', 'category' => 'Menu', 'url' => route('installments.index'), 'icon' => 'credit-card'],
+            ] : []),
+            ...($u && !$u->isAdmin() ? [
+                ['title' => 'Surat Resmi SPP (PDF)', 'category' => 'Menu', 'url' => route('documents.index'), 'icon' => 'document-text'],
+            ] : []),
+            ...($u && ($u->isAdminOrFounder() || $u->isSupervisor() || $u->isMarketing() || $u->isFinance()) ? [
+                ['title' => 'Daily Activity Report', 'category' => 'Menu', 'url' => route('daily-activity-reports.index'), 'icon' => 'chart-bar'],
             ] : []),
             ...($u && ($u->isFounder() || $u->isFinance()) ? [
                 ['title' => 'Arus Kas Global & Konsolidasi', 'category' => 'Menu', 'url' => route('cashflow.index'), 'icon' => 'chart-bar'],
@@ -96,8 +101,8 @@ class GlobalSearch extends Component
                 ->take(4)
                 ->get();
 
-            // Filter Bookings / Buyers (Hidden for Admin)
-            if ($u && !$u->isAdmin()) {
+            // Filter Bookings / Buyers (Hidden for Admin and Marketing)
+            if ($u && !$u->isAdmin() && !$u->isMarketing()) {
                 $results['bookings'] = Booking::with(['unit', 'project'])
                     ->where('buyer_name', 'like', $s)
                     ->orWhere('buyer_phone', 'like', $s)

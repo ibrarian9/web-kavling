@@ -15,10 +15,6 @@ class InstallmentInvoiceController extends Controller
     public function streamInvoice(string $uuid)
     {
         $user = auth()->user();
-        if (!$user || (!$user->isAdminOrFounder() && !$user->isFinance())) {
-            abort(403, 'Akses ditolak. Hanya Founder, Admin, dan Accounting yang berhak mencetak invoice cicilan.');
-        }
-
         $payment = InstallmentPayment::with([
             'installment.unit.project',
             'installment.officialDocument',
@@ -28,6 +24,15 @@ class InstallmentInvoiceController extends Controller
 
         $installment = $payment->installment;
         $unit = $installment->unit;
+
+        $canAccess = $user && (
+            $user->isAdminOrFounder()
+            || $user->isFinance()
+            || ($user->isMarketing() && $unit && $user->hasDealtUnit($unit->id))
+        );
+        if (!$canAccess) {
+            abort(403, 'Akses ditolak. Hanya Founder, Admin, Accounting, atau Marketing unit terkait yang berhak mencetak invoice cicilan.');
+        }
         $project = $unit->project;
         $officialDoc = $installment->officialDocument;
 
@@ -71,10 +76,6 @@ class InstallmentInvoiceController extends Controller
     public function streamStatementPdf(int $id)
     {
         $user = auth()->user();
-        if (!$user || (!$user->isAdminOrFounder() && !$user->isFinance())) {
-            abort(403, 'Akses ditolak. Hanya Founder, Admin, dan Accounting yang berhak mencetak rekap cicilan.');
-        }
-
         $installment = \App\Models\UnitInstallment::with([
             'unit.project',
             'unit.activeBooking',
@@ -84,6 +85,14 @@ class InstallmentInvoiceController extends Controller
         ])->findOrFail($id);
 
         $unit = $installment->unit;
+        $canAccess = $user && (
+            $user->isAdminOrFounder()
+            || $user->isFinance()
+            || ($user->isMarketing() && $unit && $user->hasDealtUnit($unit->id))
+        );
+        if (!$canAccess) {
+            abort(403, 'Akses ditolak. Hanya Founder, Admin, Accounting, atau Marketing unit terkait yang berhak mencetak rekap cicilan.');
+        }
         $project = $unit->project;
         $officialDoc = $installment->officialDocument;
         $payments = $installment->payments()->with(['creator'])->orderBy('payment_date', 'asc')->orderBy('id', 'asc')->get();

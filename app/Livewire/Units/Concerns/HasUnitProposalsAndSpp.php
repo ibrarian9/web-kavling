@@ -323,6 +323,14 @@ trait HasUnitProposalsAndSpp
 
     public function openDirectProposalModal(): void
     {
+        $user = auth()->user();
+        if (!$user || !$user->isAdminOrFounder()) {
+            $err = 'Hanya Admin dan Founder yang berhak mengajukan harga.';
+            session()->flash('error', $err);
+            $this->dispatch('notify', ['type' => 'error', 'title' => 'Akses Ditolak', 'message' => $err]);
+            return;
+        }
+
         $unit = Unit::findOrFail($this->unitId);
         $this->resetValidation();
         $this->editingProposalId = null;
@@ -337,8 +345,8 @@ trait HasUnitProposalsAndSpp
     public function editDirectProposal(int $id): void
     {
         $user = auth()->user();
-        if (!$user || (!$user->isAdminOrFounder() && !$user->isMarketing())) {
-            $err = 'Hanya Admin, Founder, dan Marketing yang berhak mengedit proposal.';
+        if (!$user || !$user->isAdminOrFounder()) {
+            $err = 'Hanya Admin dan Founder yang berhak mengedit proposal.';
             session()->flash('error', $err);
             $this->dispatch('notify', ['type' => 'error', 'title' => 'Akses Ditolak', 'message' => $err]);
             return;
@@ -407,8 +415,8 @@ trait HasUnitProposalsAndSpp
     public function saveDirectProposal(): void
     {
         $user = auth()->user();
-        if (!$user->isMarketing() && !$user->isAdminOrFounder()) {
-            $err = 'Hanya Marketing, Admin, dan Founder yang berhak membuat/mengedit pengajuan harga.';
+        if (!$user || !$user->isAdminOrFounder()) {
+            $err = 'Hanya Admin dan Founder yang berhak membuat/mengedit pengajuan harga.';
             session()->flash('error', $err);
             $this->dispatch('notify', ['type' => 'error', 'title' => 'Gagal!', 'message' => $err]);
             return;

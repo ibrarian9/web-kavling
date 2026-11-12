@@ -35,49 +35,56 @@
                 @elseif($user->isFinance())
                     Manajemen Keuangan: Monitor arus kas proyek & global, slip gaji karyawan, pencatatan transaksi kas, dan cicilan konsumen.
                 @else
-                    Tim Penjualan: Pencatatan booking fee & DP, pengajuan penawaran harga, dan pendaftaran pembeli unit kavling.
+                    Tim Penjualan: Pencatatan aktivitas harian prospek (Daily Activity), pemantauan ketersediaan unit kavling, dan surat pesanan resmi.
                 @endif
             </p>
 
             <!-- Quick Action Shortcut Pills -->
             <div class="pt-3 border-t border-slate-800/80 flex flex-wrap items-center gap-2">
                 @if($user->isAdmin() || $user->isPengawasProject())
-                    <a href="{{ route('projects.index') }}" wire:navigate.hover class="px-3.5 py-1.5 bg-purple-600/90 hover:bg-purple-600 text-white font-bold rounded-xl text-xs shadow-sm transition flex items-center gap-1.5">
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5m0 0h5m-5 0v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                    <a href="{{ route('projects.index') }}" wire:navigate.hover class="px-3.5 py-2 min-h-[40px] sm:min-h-[36px] bg-purple-600/90 hover:bg-purple-600 active:scale-[0.98] text-white font-bold rounded-xl text-xs shadow-sm transition inline-flex items-center gap-1.5">
+                        <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5m0 0h5m-5 0v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
                         <span>Proyek Properti</span>
                     </a>
-                    <a href="{{ route('workers.index') }}" wire:navigate.hover class="px-3.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold border border-slate-700 rounded-xl text-xs transition flex items-center gap-1.5">
-                        <svg class="w-3.5 h-3.5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                    <a href="{{ route('workers.index') }}" wire:navigate.hover class="px-3.5 py-2 min-h-[40px] sm:min-h-[36px] bg-slate-800 hover:bg-slate-700 active:scale-[0.98] text-slate-200 font-bold border border-slate-700 rounded-xl text-xs transition inline-flex items-center gap-1.5">
+                        <svg class="w-3.5 h-3.5 text-amber-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
                         <span>Mandor & Tukang</span>
                     </a>
-                    @if(!$user->isAdmin())
-                        <a href="{{ route('field-expenses.index') }}" wire:navigate.hover class="px-3.5 py-1.5 bg-emerald-600/90 hover:bg-emerald-600 text-white font-bold rounded-xl text-xs shadow-sm transition flex items-center gap-1.5">
-                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    @if($user->isAdmin())
+                        <a href="{{ route('daily-activity-reports.index') }}" wire:navigate.hover class="px-3.5 py-2 min-h-[40px] sm:min-h-[36px] bg-teal-600/90 hover:bg-teal-600 active:scale-[0.98] text-white font-bold rounded-xl text-xs shadow-sm transition inline-flex items-center gap-1.5">
+                            <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                            <span>Daily Activity</span>
+                        </a>
+                    @else
+                        <a href="{{ route('field-expenses.index') }}" wire:navigate.hover class="px-3.5 py-2 min-h-[40px] sm:min-h-[36px] bg-emerald-600/90 hover:bg-emerald-600 active:scale-[0.98] text-white font-bold rounded-xl text-xs shadow-sm transition inline-flex items-center gap-1.5">
+                            <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                             <span>Belanja Material</span>
                         </a>
                     @endif
                 @elseif($user->isFounder() || $user->isFinance())
-                    <a href="{{ route('cashflow.index') }}" wire:navigate.hover class="px-3.5 py-1.5 bg-emerald-600/90 hover:bg-emerald-600 text-white font-bold rounded-xl text-xs shadow-sm transition flex items-center gap-1.5">
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                    <a href="{{ route('cashflow.index') }}" wire:navigate.hover class="px-3.5 py-2 min-h-[40px] sm:min-h-[36px] bg-emerald-600/90 hover:bg-emerald-600 active:scale-[0.98] text-white font-bold rounded-xl text-xs shadow-sm transition inline-flex items-center gap-1.5">
+                        <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                         <span>Arus Kas</span>
                     </a>
-                    <a href="{{ route('bookings.index') }}" wire:navigate.hover class="px-3.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold border border-slate-700 rounded-xl text-xs transition flex items-center gap-1.5">
-                        <svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    <a href="{{ route('bookings.index') }}" wire:navigate.hover class="px-3.5 py-2 min-h-[40px] sm:min-h-[36px] bg-slate-800 hover:bg-slate-700 active:scale-[0.98] text-slate-200 font-bold border border-slate-700 rounded-xl text-xs transition inline-flex items-center gap-1.5">
+                        <svg class="w-3.5 h-3.5 text-emerald-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                         <span>Booking Unit</span>
                     </a>
+                    @if($user->isFounder())
+                        <a href="{{ route('daily-activity-reports.index') }}" wire:navigate.hover class="px-3.5 py-2 min-h-[40px] sm:min-h-[36px] bg-teal-600/90 hover:bg-teal-600 active:scale-[0.98] text-white font-bold rounded-xl text-xs shadow-sm transition inline-flex items-center gap-1.5">
+                            <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                            <span>Daily Activity</span>
+                        </a>
+                    @endif
                 @elseif($user->isMarketing())
-                    <a href="{{ route('daily-activity-reports.index') }}" wire:navigate.hover class="px-3.5 py-1.5 bg-teal-600/90 hover:bg-teal-600 text-white font-bold rounded-xl text-xs shadow-sm transition flex items-center gap-1.5">
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                    <a href="{{ route('daily-activity-reports.index') }}" wire:navigate.hover class="px-3.5 py-2 min-h-[40px] sm:min-h-[36px] bg-teal-600/90 hover:bg-teal-600 active:scale-[0.98] text-white font-bold rounded-xl text-xs shadow-sm transition inline-flex items-center gap-1.5">
+                        <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
                         <span>Daily Activity</span>
-                    </a>
-                    <a href="{{ route('bookings.index') }}" wire:navigate.hover class="px-3.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold border border-slate-700 rounded-xl text-xs transition flex items-center gap-1.5">
-                        <svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                        <span>Booking Unit</span>
                     </a>
                 @endif
 
-                <a href="{{ route('units.index') }}" wire:navigate.hover class="px-3.5 py-1.5 bg-slate-800/80 hover:bg-slate-700/80 text-slate-300 font-bold border border-slate-700/80 rounded-xl text-xs transition flex items-center gap-1.5">
-                    <svg class="w-3.5 h-3.5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6z"/></svg>
+                <a href="{{ route('units.index') }}" wire:navigate.hover class="px-3.5 py-2 min-h-[40px] sm:min-h-[36px] bg-slate-800/80 hover:bg-slate-700/80 active:scale-[0.98] text-slate-300 font-bold border border-slate-700/80 rounded-xl text-xs transition inline-flex items-center gap-1.5">
+                    <svg class="w-3.5 h-3.5 text-blue-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6z"/></svg>
                     <span>Daftar Unit</span>
                 </a>
             </div>
@@ -96,10 +103,10 @@
                     <p class="text-xs text-amber-700">Persetujuan pengajuan harga membutuhkan keputusan bertingkat dari Founder & Supervisor.</p>
                 </div>
             </div>
-            <a href="{{ route('proposals.index') }}" wire:navigate.hover class="px-4 py-2.5 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-bold shadow-sm transition whitespace-nowrap self-start sm:self-auto flex items-center gap-1.5">
+            <x-button variant="amber" size="sm" :href="route('proposals.index')" wire:navigate.hover class="min-h-[40px] sm:min-h-[36px] self-start sm:self-auto">
                 <span>Review Proposal Sekarang</span>
-                <span>&rarr;</span>
-            </a>
+                <span aria-hidden="true">&rarr;</span>
+            </x-button>
         </div>
     @endif
 
@@ -145,7 +152,7 @@
             </div>
         </div>
 
-        <!-- Stat Card 3: Mandor & Tukang (Admin / Pengawas) vs Booking DP (Founder / Marketing / Finance) -->
+        <!-- Stat Card 3: Mandor & Tukang (Admin / Pengawas) vs Prospek Hot Deal (Marketing) vs Booking DP (Founder / Finance / Supervisor) -->
         @if($user->isAdmin() || $user->isPengawasProject())
             <div class="kpi-card-amber p-4 sm:p-5 flex flex-col justify-between min-w-0 shadow-2xs rounded-2xl">
                 <div class="flex items-start justify-between gap-1">
@@ -160,6 +167,19 @@
                         <span class="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0"></span>
                         <span class="truncate">Mandor & tukang aktif</span>
                     </p>
+                </div>
+            </div>
+        @elseif($user->isMarketing())
+            <div class="kpi-card-amber p-4 sm:p-5 flex flex-col justify-between min-w-0 shadow-2xs rounded-2xl">
+                <div class="flex items-start justify-between gap-1">
+                    <span class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-400 leading-snug">Prospek Hot Deal</span>
+                    <div class="p-1.5 sm:p-2 rounded-xl bg-amber-50 text-amber-600 border border-amber-100 shadow-2xs shrink-0">
+                        <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z"/></svg>
+                    </div>
+                </div>
+                <div class="mt-3 min-w-0">
+                    <p class="text-base sm:text-xl xl:text-2xl font-black text-amber-700 font-mono tracking-tight">{{ $marketingHotDealsCount ?? 0 }} Prospek</p>
+                    <p class="text-[10px] sm:text-[11px] text-slate-500 mt-1 truncate">Hot deal, booking & lunas</p>
                 </div>
             </div>
         @else
@@ -245,19 +265,19 @@
 
     <!-- Visual Analytics: Grafik Real-Time Tren Arus Kas (Non-Marketing, Non-Admin, & Non-Pengawas Only) -->
     @if(!$user->isMarketing() && !$user->isAdmin() && !$user->isPengawasProject())
-        <div class="card-clean p-5 sm:p-6 space-y-4">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
-                <div>
-                    <h3 class="font-extrabold text-slate-900 text-sm flex items-center gap-2">
-                        <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18"/></svg>
+        <div class="card-clean rounded-2xl sm:rounded-3xl p-4 sm:p-5 space-y-4">
+            <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-4">
+                <div class="min-w-0">
+                    <h3 class="text-xs sm:text-sm font-extrabold text-slate-900 uppercase tracking-wider flex items-center gap-2">
+                        <svg class="w-4 h-4 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18"/></svg>
                         <span>Grafik Tren Keuangan Arus Kas (6 Bulan Terakhir)</span>
                     </h3>
                     <p class="text-[11px] text-slate-500 mt-0.5">Perbandingan pemasukan penjualan unit & booking fee vs pengeluaran operasional & belanja material</p>
                 </div>
-                <a href="{{ route('cashflow.index') }}" wire:navigate.hover class="text-xs font-bold text-emerald-700 hover:text-emerald-900 flex items-center gap-1 self-start sm:self-auto">
+                <x-button variant="soft-emerald" size="sm" :href="route('cashflow.index')" wire:navigate.hover class="min-h-[40px] sm:min-h-[36px]">
                     <span>Rincian Jurnal Kas</span>
-                    <span>&rarr;</span>
-                </a>
+                    <span aria-hidden="true">&rarr;</span>
+                </x-button>
             </div>
 
             <div id="dashboardTrendChart" class="w-full min-h-[300px]"></div>
@@ -265,16 +285,16 @@
     @endif
 
     <!-- Quick Module Navigation Shortcuts -->
-    <div class="card-clean p-5 sm:p-6 space-y-4">
-        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-            <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-400 flex items-center gap-2">
-                <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+    <div class="card-clean rounded-2xl sm:rounded-3xl p-4 sm:p-5 space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3">
+            <h3 class="text-xs sm:text-sm font-extrabold uppercase tracking-wider text-slate-900 flex items-center gap-2">
+                <svg class="w-4 h-4 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
                 <span>Pintasan Modul Utama</span>
             </h3>
-            <span class="text-[10px] font-bold text-slate-400">Klik untuk langsung loncat halaman</span>
+            <span class="text-[11px] font-medium text-slate-500">Klik untuk langsung loncat halaman</span>
         </div>
 
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3.5">
+        <div class="grid grid-cols-2 sm:grid-cols-3 {{ $user->isMarketing() ? 'lg:grid-cols-5' : 'lg:grid-cols-6' }} gap-3.5">
             <!-- Shortcut 1: Proyek -->
             <a href="{{ route('projects.index') }}" wire:navigate.hover class="p-3.5 rounded-2xl border border-slate-200/80 hover:border-purple-300 hover:bg-purple-50/40 transition-all duration-150 text-left group flex flex-col justify-between shadow-2xs">
                 <div class="w-8 h-8 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center mb-2 group-hover:scale-110 transition">
@@ -297,7 +317,7 @@
                 </div>
             </a>
 
-            <!-- Shortcut 3: Mandor & Tukang (Admin / Pengawas) vs Booking (Founder / Marketing / Finance) -->
+            <!-- Shortcut 3: Mandor & Tukang (Admin / Pengawas) vs Booking (Founder / Finance / Supervisor) -->
             @if($user->isAdmin() || $user->isPengawasProject())
                 <a href="{{ route('workers.index') }}" wire:navigate.hover class="p-3.5 rounded-2xl border border-slate-200/80 hover:border-amber-300 hover:bg-amber-50/40 transition-all duration-150 text-left group flex flex-col justify-between shadow-2xs">
                     <div class="w-8 h-8 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center mb-2 group-hover:scale-110 transition">
@@ -308,7 +328,7 @@
                         <p class="text-[10px] text-slate-500 mt-0.5">Pekerja & penugasan</p>
                     </div>
                 </a>
-            @else
+            @elseif(!$user->isMarketing())
                 <a href="{{ route('bookings.index') }}" wire:navigate.hover class="p-3.5 rounded-2xl border border-slate-200/80 hover:border-amber-300 hover:bg-amber-50/40 transition-all duration-150 text-left group flex flex-col justify-between shadow-2xs">
                     <div class="w-8 h-8 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center mb-2 group-hover:scale-110 transition">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
@@ -376,7 +396,7 @@
                 </a>
             @endif
 
-            <!-- Shortcut 6: Proyek Eksternal (Admin / Pengawas) vs Cicilan (Lainnya) -->
+            <!-- Shortcut 6: Proyek Eksternal (Admin / Pengawas) vs Panduan (Marketing) vs Cicilan (Lainnya) -->
             @if($user->isAdmin() || $user->isPengawasProject())
                 <a href="{{ route('external-projects.index') }}" wire:navigate.hover class="p-3.5 rounded-2xl border border-slate-200/80 hover:border-sky-300 hover:bg-sky-50/40 transition-all duration-150 text-left group flex flex-col justify-between shadow-2xs">
                     <div class="w-8 h-8 rounded-xl bg-sky-100 text-sky-700 flex items-center justify-center mb-2 group-hover:scale-110 transition">
@@ -385,6 +405,16 @@
                     <div>
                         <p class="font-extrabold text-xs text-slate-800 group-hover:text-sky-700">Proyek Luar</p>
                         <p class="text-[10px] text-slate-500 mt-0.5">Pekerjaan eksternal</p>
+                    </div>
+                </a>
+            @elseif($user->isMarketing())
+                <a href="{{ route('tutorial.index') }}" wire:navigate.hover class="p-3.5 rounded-2xl border border-slate-200/80 hover:border-sky-300 hover:bg-sky-50/40 transition-all duration-150 text-left group flex flex-col justify-between shadow-2xs">
+                    <div class="w-8 h-8 rounded-xl bg-sky-100 text-sky-700 flex items-center justify-center mb-2 group-hover:scale-110 transition">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+                    </div>
+                    <div>
+                        <p class="font-extrabold text-xs text-slate-800 group-hover:text-sky-700">Panduan Sistem</p>
+                        <p class="text-[10px] text-slate-500 mt-0.5">Tutorial & SOP</p>
                     </div>
                 </a>
             @else
@@ -403,7 +433,7 @@
 
     <!-- Informasi Penetapan Gaji Karyawan dari Founder (Khusus Karyawan / Non-Founder, Non-Admin) -->
     @if(!$user->isFounder() && !$user->isAdmin())
-        <div class="card-clean p-5 sm:p-6 border border-slate-200/90 shadow-2xs relative overflow-hidden bg-gradient-to-br from-white via-slate-50/40 to-emerald-50/20">
+        <div class="card-clean rounded-2xl sm:rounded-3xl p-4 sm:p-5 border border-slate-200/90 shadow-2xs relative overflow-hidden bg-gradient-to-br from-white via-slate-50/40 to-emerald-50/20">
             <!-- Header Section -->
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
                 <div class="flex items-center gap-3">
@@ -422,12 +452,9 @@
                 </div>
 
                 @if($latestSalaryPayment)
-                    <a href="{{ route('employee-salary.slip-pdf', $latestSalaryPayment->uuid) }}" 
-                       target="_blank" 
-                       class="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-bold shadow-xs transition flex items-center justify-center gap-2 self-start sm:self-auto shrink-0">
-                        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2zM9 13h6m-6 4h4"/></svg>
+                    <x-button variant="rose" size="sm" icon="pdf" :href="route('employee-salary.slip-pdf', $latestSalaryPayment->uuid)" target="_blank" class="min-h-[40px] sm:min-h-[36px] self-start sm:self-auto [&_svg]:text-white">
                         <span>Cetak Slip Gaji ({{ $userSalary?->getIndonesianMonth($latestSalaryPayment->payroll_month) }} {{ $latestSalaryPayment->payroll_year }})</span>
-                    </a>
+                    </x-button>
                 @endif
             </div>
 
@@ -532,270 +559,266 @@
     @endif
 
     <!-- Data Tables Grid (Recent Feeds) -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
         @if($user->isAdmin() || $user->isPengawasProject())
             <!-- Table 1 (Admin/Pengawas): Status Stok & Fisik Unit Properti -->
-            <div class="card-clean overflow-hidden flex flex-col justify-between">
-                <div>
-                    <div class="p-4 border-b border-slate-100 flex items-center justify-between">
-                        <h3 class="text-xs font-extrabold text-slate-900 uppercase tracking-wider">Status Stok & Unit Properti</h3>
-                        <a href="{{ route('units.index') }}" wire:navigate.hover class="text-xs text-emerald-700 font-bold hover:underline">Lihat Semua &rarr;</a>
-                    </div>
-
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left text-xs">
-                            <thead class="bg-slate-50/80 text-slate-500 uppercase text-[10px] font-bold tracking-wider border-b border-slate-100">
-                                <tr>
-                                    <th class="py-3 px-4 whitespace-nowrap">Kode Unit</th>
-                                    <th class="py-3 px-4">Proyek</th>
-                                    <th class="py-3 px-4 whitespace-nowrap">Tipe / Dimensi</th>
-                                    <th class="py-3 px-4 whitespace-nowrap">Status Unit</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-slate-100">
-                                @forelse($recentUnits as $unit)
-                                    <tr class="hover:bg-slate-50/60 transition">
-                                        <td class="py-3.5 px-4 font-extrabold text-slate-800 whitespace-nowrap">
-                                            <a href="{{ route('units.show', $unit->id) }}" wire:navigate.hover class="hover:text-emerald-600 transition">
-                                                Unit {{ $unit->code }}
-                                            </a>
-                                            <span class="text-[10px] font-semibold text-slate-500 uppercase block">({{ $unit->category ?? $unit->type }})</span>
-                                        </td>
-                                        <td class="py-3.5 px-4 text-slate-600 font-medium">{{ $unit->project?->name ?? 'Proyek' }}</td>
-                                        <td class="py-3.5 px-4 font-mono text-slate-700 text-xs whitespace-nowrap">
-                                            @if($unit->category === 'fasum')
-                                                {{ $unit->work_area ? $unit->work_area . ' m²' : '-' }}
-                                            @else
-                                                {{ $unit->land_area }} m²
-                                            @endif
-                                        </td>
-                                        <td class="py-3.5 px-4 whitespace-nowrap">
-                                            @if($unit->status === 'tersedia')
-                                                <span class="status-tersedia">Tersedia</span>
-                                            @elseif($unit->status === 'booked' || $unit->status === 'booking')
-                                                <span class="status-booked">Booked</span>
-                                            @elseif($unit->status === 'menunggu_persetujuan')
-                                                <span class="status-menunggu">Pending</span>
-                                            @elseif($unit->status === 'disetujui' || $unit->status === 'terjual')
-                                                <span class="status-terjual">Terjual</span>
-                                            @else
-                                                <span class="status-draft">{{ ucfirst($unit->status) }}</span>
-                                            @endif
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="4" class="py-8 text-center text-slate-400 italic">Belum ada unit properti tercatat.</td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
+            <x-dashboard-feed-card
+                subtitle="Kondisi unit kavling & dimensi fisik terkini"
+                :actionHref="route('units.index')"
+                actionLabel="Lihat Semua"
+            >
+                <x-slot:title>Status Stok & Unit Properti</x-slot:title>
+                <thead class="bg-slate-50/80 text-slate-500 uppercase text-[10px] font-bold tracking-wider border-b border-slate-100">
+                    <tr>
+                        <th class="py-3 px-3 whitespace-nowrap">Kode Unit</th>
+                        <th class="py-3 px-3">Proyek</th>
+                        <th class="py-3 px-3 whitespace-nowrap">Tipe / Dimensi</th>
+                        <th class="py-3 px-3 text-center whitespace-nowrap">Status Unit</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                    @forelse($recentUnits as $unit)
+                        <tr class="hover:bg-slate-50/60 transition">
+                            <td data-label="Kode Unit" class="py-3.5 px-3 font-extrabold text-slate-800 whitespace-nowrap align-top">
+                                <div class="flex flex-col items-end sm:items-start">
+                                    <a href="{{ route('units.show', $unit->id) }}" wire:navigate.hover class="hover:text-emerald-600 transition font-mono">
+                                        Unit {{ $unit->code }}
+                                    </a>
+                                    <span class="text-[10px] font-semibold text-slate-500 uppercase">({{ $unit->category ?? $unit->type }})</span>
+                                </div>
+                            </td>
+                            <td data-label="Proyek" class="py-3.5 px-3 text-slate-600 font-medium align-top">
+                                <span class="text-right sm:text-left break-words block">{{ $unit->project?->name ?? 'Proyek' }}</span>
+                            </td>
+                            <td data-label="Tipe / Dimensi" class="py-3.5 px-3 font-mono text-slate-700 text-xs whitespace-nowrap align-top">
+                                @if($unit->category === 'fasum')
+                                    {{ $unit->work_area ? $unit->work_area . ' m²' : '-' }}
+                                @else
+                                    {{ $unit->land_area }} m²
+                                @endif
+                            </td>
+                            <td data-label="Status Unit" class="py-3.5 px-3 text-center whitespace-nowrap align-top">
+                                <x-status-badge :status="$unit->status" :label="$unit->status === 'disetujui' ? 'TERJUAL (ACC)' : null" />
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="4" class="py-8 px-4 text-center text-slate-400 italic">Belum ada unit properti tercatat.</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </x-dashboard-feed-card>
 
             @if($user->isAdmin())
                 <!-- Table 2 (Admin): Ringkasan Harga Jual Unit & Kavling Terbaru -->
-                <div class="card-clean overflow-hidden flex flex-col justify-between">
-                    <div>
-                        <div class="p-4 border-b border-slate-100 flex items-center justify-between">
-                            <h3 class="text-xs font-extrabold text-slate-900 uppercase tracking-wider">Harga Total Jual Unit & Kavling</h3>
-                            <a href="{{ route('units.index') }}" wire:navigate.hover class="text-xs text-emerald-700 font-bold hover:underline">Lihat Semua &rarr;</a>
-                        </div>
-
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-left text-xs">
-                                <thead class="bg-slate-50/80 text-slate-500 uppercase text-[10px] font-bold tracking-wider border-b border-slate-100">
-                                    <tr>
-                                        <th class="py-3 px-4 whitespace-nowrap">Kode Unit</th>
-                                        <th class="py-3 px-4">Proyek</th>
-                                        <th class="py-3 px-4 text-right whitespace-nowrap">Harga Total Jual</th>
-                                        <th class="py-3 px-4 text-center whitespace-nowrap">Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="divide-y divide-slate-100">
-                                    @forelse($recentUnits as $unit)
-                                        <tr class="hover:bg-slate-50/60 transition">
-                                            <td class="py-3.5 px-4 font-extrabold text-slate-800 whitespace-nowrap">
-                                                <a href="{{ route('units.show', $unit->id) }}" wire:navigate.hover class="hover:text-emerald-600 transition font-mono">
-                                                    Unit {{ $unit->code }}
-                                                </a>
-                                                <span class="text-[10px] font-semibold text-slate-500 uppercase block">({{ $unit->category ?? $unit->type }})</span>
-                                            </td>
-                                            <td class="py-3.5 px-4 text-slate-600 font-medium">{{ $unit->project?->name ?? 'Proyek' }}</td>
-                                            <td class="py-3.5 px-4 font-mono font-extrabold text-emerald-700 text-right whitespace-nowrap">
-                                                Rp {{ number_format($unit->total_price, 0, ',', '.') }}
-                                            </td>
-                                            <td class="py-3.5 px-4 text-center whitespace-nowrap">
-                                                <x-status-badge :status="$unit->status" />
-                                            </td>
-                                        </tr>
-                                    @empty
-                                        <tr>
-                                            <td colspan="4" class="py-8 text-center text-slate-400 italic">Belum ada unit kavling tercatat.</td>
-                                        </tr>
-                                    @endforelse
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
+                <x-dashboard-feed-card
+                    subtitle="Daftar harga jual terbaru per unit & proyek"
+                    :actionHref="route('units.index')"
+                    actionLabel="Lihat Semua"
+                >
+                    <x-slot:title>Harga Total Jual Unit & Kavling</x-slot:title>
+                    <thead class="bg-slate-50/80 text-slate-500 uppercase text-[10px] font-bold tracking-wider border-b border-slate-100">
+                        <tr>
+                            <th class="py-3 px-3 whitespace-nowrap">Kode Unit</th>
+                            <th class="py-3 px-3">Proyek</th>
+                            <th class="py-3 px-3 text-right whitespace-nowrap">Harga Total Jual</th>
+                            <th class="py-3 px-3 text-center whitespace-nowrap">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100">
+                        @forelse($recentUnits as $unit)
+                            <tr class="hover:bg-slate-50/60 transition">
+                                <td data-label="Kode Unit" class="py-3.5 px-3 font-extrabold text-slate-800 whitespace-nowrap align-top">
+                                    <div class="flex flex-col items-end sm:items-start">
+                                        <a href="{{ route('units.show', $unit->id) }}" wire:navigate.hover class="hover:text-emerald-600 transition font-mono">
+                                            Unit {{ $unit->code }}
+                                        </a>
+                                        <span class="text-[10px] font-semibold text-slate-500 uppercase">({{ $unit->category ?? $unit->type }})</span>
+                                    </div>
+                                </td>
+                                <td data-label="Proyek" class="py-3.5 px-3 text-slate-600 font-medium align-top">
+                                    <span class="text-right sm:text-left break-words block">{{ $unit->project?->name ?? 'Proyek' }}</span>
+                                </td>
+                                <td data-label="Harga Total Jual" class="py-3.5 px-3 font-mono font-extrabold text-emerald-700 text-right whitespace-nowrap align-top">
+                                    Rp {{ number_format($unit->total_price, 0, ',', '.') }}
+                                </td>
+                                <td data-label="Status" class="py-3.5 px-3 text-center whitespace-nowrap align-top">
+                                    <x-status-badge :status="$unit->status" :label="$unit->status === 'disetujui' ? 'TERJUAL (ACC)' : null" />
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="4" class="py-8 px-4 text-center text-slate-400 italic">Belum ada unit kavling tercatat.</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </x-dashboard-feed-card>
             @else
                 <!-- Table 2 (Pengawas): Log Belanja Material Lapangan Terbaru -->
-                <div class="card-clean overflow-hidden flex flex-col justify-between">
-                    <div>
-                        <div class="p-4 border-b border-slate-100 flex items-center justify-between">
-                            <h3 class="text-xs font-extrabold text-slate-900 uppercase tracking-wider">Aktivitas Belanja Material Terbaru</h3>
-                            <a href="{{ route('field-expenses.index') }}" wire:navigate.hover class="text-xs text-emerald-700 font-bold hover:underline">Lihat Log &rarr;</a>
-                        </div>
+                <x-dashboard-feed-card
+                    subtitle="Catatan pembelian material di lapangan"
+                    :actionHref="route('field-expenses.index')"
+                    actionLabel="Lihat Log"
+                >
+                    <x-slot:title>Aktivitas Belanja Material Terbaru</x-slot:title>
+                    <thead class="bg-slate-50/80 text-slate-500 uppercase text-[10px] font-bold tracking-wider border-b border-slate-100">
+                        <tr>
+                            <th class="py-3 px-3 whitespace-nowrap">Tanggal</th>
+                            <th class="py-3 px-3">Proyek & Unit</th>
+                            <th class="py-3 px-3">Barang / Toko</th>
+                            <th class="py-3 px-3 text-right whitespace-nowrap">Total Belanja</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100">
+                        @forelse($recentMaterialPurchases as $mat)
+                            <tr class="hover:bg-slate-50/60 transition">
+                                <td data-label="Tanggal" class="py-3.5 px-3 font-mono text-slate-600 text-xs whitespace-nowrap align-top">
+                                    {{ format_id_date($mat->purchase_date) }}
+                                </td>
+                                <td data-label="Proyek & Unit" class="py-3.5 px-3 font-extrabold text-slate-800 align-top">
+                                    <div class="flex flex-col items-end sm:items-start">
+                                        <span class="text-right sm:text-left break-words">{{ $mat->unit?->project?->name ?? $mat->project?->name ?? 'Proyek' }}</span>
+                                        <span class="text-[10px] text-slate-500 font-mono">Unit {{ $mat->unit?->code ?? '-' }}</span>
+                                    </div>
+                                </td>
+                                <td data-label="Barang / Toko" class="py-3.5 px-3 text-slate-700 text-xs align-top">
+                                    <div class="flex flex-col items-end sm:items-start">
+                                        <p class="font-bold text-slate-800 text-right sm:text-left">{{ $mat->item_name }}</p>
+                                        <p class="text-[10px] text-amber-700">{{ $mat->store_name ?: '-' }}</p>
+                                    </div>
+                                </td>
+                                <td data-label="Total Belanja" class="py-3.5 px-3 font-mono font-extrabold text-emerald-700 text-right whitespace-nowrap align-top">
+                                    Rp {{ number_format($mat->total_price, 0, ',', '.') }}
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="4" class="py-8 px-4 text-center text-slate-400 italic">Belum ada catatan belanja material.</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </x-dashboard-feed-card>
+            @endif
 
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-left text-xs">
-                                <thead class="bg-slate-50/80 text-slate-500 uppercase text-[10px] font-bold tracking-wider border-b border-slate-100">
-                                    <tr>
-                                        <th class="py-3 px-4 whitespace-nowrap">Tanggal</th>
-                                        <th class="py-3 px-4">Proyek & Unit</th>
-                                        <th class="py-3 px-4">Barang / Toko</th>
-                                        <th class="py-3 px-4 text-right whitespace-nowrap">Total Belanja</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="divide-y divide-slate-100">
-                                    @forelse($recentMaterialPurchases as $mat)
-                                        <tr class="hover:bg-slate-50/60 transition">
-                                            <td class="py-3.5 px-4 font-mono text-slate-600 text-xs whitespace-nowrap">
-                                                {{ format_id_date($mat->purchase_date) }}
-                                            </td>
-                                            <td class="py-3.5 px-4 font-extrabold text-slate-800">
-                                                <span>{{ $mat->unit?->project?->name ?? $mat->project?->name ?? 'Proyek' }}</span>
-                                                <span class="text-[10px] text-slate-500 font-mono block">Unit {{ $mat->unit?->code ?? '-' }}</span>
-                                            </td>
-                                            <td class="py-3.5 px-4 text-slate-700 text-xs">
-                                                <p class="font-bold text-slate-800">{{ $mat->item_name }}</p>
-                                                <p class="text-[10px] text-amber-700">{{ $mat->store_name ?: '-' }}</p>
-                                            </td>
-                                            <td class="py-3.5 px-4 font-mono font-extrabold text-emerald-700 text-right whitespace-nowrap">
-                                                Rp {{ number_format($mat->total_price, 0, ',', '.') }}
-                                            </td>
-                                        </tr>
-                                    @empty
-                                        <tr>
-                                            <td colspan="4" class="py-8 text-center text-slate-400 italic">Belum ada catatan belanja material.</td>
-                                        </tr>
-                                    @endforelse
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
+            @if($user->isAdmin())
+                <!-- Table 3 (Admin Utama): Ringkasan Daily Activity Report -->
+                @include('livewire.dashboard.partials.recent-daily-activity-table', [
+                    'reports' => $recentDailyReports,
+                    'user' => $user,
+                    'spanClass' => 'xl:col-span-2',
+                ])
             @endif
         @else
-            <!-- Table 1 (Founder/Finance/Marketing): Recent Proposals -->
-            <div class="card-clean overflow-hidden flex flex-col justify-between">
-                <div>
-                    <div class="p-4 border-b border-slate-100 flex items-center justify-between">
-                        <h3 class="text-xs font-extrabold text-slate-900 uppercase tracking-wider">Pengajuan Harga Terbaru</h3>
-                        <a href="{{ route('proposals.index') }}" wire:navigate.hover class="text-xs text-emerald-700 font-bold hover:underline">Lihat Semua &rarr;</a>
-                    </div>
+            @if(!$user->isMarketing())
+                <!-- Table 1 (Founder/Finance/Supervisor): Recent Proposals -->
+                <x-dashboard-feed-card
+                    subtitle="Status persetujuan usulan harga jual unit"
+                    :actionHref="route('proposals.index')"
+                    actionLabel="Lihat Semua"
+                >
+                    <x-slot:title>Pengajuan Harga Terbaru</x-slot:title>
+                    <thead class="bg-slate-50/80 text-slate-500 uppercase text-[10px] font-bold tracking-wider border-b border-slate-100">
+                        <tr>
+                            <th class="py-3 px-3 whitespace-nowrap">Unit / Proyek</th>
+                            @if(auth()->user()->canViewHpp())
+                                <th class="py-3 px-3 whitespace-nowrap">HPP</th>
+                            @endif
+                            <th class="py-3 px-3 whitespace-nowrap">Usulan Harga</th>
+                            <th class="py-3 px-3 text-center whitespace-nowrap">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100">
+                        @forelse($recentProposals as $prop)
+                            <tr class="hover:bg-slate-50/60 transition">
+                                <td data-label="Unit / Proyek" class="py-3.5 px-3 font-extrabold text-slate-800 align-top">
+                                    <div class="flex flex-col items-end sm:items-start">
+                                        <span class="font-mono">Unit {{ $prop->unit->code }}</span>
+                                        <span class="text-slate-400 font-normal text-[11px] text-right sm:text-left break-words">({{ $prop->unit->project->name }})</span>
+                                    </div>
+                                </td>
+                                @if(auth()->user()->canViewHpp())
+                                    <td data-label="HPP" class="py-3.5 px-3 font-mono text-slate-600 whitespace-nowrap align-top">Rp {{ number_format($prop->hpp_price, 0, ',', '.') }}</td>
+                                @endif
+                                <td data-label="Usulan Harga" class="py-3.5 px-3 font-mono font-extrabold text-emerald-700 whitespace-nowrap align-top">Rp {{ number_format($prop->proposed_price, 0, ',', '.') }}</td>
+                                <td data-label="Status" class="py-3.5 px-3 text-center whitespace-nowrap align-top">
+                                    <x-status-badge
+                                        :status="$prop->status"
+                                        :label="$prop->status === 'disetujui' ? 'DISETUJUI' : ($prop->status === 'menunggu' ? 'MENUNGGU' : 'DITOLAK')"
+                                    />
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="{{ auth()->user()->canViewHpp() ? 4 : 3 }}" class="py-8 px-4 text-center text-slate-400 italic">Belum ada pengajuan harga yang dibuat.</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </x-dashboard-feed-card>
+            @else
+                <!-- Table 1 (Marketing): Ringkasan Daily Activity Report -->
+                @include('livewire.dashboard.partials.recent-daily-activity-table', [
+                    'reports' => $recentDailyReports,
+                    'user' => $user,
+                    'spanClass' => '',
+                ])
+            @endif
 
-                    @if($recentProposals->isEmpty())
-                        <p class="text-xs text-slate-400 py-10 text-center">Belum ada pengajuan harga yang dibuat.</p>
-                    @else
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-left text-xs">
-                                <thead class="bg-slate-50/80 text-slate-500 uppercase text-[10px] font-bold tracking-wider border-b border-slate-100">
-                                    <tr>
-                                        <th class="py-3 px-4 whitespace-nowrap">Unit / Proyek</th>
-                                        @if(auth()->user()->canViewHpp())
-                                            <th class="py-3 px-4 whitespace-nowrap">HPP</th>
-                                        @endif
-                                        <th class="py-3 px-4 whitespace-nowrap">Usulan Harga</th>
-                                        <th class="py-3 px-4 whitespace-nowrap">Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="divide-y divide-slate-100">
-                                    @foreach($recentProposals as $prop)
-                                        <tr class="hover:bg-slate-50/60 transition">
-                                            <td class="py-3.5 px-4 font-extrabold text-slate-800">
-                                                <span>Unit {{ $prop->unit->code }}</span>
-                                                <span class="text-slate-400 font-normal text-[11px] block">({{ $prop->unit->project->name }})</span>
-                                            </td>
-                                            @if(auth()->user()->canViewHpp())
-                                                <td class="py-3.5 px-4 font-mono text-slate-600 whitespace-nowrap">Rp {{ number_format($prop->hpp_price, 0, ',', '.') }}</td>
-                                            @endif
-                                            <td class="py-3.5 px-4 font-mono font-extrabold text-emerald-700 whitespace-nowrap">Rp {{ number_format($prop->proposed_price, 0, ',', '.') }}</td>
-                                            <td class="py-3.5 px-4 whitespace-nowrap">
-                                                @if($prop->status === 'menunggu')
-                                                    <span class="status-menunggu">Menunggu</span>
-                                                @elseif($prop->status === 'disetujui')
-                                                    <span class="status-disetujui">Disetujui</span>
-                                                @else
-                                                    <span class="status-ditolak">Ditolak</span>
-                                                @endif
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                    @endif
-                </div>
-            </div>
+            <!-- Table 2 (Founder/Finance/Supervisor/Marketing): Recent Unit Availability -->
+            <x-dashboard-feed-card
+                subtitle="Ketersediaan & harga unit kavling terkini"
+                :actionHref="route('units.index')"
+                actionLabel="Lihat Semua"
+            >
+                <x-slot:title>Status Availability Unit Kavling</x-slot:title>
+                <thead class="bg-slate-50/80 text-slate-500 uppercase text-[10px] font-bold tracking-wider border-b border-slate-100">
+                    <tr>
+                        <th class="py-3 px-3 whitespace-nowrap">Kode Unit</th>
+                        <th class="py-3 px-3">Proyek</th>
+                        @if(auth()->user()->canViewSalesPrices())
+                            <th class="py-3 px-3 whitespace-nowrap">Harga Jual</th>
+                        @endif
+                        <th class="py-3 px-3 text-center whitespace-nowrap">Status</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                    @forelse($recentUnits as $unit)
+                        <tr class="hover:bg-slate-50/60 transition">
+                            <td data-label="Kode Unit" class="py-3.5 px-3 font-extrabold text-slate-800 whitespace-nowrap align-top">
+                                <div class="flex flex-col items-end sm:items-start">
+                                    <a href="{{ route('units.show', $unit->id) }}" wire:navigate.hover class="hover:text-emerald-600 transition font-mono">
+                                        Unit {{ $unit->code }}
+                                    </a>
+                                    <span class="text-[10px] font-semibold text-slate-500 uppercase">({{ $unit->category ?? $unit->type }})</span>
+                                </div>
+                            </td>
+                            <td data-label="Proyek" class="py-3.5 px-3 text-slate-600 font-medium align-top">
+                                <span class="text-right sm:text-left break-words block">{{ $unit->project?->name ?? 'Proyek' }}</span>
+                            </td>
+                            @if(auth()->user()->canViewSalesPrices())
+                                <td data-label="Harga Jual" class="py-3.5 px-3 font-mono text-slate-800 font-bold whitespace-nowrap align-top">
+                                    Rp {{ number_format($unit->final_selling_price ?? 0, 0, ',', '.') }}
+                                </td>
+                            @endif
+                            <td data-label="Status" class="py-3.5 px-3 text-center whitespace-nowrap align-top">
+                                <x-status-badge :status="$unit->status" :label="$unit->status === 'disetujui' ? 'TERJUAL (ACC)' : null" />
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="{{ auth()->user()->canViewSalesPrices() ? 4 : 3 }}" class="py-8 px-4 text-center text-slate-400 italic">Belum ada unit kavling tercatat.</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </x-dashboard-feed-card>
 
-            <!-- Table 2 (Founder/Finance/Marketing): Recent Unit Availability -->
-            <div class="card-clean overflow-hidden flex flex-col justify-between">
-                <div>
-                    <div class="p-4 border-b border-slate-100 flex items-center justify-between">
-                        <h3 class="text-xs font-extrabold text-slate-900 uppercase tracking-wider">Status Availability Unit Kavling</h3>
-                        <a href="{{ route('units.index') }}" wire:navigate.hover class="text-xs text-emerald-700 font-bold hover:underline">Lihat Semua &rarr;</a>
-                    </div>
-
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left text-xs">
-                            <thead class="bg-slate-50/80 text-slate-500 uppercase text-[10px] font-bold tracking-wider border-b border-slate-100">
-                                <tr>
-                                    <th class="py-3 px-4 whitespace-nowrap">Kode Unit</th>
-                                    <th class="py-3 px-4">Proyek</th>
-                                    @if(auth()->user()->canViewSalesPrices())
-                                        <th class="py-3 px-4 whitespace-nowrap">Harga Jual</th>
-                                    @endif
-                                    <th class="py-3 px-4 whitespace-nowrap">Status</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-slate-100">
-                                @foreach($recentUnits as $unit)
-                                    <tr class="hover:bg-slate-50/60 transition">
-                                        <td class="py-3.5 px-4 font-extrabold text-slate-800">
-                                            <a href="{{ route('units.show', $unit->id) }}" wire:navigate.hover class="hover:text-emerald-600 transition">
-                                                Unit {{ $unit->code }}
-                                            </a>
-                                            <span class="text-[10px] font-semibold text-slate-500 uppercase block">({{ $unit->category ?? $unit->type }})</span>
-                                        </td>
-                                        <td class="py-3.5 px-4 text-slate-600 font-medium">{{ $unit->project->name }}</td>
-                                        @if(auth()->user()->canViewSalesPrices())
-                                            <td class="py-3.5 px-4 font-mono text-slate-800 font-bold whitespace-nowrap">
-                                                Rp {{ number_format($unit->final_selling_price ?? 0, 0, ',', '.') }}
-                                            </td>
-                                        @endif
-                                        <td class="py-3.5 px-4 whitespace-nowrap">
-                                            @if($unit->status === 'tersedia')
-                                                <span class="status-tersedia">Tersedia</span>
-                                            @elseif($unit->status === 'booked' || $unit->status === 'booking')
-                                                <span class="status-booked">Booked</span>
-                                            @elseif($unit->status === 'menunggu_persetujuan')
-                                                <span class="status-menunggu">Pending</span>
-                                            @elseif($unit->status === 'disetujui' || $unit->status === 'terjual')
-                                                <span class="status-terjual">Terjual</span>
-                                            @else
-                                                <span class="status-draft">{{ ucfirst($unit->status) }}</span>
-                                            @endif
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
+            @if($user->isFounder())
+                <!-- Table 3 (Founder / Executive Admin Utama): Ringkasan Daily Activity Report -->
+                @include('livewire.dashboard.partials.recent-daily-activity-table', [
+                    'reports' => $recentDailyReports,
+                    'user' => $user,
+                    'spanClass' => 'xl:col-span-2',
+                ])
+            @endif
         @endif
     </div>
 

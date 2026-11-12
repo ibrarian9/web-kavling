@@ -38,6 +38,11 @@ trait HasUnitPayroll
 
     public function openPayrollSetupModal(): void
     {
+        if (!$this->canManageOperational()) {
+            session()->flash('error', 'Akses ditolak.');
+            return;
+        }
+
         $this->resetValidation();
         $this->editingPayrollId = null;
         $this->reset(['payroll_worker_id', 'payroll_agreed_salary', 'payroll_notes']);
@@ -153,6 +158,11 @@ trait HasUnitPayroll
 
     public function openPayrollPaymentModal(int $payrollId): void
     {
+        if (!$this->canManageOperational()) {
+            session()->flash('error', 'Akses ditolak.');
+            return;
+        }
+
         $this->resetValidation();
         $this->editingSalaryPaymentId = null;
         $this->reset(['payroll_amount_gross', 'payroll_receipt_photo', 'payroll_payment_notes']);

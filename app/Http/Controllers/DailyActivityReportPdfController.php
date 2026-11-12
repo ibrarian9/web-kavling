@@ -98,8 +98,8 @@ class DailyActivityReportPdfController extends Controller
 
         // Summary Calculations
         $totalReports = $reports->count();
-        $hotDealsCount = $reports->whereIn('lead_stage', ['hot_deal', 'booking', 'cash_lunas'])->count();
-        $totalDealVolume = $reports->whereIn('lead_stage', ['booking', 'cash_lunas'])->sum('deal_amount');
+        $hotDealsCount = $reports->whereIn('lead_stage', DailyActivityReport::HOT_DEAL_STAGES)->count();
+        $totalDealVolume = $reports->whereIn('lead_stage', DailyActivityReport::CLOSED_DEAL_STAGES)->sum('deal_amount');
 
         // Marketing User Info & Filter Labels
         $staffUser = $userIdParam ? User::find($userIdParam) : null;

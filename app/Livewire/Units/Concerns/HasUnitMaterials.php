@@ -79,6 +79,11 @@ trait HasUnitMaterials
 
     public function openMaterialModal(): void
     {
+        if (!$this->canManageOperational()) {
+            session()->flash('error', 'Akses ditolak.');
+            return;
+        }
+
         $this->resetValidation();
         $this->editingMaterialId = null;
         $this->reset(['material_worker_id', 'material_item_name', 'material_store_name', 'material_unit_price', 'material_total_price', 'material_receipt_photo', 'material_notes']);

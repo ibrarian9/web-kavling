@@ -268,6 +268,7 @@
                 @php
                     $badgeClass = match ($rep->lead_stage) {
                         'hot_deal' => 'badge-hot',
+                        'deal' => 'badge-lunas',
                         'booking' => 'badge-booking',
                         'cash_lunas' => 'badge-lunas',
                         'warm' => 'badge-warm',

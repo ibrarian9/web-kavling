@@ -142,8 +142,11 @@ class SystemE2ESuiteTest extends TestCase
         $this->assertEquals($expectedExcessCost, (float)$unit->excess_cost);
         $this->assertEquals($expectedHpp, (float)$unit->hpp);
 
-        // B. Marketing Submits Proposal
+        // B. Finance Submits Proposal (Marketing is 403)
         $this->actingAs($this->marketing);
+        Livewire::test(\App\Livewire\Proposals\Index::class)->assertStatus(403);
+
+        $this->actingAs($this->finance);
         Livewire::test(\App\Livewire\Proposals\Index::class)
             ->set('unit_id', $unit->id)
             ->set('proposed_price', $expectedHpp + 25000000)
@@ -176,6 +179,9 @@ class SystemE2ESuiteTest extends TestCase
         $unit = Unit::where('status', 'tersedia')->firstOrFail();
 
         $this->actingAs($this->marketing);
+        Livewire::test(\App\Livewire\Bookings\Index::class)->assertStatus(403);
+
+        $this->actingAs($this->finance);
 
         // A. Record Booking Fee
         Livewire::test(\App\Livewire\Bookings\Index::class)

@@ -75,8 +75,9 @@ class Index extends Component
 
     public function mount()
     {
-        if (auth()->user()?->isAdmin()) {
-            abort(403, 'Akses modul Pengajuan Proposal tidak diizinkan untuk role Admin.');
+        $user = auth()->user();
+        if ($user?->isAdmin() || $user?->isMarketing()) {
+            abort(403, 'Akses modul Pengajuan Harga tidak diizinkan untuk role Anda.');
         }
 
         if ($this->create_unit_id) {
@@ -195,8 +196,8 @@ class Index extends Component
             return;
         }
 
-        if (!$user->isMarketing() && !$user->isAdminOrFounder() && !$user->isFinance()) {
-            session()->flash('error', 'Hanya Marketing, Finance, Admin, dan Founder yang berhak membuat pengajuan harga baru.');
+        if (!$user->isAdminOrFounder() && !$user->isFinance()) {
+            session()->flash('error', 'Hanya Finance, Admin, dan Founder yang berhak membuat pengajuan harga baru.');
             return;
         }
 
@@ -361,8 +362,8 @@ class Index extends Component
     public function issueDocument()
     {
         $user = auth()->user();
-        if (!$user->isMarketing() && !$user->isFinance() && !$user->isAdminOrFounder()) {
-            session()->flash('error', 'Hanya Marketing, Finance, Admin, dan Founder yang berhak menerbitkan Surat Pemesanan Properti (SPP) resmi.');
+        if (!$user->isFinance() && !$user->isAdminOrFounder()) {
+            session()->flash('error', 'Hanya Finance, Admin, dan Founder yang berhak menerbitkan Surat Pemesanan Properti (SPP) resmi.');
             return;
         }
 

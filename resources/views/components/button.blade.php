@@ -33,6 +33,7 @@
     $variantClasses = match($variant) {
         'primary', 'teal' => 'bg-teal-600 hover:bg-teal-700 text-white shadow-xs focus:ring-2 focus:ring-teal-500/30',
         'emerald', 'success' => 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs focus:ring-2 focus:ring-emerald-500/30',
+        'soft-emerald' => 'bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 shadow-2xs focus:ring-2 focus:ring-emerald-500/20',
         'rose', 'danger', 'red' => 'bg-rose-600 hover:bg-rose-700 text-white shadow-xs focus:ring-2 focus:ring-rose-500/30',
         'purple' => 'bg-purple-600 hover:bg-purple-700 text-white shadow-xs focus:ring-2 focus:ring-purple-500/30',
         'blue' => 'bg-blue-600 hover:bg-blue-700 text-white shadow-xs focus:ring-2 focus:ring-blue-500/30',

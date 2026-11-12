@@ -156,10 +156,25 @@ test('admin is forbidden 403 from accessing proposals, documents, bookings, and 
         ->assertStatus(403);
 });
 
-test('marketing and supervisor can submit proposals and manage documents', function () {
-    $this->actingAs($this->marketing);
+test('marketing is forbidden 403 from proposals, bookings, and installments while supervisor can manage proposals and documents', function () {
+    Role::firstOrCreate(['name' => 'finance', 'guard_name' => 'web']);
+    $finance = User::create([
+        'name' => 'Finance Staff Prop',
+        'email' => 'finance_prop@test.com',
+        'password' => bcrypt('password'),
+        'role' => 'finance',
+        'is_active' => true,
+    ]);
+    $finance->assignRole('finance');
 
-    // Marketing creates proposal
+    // Marketing is forbidden 403 from proposals, bookings, and installments
+    $this->actingAs($this->marketing);
+    Livewire::test(\App\Livewire\Proposals\Index::class)->assertStatus(403);
+    Livewire::test(\App\Livewire\Bookings\Index::class)->assertStatus(403);
+    Livewire::test(\App\Livewire\Installments\Index::class)->assertStatus(403);
+
+    // Finance creates proposal
+    $this->actingAs($finance);
     Livewire::test(\App\Livewire\Proposals\Index::class)
         ->set('unit_id', $this->unit->id)
         ->set('proposed_price', 140000000)

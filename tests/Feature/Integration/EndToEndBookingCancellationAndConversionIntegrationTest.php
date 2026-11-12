@@ -86,7 +86,7 @@ test('end to end cancellation & cash conversion workflow: booking refund reverts
     ]);
 
     // 3. Skenario A: Booking -> Approve DP -> Finance Cancels & Refunds DP
-    Livewire::actingAs($marketing)
+    Livewire::actingAs($finance)
         ->test(BookingIndex::class)
         ->set('project_id', $project->id)
         ->set('unit_id', $unitA->id)

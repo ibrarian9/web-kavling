@@ -82,8 +82,13 @@ test('end to end property sale workflow: project creation -> unit setup -> booki
 
     expect($unit->status)->toBe('tersedia');
 
-    // 4. Marketing Records Booking Fee for Buyer (Rp 5,000,000)
+    // Marketing is blocked from accessing BookingIndex
     Livewire::actingAs($marketing)
+        ->test(BookingIndex::class)
+        ->assertStatus(403);
+
+    // 4. Finance Records Booking Fee for Buyer (Rp 5,000,000)
+    Livewire::actingAs($finance)
         ->test(BookingIndex::class)
         ->set('project_id', $project->id)
         ->set('unit_id', $unit->id)

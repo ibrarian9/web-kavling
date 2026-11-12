@@ -1,5 +1,5 @@
-<!-- Installment & Buyer Payments Card (Financial Data - Hidden from Pengawas Project) -->
-@if(!auth()->user()->isPengawasProject() && $unit->installment)
+<!-- Installment & Buyer Payments Card (Financial Data - Hidden from Pengawas Project & Non-Dealt Marketing) -->
+@if($canViewUnitInstallments && $unit->installment)
     <x-card padding="p-5">
         <div class="flex flex-col lg:flex-row lg:items-center justify-between border-b border-slate-100 pb-3 gap-3">
             <h3 class="font-extrabold text-slate-900 text-sm flex items-center gap-2">
@@ -10,20 +10,21 @@
                 <x-status-badge :status="$unit->installment->status" />
             </h3>
 
-            @if(auth()->user()->isAdminOrFounder() || auth()->user()->isFinance())
+            @if(auth()->user()->isAdminOrFounder() || auth()->user()->isFinance() || auth()->user()->isMarketing())
                 <div class="flex items-center gap-2 flex-wrap">
                     <x-button variant="pdf" size="xs" wire:click="openViewerModal('pdf', '{{ route('installments.unit-statement-pdf', $unit->installment->id) }}', 'Pratinjau Rekapitulasi Cicilan Unit {{ $unit->code }} - {{ $unit->installment->buyer_name }}')" icon="pdf" title="Pratinjau Rekapitulasi & Kartu Pembayaran Cicilan PDF">
                         <span>Rekap Cicilan PDF</span>
                     </x-button>
 
-                    @if(!in_array($unit->installment->status, ['lunas', 'konversi_cash']))
-                        <x-button variant="emerald" size="xs" wire:click="openInstallmentPaymentModal" icon="plus" title="Input Setoran Cicilan Pembeli">
-                            <span>Input Setoran</span>
-                        </x-button>
-                    @endif
+                    @if(auth()->user()->isAdminOrFounder() || auth()->user()->isFinance())
+                        @if(!in_array($unit->installment->status, ['lunas', 'konversi_cash']))
+                            <x-button variant="emerald" size="xs" wire:click="openInstallmentPaymentModal" icon="plus" title="Input Setoran Cicilan Pembeli">
+                                <span>Input Setoran</span>
+                            </x-button>
+                        @endif
 
-                    <!-- Dropdown Opsi Skema -->
-                    <x-action-dropdown title="Kelola Skema & Status Cicilan" label="Opsi Skema" icon="gear" variant="outline" size="xs">
+                        <!-- Dropdown Opsi Skema -->
+                        <x-action-dropdown title="Kelola Skema & Status Cicilan" label="Opsi Skema" icon="gear" variant="outline" size="xs">
                         <div class="py-1">
                             @if(auth()->user()->isAdminOrFounder())
                                 <x-dropdown-item icon="edit" wire:click="openSetupInstallmentModal">
@@ -50,6 +51,7 @@
                             </div>
                         @endif
                     </x-action-dropdown>
+                    @endif
                 </div>
             @endif
         </div>
@@ -139,7 +141,7 @@
             @endforelse
         </div>
     </x-card>
-@elseif(!auth()->user()->isPengawasProject() && auth()->user()->isAdminOrFounder() && in_array($unit->status, ['booked', 'disetujui', 'terjual', 'converted']))
+@elseif($canViewUnitInstallments && auth()->user()->isAdminOrFounder() && in_array($unit->status, ['booked', 'disetujui', 'terjual', 'converted']))
     <x-card padding="p-5">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
@@ -154,7 +156,7 @@
     </x-card>
 @endif
 
-@if(!auth()->user()->isPengawasProject() && isset($manualInvoices) && $manualInvoices->count() > 0)
+@if($canViewUnitInstallments && isset($manualInvoices) && $manualInvoices->count() > 0)
     <x-card padding="p-5" class="mt-4">
         <div class="flex items-center justify-between border-b border-slate-100 pb-2">
             <h3 class="font-extrabold text-slate-900 text-sm flex items-center gap-2">

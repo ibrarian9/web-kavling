@@ -105,7 +105,9 @@
                         <div class="bg-sky-50/80 rounded-xl p-2.5 border border-sky-100/90">
                             <span class="text-[10px] text-sky-600 font-semibold block uppercase tracking-wider">Sudah Dibayar</span>
                             <span class="font-mono font-extrabold text-sky-800 text-xs sm:text-sm whitespace-nowrap block mt-0.5">
-                                @if($perf['paid_amount'] > 0)
+                                @if(!($perf['can_view_deal_finance'] ?? true))
+                                    <span class="text-slate-400 font-normal italic">-</span>
+                                @elseif($perf['paid_amount'] > 0)
                                     Rp {{ number_format($perf['paid_amount'], 0, ',', '.') }}
                                 @else
                                     <span class="text-slate-400 font-normal italic">Rp 0</span>
@@ -261,7 +263,9 @@
                                         @endif
                                     </td>
                                     <td class="px-3 py-3.5 text-right font-mono font-extrabold text-sky-700 whitespace-nowrap">
-                                        @if($perf['paid_amount'] > 0)
+                                        @if(!($perf['can_view_deal_finance'] ?? true))
+                                            <span class="text-slate-400 font-normal italic">-</span>
+                                        @elseif($perf['paid_amount'] > 0)
                                             Rp {{ number_format($perf['paid_amount'], 0, ',', '.') }}
                                         @else
                                             <span class="text-slate-400 font-normal italic">Rp 0</span>

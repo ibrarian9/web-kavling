@@ -74,12 +74,17 @@ class DailyActivityReport extends Model
         ];
     }
 
+    public const HOT_DEAL_STAGES = ['hot_deal', 'deal', 'booking', 'cash_lunas'];
+
+    public const CLOSED_DEAL_STAGES = ['deal', 'booking', 'cash_lunas'];
+
     public static function leadStages(): array
     {
         return [
             'cold' => 'Cold Prospect',
             'warm' => 'Warm Prospect',
             'hot_deal' => 'Hot Deal',
+            'deal' => 'Deal',
             'booking' => 'Booking Fee / DP',
             'cash_lunas' => 'Cash Lunas',
             'batal' => 'Batal / Not Interested',
@@ -105,11 +110,31 @@ class DailyActivityReport extends Model
     {
         return match ($this->lead_stage) {
             'hot_deal' => 'bg-amber-100 text-amber-800 border border-amber-300 font-extrabold',
+            'deal' => 'bg-green-100 text-green-800 border border-green-300 font-extrabold',
             'booking' => 'bg-teal-100 text-teal-800 border border-teal-300 font-extrabold',
             'cash_lunas' => 'bg-emerald-100 text-emerald-800 border border-emerald-300 font-extrabold',
             'warm' => 'bg-blue-100 text-blue-800 border border-blue-200 font-bold',
             'batal' => 'bg-rose-100 text-rose-800 border border-rose-200 font-bold',
             default => 'bg-slate-100 text-slate-700 border border-slate-200 font-medium',
         };
+    }
+
+    /**
+     * Build a normalized https://wa.me/ URL for the client phone number.
+     */
+    public function getWhatsappUrlAttribute(): ?string
+    {
+        $digits = preg_replace('/[^0-9]/', '', (string) $this->client_phone);
+        if ($digits === '') {
+            return null;
+        }
+
+        if (str_starts_with($digits, '0')) {
+            $digits = '62' . substr($digits, 1);
+        } elseif (str_starts_with($digits, '8')) {
+            $digits = '62' . $digits;
+        }
+
+        return 'https://wa.me/' . $digits;
     }
 }

@@ -32,11 +32,23 @@
                 </td>
 
                 <td data-label="Klien & Kontak" class="p-3.5">
-                    <span class="font-extrabold text-slate-900 block">{{ $rep->client_name }}</span>
-                    <span class="text-[11px] font-mono text-slate-600 inline-flex items-center gap-1 mt-0.5 font-bold">
-                        <svg class="w-3 h-3 text-slate-400 shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-1.156 4.22 4.269-1.121z"/></svg>
-                        <span>{{ $rep->client_phone }}</span>
-                    </span>
+                    <div class="flex flex-col items-end sm:items-start gap-1.5">
+                        <span class="font-extrabold text-slate-900">{{ $rep->client_name }}</span>
+                        @if($rep->whatsapp_url)
+                            <a href="{{ $rep->whatsapp_url }}"
+                               target="_blank"
+                               rel="noopener noreferrer"
+                               title="Chat WhatsApp {{ $rep->client_name }}"
+                               class="text-sm sm:text-[15px] font-mono font-extrabold text-emerald-700 hover:text-emerald-900 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 px-3 py-1.5 rounded-xl inline-flex items-center gap-2 transition shadow-2xs whitespace-nowrap">
+                                <svg class="w-4 h-4 text-emerald-600 shrink-0" aria-hidden="true" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-1.156 4.22 4.269-1.121z"/></svg>
+                                <span>{{ $rep->client_phone }}</span>
+                            </a>
+                        @else
+                            <span class="text-sm font-mono text-slate-600 inline-flex items-center gap-1.5 font-bold">
+                                <span>{{ $rep->client_phone ?: '-' }}</span>
+                            </span>
+                        @endif
+                    </div>
                 </td>
 
                 <td data-label="Proyek & Unit" class="p-3.5">

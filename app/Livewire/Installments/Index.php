@@ -132,8 +132,9 @@ class Index extends Component
 
     public function mount(): void
     {
-        if (auth()->user()?->isAdmin()) {
-            abort(403, 'Akses modul Cicilan & Piutang tidak diizinkan untuk role Admin.');
+        $user = auth()->user();
+        if ($user?->isAdmin() || $user?->isMarketing()) {
+            abort(403, 'Akses modul Cicilan & Piutang tidak diizinkan untuk role Anda.');
         }
 
         if (auth()->user() && !auth()->user()->canViewLandPrices() && $this->activeTab === 'land_payments') {

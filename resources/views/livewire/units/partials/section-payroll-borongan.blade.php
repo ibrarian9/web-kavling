@@ -91,18 +91,20 @@
                 </div>
 
                 <!-- Footer Action Bar -->
-                <div class="px-3.5 py-2.5 bg-slate-50/60 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2">
-                    <x-button variant="pdf" size="xs" wire:click="openViewerModal('pdf', '{{ route('units.payroll.spk-pdf', $up->id) }}', 'Pratinjau Surat Perintah Kerja (SPK) - {{ $up->worker->name }}')" icon="pdf">
-                        <span>Cetak SPK PDF</span>
-                    </x-button>
-
-                    @if($up->status !== 'lunas')
-                        <x-button variant="emerald" size="xs" wire:click="openPayrollPaymentModal({{ $up->id }})">
-                            <svg class="w-3.5 h-3.5 text-white shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                            <span>Bayar Kontrak</span>
+                @if(!auth()->user()->isMarketing())
+                    <div class="px-3.5 py-2.5 bg-slate-50/60 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2">
+                        <x-button variant="pdf" size="xs" wire:click="openViewerModal('pdf', '{{ route('units.payroll.spk-pdf', $up->id) }}', 'Pratinjau Surat Perintah Kerja (SPK) - {{ $up->worker->name }}')" icon="pdf">
+                            <span>Cetak SPK PDF</span>
                         </x-button>
-                    @endif
-                </div>
+
+                        @if($up->status !== 'lunas')
+                            <x-button variant="emerald" size="xs" wire:click="openPayrollPaymentModal({{ $up->id }})">
+                                <svg class="w-3.5 h-3.5 text-white shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                                <span>Bayar Kontrak</span>
+                            </x-button>
+                        @endif
+                    </div>
+                @endif
             </div>
         @empty
             <div class="text-center py-6 text-slate-400 text-xs italic bg-slate-50/60 rounded-2xl border border-dashed border-slate-200">
